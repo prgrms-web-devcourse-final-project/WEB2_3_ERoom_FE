@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import alarmIcon from "../../assets/icons/alarm.svg";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const [isLogin, setIsLogin] = useState(true);
 
   // 임시 로그인, 로그아웃 버튼
@@ -26,7 +29,9 @@ const Header = () => {
     <>
       <header className="h-[50px] bg-white flex items-center px-5 justify-between">
         <div>
-          <h1 className="text-[25px] font-bold">E:room</h1>
+          <h1 className="text-[25px] font-bold" onClick={() => navigate("/")}>
+            E:room
+          </h1>
         </div>
 
         <ul
@@ -57,7 +62,9 @@ const Header = () => {
           <li className="cursor-pointer">다크모드</li>
           {isLogin ? (
             <>
-              <li className="cursor-pointer">알람</li>
+              <li className="cursor-pointer flex justify-center items-center">
+                <img src={alarmIcon} alt="알람 아이콘" />
+              </li>
               <li>
                 <Link to={"/"}>마이페이지</Link>
               </li>
