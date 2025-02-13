@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
 
-type ButtonProps = {
+interface ButtonProps {
   text: string;
   to?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-};
+}
 
 const Button = ({ text, to, onClick }: ButtonProps) => {
   const navigate = useNavigate();
