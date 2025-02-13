@@ -23,7 +23,7 @@ jobs:
 
       - name: Validate commit messages
         run: |
-          regex="^(feat|bug|chore|design|fix|refactor): .+ #[0-9]+$"
+          regex="^(feat|bug|chore|design|fix|refactor): .+ ?#[0-9]+$"
           while IFS= read -r commit_msg; do
             if ! [[ $commit_msg =~ $regex ]]; then
               echo "❌ Commit message '$commit_msg' does not follow the rules!"
