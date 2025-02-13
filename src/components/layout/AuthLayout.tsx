@@ -8,12 +8,15 @@ const AuthLayout = () => {
     <>
       <Header />
       <section
-        className="relative flex justify-center items-center h-screen bg-no-repeat bg-cover bg-center"
+        className="flex justify-center items-center
+          bg-no-repeat bg-cover bg-center relative
+        "
         style={{
-          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(${BackgroundImg})`,
-          backgroundBlendMode: "overlay",
+          backgroundImage: `url(${BackgroundImg})`,
+          height: "calc(100vh - 50px)",
         }}
       >
+        <div className="absolute inset-0 blur"></div>
         <div className="relative z-10">
           <Outlet />
         </div>
