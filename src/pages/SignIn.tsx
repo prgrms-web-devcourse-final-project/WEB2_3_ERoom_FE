@@ -2,8 +2,8 @@ import Button from "../components/common/Button";
 
 const SignIn = () => {
   return (
-    <div className="w-[520px] h-[440px] bg-[#D6D6D6] p-[100px]">
-      <div>
+    <div className=" w-[520px] h-[440px] bg-[#ffffff94] p-[100px]">
+      <div className="">
         <div className="flex flex-col gap-[20px] pb-[40px] border-b-[1px]">
           <Button text="카카오 계정으로 로그인" size="lg" />
           <Button text="Google 계정으로 로그인" size="lg" />
