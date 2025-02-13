@@ -1,0 +1,32 @@
+name: PR Commit Message Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited]
+
+jobs:
+  commit-message-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get PR commit messages
+        id: get_commits
+        run: |
+          commits=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits" | \
+          jq -r '.[].commit.message')
+          echo "$commits" > commits.txt
+          echo "Commits fetched:"
+          cat commits.txt
+
+      - name: Validate commit messages
+        run: |
+          regex="^(feat|bug|chore|design|fix|refactor): .+ #[0-9]+$"
+          while IFS= read -r commit_msg; do
+            if ! [[ $commit_msg =~ $regex ]]; then
+              echo "❌ Commit message '$commit_msg' does not follow the rules!"
+              exit 1
+            fi
+          done < commits.txt
