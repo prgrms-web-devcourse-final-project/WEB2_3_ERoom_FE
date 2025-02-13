@@ -2,8 +2,13 @@ import Button from "../components/common/Button";
 
 const SignUpCompanyInfo = () => {
   return (
-    <div className="flex justify-center items-center w-[450px] h-[385px] bg-[#D6D6D6] px-[50px] py-[100px]">
-      <div className="flex flex-col gap-[20px]">
+    <div className="flex flex-col justify-center items-center w-[450px] h-[479px] bg-[#ffffff94] py-[100px]">
+      <div className="text-center mt-[50px]">
+        <span className="text-logo-green-light font-bold text-[20px]">
+          개인정보 등록
+        </span>
+      </div>
+      <div className="flex flex-col gap-[20px] my-[50px]">
         <div className="flex flex-col gap-[10px]">
           <span className="font-bold">이름</span>
           <input
