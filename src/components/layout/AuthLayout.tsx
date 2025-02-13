@@ -1,9 +1,10 @@
 import { Outlet } from "react-router";
+import Header from "./Header";
 
 const AuthLayout = () => {
   return (
     <>
-      <div>헤더 자리</div>
+      <Header />
       <section className="flex justify-center items-center h-screen">
         <Outlet />
       </section>
