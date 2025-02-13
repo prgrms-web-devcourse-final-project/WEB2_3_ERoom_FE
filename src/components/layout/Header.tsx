@@ -17,10 +17,10 @@ const Header = () => {
 
         <ul className="flex font-bold gap-5">
           <li>
-            <Link to={"/project-room"}>프로젝트룸</Link>
+            <Link to={"/projectRoom"}>프로젝트룸</Link>
           </li>
           <li>
-            <Link to={"/meeting-room"}>미팅룸</Link>
+            <Link to={"/meetingRoom"}>미팅룸</Link>
           </li>
         </ul>
 
