@@ -24,8 +24,15 @@ const TaskBox = ({ isAll = true }: TaskBoxProps) => {
           <Button
             text={"업무완료"}
             size="md"
-            css="border-none h-[20px] font-normal text-[14px] rounded-[4px] text-main-beige01"
+            css="border-none h-[20px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
           />
+
+          {/* 업무시작 버튼 */}
+          {/* <Button
+            text={"업무시작"}
+            size="md"
+            css="border-main-green01 h-[20px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
+          /> */}
         </div>
 
         {/* 담당자 */}
