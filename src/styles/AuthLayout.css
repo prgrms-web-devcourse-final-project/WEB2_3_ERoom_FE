@@ -1,3 +1,10 @@
 .blur {
   backdrop-filter: blur(0.5px);
 }
+
+.mypage-background {
+  background-image: url("../assets/mypage_background.svg");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
