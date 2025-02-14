@@ -5,25 +5,28 @@ interface ButtonProps {
   text: string;
   size: "md" | "lg";
   to?: string;
-  className?: string;
+  css?: string;
+  logo?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Button = ({ text, to, size, className, onClick }: ButtonProps) => {
+const Button = ({ text, to, size, css, logo, onClick }: ButtonProps) => {
   const navigate = useNavigate();
-  const BASE_STYLE = "flex justify-center items-center bg-[#A1A1A1] font-bold";
+  const BASE_STYLE =
+    "flex justify-center items-center bg-main-green01 border border-[1px] border-main-green rounded-[5px] font-bold text-main-beige01";
 
   const SIZE_STYLE = {
-    lg: "w-[320px] h-[39px] font-bold",
-    md: "w-[89px] h-[29px] font-bold",
+    lg: "w-[354px] h-[39px] font-bold",
+    md: "w-[86px] h-[29px] font-bold",
   }[size];
 
   return (
     <>
       <button
-        className={twMerge(BASE_STYLE, SIZE_STYLE, className)}
+        className={twMerge(BASE_STYLE, SIZE_STYLE, css)}
         onClick={(e) => (to ? navigate(to) : onClick && onClick(e))}
       >
+        {logo && <img src={logo} alt={`${text} 로고`} />}
         {text}
       </button>
     </>
