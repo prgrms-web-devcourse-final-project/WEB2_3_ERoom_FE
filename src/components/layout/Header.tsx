@@ -66,7 +66,7 @@ const Header = () => {
                 <img src={alarmIcon} alt="알람 아이콘" />
               </li>
               <li>
-                <Link to={"/"}>마이페이지</Link>
+                <Link to={"/myPage"}>마이페이지</Link>
               </li>
               <li
                 onClick={handleLogin}

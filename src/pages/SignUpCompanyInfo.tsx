@@ -9,7 +9,7 @@ const SignUpCompanyInfo = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-[450px] h-[479px] bg-[#ffffff94] px-[100px]">
+    <div className="flex flex-col justify-center items-center w-[450px] h-[479px] bg-[#ffffff94] px-[100px] rounded-[10px]">
       <div className="text-center">
         <span className="text-logo-green-light font-bold text-[20px]">
           개인정보 등록
@@ -32,8 +32,9 @@ const SignUpCompanyInfo = () => {
           <span className="font-bold">소속</span>
           <input
             type="text"
-            value={companyInfo}
+            value={companyInfo ?? ""}
             onChange={handleCompanyInfo}
+            placeholder="소속을 입력해주세요"
             className="w-[250px] h-[33px] pl-[10px] bg-transparent focus:outline-none border-b-[1px] border-b-gray01"
           />
         </div>
