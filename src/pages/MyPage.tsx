@@ -59,7 +59,7 @@ const MyPage = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <Button text="등록하기" size="md" to="/" />
+            <Button text="수정하기" size="md" to="/" />
           </div>
         </div>
       </div>
