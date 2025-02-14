@@ -14,7 +14,7 @@ const ProjectRoomDetail = () => {
   }, [searchParams.get("category")]);
 
   return (
-    <div className="min-h-screen ml-[130px] px-10 pt-5 bg-main-green02">
+    <div className="min-h-screen ml-[130px] px-10 pt-5 bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 ">
       {/* 헤더 */}
       <div className="flex justify-between items-center mb-[25px]">
         <h1 className="font-bold text-[22px]">프로젝트 명</h1>
