@@ -7,10 +7,12 @@ import MainPage from "./pages/MainPage";
 import Layout from "./components/layout/Layout";
 import ProjectRoom from "./pages/ProjectRoom";
 import HeaderLayout from "./components/layout/HeaderLayout";
+import MyPage from "./pages/MyPage";
 
 const App = () => {
   return (
     <Routes>
+      {/* 로그인, 회원가입, 소속등록 페이지 */}
       <Route element={<AuthLayout />}>
         <Route path="signIn" element={<SignIn />} />
         <Route path="signUp" element={<SignUp />} />
@@ -25,6 +27,7 @@ const App = () => {
       {/* 헤더만 있는 페이지 */}
       <Route element={<HeaderLayout />}>
         <Route path="/projectRoom" element={<ProjectRoom />} />
+        <Route path="myPage" element={<MyPage />} />
       </Route>
     </Routes>
   );
