@@ -9,7 +9,7 @@ const SignUpCompanyInfo = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-[450px] h-[479px] bg-[#ffffff94] px-[100px]">
+    <div className="flex flex-col justify-center items-center w-[450px] h-[479px] bg-[#ffffff94] px-[100px] rounded-[10px]">
       <div className="text-center">
         <span className="text-logo-green-light font-bold text-[20px]">
           개인정보 등록

@@ -13,7 +13,7 @@ interface ButtonProps {
 const Button = ({ text, to, size, css, logo, onClick }: ButtonProps) => {
   const navigate = useNavigate();
   const BASE_STYLE =
-    "flex justify-center items-center bg-main-green01 border border-[1px] border-main-green rounded-[5px] font-bold text-main-beige01";
+    "flex justify-center items-center bg-main-green01 border border-[1px] border-main-green rounded-[5px] font-bold text-main-beige01 cursor-pointer";
 
   const SIZE_STYLE = {
     lg: "w-[354px] h-[39px] font-bold",
