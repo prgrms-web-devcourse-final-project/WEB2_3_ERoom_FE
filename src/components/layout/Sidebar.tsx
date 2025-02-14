@@ -25,7 +25,7 @@ const Sidebar = () => {
   });
   return (
     <div
-      className="w-[130px] bg-white border"
+      className="w-[130px] bg-white"
       style={{ height: "calc(100vh - 50px)" }}
     >
       {pathname.startsWith("/projectRoom") ? (
