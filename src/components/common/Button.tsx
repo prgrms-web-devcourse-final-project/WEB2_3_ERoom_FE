@@ -26,7 +26,7 @@ const Button = ({ text, to, size, css, logo, onClick }: ButtonProps) => {
         className={twMerge(BASE_STYLE, SIZE_STYLE, css)}
         onClick={(e) => (to ? navigate(to) : onClick && onClick(e))}
       >
-        {logo && <img src={logo} />}
+        {logo && <img src={logo} alt={`${text} 로고`} />}
         {text}
       </button>
     </>
