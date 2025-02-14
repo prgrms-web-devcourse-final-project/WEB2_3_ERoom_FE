@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@theme {
+  --color-main-beige: #ffead9;
+  --color-main-beige01: #fff6e9;
+  --color-main-beige02: #EBE9E2;
+  --color-main-green: #1F281E;
+  --color-main-green01: #6E8370;
+  --color-main-green02: #CAD2CB;
+  --color-logo-green-light: #2B3E34;
+  --color-logo-green:dark: #62C588;
+  --color-header-green: #657166;
+  --color-header-green-hoverdark: #AEDCC4;
+  --color-header-header-green-hoverlight: #2B3E34;
+  --color-header-red: #FF6854;
+  --color-header-red-hoverdark: #FF523C;
+  --color-header-red:hoverlightk: #FF1D00;
+  --color-kakao: #FEE500;
+  --color-black01: #212121;
+  --color-gray01: #AFAFAF;
+  --color-gray02: #E8E8E8;
+}
