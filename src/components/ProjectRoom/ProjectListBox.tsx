@@ -2,7 +2,11 @@ import { Link } from "react-router";
 import ProjectProgressBar from "./ProjectProgressBar";
 import ParticipantIcon from "../common/ParticipantIcon";
 
-const ProjectListBox = () => {
+interface ProjectListBoxProps {
+  projectId: number;
+}
+
+const ProjectListBox = ({ projectId }: ProjectListBoxProps) => {
   return (
     <div
       className="bg-white border border-[#CAD2CB] w-full h-[70px] flex 
@@ -36,7 +40,7 @@ const ProjectListBox = () => {
 
       {/* 프로젝트 입장 임시 url설정 */}
       <Link
-        to={`/projectRoom/detail`}
+        to={`/projectRoom/${projectId}`}
         className="bg-[#cad2cb70] text-[#6E8370] border border-[#CAD2CB] p-[10px] font-bold rounded-sm"
       >
         프로젝트 입장
