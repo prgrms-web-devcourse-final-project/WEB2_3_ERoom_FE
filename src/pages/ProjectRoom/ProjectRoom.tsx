@@ -3,6 +3,7 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
 import Button from "../../components/common/Button";
+import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 
 const FILTER_PROJECT: (
   | "진행 완료 프로젝트"
@@ -17,6 +18,10 @@ const ProjectRoom = () => {
 
   // 임시 배열
   const [arr, setArr] = useState(Array.from({ length: 20 }, (_, idx) => idx));
+
+  // 전체 프로젝트 나가기 모달
+  const [isAllProjectOutModal, setIsAllProjectOutModal] =
+    useState<boolean>(false);
 
   return (
     <div
@@ -72,6 +77,7 @@ const ProjectRoom = () => {
                 text="전체 나가기"
                 size="md"
                 css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[100px] text-[14px] px-2"
+                onClick={() => setIsAllProjectOutModal(true)}
               />
             </>
           )}
@@ -92,6 +98,18 @@ const ProjectRoom = () => {
           ))}
         </div>
       </div>
+
+      {/* 전체 프로젝트 나가기 모달 */}
+      {isAllProjectOutModal && (
+        <div
+          className="absolute inset-0 w-screen h-screen flex justify-center items-center bg-black/70"
+          onClick={() => setIsAllProjectOutModal(false)}
+        >
+          <AllProjectOutModal
+            setIsAllProjectOutModal={setIsAllProjectOutModal}
+          />
+        </div>
+      )}
     </div>
   );
 };
