@@ -1,11 +1,17 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import TodaySchedule from "../components/MainPage/TodaySchedule";
+import { useOutletContext } from "react-router";
+import { twMerge } from "tailwind-merge";
 
 const MainPage = () => {
+  const sidebarToggle = useOutletContext();
+
   return (
     <div
-      className="px-5 bg-gray-100 flex gap-2"
+      className={twMerge(
+        `px-5 bg-gray-100 flex gap-2 ${sidebarToggle ? "" : "pl-[130px]"}`
+      )}
       style={{ height: "calc(100vh - 50px)" }}
     >
       {/* 캘린더 */}

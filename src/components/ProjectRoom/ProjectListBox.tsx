@@ -12,6 +12,9 @@ const ProjectListBox = ({ projectId }: ProjectListBoxProps) => {
       className="bg-white border border-[#CAD2CB] w-full h-[70px] flex 
         justify-between items-center px-10 font-bold flex-shrink-0"
     >
+      {/* 프로젝트 넘버 */}
+
+      {/* 프로젝트 명, 기간 */}
       <div>
         <p>프로젝트 명</p>
         <p>2025.02.03 ~ 2025.03.12</p>
