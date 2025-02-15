@@ -14,6 +14,7 @@ interface AlarmBoxProps {
     | "upcomingTask"
     | "upcomingProject";
   css?: string;
+  onRemove?: () => void;
 }
 
 const AlarmBox = ({
@@ -22,6 +23,7 @@ const AlarmBox = ({
   task,
   theme,
   css,
+  onRemove,
 }: AlarmBoxProps) => {
   const navigate = useNavigate();
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
@@ -72,10 +74,15 @@ const AlarmBox = ({
     upcomingProject: `/projectRoom/${projectId}`,
   }[theme];
 
+  const handleClick = () => {
+    navigate(THEME_NAVIGATE);
+    if (onRemove) onRemove();
+  };
+
   return (
     <div
       className={twMerge(BASE_STYLE, THEME_STYLE, css)}
-      onClick={() => navigate(THEME_NAVIGATE)}
+      onClick={handleClick}
     >
       <div className="flex flex-col gap-[5px]">
         <span className="text-3 font-bold text-main-green">{THEME_TEXT}</span>
