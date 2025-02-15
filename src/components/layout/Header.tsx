@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import alarmIcon from "../../assets/icons/alarm.svg";
+import AlarmModal from "../modals/AlarmModal";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -24,6 +25,11 @@ const Header = () => {
       setIsOn("");
     }
   }, [pathname]);
+
+  const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+  const handleAlarmModal = () => {
+    setIsAlarmOpen((prev) => !prev);
+  };
 
   return (
     <>
@@ -62,9 +68,17 @@ const Header = () => {
           <li className="cursor-pointer">다크모드</li>
           {isLogin ? (
             <>
-              <li className="cursor-pointer flex justify-center items-center">
+              <li
+                className="cursor-pointer flex justify-center items-center"
+                onClick={handleAlarmModal}
+              >
                 <img src={alarmIcon} alt="알람 아이콘" />
               </li>
+              {isAlarmOpen && (
+                <div className="absolute top-[50px] transform -translate-x-1/2">
+                  <AlarmModal onClose={handleAlarmModal} />
+                </div>
+              )}
               <li>
                 <Link to={"/myPage"}>마이페이지</Link>
               </li>
