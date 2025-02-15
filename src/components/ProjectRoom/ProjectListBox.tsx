@@ -5,9 +5,10 @@ import Button from "../common/Button";
 
 interface ProjectListBoxProps {
   projectId: number;
+  filterProject: string;
 }
 
-const ProjectListBox = ({ projectId }: ProjectListBoxProps) => {
+const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
   return (
     <div
       className="bg-white border border-[#CAD2CB] w-full h-[70px] flex 
@@ -50,13 +51,24 @@ const ProjectListBox = ({ projectId }: ProjectListBoxProps) => {
             size="md"
             css="h-[40px] w-[48px] border-main-green02 text-main-green01"
           />
-          <Link
-            to={`/meetingRoom/${projectId}`}
-            className="h-[40px] bg-[#FFFCE2] text-main-green01 flex items-center justify-center
+          {filterProject === "진행 중인 프로젝트" && (
+            <Link
+              to={`/meetingRoom/${projectId}`}
+              className="h-[40px] bg-[#FFFCE2] text-main-green01 flex items-center justify-center
           border border-main-green01 px-[10px] font-bold rounded-sm"
-          >
-            미팅룸 입장
-          </Link>
+            >
+              미팅룸 입장
+            </Link>
+          )}
+
+          {(filterProject === "진행 완료 프로젝트" ||
+            filterProject === "진행 예정 프로젝트") && (
+            <Button
+              text="나가기"
+              size="md"
+              css="h-[40px] w-[65px] border-[#ff6854]/70 bg-white text-[#ff6854]"
+            />
+          )}
         </div>
       </div>
     </div>

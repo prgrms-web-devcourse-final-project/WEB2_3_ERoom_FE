@@ -46,16 +46,35 @@ const ProjectRoom = () => {
               );
             })}
           </ul>
-          <Button
-            text="프로젝트 선택"
-            size="md"
-            css="border-main-green01 text-main-green01 w-[120px] text-[14px] px-2"
-          />
-          <Button
-            text="+ 프로젝트 생성"
-            size="md"
-            css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2"
-          />
+          {(filterProject === "진행 중인 프로젝트" ||
+            filterProject === "진행 예정 프로젝트") && (
+            <>
+              <Button
+                text="프로젝트 선택"
+                size="md"
+                css="border-main-green01 text-main-green01 w-[120px] text-[14px] px-2"
+              />
+              <Button
+                text="+ 프로젝트 생성"
+                size="md"
+                css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2"
+              />
+            </>
+          )}
+          {filterProject === "진행 완료 프로젝트" && (
+            <>
+              <Button
+                text="프로젝트 선택"
+                size="md"
+                css="border-main-green01 text-main-green01 w-[120px] text-[14px] px-2"
+              />
+              <Button
+                text="전체 나가기"
+                size="md"
+                css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[100px] text-[14px] px-2"
+              />
+            </>
+          )}
         </div>
 
         {/* 프로젝트 목록 섹션 */}
@@ -65,7 +84,11 @@ const ProjectRoom = () => {
           bg-gradient-to-t from-[#BFCDB7]/10 via-[#BFCDB7]/0 to-[#BFCDB7]/10"
         >
           {arr.map((_, idx) => (
-            <ProjectListBox key={idx} projectId={idx + 1} />
+            <ProjectListBox
+              key={idx}
+              projectId={idx + 1}
+              filterProject={filterProject}
+            />
           ))}
         </div>
       </div>
