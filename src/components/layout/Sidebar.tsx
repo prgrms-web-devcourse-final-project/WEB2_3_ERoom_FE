@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import outProjectIcon from "../../assets/icons/outProjectDetail.svg";
 import sidebarAllicon from "../../assets/icons/sidebarAllicon.svg";
 import sidebarManagerIcon from "../../assets/icons/sidebarManagerIcon.svg";
 import sidebarMeetIcon from "../../assets/icons/sidebarMeetIcon.svg";
 import { twMerge } from "tailwind-merge";
+import sideLeftArrow from "../../assets/icons/sideLeftArrow.svg";
+import sideRightArrow from "../../assets/icons/sideRightArrow.svg";
 
 const SideMenuList = [
   { title: "전체 업무", icon: sidebarAllicon, src: "all" },
@@ -12,23 +14,20 @@ const SideMenuList = [
   { title: "미팅룸", icon: sidebarMeetIcon, src: "meeting" },
 ];
 
-const Sidebar = () => {
+interface SidebarProps {
+  sidebarToggle: boolean;
+  setSidebarToggle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   const { pathname } = useLocation();
 
-  // const [path, setPath] = useState(pathname);
-
-  // useEffect(() => {
-  //   setPath(pathname);
-  // }, [pathname]);
-  useEffect(() => {
-    console.log(pathname);
-  });
-  return (
-    <div
-      className="w-[130px] bg-white"
-      style={{ height: "calc(100vh - 50px)" }}
-    >
-      {pathname.startsWith("/projectRoom") ? (
+  if (pathname.startsWith("/projectRoom")) {
+    return (
+      <div
+        className="w-[130px] bg-white"
+        style={{ height: "calc(100vh - 50px)" }}
+      >
         <ul className="flex flex-col items-center gap-6 pt-10">
           <li>
             <Link to="/projectRoom" className="flex flex-col items-center">
@@ -53,11 +52,29 @@ const Sidebar = () => {
             );
           })}
         </ul>
-      ) : (
-        <ul className="flex justify-center pt-10">
-          <li className="font-bold">펴기</li>
-        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={twMerge(
+        `w-[130px] bg-white ${sidebarToggle ? "w-[50px]" : ""} transition-all`
       )}
+      style={{ height: "calc(100vh - 50px)" }}
+    >
+      <ul className="flex justify-center pt-5">
+        <li
+          className="font-bold cursor-pointer w-full flex justify-center items-center"
+          onClick={() => setSidebarToggle((prev) => !prev)}
+        >
+          {sidebarToggle ? (
+            <img src={sideRightArrow} />
+          ) : (
+            <img src={sideLeftArrow} />
+          )}
+        </li>
+      </ul>
     </div>
   );
 };
