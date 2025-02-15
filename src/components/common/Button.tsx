@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 interface ButtonProps {
   text: string;
-  size: "md" | "lg";
+  size: "md" | "lg" | "sm";
   to?: string;
   css?: string;
   logo?: string;
@@ -18,6 +18,7 @@ const Button = ({ text, to, size, css, logo, onClick }: ButtonProps) => {
   const SIZE_STYLE = {
     lg: "w-[354px] h-[39px] font-bold",
     md: "w-[86px] h-[29px] font-bold",
+    sm: "w-auto h-[24px] font-semibold text-[12px]",
   }[size];
 
   return (
