@@ -2,7 +2,11 @@ import { useState } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
 
-const AlarmModal = () => {
+interface AlarmModalProps {
+  onClose: () => void;
+}
+
+const AlarmModal = ({ onClose }: AlarmModalProps) => {
   // 임시 더미 알람 데이터
   const [dummyAlarms, setDummyAlarms] = useState([
     {
@@ -57,7 +61,7 @@ const AlarmModal = () => {
             text="모두읽기"
             size="sm"
             onClick={handleRemoveAllAlarm}
-            css="bg-transparent border-logo-green text-logo-green py-[5px] px-[10px]"
+            css="bg-white border-logo-green text-logo-green "
           />
         </div>
         <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto">
@@ -81,11 +85,19 @@ const AlarmModal = () => {
               />
             ))
           ) : (
-            <span className="text-center text-main-green text-3">
+            <span className="text-center text-main-green text-[12px]">
               새로운 알람이 없습니다
             </span>
           )}
         </div>
+      </div>
+      <div className="flex justify-center">
+        <Button
+          text="닫기"
+          size="sm"
+          onClick={onClose}
+          css="bg-[#2B3E34] border-none text-main-beige01 font-bold text-[12px]"
+        />
       </div>
     </div>
   );

@@ -40,7 +40,12 @@ const SignUpCompanyInfo = () => {
         </div>
       </div>
       <div className="flex justify-center">
-        <Button text="등록하기" size="md" to="/" />
+        <Button
+          text="등록하기"
+          size="md"
+          to="/"
+          css="bg-main-green01 border-main-green text-main-beige01"
+        />
       </div>
     </div>
   );

@@ -85,7 +85,9 @@ const AlarmBox = ({
       onClick={handleClick}
     >
       <div className="flex flex-col gap-[5px]">
-        <span className="text-3 font-bold text-main-green">{THEME_TEXT}</span>
+        <span className="text-[12px] font-bold text-main-green">
+          {THEME_TEXT}
+        </span>
         <span className="text-[10px] text-main-green">{THEME_FROM}</span>
       </div>
     </div>

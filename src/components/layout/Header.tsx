@@ -27,7 +27,7 @@ const Header = () => {
   }, [pathname]);
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
-  const handleAlramModal = () => {
+  const handleAlarmModal = () => {
     setIsAlarmOpen((prev) => !prev);
   };
 
@@ -70,13 +70,13 @@ const Header = () => {
             <>
               <li
                 className="cursor-pointer flex justify-center items-center"
-                onClick={handleAlramModal}
+                onClick={handleAlarmModal}
               >
                 <img src={alarmIcon} alt="알람 아이콘" />
               </li>
               {isAlarmOpen && (
                 <div className="absolute top-[50px] transform -translate-x-1/2">
-                  <AlarmModal />
+                  <AlarmModal onClose={handleAlarmModal} />
                 </div>
               )}
               <li>
