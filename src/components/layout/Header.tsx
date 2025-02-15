@@ -75,7 +75,7 @@ const Header = () => {
                 <img src={alarmIcon} alt="알람 아이콘" />
               </li>
               {isAlarmOpen && (
-                <div className="absolute top-full transform -translate-x-1/2">
+                <div className="absolute top-[50px] transform -translate-x-1/2">
                   <AlarmModal />
                 </div>
               )}
