@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 
 interface AlarmBoxProps {
@@ -22,7 +23,8 @@ const AlarmBox = ({
   theme,
   css,
 }: AlarmBoxProps) => {
-  const BASE_STYLE = "p-[10px]  rounded-[5px]";
+  const navigate = useNavigate();
+  const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
 
   const ASSIGN_STYLE = "border border-header-red-hover bg-red";
   const TIME_STYLE = "border border-main-green01 bg-main-green02";
@@ -57,8 +59,24 @@ const AlarmBox = ({
     upcomingProject: `${project}`,
   }[theme];
 
+  //임시 projectId
+  const projectId = ":projectIc";
+
+  const THEME_NAVIGATE = {
+    message: `/projectRoom/${projectId}/meetingRoom`,
+    newTask: `/projectRoom/${projectId}`,
+    newProject: `/projectRoom/${projectId}`,
+    urgentTask: `/projectRoom/${projectId}`,
+    urgentProject: `/projectRoom/${projectId}`,
+    upcomingTask: `/projectRoom/${projectId}`,
+    upcomingProject: `/projectRoom/${projectId}`,
+  }[theme];
+
   return (
-    <div className={twMerge(BASE_STYLE, THEME_STYLE, css)}>
+    <div
+      className={twMerge(BASE_STYLE, THEME_STYLE, css)}
+      onClick={() => navigate(THEME_NAVIGATE)}
+    >
       <div className="flex flex-col gap-[5px]">
         <span className="text-3 font-bold text-main-green">{THEME_TEXT}</span>
         <span className="text-[10px] text-main-green">{THEME_FROM}</span>
