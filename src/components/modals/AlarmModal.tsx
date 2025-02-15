@@ -6,32 +6,42 @@ const AlarmModal = () => {
   // 임시 더미 알람 데이터
   const [dummyAlarms, setDummyAlarms] = useState([
     {
+      id: 1,
       theme: "message" as const,
       project: "최종 프로젝트",
       meetingRoom: "프론트방",
     },
     {
+      id: 2,
       theme: "newTask" as const,
       project: "최종 프로젝트",
       task: "UI 디자인 수정",
     },
-    { theme: "newProject" as const, project: "최종 프로젝트" },
+    { id: 3, theme: "newProject" as const, project: "최종 프로젝트" },
     {
+      id: 4,
       theme: "urgentTask" as const,
       project: "최종 프로젝트",
       task: "UI 디자인 수정",
     },
-    { theme: "urgentProject" as const, project: "최종 프로젝트" },
+    { id: 5, theme: "urgentProject" as const, project: "최종 프로젝트" },
     {
+      id: 6,
       theme: "upcomingTask" as const,
       project: "사이드 프로젝트",
       task: "UI 디자인 수정",
     },
-    { theme: "upcomingProject" as const, project: "사이드 프로젝트" },
+    { id: 7, theme: "upcomingProject" as const, project: "사이드 프로젝트" },
   ]);
 
-  const handleRemoveAlarm = () => {
+  const handleRemoveAllAlarm = () => {
     setDummyAlarms([]);
+  };
+
+  const handleRemoveSpecificAlarm = (id: number) => {
+    setDummyAlarms((prevAlarms) =>
+      prevAlarms.filter((alarm) => alarm.id !== id)
+    );
   };
 
   return (
@@ -46,7 +56,7 @@ const AlarmModal = () => {
           <Button
             text="모두읽기"
             size="sm"
-            onClick={handleRemoveAlarm}
+            onClick={handleRemoveAllAlarm}
             css="bg-transparent border-logo-green text-logo-green py-[5px] px-[10px]"
           />
         </div>
@@ -67,6 +77,7 @@ const AlarmModal = () => {
                     ? alarm.task ?? undefined
                     : undefined
                 }
+                onRemove={() => handleRemoveSpecificAlarm(alarm.id)}
               />
             ))
           ) : (
