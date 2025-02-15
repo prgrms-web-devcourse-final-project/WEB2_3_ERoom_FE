@@ -1,17 +1,21 @@
 import { useState } from "react";
-import ProjectListBox from "../components/ProjectRoom/ProjectListBox";
+
 import { twMerge } from "tailwind-merge";
+import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
+
+const FILTER_PROJECT: (
+  | "진행 완료 프로젝트"
+  | "진행 중인 프로젝트"
+  | "진행 예정 프로젝트"
+)[] = ["진행 완료 프로젝트", "진행 중인 프로젝트", "진행 예정 프로젝트"];
 
 const ProjectRoom = () => {
-  const FILTER_PROJECT: (
-    | "진행 완료 프로젝트"
-    | "진행 중인 프로젝트"
-    | "진행 예정 프로젝트"
-  )[] = ["진행 완료 프로젝트", "진행 중인 프로젝트", "진행 예정 프로젝트"];
-
   const [filterProject, setFilterProject] = useState<
     "진행 완료 프로젝트" | "진행 중인 프로젝트" | "진행 예정 프로젝트"
   >("진행 중인 프로젝트");
+
+  // 임시 배열
+  const [arr, setArr] = useState(Array.from({ length: 20 }, (_, idx) => idx));
 
   return (
     <div
@@ -46,20 +50,9 @@ const ProjectRoom = () => {
           className="w-full flex flex-col gap-4 overflow-y-scroll flex-grow"
           style={{ maxHeight: "calc(100vh - 270px)" }}
         >
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
-          <ProjectListBox />
+          {arr.map((_, idx) => (
+            <ProjectListBox key={idx} projectId={idx + 1} />
+          ))}
         </div>
 
         {/* 새 프로젝트 생성 */}
