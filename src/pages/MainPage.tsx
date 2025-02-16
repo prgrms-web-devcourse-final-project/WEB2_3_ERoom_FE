@@ -3,6 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import TodaySchedule from "../components/MainPage/TodaySchedule";
 import { useOutletContext } from "react-router";
 import { twMerge } from "tailwind-merge";
+import koLocale from "@fullcalendar/core/locales/ko";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
@@ -26,6 +27,25 @@ const MainPage = () => {
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           height={"calc(100vh - 50px)"}
+          headerToolbar={{
+            start: "prev title next", // will normally be on the left. if RTL, will be on the right
+            center: "",
+            end: "", // will normally be on the right. if RTL, will be on the left
+          }}
+          locale={koLocale}
+          events={[
+            {
+              title: "event 1",
+              date: "2025-02-14",
+              color: "#CAD2CB",
+              start: "2025-02-14",
+              end: "2025-02-23",
+            },
+            { title: "event 2", date: "2025-02-20" },
+          ]}
+          eventClick={(info) => {
+            alert("Event:" + info.event.title);
+          }}
         />
       </div>
 
