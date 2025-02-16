@@ -7,14 +7,14 @@ const TodaySchedule = () => {
 
   return (
     <div
-      className="w-[450px] bg-red-100 px-5 py-10
-      flex flex-col gap-10 items-center"
-      style={{ height: "calc(100vh - 50px)" }}
+      className="w-[450px] px-5 py-10 border border-main-green02 rounded-[10px]
+      flex flex-col gap-10 items-center bg-white"
+      style={{ maxHeight: "calc(100vh - 50px)" }}
     >
       <p className="font-bold text-[26px]">현재 날짜 시간</p>
 
       <div className="w-full flex-1 min-h-0">
-        <div className="overflow-y-auto w-full h-full flex flex-col gap-2 min-h-0">
+        <div className="overflow-y-auto scrollbar-none w-full h-full flex flex-col gap-2 min-h-0">
           {arr.map((_, i) => (
             <ScheduleBox
               key={i}
