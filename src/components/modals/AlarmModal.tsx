@@ -64,7 +64,7 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
             css="bg-white border-logo-green text-logo-green "
           />
         </div>
-        <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto">
+        <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto scrollbar-none">
           {dummyAlarms.length > 0 ? (
             dummyAlarms.map((alarm, index) => (
               <AlarmBox

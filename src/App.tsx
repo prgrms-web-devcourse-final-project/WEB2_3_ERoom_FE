@@ -9,6 +9,7 @@ import ProjectRoom from "./pages/ProjectRoom/ProjectRoom";
 import HeaderLayout from "./components/layout/HeaderLayout";
 import ProjectRoomDetail from "./pages/ProjectRoom/ProjectRoomDetail";
 import MyPage from "./pages/MyPage";
+import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
       {/* 헤더만 있는 페이지 */}
       <Route element={<HeaderLayout />}>
         <Route path="/projectRoom" element={<ProjectRoom />} />
+        <Route path="/meetingRoom/:projectId" element={<MeetingRoom />} />
         <Route path="/myPage" element={<MyPage />} />
       </Route>
     </Routes>

@@ -15,7 +15,9 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
         gap-5 items-center px-5 font-bold "
     >
       {/* 프로젝트 넘버 */}
-      <p className="text-[50px] font-medium text-main-green02">10</p>
+      <p className="text-[50px] font-medium text-main-green02 font-notoTC">
+        10
+      </p>
 
       <div className="flex justify-between items-center w-full px-5">
         {/* 프로젝트 명, 기간 */}
