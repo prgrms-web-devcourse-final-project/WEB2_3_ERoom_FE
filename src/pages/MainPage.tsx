@@ -4,6 +4,7 @@ import TodaySchedule from "../components/MainPage/TodaySchedule";
 import { useOutletContext } from "react-router";
 import { twMerge } from "tailwind-merge";
 import koLocale from "@fullcalendar/core/locales/ko";
+import interactionPlugin from "@fullcalendar/interaction";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
@@ -24,15 +25,17 @@ const MainPage = () => {
           </ul>
         </div>
         <FullCalendar
-          plugins={[dayGridPlugin]}
+          plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           height={"calc(100vh - 50px)"}
           headerToolbar={{
-            start: "prev title next", // will normally be on the left. if RTL, will be on the right
+            start: "prev title next",
             center: "",
-            end: "", // will normally be on the right. if RTL, will be on the left
+            end: "",
           }}
+          // 한국어
           locale={koLocale}
+          // 데이터
           events={[
             {
               title: "event 1",
@@ -43,9 +46,14 @@ const MainPage = () => {
             },
             { title: "event 2", date: "2025-02-20" },
           ]}
+          // 데이터 클릭이벤트
           eventClick={(info) => {
-            alert("Event:" + info.event.title);
+            // alert("Event:" + info.event.title);
           }}
+          // 드래그
+          editable={true}
+          droppable={true}
+          eventDrop={() => alert("ss")}
         />
       </div>
 
