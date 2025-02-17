@@ -9,8 +9,8 @@ import ProjectRoom from "./pages/ProjectRoom/ProjectRoom";
 import HeaderLayout from "./components/layout/HeaderLayout";
 import ProjectRoomDetail from "./pages/ProjectRoom/ProjectRoomDetail";
 import MyPage from "./pages/MyPage";
-import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import Admin from "./pages/Admin";
+import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 
 const App = () => {
   return (
