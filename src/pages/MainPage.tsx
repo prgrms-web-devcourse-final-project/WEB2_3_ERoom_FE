@@ -1,8 +1,7 @@
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import TodaySchedule from "../components/MainPage/TodaySchedule";
 import { useOutletContext } from "react-router";
 import { twMerge } from "tailwind-merge";
+import Calendar from "../components/MainPage/Calendar";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
@@ -10,23 +9,17 @@ const MainPage = () => {
   return (
     <div
       className={twMerge(
-        `px-5 bg-gray-100 flex gap-2 ${sidebarToggle ? "" : "pl-[130px]"}`
+        `bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0
+        px-5 py-5 flex gap-2 h-[calc(100vh-50px)] ${
+          sidebarToggle ? "" : "pl-[130px]"
+        }`
       )}
-      style={{ height: "calc(100vh - 50px)" }}
     >
       {/* 캘린더 */}
-      <div className="flex-1 px-[60px] flex flex-col gap-2">
-        <div className="flex justify-end">
-          <ul className="flex gap-2 font-bold">
-            <li className="bg-[#a1a1a1] px-3 py-1 cursor-pointer">프로젝트</li>
-            <li className="bg-[#a1a1a1] px-3 py-1 cursor-pointer">개인업무</li>
-          </ul>
+      <div className="flex-1 pl-[50px] pr-[40px] ">
+        <div className="h-[calc(100vh-90px)] border rounded-[10px] border-main-green02 px-5 py-5 bg-white">
+          <Calendar />
         </div>
-        <FullCalendar
-          plugins={[dayGridPlugin]}
-          initialView="dayGridMonth"
-          height={"calc(100vh - 50px)"}
-        />
       </div>
 
       {/* 오늘의 일정 */}

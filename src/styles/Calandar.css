@@ -1,0 +1,50 @@
+.fc-toolbar-chunk {
+  display: flex;
+  align-items: center;
+}
+
+.fc-next-button,
+.fc-prev-button {
+  width: 25px;
+  height: 25px;
+  background-color: white;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  background-color: white !important;
+  border: 1px solid #cad2cb !important;
+}
+
+.fc .fc-button:focus {
+  box-shadow: none !important;
+}
+
+.fc-icon::before {
+  color: #cad2cb !important;
+}
+
+/* 커스텀 프로젝트 버튼 */
+.fc-project-button {
+  width: 70px !important;
+  height: 30px !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  background-color: #465448 !important;
+  color: #fff6e9 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 5px !important;
+}
+
+/* 커스텀 개인업무 버튼 */
+.fc-task-button {
+  width: 70px !important;
+  height: 30px !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  background-color: #fff !important;
+  color: #cad2cb !important;
+  padding: 0 !important;
+  border: 1px solid #cad2cb !important;
+  border-radius: 5px !important;
+}
