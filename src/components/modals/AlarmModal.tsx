@@ -13,7 +13,6 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
       id: 1,
       theme: "message" as const,
       project: "최종 프로젝트",
-      meetingRoom: "프론트방",
     },
     {
       id: 2,
@@ -22,20 +21,20 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
       task: "UI 디자인 수정",
     },
     { id: 3, theme: "newProject" as const, project: "최종 프로젝트" },
+    { id: 4, theme: "endProject" as const, project: "최종 프로젝트" },
     {
-      id: 4,
-      theme: "urgentTask" as const,
+      id: 5,
+      theme: "message" as const,
+      project: "최종 프로젝트",
+    },
+    {
+      id: 6,
+      theme: "newTask" as const,
       project: "최종 프로젝트",
       task: "UI 디자인 수정",
     },
-    { id: 5, theme: "urgentProject" as const, project: "최종 프로젝트" },
-    {
-      id: 6,
-      theme: "upcomingTask" as const,
-      project: "사이드 프로젝트",
-      task: "UI 디자인 수정",
-    },
-    { id: 7, theme: "upcomingProject" as const, project: "사이드 프로젝트" },
+    { id: 7, theme: "newProject" as const, project: "최종 프로젝트" },
+    { id: 8, theme: "endProject" as const, project: "최종 프로젝트" },
   ]);
 
   const handleRemoveAllAlarm = () => {
@@ -64,20 +63,15 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
             css="bg-white border-logo-green text-logo-green "
           />
         </div>
-        <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto">
+        <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto scrollbar-none">
           {dummyAlarms.length > 0 ? (
             dummyAlarms.map((alarm, index) => (
               <AlarmBox
                 key={index}
                 theme={alarm.theme}
                 project={alarm.project}
-                meetingRoom={
-                  alarm.theme === "message" ? alarm.meetingRoom : undefined
-                }
                 task={
-                  ["newTask", "urgentTask", "upcomingTask"].includes(
-                    alarm.theme
-                  )
+                  ["newTask"].includes(alarm.theme)
                     ? alarm.task ?? undefined
                     : undefined
                 }
