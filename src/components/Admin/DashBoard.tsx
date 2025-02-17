@@ -8,12 +8,15 @@ const DashBoard = () => {
   const [payDataTab, setPayDataTab] = useState("일일 매출");
 
   return (
-    <div className="pl-[150px] pr-5 min-h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
+    <div
+      className="pl-8 pr-8 h-[calc(100vh-50px)] overflow-y-scroll
+    bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
+    >
       <h1 className="font-bold text-[27px] mb-4">회원 데이터</h1>
-      <div className=" px-2">
+      <div className="">
         <p className="text-main-green font-bold mb-2">누적 회원 수</p>
         <div
-          className="border border-main-green02 w-[170px] h-[50px] flex gap-2 
+          className="border border-main-green02 w-[170px] h-[50px] flex gap-2 mb-5
           items-center justify-center text-main-green01 font-bold rounded-[10px]"
         >
           총 구독 회원 <p className="text-[25px] text-header-red">127명</p>

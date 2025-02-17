@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import alarmIcon from "../../assets/icons/alarm.svg";
 import AlarmModal from "../modals/AlarmModal";
+import headerIcon from "../../assets/icons/headerLogo.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -35,37 +36,18 @@ const Header = () => {
     <>
       <header className="h-[50px] bg-white flex items-center px-5 justify-between">
         <div>
-          <h1 className="text-[25px] font-bold" onClick={() => navigate("/")}>
+          {/* <h1 className="text-[25px] font-bold" onClick={() => navigate("/")}>
             E:room
-          </h1>
+          </h1> */}
+          <img
+            src={headerIcon}
+            alt="헤더 아이콘"
+            className="cursor-pointer"
+            onClick={() => navigate("/")}
+          />
         </div>
 
-        <ul
-          className="flex font-bold gap-5 bg-[#e8e8e8] h-[30px]
-        text-[#6e8370] rounded-[30px] text-[14px] border border-[#afafaf]"
-        >
-          <li
-            className={`w-[80px] flex justify-center items-center rounded-[30px] px-1
-              ${
-                isOn === "Project" &&
-                "bg-[#6e8370] text-[#FFF6E9] inset-shadow-sm"
-              }`}
-          >
-            <Link to={"/projectRoom"}>프로젝트룸</Link>
-          </li>
-          <li
-            className={`w-[60px] flex justify-center items-center rounded-[30px] px-1
-              ${
-                isOn === "Meeting" &&
-                "bg-[#6e8370] text-[#FFF6E9] inset-shadow-sm"
-              }`}
-          >
-            <Link to={"/meetingRoom"}>미팅룸</Link>
-          </li>
-        </ul>
-
         <ul className="flex font-bold gap-3 text-[#657166]">
-          <li className="cursor-pointer">다크모드</li>
           {isLogin ? (
             <>
               <li
@@ -73,6 +55,10 @@ const Header = () => {
                 onClick={handleAlarmModal}
               >
                 <img src={alarmIcon} alt="알람 아이콘" />
+              </li>
+              <li className="cursor-pointer">
+                {/* 유저정보api 나온 후 url 수정 필요 */}
+                <Link to={`/projectRoom`}>마이프로젝트</Link>
               </li>
               {isAlarmOpen && (
                 <div className="absolute top-[50px] transform -translate-x-1/2">
