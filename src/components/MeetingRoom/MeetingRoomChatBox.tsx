@@ -61,7 +61,7 @@ const MeetingRoomChatBox = () => {
   };
 
   return (
-    <div className="flex flex-col px-[30px] pt-[30px] gap-[10px] relative h-full">
+    <div className="flex flex-col px-[30px] pt-[30px] gap-[10px] relative min-h-full">
       <div className="flex justify-between w-[calc(100%-60px)] ">
         <span className="font-bold">프로젝트 명</span>
         <div className="flex gap-[10px]">
