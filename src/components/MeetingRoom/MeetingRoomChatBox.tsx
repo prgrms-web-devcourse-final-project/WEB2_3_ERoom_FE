@@ -6,7 +6,7 @@ const MeetingRoomChatBox = () => {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isComposing, setIsComposing] = useState(false); //조합문자 판별
 
   useEffect(() => {
@@ -17,8 +17,9 @@ const MeetingRoomChatBox = () => {
 
   useEffect(() => {
     // 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -38,6 +39,11 @@ const MeetingRoomChatBox = () => {
       }
 
       textAreaRef.current.style.height = `${newHeight}px`;
+
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop =
+          chatContainerRef.current.scrollHeight;
+      }
     }
   };
 
@@ -50,6 +56,13 @@ const MeetingRoomChatBox = () => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "27px";
     }
+
+    setTimeout(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop =
+          chatContainerRef.current.scrollHeight;
+      }
+    }, 100);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -79,7 +92,10 @@ const MeetingRoomChatBox = () => {
         </div>
       </div>
       <div className="flex flex-col flex-grow w-[calc(100%-60px)] gap-[10px]">
-        <div className="flex-grow h-0 border-main-green01 bg-white border-[1px] rounded-[10px] overflow-y-auto scrollbar-none ">
+        <div
+          ref={chatContainerRef}
+          className="flex-grow h-0 border-main-green01 bg-white border-[1px] rounded-[10px] overflow-y-auto scrollbar-none "
+        >
           {/* 사용자가 아닐 경우 프로필 사진과 이름 표시 */}
           <div className="flex flex-col mx-[10px] pr-[50px] my-[10px] gap-[5px]">
             <div className="flex items-center gap-[10px]">
@@ -108,8 +124,6 @@ const MeetingRoomChatBox = () => {
               </div>
             </div>
           ))}
-          {/* 스크롤 자동 이동을 위한 빈 div */}
-          <div ref={messagesEndRef}></div>
         </div>
         <form
           onSubmit={handleSendMessage}
