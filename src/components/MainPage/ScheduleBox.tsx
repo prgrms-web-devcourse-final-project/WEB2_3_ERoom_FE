@@ -18,27 +18,23 @@ const ScheduleBox = ({
   return (
     <div
       className={twMerge(
-        `font-bold w-full h-[80px] flex justify-around flex-shrink-0
-          items-center px-5 bg-[#a1a1a1] cursor-pointer
-          ${isDeadline && "bg-[#FF7676] text-white"}`
+        `w-full h-[110px] flex flex-col justify-around flex-shrink-0 text-main-green01
+          items-center px-3 pb-2 bg-main-green02 cursor-pointer rounded-[10px]
+          ${isDeadline && "bg-[#FF6854] text-white"}`
       )}
     >
       {/* 마감시간, 남은시간 */}
       <div>
-        <div className="flex items-center gap-2">
-          <p className="text-[12px]">마감시간</p>
+        <div className="flex items-center gap-4 text-[30px] ">
           <p>{endTime}</p>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <p className="text-[12px]">남은시간</p>
-          <p>{remainingTime}</p>
+          <p className="text-[14px]">{remainingTime} 남음</p>
         </div>
       </div>
 
       {/* 업무명, 프로젝트 명 */}
-      <div>
-        <p>{scheduleName}</p>
+      <div className="w-full py-1 px-2 shadow-2xl bg-white/25 rounded-[5px]">
+        <p className="font-bold">{scheduleName}</p>
         <p>{projectName}</p>
       </div>
     </div>
