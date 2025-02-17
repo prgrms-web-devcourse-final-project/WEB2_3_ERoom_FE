@@ -25,22 +25,23 @@ ChartJS.register(
 interface ChartProps {
   data: number[];
   labelTitle: string;
+  label: string[];
 }
 
-const Chart = ({ data, labelTitle }: ChartProps) => {
+const Chart = ({ data, labelTitle, label }: ChartProps) => {
   const chartData: ChartData<"line"> = {
-    labels: ["4주전", "3주전", "2주전", "1주전", "오늘"],
+    labels: label,
     datasets: [
       {
         label: labelTitle,
         data: data,
-        borderColor: "#FF6854",
-        backgroundColor: "#ff68546a",
+        borderColor: labelTitle !== "매출액" ? "#FF6854" : "#657166",
+        backgroundColor: labelTitle !== "매출액" ? "#ff68546a" : "#6571666a",
         fill: true,
         pointRadius: 6,
         pointHoverRadius: 8, // 마우스 올릴 때 점 크기
-        pointBackgroundColor: "#FF6854", // 점 내부 색상
-        pointBorderColor: "#FF6854", // 점 테두리 색상
+        pointBackgroundColor: labelTitle !== "매출액" ? "#FF6854" : "#657166", // 점 내부 색상
+        pointBorderColor: labelTitle !== "매출액" ? "#FF6854" : "#657166", // 점 테두리 색상
         pointBorderWidth: 2, // 점 테두리 두께
       },
     ],
