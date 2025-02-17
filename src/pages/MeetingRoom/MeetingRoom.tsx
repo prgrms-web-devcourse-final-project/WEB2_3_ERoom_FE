@@ -1,4 +1,5 @@
 import OutProjectIcon from "../../assets/icons/outProjectDetail.svg";
+import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import MeetingRoomProjectBox from "../../components/MeetingRoom/MeetingRoomProjectBox";
 
 const MeetingRoom = () => {
@@ -18,11 +19,21 @@ const MeetingRoom = () => {
             <span className="text-main-green01 font-bold">My 프로젝트</span>
           </div>
         </div>
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full h-full flex flex-col gap-[20px] overflow-y-auto scrollbar-none">
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
+          <MeetingRoomProjectBox />
           <MeetingRoomProjectBox />
         </div>
       </div>
-      <div className="flex-[0.63] h-[682px] bg-white/60">미팅룸</div>
+      <div className="flex-[0.63] h-[682px] bg-white/60">
+        <MeetingRoomChatBox />
+      </div>
     </div>
   );
 };
