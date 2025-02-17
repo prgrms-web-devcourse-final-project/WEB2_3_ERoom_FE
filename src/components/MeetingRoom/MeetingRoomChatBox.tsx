@@ -2,7 +2,8 @@ import Button from "../common/Button";
 import SendIcon from "../../assets/icons/sendMessage.svg";
 import SampleProfile from "../../assets/sample_default_profile.png";
 import { useEffect, useRef, useState } from "react";
-const MeetingRoomChatBox = () => {
+import { twMerge } from "tailwind-merge";
+const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -74,7 +75,12 @@ const MeetingRoomChatBox = () => {
   };
 
   return (
-    <div className="flex flex-col px-[30px] pt-[30px] gap-[10px] relative min-h-full">
+    <div
+      className={twMerge(
+        `flex flex-col flex-grow px-[30px] pt-[30px] gap-[10px] relative min-h-full`,
+        css
+      )}
+    >
       <div className="flex justify-between w-[calc(100%-60px)] ">
         <span className="font-bold">프로젝트 명</span>
         <div className="flex gap-[10px]">
@@ -142,6 +148,7 @@ const MeetingRoomChatBox = () => {
               minHeight: "27px",
               maxHeight: "120px",
             }}
+            spellCheck="false" // 맞춤법검사 비활성화
             placeholder="채팅 내용을 입력해주세요"
           ></textarea>
           <button type="submit">
