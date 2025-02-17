@@ -14,7 +14,7 @@ import projectIcon from "../../assets/icons/dashboard/projectIcon.svg";
 import tagIcon from "../../assets/icons/dashboard/tagIcon.svg";
 import taskIcon from "../../assets/icons/dashboard/taskIcon.svg";
 
-const SideMenuList = [
+const SIDE_MENU_LIST = [
   // 프로젝트룸
   { title: "전체 업무", icon: sidebarAllicon, src: "all" },
   { title: "담당자", icon: sidebarManagerIcon, src: "manager" },
@@ -41,19 +41,17 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   const [adminSideMenu, setAdminSideMenu] = useState("대시보드");
 
   if (pathname.startsWith("/projectRoom")) {
+    // 프로젝트룸 사이드바
     return (
-      <div
-        className="w-[130px] bg-white"
-        style={{ height: "calc(100vh - 50px)" }}
-      >
-        <ul className="flex flex-col items-center gap-6 pt-10">
+      <div className="w-[130px] bg-white min-h-[calc(100vh-50px)]">
+        <ul className="flex flex-col items-center gap-6 pt-10 w-[130px]">
           <li>
             <Link to="/projectRoom" className="flex flex-col items-center">
               <img src={outProjectIcon} alt="프로젝트 나가기 버튼" />
               <p className="font-bold text-main-green01">My프로젝트</p>
             </Link>
           </li>
-          {SideMenuList.map((menu, idx) => {
+          {SIDE_MENU_LIST.map((menu, idx) => {
             return (
               <li
                 key={idx}
@@ -73,9 +71,10 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
       </div>
     );
   } else if (pathname.startsWith("/admin")) {
+    // 관리자페이지 사이드바
     return (
       <div className="w-[130px] bg-white min-h-[calc(100vh-50px)] font-bold flex flex-col items-center pt-5 text-main-green01">
-        <p className="pb-7 border-b border-header-green w-[110px] text-center ">
+        <p className="pb-7 border-b border-header-green w-[100px] text-center ">
           관리자 메뉴
         </p>
 
