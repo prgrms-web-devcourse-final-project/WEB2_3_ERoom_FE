@@ -7,15 +7,17 @@ const Layout = () => {
   const [sidebarToggle, setSidebarToggle] = useState<boolean>(false);
 
   return (
-    <div className="relative">
+    <div className="relative min-h-screen flex flex-col">
       <Header />
-      <div className="absolute">
+      <div className="flex-1 flex">
         <Sidebar
           sidebarToggle={sidebarToggle}
           setSidebarToggle={setSidebarToggle}
         />
+        <div className="flex-1">
+          <Outlet context={sidebarToggle} />
+        </div>
       </div>
-      <Outlet context={sidebarToggle} />
     </div>
   );
 };
