@@ -7,7 +7,7 @@ const Layout = () => {
   const [sidebarToggle, setSidebarToggle] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className="relative">
       <Header />
       <div className="absolute">
         <Sidebar
