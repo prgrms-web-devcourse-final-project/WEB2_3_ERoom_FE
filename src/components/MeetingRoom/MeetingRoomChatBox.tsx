@@ -148,7 +148,7 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
               minHeight: "27px",
               maxHeight: "120px",
             }}
-            spellCheck="false"
+            spellCheck="false" // 맞춤법검사 비활성화
             placeholder="채팅 내용을 입력해주세요"
           ></textarea>
           <button type="submit">
