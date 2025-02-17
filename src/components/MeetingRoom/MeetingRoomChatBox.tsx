@@ -122,7 +122,7 @@ const MeetingRoomChatBox = () => {
             onKeyDown={handleKeyDown}
             onCompositionStart={() => setIsComposing(true)}
             onCompositionEnd={() => setIsComposing(false)}
-            className="ml-[15px] mr-[10px] w-full my-[5px] rounded-[5px] bg-white resize-none px-[10px] pt-[5px] pb-[8px] text-[14px] focus:outline-none overflow-y-auto leading-[17px] placeholder:text-[14px] max-h-[120px] min-h-[27px]"
+            className="ml-[15px] mr-[10px] w-full my-[5px] rounded-[5px] bg-white resize-none px-[10px] pt-[5px] pb-[8px] text-[14px] focus:outline-none overflow-y-auto scrollbar-none leading-[17px] placeholder:text-[14px] max-h-[120px] min-h-[27px]"
             style={{
               height: "27px",
               minHeight: "27px",
