@@ -38,6 +38,7 @@ const Calendar = () => {
           color: "#CAD2CB",
           start: "2025-02-14",
           end: "2025-02-23",
+          textColor: "black",
         },
         {
           title: "event 2",
