@@ -1,10 +1,42 @@
 import Button from "../common/Button";
 import SendIcon from "../../assets/icons/sendMessage.svg";
-import SampleProfile from "../../assets/sample_default_profile.png";
 import { useEffect, useRef, useState } from "react";
-const MeetingRoomChatBox = () => {
+import { twMerge } from "tailwind-merge";
+import MeetingRoomMessage from "./MeetingRoomMessage";
+const MeetingRoomChatBox = ({ css }: { css?: string }) => {
+  const dummyMessages = [
+    {
+      id: 1,
+      text: "안녕하세요!",
+      sender: "team",
+      profile:
+        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
+    },
+    {
+      id: 2,
+      text: "회의 시작하겠습니다.",
+      sender: "team",
+      profile:
+        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
+    },
+    {
+      id: 3,
+      text: "네, 확인했습니다!",
+      sender: "user",
+      profile:
+        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
+    },
+    {
+      id: 4,
+      text: "자료 공유드릴게요.",
+      sender: "user",
+      profile:
+        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
+    },
+  ];
+
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState(dummyMessages);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isComposing, setIsComposing] = useState(false); //조합문자 판별
@@ -50,7 +82,14 @@ const MeetingRoomChatBox = () => {
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
     if (e) e.preventDefault();
     if (text.trim() === "") return;
-    setMessages((prevMessages) => [...prevMessages, text]);
+    const newMessage = {
+      id: messages.length + 1,
+      text,
+      sender: "user" as const,
+      profile:
+        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
+    };
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setText("");
 
     if (textAreaRef.current) {
@@ -74,7 +113,12 @@ const MeetingRoomChatBox = () => {
   };
 
   return (
-    <div className="flex flex-col px-[30px] pt-[30px] gap-[10px] relative min-h-full">
+    <div
+      className={twMerge(
+        `flex flex-col flex-grow px-[30px] pt-[30px] gap-[10px] relative min-h-full`,
+        css
+      )}
+    >
       <div className="flex justify-between w-[calc(100%-60px)] ">
         <span className="font-bold">프로젝트 명</span>
         <div className="flex gap-[10px]">
@@ -96,34 +140,7 @@ const MeetingRoomChatBox = () => {
           ref={chatContainerRef}
           className="flex-grow h-0 border-main-green01 bg-white border-[1px] rounded-[10px] overflow-y-auto scrollbar-none "
         >
-          {/* 사용자가 아닐 경우 프로필 사진과 이름 표시 */}
-          <div className="flex flex-col mx-[10px] pr-[50px] my-[10px] gap-[5px]">
-            <div className="flex items-center gap-[10px]">
-              <img
-                src={SampleProfile}
-                alt="샘플프로필이미지"
-                className="w-[30px] h-[30px] rounded-full"
-              />
-              <span className="text-[14px]">사용자이름</span>
-            </div>
-            {/* 팀원이 보낸 채팅 내용 bg-main-green02 */}
-            <div className="w-auto h-auto min-h-[33px] bg-main-green02 rounded-[5px] px-[10px] py-[8px] max-w-[calc(100%-50px)] self-start">
-              <span className="text-[14px] whitespace-pre-wrap">내용</span>
-            </div>
-          </div>
-          {/* 사용자가 보낸 채팅일 경우 채팅만 표시 bg-main-beige */}
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className="flex flex-col mx-[10px] pl-[50px] my-[10px] gap-[5px]"
-            >
-              <div className="flex justify-end w-auto h-auto min-h-[33px] bg-main-beige rounded-[5px] px-[10px] py-[8px] max-w-[calc(100%-50px)] self-end">
-                <span className="text-[14px] whitespace-pre-wrap">
-                  {message}
-                </span>
-              </div>
-            </div>
-          ))}
+          <MeetingRoomMessage messages={messages} />
         </div>
         <form
           onSubmit={handleSendMessage}
@@ -142,6 +159,7 @@ const MeetingRoomChatBox = () => {
               minHeight: "27px",
               maxHeight: "120px",
             }}
+            spellCheck="false" // 맞춤법검사 비활성화
             placeholder="채팅 내용을 입력해주세요"
           ></textarea>
           <button type="submit">
