@@ -10,6 +10,7 @@ import HeaderLayout from "./components/layout/HeaderLayout";
 import ProjectRoomDetail from "./pages/ProjectRoom/ProjectRoomDetail";
 import MyPage from "./pages/MyPage";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
+import Admin from "./pages/Admin";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<MainPage />} />
         <Route path="/projectRoom/:projectId" element={<ProjectRoomDetail />} />
+        <Route path="/admin" element={<Admin />} />
       </Route>
 
       {/* 헤더만 있는 페이지 */}
