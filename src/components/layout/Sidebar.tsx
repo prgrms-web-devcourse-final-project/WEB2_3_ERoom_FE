@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useSearchParams } from "react-router";
 import outProjectIcon from "../../assets/icons/outProjectDetail.svg";
 import sidebarAllicon from "../../assets/icons/sidebarAllicon.svg";
 import sidebarManagerIcon from "../../assets/icons/sidebarManagerIcon.svg";
@@ -37,13 +37,20 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   const { pathname } = useLocation();
+  const [sidebarTab] = useSearchParams();
 
-  const [adminSideMenu, setAdminSideMenu] = useState("대시보드");
+  // 관리자페이지 메뉴
+  const [adminSideMenu, setAdminSideMenu] = useState(sidebarTab.get("tab"));
+
+  useEffect(() => {
+    if (!sidebarTab.get("tab")) setAdminSideMenu("dashboard");
+    else setAdminSideMenu(sidebarTab.get("tab"));
+  }, [sidebarTab]);
 
   if (pathname.startsWith("/projectRoom")) {
     // 프로젝트룸 사이드바
     return (
-      <div className="w-[130px] bg-white min-h-[calc(100vh-50px)]">
+      <div className="w-[140px] flex-none bg-white min-h-[calc(100vh-50px)]">
         <ul className="flex flex-col items-center gap-6 pt-10 w-[130px]">
           <li>
             <Link to="/projectRoom" className="flex flex-col items-center">
@@ -73,7 +80,10 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   } else if (pathname.startsWith("/admin")) {
     // 관리자페이지 사이드바
     return (
-      <div className="w-[130px] bg-white min-h-[calc(100vh-50px)] font-bold flex flex-col items-center pt-5 text-main-green01">
+      <div
+        className="w-[140px] bg-white min-h-[calc(100vh-50px)] flex-none
+        font-bold flex flex-col items-center pt-5 text-main-green01"
+      >
         <p className="pb-7 border-b border-header-green w-[100px] text-center ">
           관리자 메뉴
         </p>
@@ -85,10 +95,10 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
                 key={idx}
                 className={twMerge(
                   `bg-white w-full h-[35px] ${
-                    adminSideMenu === adminMenu.title && "bg-main-green03"
+                    adminSideMenu === adminMenu.src && "bg-main-green03"
                   }`
                 )}
-                onClick={() => setAdminSideMenu(adminMenu.title)}
+                onClick={() => setAdminSideMenu(adminMenu.src)}
               >
                 <Link
                   to={`${pathname}?tab=${adminMenu.src}`}
@@ -112,7 +122,9 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   return (
     <div
       className={twMerge(
-        `w-[130px] bg-white ${sidebarToggle ? "w-[50px]" : ""} transition-all`
+        `w-[140px] flex-none bg-white ${
+          sidebarToggle ? "w-[50px]" : ""
+        } transition-all`
       )}
       style={{ height: "calc(100vh - 50px)" }}
     >

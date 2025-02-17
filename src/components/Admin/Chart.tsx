@@ -58,7 +58,7 @@ const Chart = ({ data, labelTitle, label }: ChartProps) => {
     scales: {
       y: {
         beginAtZero: true,
-        max: Math.max(...data) + 30,
+        max: Math.max(...data) + 40,
       },
     },
   };
