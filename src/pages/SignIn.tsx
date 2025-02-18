@@ -30,7 +30,7 @@ const SignIn = () => {
           <span className="text-sm text-center font-semibold">
             아직 회원이 아니신가요?
           </span>
-          <Button text="회원가입" to="/signUp" size="lg" />
+          <Button text="회원가입" to="/signup" size="lg" />
         </div>
       </div>
     </div>

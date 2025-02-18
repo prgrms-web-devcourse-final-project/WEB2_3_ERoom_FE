@@ -129,7 +129,7 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
           />
           <Button
             text="미팅룸 나가기"
-            to="/projectRoom"
+            to="/project-room"
             size="sm"
             css="border-header-red bg-header-red/70 text-white text-[14px] font-bold"
           />
