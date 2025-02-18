@@ -47,13 +47,13 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
     else setAdminSideMenu(sidebarTab.get("tab"));
   }, [sidebarTab]);
 
-  if (pathname.startsWith("/projectRoom")) {
+  if (pathname.startsWith("/project-room")) {
     // 프로젝트룸 사이드바
     return (
       <div className="w-[140px] flex-none bg-white min-h-[calc(100vh-50px)]">
         <ul className="flex flex-col items-center gap-6 pt-10 w-[130px]">
           <li>
-            <Link to="/projectRoom" className="flex flex-col items-center">
+            <Link to="/project-room" className="flex flex-col items-center">
               <img src={outProjectIcon} alt="프로젝트 나가기 버튼" />
               <p className="font-bold text-main-green01">My프로젝트</p>
             </Link>
