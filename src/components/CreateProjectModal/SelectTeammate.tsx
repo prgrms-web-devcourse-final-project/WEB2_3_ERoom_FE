@@ -97,7 +97,7 @@ const SelectTeammate = ({ data }: SelectTeammateProps) => {
       ></input>
 
       {/* 검색 결과 목록 */}
-      {selectedTeammate.length > 0 && (
+      {inputValue && (
         <div
           className="flex flex-col gap-[5px] w-full text-logo-green text-[14px]
           font-bold"
