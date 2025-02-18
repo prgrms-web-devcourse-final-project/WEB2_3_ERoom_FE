@@ -120,7 +120,7 @@ const ProjectRoom = () => {
       {/* 프로젝트 생성 모달 */}
       {isCreateProjectModal && (
         <div
-          className="absolute inset-0 w-screen h-fit
+          className="absolute inset-0 w-screen h-fit min-h-screen
           flex justify-center items-center bg-black/70"
           onClick={() => setIsCreateProjectModal(false)}
         >
