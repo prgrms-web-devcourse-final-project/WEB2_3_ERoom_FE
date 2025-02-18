@@ -18,9 +18,9 @@ const Header = () => {
 
   const { pathname } = useLocation();
   useEffect(() => {
-    if (pathname === "/projectRoom") {
+    if (pathname === "/project-room") {
       setIsOn("Project");
-    } else if (pathname === "/meetingRoom") {
+    } else if (pathname === "/meeting-room") {
       setIsOn("Meeting");
     } else {
       setIsOn("");
@@ -58,7 +58,7 @@ const Header = () => {
               </li>
               <li className="cursor-pointer">
                 {/* 유저정보api 나온 후 url 수정 필요 */}
-                <Link to={`/projectRoom`}>마이프로젝트</Link>
+                <Link to={`/project-room`}>마이프로젝트</Link>
               </li>
               {isAlarmOpen && (
                 <div className="absolute top-[50px] transform -translate-x-1/2">
@@ -66,7 +66,7 @@ const Header = () => {
                 </div>
               )}
               <li>
-                <Link to={"/myPage"}>마이페이지</Link>
+                <Link to={"/mypage"}>마이페이지</Link>
               </li>
               <li
                 onClick={handleLogin}
@@ -78,12 +78,12 @@ const Header = () => {
           ) : (
             <>
               <li>
-                <Link to={"/signIn"} onClick={handleLogin}>
+                <Link to="/signin" onClick={handleLogin}>
                   로그인
                 </Link>
               </li>
               <li>
-                <Link to="/signUp">회원가입</Link>
+                <Link to="/signup">회원가입</Link>
               </li>
             </>
           )}
