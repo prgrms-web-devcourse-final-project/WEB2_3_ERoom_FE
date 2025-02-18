@@ -38,10 +38,10 @@ const AlarmBox = ({ project, task, theme, css, onRemove }: AlarmBoxProps) => {
   const projectId = ":projectIc";
 
   const THEME_NAVIGATE = {
-    message: `/projectRoom/${projectId}/meetingRoom`,
-    newTask: `/projectRoom/${projectId}`,
-    newProject: `/projectRoom/${projectId}`,
-    endProject: `/projectRoom/${projectId}`,
+    message: `/project-room/${projectId}/meeting-room`,
+    newTask: `/project-room/${projectId}`,
+    newProject: `/project-room/${projectId}`,
+    endProject: `/project-room/${projectId}`,
   }[theme];
 
   const handleClick = () => {
