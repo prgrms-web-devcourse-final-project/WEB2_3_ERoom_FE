@@ -3,6 +3,8 @@ import EditIcon from "../../assets/icons/edit.svg";
 import SaveIcon from "../../assets/icons/save.svg";
 import Button from "../common/Button";
 import { twMerge } from "tailwind-merge";
+import UnCheckBox from "../../assets/icons/unchecked_box.svg";
+import CheckBox from "../../assets/icons/checked_box.svg";
 
 interface AccountListProps {
   id: number;
@@ -80,12 +82,16 @@ const AccountList = ({
     }
   };
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const toggleCheckBox = () => {
+    setIsChecked((prev) => !prev);
+  };
+
   useEffect(() => {
     setOrganizationWidth(getTextWidth(editedUser.organization));
     setProfileImageWidth(getTextWidth(editedUser.profileImage));
   }, [editedUser.organization, editedUser.profileImage]);
-
-  const listNum = (index + 1) % 10 || 10;
 
   return (
     <div
@@ -96,13 +102,15 @@ const AccountList = ({
     >
       <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[37px] w-full text-main-green text-[14px] py-[5px] ">
         <div className="flex justify-center items-center">
-          <input type="checkbox" />
+          <button onClick={toggleCheckBox}>
+            <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
+          </button>
         </div>
         <div
           className="flex justify-center items-center"
           onClick={handleDropdown}
         >
-          <span>{listNum}</span>
+          <span>{index + 1}</span>
         </div>
         <div
           className="flex justify-center items-center"

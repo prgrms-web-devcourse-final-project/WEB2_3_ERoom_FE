@@ -4,6 +4,9 @@ import SearchIcon from "../../assets/icons/search.svg";
 import DeleteIcon from "../../assets/icons/delete.svg";
 import AccountList from "./AccountList";
 import { useState } from "react";
+import Pagination from "./Pagination";
+import UnCheckBox from "../../assets/icons/unchecked_box.svg";
+import CheckBox from "../../assets/icons/checked_box.svg";
 
 interface AccountListProps {
   id: number;
@@ -16,98 +19,19 @@ interface AccountListProps {
 }
 
 const Account = () => {
-  const dummyUsers = [
-    {
-      id: 1,
-      email: "user1@example.com",
-      name: "김철수",
-      registeredDate: "2025.02.01",
+  // 더미 데이터
+  const dummyUsers: AccountListProps[] = Array.from(
+    { length: 300 },
+    (_, i) => ({
+      id: i + 1,
+      email: `user${i + 1}@example.com`,
+      name: `사용자${i + 1}`,
+      registeredDate: `2025.02.${String(i + 1).padStart(2, "0")}`,
       profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 프론트엔드 2기",
-      isSubscribed: true,
-    },
-    {
-      id: 2,
-      email: "user2@example.com",
-      name: "이영희",
-      registeredDate: "2025.02.02",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 백엔드 1기",
-      isSubscribed: false,
-    },
-    {
-      id: 3,
-      email: "user3@example.com",
-      name: "박지훈",
-      registeredDate: "2025.02.03",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 프론트엔드 2기",
-      isSubscribed: true,
-    },
-    {
-      id: 4,
-      email: "user4@example.com",
-      name: "최민수",
-      registeredDate: "2025.02.04",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 프론트엔드 1기",
-      isSubscribed: false,
-    },
-    {
-      id: 5,
-      email: "user5@example.com",
-      name: "정하나",
-      registeredDate: "2025.02.05",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 백엔드 1기",
-      isSubscribed: true,
-    },
-    {
-      id: 6,
-      email: "user6@example.com",
-      name: "강동원",
-      registeredDate: "2025.02.06",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 프론트엔드 3기",
-      isSubscribed: false,
-    },
-    {
-      id: 7,
-      email: "user7@example.com",
-      name: "서지수",
-      registeredDate: "2025.02.07",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 백엔드 2기",
-      isSubscribed: true,
-    },
-    {
-      id: 8,
-      email: "user8@example.com",
-      name: "한경훈",
-      registeredDate: "2025.02.08",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 데이터 분석",
-      isSubscribed: true,
-    },
-    {
-      id: 9,
-      email: "user9@example.com",
-      name: "문가영",
-      registeredDate: "2025.02.09",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 AI 1기",
-      isSubscribed: false,
-    },
-    {
-      id: 10,
-      email: "user10@example.com",
-      name: "손민호",
-      registeredDate: "2025.02.10",
-      profileImage: "https://via.placeholder.com/50",
-      organization: "데브코스 프론트엔드 2기",
-      isSubscribed: true,
-    },
-  ];
+      organization: `데브코스 프론트엔드 ${(i % 3) + 1}기`,
+      isSubscribed: i % 2 === 0,
+    })
+  );
 
   const [users, setUsers] = useState(dummyUsers);
 
@@ -131,10 +55,27 @@ const Account = () => {
     );
   };
 
+  //페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // 한 페이지에 보여줄 항목 개수
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+
+  // 현재 페이지에 해당하는 데이터만 필터링
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const [isChecked, setIsChecked] = useState(false);
+
+  const toggleCheckBox = () => {
+    setIsChecked((prev) => !prev);
+  };
+
   return (
-    <div>
-      <div className="mx-[30px] mb-[30px] p-[30px] bg-white flex flex-col gap-[30px]">
-        <div className="pl-[20px] bg-white/60">
+    <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
+      <div className="mx-[30px] mb-[30px] px-[30px] pt-[30px] bg-white flex flex-col gap-[30px] bg-white/60">
+        <div className="pl-[20px]">
           <span className="text-[22px] font-bold text-main-green">
             회원 계정 정보
           </span>
@@ -145,7 +86,10 @@ const Account = () => {
             <AdminButton text="비활성 계정" type="white" />
           </div>
           <div className="flex gap-[10px]">
-            <input className="w-[250px] h-[27px] border border-header-green rounded-[5px]" />
+            <input
+              className="w-[250px] h-[27px] border border-header-green rounded-[5px] focus:outline-none flex px-[10px] items-center text-[14px]"
+              placeholder="계정 이름 검색"
+            />
             <Button
               text="검색"
               logo={SearchIcon}
@@ -161,7 +105,9 @@ const Account = () => {
           {/* 제목 부분 */}
           <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
             <div className="flex justify-center items-center">
-              <input type="checkbox" />
+              <button onClick={toggleCheckBox}>
+                <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
+              </button>
             </div>
             <div className="flex justify-center items-center">
               <span>No.</span>
@@ -179,15 +125,18 @@ const Account = () => {
               <span>구독</span>
             </div>
           </div>
-          {users.map((user, index) => (
+          {paginatedUsers.map((user, index) => (
             <AccountList
               key={user.id}
               user={user}
-              index={index}
+              index={(currentPage - 1) * itemsPerPage + index}
               onUpdateSubscription={handleUpdateSubscription}
               onUpdateUser={handleUpdateUser}
             />
           ))}
+        </div>
+        <div className="flex justify-center items-center mt-[20px]">
+          <Pagination totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
       </div>
     </div>
