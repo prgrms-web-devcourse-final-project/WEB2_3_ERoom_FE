@@ -17,23 +17,26 @@ const App = () => {
     <Routes>
       {/* 로그인, 회원가입, 소속등록 페이지 */}
       <Route element={<AuthLayout />}>
-        <Route path="/signIn" element={<SignIn />} />
-        <Route path="/signUp" element={<SignUp />} />
-        <Route path="/signUpCompanyInfo" element={<SignUpCompanyInfo />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup-company-info" element={<SignUpCompanyInfo />} />
       </Route>
 
       {/* 헤더와 사이드바가 있는 페이지 */}
       <Route element={<Layout />}>
         <Route path="/" element={<MainPage />} />
-        <Route path="/projectRoom/:projectId" element={<ProjectRoomDetail />} />
+        <Route
+          path="/project-room/:projectId"
+          element={<ProjectRoomDetail />}
+        />
         <Route path="/admin" element={<Admin />} />
       </Route>
 
       {/* 헤더만 있는 페이지 */}
       <Route element={<HeaderLayout />}>
-        <Route path="/projectRoom" element={<ProjectRoom />} />
-        <Route path="/meetingRoom/:projectId" element={<MeetingRoom />} />
-        <Route path="/myPage" element={<MyPage />} />
+        <Route path="/project-room" element={<ProjectRoom />} />
+        <Route path="/meeting-room/:projectId" element={<MeetingRoom />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Route>
     </Routes>
   );
