@@ -67,7 +67,7 @@ const ProjectRoom = () => {
             </div>
           )}
           {filterProject === "진행 완료 프로젝트" && (
-            <>
+            <div className="flex w-[230px] gap-[10px]">
               <Button
                 text="프로젝트 선택"
                 size="md"
@@ -79,7 +79,7 @@ const ProjectRoom = () => {
                 css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[100px] text-[14px] px-2"
                 onClick={() => setIsAllProjectOutModal(true)}
               />
-            </>
+            </div>
           )}
         </div>
 
