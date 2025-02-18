@@ -53,7 +53,7 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
             />
             {filterProject === "진행 중인 프로젝트" && (
               <Link
-                to={`/meetingRoom/${projectId}`}
+                to={`/meeting-room/${projectId}`}
                 className="h-[40px] bg-[#FFFCE2] text-main-green01 flex items-center justify-center
           border border-main-green01 px-[10px] font-bold rounded-sm"
               >
