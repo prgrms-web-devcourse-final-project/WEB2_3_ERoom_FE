@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
 import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
+import CreateProjectModal from "../../components/modals/CreateProjectModal";
 
 const FILTER_PROJECT: (
   | "진행 완료 프로젝트"
@@ -21,6 +22,10 @@ const ProjectRoom = () => {
 
   // 전체 프로젝트 나가기 모달
   const [isAllProjectOutModal, setIsAllProjectOutModal] =
+    useState<boolean>(false);
+
+  // 프로젝트 생성 모달
+  const [isCreateProjectModal, setIsCreateProjectModal] =
     useState<boolean>(false);
 
   return (
@@ -63,6 +68,7 @@ const ProjectRoom = () => {
                 text="+ 프로젝트 생성"
                 size="md"
                 css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2"
+                onClick={() => setIsCreateProjectModal(true)}
               />
             </div>
           )}
@@ -76,7 +82,7 @@ const ProjectRoom = () => {
               <Button
                 text="전체 나가기"
                 size="md"
-                css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[100px] text-[14px] px-2"
+                css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[130px] text-[14px] px-2"
                 onClick={() => setIsAllProjectOutModal(true)}
               />
             </div>
@@ -107,6 +113,19 @@ const ProjectRoom = () => {
         >
           <AllProjectOutModal
             setIsAllProjectOutModal={setIsAllProjectOutModal}
+          />
+        </div>
+      )}
+
+      {/* 프로젝트 생성 모달 */}
+      {isCreateProjectModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit
+          flex justify-center items-center bg-black/70"
+          onClick={() => setIsCreateProjectModal(false)}
+        >
+          <CreateProjectModal
+            setIsCreateProjectModal={setIsCreateProjectModal}
           />
         </div>
       )}
