@@ -3,15 +3,17 @@ import ParticipantIcon from "../common/ParticipantIcon";
 
 interface TaskBoxProps {
   isAll?: boolean;
+  onClick: () => void;
 }
 
-const TaskBox = ({ isAll = true }: TaskBoxProps) => {
+const TaskBox = ({ isAll = true, onClick }: TaskBoxProps) => {
   // 전체 업무 박스
   if (isAll) {
     return (
       <div
         className="w-[320px] h-[120px] bg-white border border-main-green02
       px-3 py-2 flex flex-col justify-center gap-2"
+        onClick={onClick}
       >
         <div className="flex justify-between items-center">
           <p className="font-bold">업무명</p>
