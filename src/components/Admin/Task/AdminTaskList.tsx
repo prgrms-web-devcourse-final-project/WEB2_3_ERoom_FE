@@ -6,7 +6,7 @@ import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import { PROGRESS_STATUS } from "../../../constants/status";
 import ProgressStatusBox from "../ProgressStatusBox";
-import { progressType } from "../../../constants/progressType";
+import { progressType } from "../../../utils/progressType";
 
 interface TasksListType {
   id: number;
