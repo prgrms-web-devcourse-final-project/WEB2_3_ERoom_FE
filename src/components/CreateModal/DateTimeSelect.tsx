@@ -76,7 +76,7 @@ const DateTimeSelect = ({
       <li
         key={num}
         data-value={num}
-        className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer"
+        className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer z-40"
         onClick={() => selectOption(openDropdown as string, num)}
       >
         {num} {unit}
@@ -111,7 +111,7 @@ const DateTimeSelect = ({
       <div className="flex w-full h-[40px] flex justify-between bg-gradient-to-t from-[#CDD5CE] to-white/40">
         <div className="flex gap-[2px]">
           {/* 연도 선택 */}
-          <div className="relative">
+          <div className="relative drop-shadow-xl">
             <div
               className="border border-main-green01 rounded-[5px] w-full h-full px-[10px] flex items-center text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("year")}
@@ -121,7 +121,7 @@ const DateTimeSelect = ({
             {openDropdown === "year" && (
               <ul
                 ref={dropdownRefs.year}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer shadow-lg max-h-40 overflow-y-auto"
+                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer max-h-40 overflow-y-auto scrollbar-none z-40"
               >
                 {generateOptions(now.getFullYear() - 1, now.getFullYear() + 10)}
               </ul>
@@ -129,7 +129,7 @@ const DateTimeSelect = ({
           </div>
 
           {/* 월 선택 */}
-          <div className="relative">
+          <div className="relative drop-shadow-xl">
             <div
               className="border border-main-green01 rounded-[5px] w-full h-full px-[10px] flex items-center text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("month")}
@@ -139,7 +139,7 @@ const DateTimeSelect = ({
             {openDropdown === "month" && (
               <ul
                 ref={dropdownRefs.month}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer shadow-lg max-h-40 overflow-y-auto"
+                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none z-40"
               >
                 {generateOptions(1, 12)}
               </ul>
@@ -147,7 +147,7 @@ const DateTimeSelect = ({
           </div>
 
           {/* 일 선택 */}
-          <div className="relative">
+          <div className="relative drop-shadow-xl">
             <div
               className="border border-main-green01 rounded-[5px] w-full h-full px-[10px] flex items-center text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("day")}
@@ -157,7 +157,7 @@ const DateTimeSelect = ({
             {openDropdown === "day" && (
               <ul
                 ref={dropdownRefs.day}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer shadow-lg max-h-40 overflow-y-auto"
+                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none z-40"
               >
                 {generateOptions(
                   1,
@@ -173,7 +173,7 @@ const DateTimeSelect = ({
 
         <div className="flex gap-[2px]">
           {/* AM/PM 선택 */}
-          <div className="relative">
+          <div className="relative drop-shadow-xl">
             <div
               className="border border-main-green01 rounded-[5px] w-full h-full px-[5px] flex items-center text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("ampm")}
@@ -183,16 +183,16 @@ const DateTimeSelect = ({
             {openDropdown === "ampm" && (
               <ul
                 ref={dropdownRefs.ampm}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer shadow-lg max-h-40 overflow-y-auto"
+                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none z-40"
               >
                 <li
-                  className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer"
+                  className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer z-40"
                   onClick={() => selectOption("ampm", "AM")}
                 >
                   AM
                 </li>
                 <li
-                  className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer"
+                  className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer z-40"
                   onClick={() => selectOption("ampm", "PM")}
                 >
                   PM
@@ -202,7 +202,7 @@ const DateTimeSelect = ({
           </div>
 
           {/* 시간 선택 */}
-          <div className="relative">
+          <div className="relative drop-shadow-xl">
             <div
               className="border border-main-green01 rounded-[5px] w-full h-full px-[8px] flex items-center text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("hour")}
@@ -212,7 +212,7 @@ const DateTimeSelect = ({
             {openDropdown === "hour" && (
               <ul
                 ref={dropdownRefs.hour}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer shadow-lg max-h-40 overflow-y-auto"
+                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none z-40"
               >
                 {generateOptions(1, 12)}
               </ul>
@@ -220,7 +220,7 @@ const DateTimeSelect = ({
           </div>
 
           {/* 분 선택 */}
-          <div className="relative">
+          <div className="relative drop-shadow-xl">
             <div
               className="border border-main-green01 rounded-[5px] w-full h-full px-[7.5px] flex items-center text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("minute")}
@@ -230,7 +230,7 @@ const DateTimeSelect = ({
             {openDropdown === "minute" && (
               <ul
                 ref={dropdownRefs.minute}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer shadow-lg max-h-40 overflow-y-auto"
+                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none z-40"
               >
                 {generateOptions(0, 59)}
               </ul>
