@@ -91,7 +91,7 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
                     <p className="text-header-green">{menu.title}</p>
                   </Link>
                 </li>
-                {menu.src === "manager" && (
+                {menu.src === "manager" && menu.src === projectRoomMenu && (
                   <div className="">
                     <ManagerCheckBox
                       checkboxId="all"
