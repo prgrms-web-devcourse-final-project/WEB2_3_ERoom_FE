@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
 import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
+import CreateProjectModal from "../../components/modals/CreateProjectModal";
 
 const FILTER_PROJECT: (
   | "진행 완료 프로젝트"
@@ -23,6 +24,10 @@ const ProjectRoom = () => {
   const [isAllProjectOutModal, setIsAllProjectOutModal] =
     useState<boolean>(false);
 
+  // 프로젝트 생성 모달
+  const [isCreateProjectModal, setIsCreateProjectModal] =
+    useState<boolean>(false);
+
   return (
     <div
       className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
@@ -33,7 +38,7 @@ const ProjectRoom = () => {
           {/* 프로젝트 필터링 */}
           <ul
             className="flex justify-start items-center gap-5 h-[70px] text-[18px]
-          font-bold text-black w-full"
+          font-bold text-black w-full max-w-[660px]"
           >
             {FILTER_PROJECT.map((project, idx) => {
               return (
@@ -41,7 +46,7 @@ const ProjectRoom = () => {
                   key={idx}
                   onClick={() => setFilterProject(project)}
                   className={twMerge(
-                    `cursor-pointer border border-[#CAD2CB] text-[#CAD2CB] w-[250px] h-[30px] flex justify-center items-center rounded-[5px] ${
+                    `cursor-pointer border border-[#CAD2CB] text-[#CAD2CB] w-full h-[30px] flex justify-center items-center rounded-[5px] ${
                       filterProject === project && "text-black border-black"
                     }`
                   )}
@@ -53,7 +58,7 @@ const ProjectRoom = () => {
           </ul>
           {(filterProject === "진행 중인 프로젝트" ||
             filterProject === "진행 예정 프로젝트") && (
-            <>
+            <div className="flex w-[230px] gap-[10px]">
               <Button
                 text="프로젝트 선택"
                 size="md"
@@ -63,11 +68,12 @@ const ProjectRoom = () => {
                 text="+ 프로젝트 생성"
                 size="md"
                 css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2"
+                onClick={() => setIsCreateProjectModal(true)}
               />
-            </>
+            </div>
           )}
           {filterProject === "진행 완료 프로젝트" && (
-            <>
+            <div className="flex w-[230px] gap-[10px]">
               <Button
                 text="프로젝트 선택"
                 size="md"
@@ -76,10 +82,10 @@ const ProjectRoom = () => {
               <Button
                 text="전체 나가기"
                 size="md"
-                css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[100px] text-[14px] px-2"
+                css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[130px] text-[14px] px-2"
                 onClick={() => setIsAllProjectOutModal(true)}
               />
-            </>
+            </div>
           )}
         </div>
 
@@ -106,6 +112,19 @@ const ProjectRoom = () => {
         >
           <AllProjectOutModal
             setIsAllProjectOutModal={setIsAllProjectOutModal}
+          />
+        </div>
+      )}
+
+      {/* 프로젝트 생성 모달 */}
+      {isCreateProjectModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+          flex justify-center items-center bg-black/70"
+          onClick={() => setIsCreateProjectModal(false)}
+        >
+          <CreateProjectModal
+            setIsCreateProjectModal={setIsCreateProjectModal}
           />
         </div>
       )}
