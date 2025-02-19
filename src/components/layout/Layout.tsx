@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <div className="relative min-h-screen flex flex-col">
       <Header />
-      <div className="flex-1 flex">
+      <div className=" flex">
         <Sidebar
           sidebarToggle={sidebarToggle}
           setSidebarToggle={setSidebarToggle}

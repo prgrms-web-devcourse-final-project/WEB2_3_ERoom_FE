@@ -13,6 +13,7 @@ import payIcon from "../../assets/icons/dashboard/payIcon.svg";
 import projectIcon from "../../assets/icons/dashboard/projectIcon.svg";
 import tagIcon from "../../assets/icons/dashboard/tagIcon.svg";
 import taskIcon from "../../assets/icons/dashboard/taskIcon.svg";
+import ManagerCheckBox from "./ManagerCheckBox";
 
 const SIDE_MENU_LIST = [
   // 프로젝트룸
@@ -30,6 +31,9 @@ const ADMIN_SIDE_MENU_LIST = [
   { title: "태그 관리", icon: tagIcon, src: "tag" },
 ];
 
+// 임시 담당자
+const MANAGER = ["한규혁", "박선형", "성송원", "김휘연", "유수호"];
+
 interface SidebarProps {
   sidebarToggle: boolean;
   setSidebarToggle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,19 +43,29 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   const { pathname } = useLocation();
   const [sidebarTab] = useSearchParams();
 
-  // 관리자페이지 메뉴
+  // 관리자페이지 사이드 메뉴
   const [adminSideMenu, setAdminSideMenu] = useState(sidebarTab.get("tab"));
 
+  // 프로젝트룸 사이드 메뉴
+  const [projectRoomMenu, setProjectRoomMenu] = useState(
+    sidebarTab.get("category")
+  );
+
   useEffect(() => {
-    if (!sidebarTab.get("tab")) setAdminSideMenu("dashboard");
-    else setAdminSideMenu(sidebarTab.get("tab"));
+    if (pathname.startsWith("/admin")) {
+      if (!sidebarTab.get("tab")) setAdminSideMenu("dashboard");
+      else setAdminSideMenu(sidebarTab.get("tab"));
+    } else if (pathname.startsWith("/project-room")) {
+      if (!sidebarTab.get("category")) setProjectRoomMenu("all");
+      else setProjectRoomMenu(sidebarTab.get("category"));
+    }
   }, [sidebarTab]);
 
   if (pathname.startsWith("/project-room")) {
     // 프로젝트룸 사이드바
     return (
-      <div className="w-[140px] flex-none bg-white min-h-[calc(100vh-50px)]">
-        <ul className="flex flex-col items-center gap-6 pt-10 w-[130px]">
+      <div className="w-[140px] bg-white min-h-[calc(100vh-50px)] flex-none">
+        <ul className="flex flex-col items-center gap-6 pt-10 w-full">
           <li>
             <Link to="/project-room" className="flex flex-col items-center">
               <img src={outProjectIcon} alt="프로젝트 나가기 버튼" />
@@ -60,18 +74,47 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
           </li>
           {SIDE_MENU_LIST.map((menu, idx) => {
             return (
-              <li
-                key={idx}
-                className="font-bold w-full h-[30px] flex px-4 items-center cursor-pointer"
-              >
-                <Link
-                  to={`${pathname}?category=${menu.src}`}
-                  className={twMerge(`flex items-center gap-2`)}
+              <>
+                <li
+                  key={idx}
+                  className="font-bold w-full h-[35px] flex flex-col items-center cursor-pointer
+                "
                 >
-                  <img src={menu.icon} alt="사이드바 메뉴 아이콘" />
-                  <p className="text-header-green">{menu.title}</p>
-                </Link>
-              </li>
+                  <Link
+                    to={`${pathname}?category=${menu.src}`}
+                    className={twMerge(
+                      `flex items-center px-5 gap-2 w-full h-full
+                    ${projectRoomMenu === menu.src ? "bg-main-green03" : ""}`
+                    )}
+                  >
+                    <img src={menu.icon} alt="사이드바 메뉴 아이콘" />
+                    <p className="text-header-green">{menu.title}</p>
+                  </Link>
+                </li>
+                {menu.src === "manager" && menu.src === projectRoomMenu && (
+                  <div className="">
+                    <ManagerCheckBox
+                      checkboxId="all"
+                      checkboxName="all"
+                      labelName="전체"
+                    />
+                    {MANAGER.map((member, idx) => {
+                      return (
+                        <ManagerCheckBox
+                          checkboxName={member}
+                          checkboxId={`${idx}`}
+                          labelName={member}
+                        />
+                      );
+                    })}
+                    <ManagerCheckBox
+                      checkboxId="not"
+                      checkboxName="not"
+                      labelName="미배정"
+                    />
+                  </div>
+                )}
+              </>
             );
           })}
         </ul>
@@ -120,6 +163,7 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   }
 
   return (
+    // 메인페이지 사이드바
     <div
       className={twMerge(
         `w-[140px] flex-none bg-white ${
