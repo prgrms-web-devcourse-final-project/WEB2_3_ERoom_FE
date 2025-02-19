@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import EditIcon from "../../../assets/icons/edit.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
 import { twMerge } from "tailwind-merge";
@@ -109,7 +109,11 @@ const ProjectList = ({
         <div className="flex justify-center items-center relative">
           {/* 드롭다운박스 */}
           {isEditing ? (
-            <ProjectStatusBox status={status} setStatus={setStatus} />
+            <ProjectStatusBox
+              status={status}
+              setStatus={setStatus}
+              setEditedProject={setEditedProject}
+            />
           ) : (
             <span>{status}</span>
           )}
