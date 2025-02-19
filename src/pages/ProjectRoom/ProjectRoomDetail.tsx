@@ -3,11 +3,17 @@ import Button from "../../components/common/Button";
 import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
+import CreateTaskModal from "../../components/modals/CreateTaskModal";
 // import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
 
 const ProjectRoomDetail = () => {
   const [searchParams] = useSearchParams();
   const [category, setCategory] = useState(searchParams.get("category"));
+  const [isCreateTask, setIsCreateTask] = useState(false);
+
+  const handleCreateTaskModal = () => {
+    setIsCreateTask((prev) => !prev);
+  };
 
   useEffect(() => {
     console.log(searchParams.get("category"));
@@ -30,6 +36,7 @@ const ProjectRoomDetail = () => {
               size="md"
               css="bg-transparent border-main-green01 
           text-main-green01 text-[14px]"
+              onClick={handleCreateTaskModal}
             />
           </div>
           {/* 업무 리스트 */}
@@ -59,6 +66,11 @@ const ProjectRoomDetail = () => {
             </div>
           )}
         </>
+      )}
+      {isCreateTask && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <CreateTaskModal onClose={handleCreateTaskModal} />
+        </div>
       )}
     </div>
   );
