@@ -33,8 +33,8 @@ const ProjectRoom = () => {
       className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
       style={{ maxHeight: "calc(100vh - 50px)" }}
     >
-      <div className="bg-white w-full h-full flex flex-col items-center gap-4 px-10">
-        <div className="flex items-center gap-2 justify-between w-full">
+      <div className="bg-white/80 w-full h-full flex flex-col items-center gap-4 px-10">
+        <div className="flex items-center gap-2 justify-around w-full">
           {/* 프로젝트 필터링 */}
           <ul
             className="flex justify-start items-center gap-5 h-[70px] text-[18px]
@@ -92,8 +92,7 @@ const ProjectRoom = () => {
         {/* 프로젝트 목록 섹션 */}
         <div
           className="w-full max-h-[calc(100vh-220px)] flex flex-col gap-4 overflow-y-scroll scrollbar-none
-          flex-grow border border-main-green01 px-5 py-10 rounded-[10px]
-          bg-gradient-to-t from-[#BFCDB7]/10 via-[#BFCDB7]/0 to-[#BFCDB7]/10"
+          flex-grow  py-10 rounded-[10px]"
         >
           {arr.map((_, idx) => (
             <ProjectListBox
