@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import alarmIcon from "../../assets/icons/alarm.svg";
 import AlarmModal from "../modals/AlarmModal";
@@ -28,9 +28,33 @@ const Header = () => {
   }, [pathname]);
 
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+  //알람 모달 열기, 닫기
   const handleAlarmModal = () => {
     setIsAlarmOpen((prev) => !prev);
   };
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const alarmRef = useRef<HTMLLIElement>(null);
+  // 모달 외부 클릭 시 알람모달 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node) &&
+        alarmRef.current &&
+        !alarmRef.current.contains(event.target as Node)
+      ) {
+        setIsAlarmOpen(false);
+      }
+    };
+    if (isAlarmOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isAlarmOpen]);
 
   return (
     <>
@@ -51,6 +75,7 @@ const Header = () => {
           {isLogin ? (
             <>
               <li
+                ref={alarmRef}
                 className="cursor-pointer flex justify-center items-center"
                 onClick={handleAlarmModal}
               >
@@ -61,7 +86,10 @@ const Header = () => {
                 <Link to={`/project-room`}>마이프로젝트</Link>
               </li>
               {isAlarmOpen && (
-                <div className="absolute top-[50px] transform -translate-x-1/2">
+                <div
+                  ref={modalRef}
+                  className="absolute top-[50px] transform -translate-x-1/2"
+                >
                   <AlarmModal onClose={handleAlarmModal} />
                 </div>
               )}
