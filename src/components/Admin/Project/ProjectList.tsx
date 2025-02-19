@@ -50,6 +50,8 @@ const ProjectList = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedProject({ ...editedProject, [name]: value });
+    if (name === "projectName") {
+    }
   };
 
   const [isChecked, setIsChecked] = useState(false);
@@ -94,13 +96,12 @@ const ProjectList = ({
         <div className="flex justify-center items-center">
           {isEditing ? (
             <input
-              ref={inputRef}
               type="text"
               name="projectName"
               value={editedProject.projectName}
               onChange={handleInputChange}
               className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
-              style={{ width: `${editedProject.projectName.length + 1}ch` }}
+              style={{ width: `${editedProject.projectName.length + 2}ch` }}
             />
           ) : (
             <span>{project.projectName}</span>
