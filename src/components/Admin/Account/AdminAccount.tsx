@@ -3,7 +3,7 @@ import Button from "../../common/Button";
 import SearchIcon from "../../../assets/icons/search.svg";
 import DeleteIcon from "../../../assets/icons/delete.svg";
 import ResotreIcon from "../../../assets/icons/restore_account.svg";
-import AccountList from "./AccountList";
+import AccountList from "./AdminAccountList";
 import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
@@ -20,7 +20,7 @@ interface AccountListProps {
   isActive: boolean;
 }
 
-const Account = () => {
+const AdminAccount = () => {
   // 더미 데이터
   const dummyUsers: AccountListProps[] = Array.from(
     { length: 200 },
@@ -92,7 +92,7 @@ const Account = () => {
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
-      <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] bg-white flex flex-col  bg-white/60">
+      <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] flex flex-col  bg-white/60">
         <div className="pl-[20px] mb-[30px]">
           <span className="text-[22px] font-bold text-main-green">
             회원 계정 정보
@@ -176,4 +176,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default AdminAccount;

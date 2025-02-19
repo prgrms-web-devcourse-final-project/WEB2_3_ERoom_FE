@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditIcon from "../../../assets/icons/edit.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
 import { twMerge } from "tailwind-merge";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import ProjectStatusBox from "./ProjectStatusBox";
+import { PROGRESS_STATUS } from "../../../constants/status";
+import { progressType } from "../../../utils/progressType";
+import ProgressStatusBox from "../ProgressStatusBox";
 
 interface ProjectsListType {
   id: number;
@@ -18,7 +20,7 @@ interface ProjectsListType {
   tag3: string;
 }
 
-const ProjectList = ({
+const AdminProjectList = ({
   project,
   index,
   onUpdateProject,
@@ -60,12 +62,17 @@ const ProjectList = ({
   };
 
   // 진행상태 체크
-  const PROJECT_STATUS = {
-    IN_PROGRESS: "진행 중",
-    COMPLETED: "진행 완료",
-  }[project.projectStatus];
+  const [status, setStatus] = useState<string>(
+    PROGRESS_STATUS[project.projectStatus]
+  );
 
-  const [status, setStatus] = useState<string>(PROJECT_STATUS!);
+  useEffect(() => {
+    console.log(status);
+    setEditedProject((prev) => ({
+      ...prev,
+      projectStatus: progressType(status),
+    }));
+  }, [status]);
 
   return (
     <div
@@ -109,11 +116,7 @@ const ProjectList = ({
         <div className="flex justify-center items-center relative">
           {/* 드롭다운박스 */}
           {isEditing ? (
-            <ProjectStatusBox
-              status={status}
-              setStatus={setStatus}
-              setEditedProject={setEditedProject}
-            />
+            <ProgressStatusBox status={status} setStatus={setStatus} />
           ) : (
             <span>{status}</span>
           )}
@@ -158,4 +161,4 @@ const ProjectList = ({
   );
 };
 
-export default ProjectList;
+export default AdminProjectList;
