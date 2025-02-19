@@ -17,7 +17,10 @@ interface WordCloudProps {
 
 const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  // console.log(words);
+  const width = 300;
+  const height = 250;
+
+  console.log(words);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -26,17 +29,18 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
     svg.selectAll("*").remove(); // 기존 SVG 내용 제거
 
     const layout = cloud<Word>()
-      .size([300, 200])
+      .size([width - 50, height - 50])
       .words(
         words.map((word) => ({
           text: word.text,
           size: word.value,
         }))
       )
-      .padding(5)
-      .rotate(() => (Math.random() > 0.5 ? 90 : 0)) // 90도 회전 랜덤 적용
+      .padding((d) => Math.log(d.size) * 2)
+      .rotate(() => (Math.random() > 0.5 ? 0 : 90)) // 가독성 고려
       .font("Impact")
       .fontSize((d) => Math.min(30, Math.max(10, d.size)))
+      .spiral("archimedean")
       .random(Math.random) // random 문제 해결
       .on("end", draw);
 
@@ -58,12 +62,12 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
         .style("font-family", "Impact")
         .style("fill", (d) => {
           const colorScale = scaleSequential(d3.interpolateGreens).domain([
-            d3.min(words, (d) => d.size) || 40,
-            d3.max(words, (d) => d.size) || 100,
+            d3.min(words, (d) => d.size) || 10,
+            d3.max(words, (d) => d.size) || 140,
           ]);
           return colorScale(d.size); // 글자 크기에 따라 색상이 변하도록 설정
         })
-        .attr("text-anchor", "middle")
+        .attr("text-center", "middle")
         .attr(
           "transform",
           (d) => `translate(${d.x},${d.y}) rotate(${d.rotate})`
