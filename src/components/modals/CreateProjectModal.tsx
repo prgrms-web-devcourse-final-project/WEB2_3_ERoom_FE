@@ -1,6 +1,7 @@
 import Button from "../common/Button";
 import SelectCategory from "../CreateProjectModal/SelectCategory";
-import SelectTeammate from "../CreateProjectModal/SelectTeammate";
+import SelectMember from "../CreateProjectModal/SelectMember";
+import SelectTeammate from "../CreateProjectModal/SelectMember";
 import WriteProjectName from "../CreateProjectModal/WriteProjectName";
 
 interface CreateProjectModalProps {
@@ -35,7 +36,7 @@ const projectData = [
 ];
 
 // (임시) 팀원 배열
-const teammateData = [
+const membersData = [
   {
     id: 1,
     userName: "홍길동",
@@ -98,7 +99,7 @@ const CreateProjectModal = ({
         <SelectCategory />
 
         {/* 팀원 검색 */}
-        <SelectTeammate data={teammateData} />
+        <SelectMember data={membersData} />
 
         {/* 버튼 */}
         <div className="flex gap-[20px] w-[174px]">
