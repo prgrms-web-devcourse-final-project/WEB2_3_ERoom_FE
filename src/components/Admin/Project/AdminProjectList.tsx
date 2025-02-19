@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import { PROGRESS_STATUS } from "../../../constants/status";
-import { progressType } from "../../../constants/progressType";
+import { progressType } from "../../../utils/progressType";
 import ProgressStatusBox from "../ProgressStatusBox";
 
 interface ProjectsListType {
