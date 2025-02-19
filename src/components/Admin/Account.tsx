@@ -2,6 +2,7 @@ import AdminButton from "../common/AdminButton";
 import Button from "../common/Button";
 import SearchIcon from "../../assets/icons/search.svg";
 import DeleteIcon from "../../assets/icons/delete.svg";
+import ResotreIcon from "../../assets/icons/restore_account.svg";
 import AccountList from "./AccountList";
 import { useState } from "react";
 import Pagination from "./Pagination";
@@ -123,9 +124,16 @@ const Account = () => {
               css="h-[27px] text-[14px] text-main-beige01 bg-header-green"
             />
           </div>
-          <button>
-            <img src={DeleteIcon} />
-          </button>
+          <div className="flex gap-[5px]">
+            {currentTab === "account-inactive" && (
+              <button>
+                <img src={ResotreIcon} />
+              </button>
+            )}
+            <button>
+              <img src={DeleteIcon} />
+            </button>
+          </div>
         </div>
         <div className="flex flex-col gap-[10px] flex-grow mb-[30px]">
           {/* 제목 부분 */}
