@@ -15,7 +15,7 @@ const ProjectRoomDetail = () => {
   }, [searchParams.get("category")]);
 
   return (
-    <div className="min-h-screen px-10 pt-5 bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 ">
+    <div className="min-h-[calc(100vh-50px)] px-10 pt-5 bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 max-w-[calc(100vw-155px)]">
       {category === "meeting" ? (
         <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-white/60 ">
           <MeetingRoomChatBox css="pb-[30px]" />
@@ -34,7 +34,7 @@ const ProjectRoomDetail = () => {
           </div>
           {/* 업무 리스트 */}
           {(category === "all" || !category) && (
-            <div className="flex gap-10 overflow-x-scroll min-h-[calc(100vh-200px)]">
+            <div className="flex gap-10 min-h-[calc(100vh-150px)] w-full overflow-x-scroll">
               <TaskList name="진행 중" />
               <TaskList name="진행 예정" />
               <TaskList name="진행 완료" />
@@ -48,9 +48,13 @@ const ProjectRoomDetail = () => {
             </div>
           )}
           {category === "manager" && (
-            <div className="flex gap-10">
+            <div className="flex gap-10 min-h-[calc(100vh-150px)] w-full overflow-x-scroll">
               <TaskList name="박선형" isAll={false} />
               <TaskList name="한규혁" isAll={false} />
+              <TaskList name="성송원" isAll={false} />
+              <TaskList name="성송원" isAll={false} />
+              <TaskList name="성송원" isAll={false} />
+              <TaskList name="성송원" isAll={false} />
               <TaskList name="성송원" isAll={false} />
             </div>
           )}

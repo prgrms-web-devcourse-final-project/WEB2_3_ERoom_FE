@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import ProjectProgressBar from "./ProjectProgressBar";
 import ParticipantIcon from "../common/ParticipantIcon";
 import Button from "../common/Button";
@@ -9,8 +9,13 @@ interface ProjectListBoxProps {
 }
 
 const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white border border-[#CAD2CB] w-full pb-3">
+    <div
+      className="bg-white border border-[#CAD2CB] w-full pb-3 cursor-pointer"
+      onClick={() => navigate(`/project-room/${projectId}`)}
+    >
       <div className="flex gap-5 items-center px-5 font-bold ">
         <p className="text-[50px] font-medium text-main-green02 font-notoTC">
           10
