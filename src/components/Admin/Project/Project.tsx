@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import { useSearchParams } from "react-router";
 import ProjectList from "./ProjectList";
 
 interface ProjectsListType {
@@ -56,9 +55,6 @@ const Project = () => {
   };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-
-  const [tabname] = useSearchParams();
-  const currentTab = tabname.get("tab");
 
   const [projectMenu, setProjectMenu] = useState("active");
 
