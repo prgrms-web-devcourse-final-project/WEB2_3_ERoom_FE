@@ -14,6 +14,7 @@ interface AccountListProps {
   profileImage: string;
   organization: string;
   isSubscribed: boolean;
+  isActive: boolean;
 }
 
 const AccountList = ({
