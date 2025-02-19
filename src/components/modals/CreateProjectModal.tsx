@@ -47,35 +47,35 @@ const categoryData = [
         data: [
           { text: "C", value: 10 },
           { text: "C++", value: 20 },
-          { text: "C#", value: 20 },
-          { text: "Java", value: 20 },
-          { text: "JavaScript", value: 20 },
-          { text: "TypeScript", value: 20 },
-          { text: "Python", value: 20 },
-          { text: "Go", value: 20 },
-          { text: "PHP", value: 20 },
-          { text: "Swift", value: 20 },
-          { text: "Kotlin", value: 20 },
-          { text: "기타", value: 20 },
+          { text: "C#", value: 30 },
+          { text: "Java", value: 40 },
+          { text: "JavaScript", value: 50 },
+          { text: "TypeScript", value: 60 },
+          { text: "Python", value: 70 },
+          { text: "Go", value: 80 },
+          { text: "PHP", value: 90 },
+          { text: "Swift", value: 100 },
+          { text: "Kotlin", value: 110 },
+          { text: "기타", value: 120 },
         ],
       },
       {
         subname: "프레임워크/라이브러리",
         data: [
-          { text: "Spring", value: 20 },
+          { text: "Spring", value: 10 },
           { text: "React", value: 20 },
-          { text: "Vue.js", value: 20 },
-          { text: "Svelte", value: 20 },
-          { text: "Angular", value: 20 },
-          { text: "Flutter", value: 20 },
-          { text: "Next.js", value: 20 },
-          { text: "Nuxt.js", value: 20 },
-          { text: "Unity", value: 20 },
-          { text: "Unreal", value: 20 },
-          { text: "Django", value: 20 },
-          { text: "Flask", value: 20 },
-          { text: "Bootstrap", value: 20 },
-          { text: "Tailwind CSS", value: 20 },
+          { text: "Vue.js", value: 30 },
+          { text: "Svelte", value: 40 },
+          { text: "Angular", value: 50 },
+          { text: "Flutter", value: 60 },
+          { text: "Next.js", value: 70 },
+          { text: "Nuxt.js", value: 80 },
+          { text: "Unity", value: 90 },
+          { text: "Unreal", value: 100 },
+          { text: "Django", value: 110 },
+          { text: "Flask", value: 120 },
+          { text: "Bootstrap", value: 130 },
+          { text: "Tailwind CSS", value: 140 },
         ],
       },
     ],
@@ -123,26 +123,6 @@ const membersData = [
     delete: "ACTIVE",
   },
 ];
-
-// (임시) 워드클라우드 데이터
-const words = [
-  {
-    text: "told",
-    value: 64,
-  },
-  {
-    text: "mistake",
-    value: 11,
-  },
-  {
-    text: "thought",
-    value: 16,
-  },
-  {
-    text: "bad",
-    value: 17,
-  },
-];
 // 여기까지 임시 데이터
 
 interface SelectedDataType {
@@ -187,11 +167,11 @@ const CreateProjectModal = ({
         .subcategories
     : null;
 
-  console.log(selectedCateData);
+  // console.log(selectedCateData[0].data);
 
   return (
     <div
-      className="w-[700px] h-[600px] max-h-full bg-white text-main-green
+      className="w-[700px] min-h-[600px] max-h-full bg-white text-main-green
       flex justify-center items-center"
       onClick={(e) => e.stopPropagation()}
     >
@@ -266,9 +246,9 @@ const CreateProjectModal = ({
             )}
             {selectedCateData && (
               <WordCloud
-                words={[...selectedCateData[0].data].map((text) => ({
-                  text,
-                  value: Math.random() * 100,
+                words={selectedCateData[0].data.map((contents) => ({
+                  text: contents.text,
+                  value: contents.value,
                 }))}
               />
             )}
@@ -283,9 +263,9 @@ const CreateProjectModal = ({
             )}
             {selectedCateData && (
               <WordCloud
-                words={[...selectedCateData[1].data].map((text) => ({
-                  text,
-                  value: Math.random() * 100,
+                words={selectedCateData[1].data.map((contents) => ({
+                  text: contents.text,
+                  value: contents.value,
                 }))}
               />
             )}
