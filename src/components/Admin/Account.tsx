@@ -7,6 +7,7 @@ import { useState } from "react";
 import Pagination from "./Pagination";
 import UnCheckBox from "../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../assets/icons/checked_box.svg";
+import { useLocation, useNavigate } from "react-router";
 
 interface AccountListProps {
   id: number;
@@ -16,19 +17,24 @@ interface AccountListProps {
   profileImage: string;
   organization: string;
   isSubscribed: boolean;
+  isActive: boolean;
 }
 
 const Account = () => {
   // 더미 데이터
-  const dummyUsers: AccountListProps[] = Array.from({ length: 4 }, (_, i) => ({
-    id: i + 1,
-    email: `user${i + 1}@example.com`,
-    name: `사용자${i + 1}`,
-    registeredDate: `2025.02.${String(i + 1).padStart(2, "0")}`,
-    profileImage: "https://via.placeholder.com/50",
-    organization: `데브코스 프론트엔드 ${(i % 3) + 1}기`,
-    isSubscribed: i % 2 === 0,
-  }));
+  const dummyUsers: AccountListProps[] = Array.from(
+    { length: 200 },
+    (_, i) => ({
+      id: i + 1,
+      email: `user${i + 1}@example.com`,
+      name: `사용자${i + 1}`,
+      registeredDate: `2025.02.${String(i + 1).padStart(2, "0")}`,
+      profileImage: "https://via.placeholder.com/50",
+      organization: `데브코스 프론트엔드 ${(i % 3) + 1}기`,
+      isSubscribed: i % 2 === 0,
+      isActive: i % 3 !== 0,
+    })
+  );
 
   const [users, setUsers] = useState(dummyUsers);
 
@@ -52,13 +58,28 @@ const Account = () => {
     );
   };
 
+  //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const currentTab = searchParams.get("tab") || "account";
+
+  const handleButtonClick = (type: "account" | "account-inactive") => {
+    navigate(`/admin?tab=${type}`, { replace: true });
+  };
+
+  const filteredUsers = users.filter((user) =>
+    currentTab === "account" ? user.isActive : !user.isActive
+  );
+
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // 한 페이지에 보여줄 항목 개수
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
   // 현재 페이지에 해당하는 데이터만 필터링
-  const paginatedUsers = users.slice(
+  const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -72,15 +93,23 @@ const Account = () => {
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
       <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] bg-white flex flex-col  bg-white/60">
-        <div className="pl-[20px]">
+        <div className="pl-[20px] mb-[30px]">
           <span className="text-[22px] font-bold text-main-green">
             회원 계정 정보
           </span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between mb-[30px]">
           <div className="flex gap-[10px]">
-            <AdminButton text="활성 계정" type="green" />
-            <AdminButton text="비활성 계정" type="white" />
+            <AdminButton
+              text="활성 계정"
+              type={currentTab === "account" ? "green" : "white"}
+              onClick={() => handleButtonClick("account")}
+            />
+            <AdminButton
+              text="비활성 계정"
+              type={currentTab === "account-inactive" ? "green" : "white"}
+              onClick={() => handleButtonClick("account-inactive")}
+            />
           </div>
           <div className="flex gap-[10px]">
             <input
