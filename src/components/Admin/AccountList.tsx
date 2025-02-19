@@ -153,7 +153,7 @@ const AccountList = ({
           {isEditing ? (
             <input
               type="text"
-              name="name"
+              name="registeredDate"
               value={editedUser.registeredDate}
               onChange={handleInputChange}
               className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
@@ -184,8 +184,8 @@ const AccountList = ({
       {isOpen && (
         <div>
           <div className="grid grid-cols-[10%_1fr_10%] h-[37px] w-full text-main-green text-[14px] ">
-            <div className="w-[10%]"></div>
-            <div className="flex w-full items-center">
+            <div></div>
+            <div className="flex w-full items-center overflow-hidden">
               <span className="mr-1">소속: </span>
               {isEditing ? (
                 <input
@@ -201,8 +201,9 @@ const AccountList = ({
                   }}
                   className="h-full focus:outline-none border-b border-b-header-green"
                   style={{
-                    minWidth: `${organizationWidth}px`,
-                    maxWidth: "75%",
+                    width: `${organizationWidth}px`,
+                    minWidth: "fit-content",
+                    maxWidth: "60%",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -212,12 +213,12 @@ const AccountList = ({
                 <span className="flex items-center">{user.organization}</span>
               )}
             </div>
-            <div className="w-[10%]"></div>
+            <div></div>
           </div>
 
           <div className="grid grid-cols-[10%_1fr_10%] h-[37px] w-full text-main-green text-[14px] py-[5px]">
             <div></div>
-            <div className="flex w-full items-center">
+            <div className="flex w-full items-center overflow-hidden">
               <span className="mr-1">프로필 이미지:</span>
               {isEditing ? (
                 <input
@@ -235,7 +236,7 @@ const AccountList = ({
                   style={{
                     width: `${profileImageWidth}px`,
                     minWidth: "fit-content",
-                    maxWidth: "100%",
+                    maxWidth: "80%",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
