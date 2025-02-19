@@ -4,11 +4,10 @@ import SearchIcon from "../../../assets/icons/search.svg";
 import DeleteIcon from "../../../assets/icons/delete.svg";
 import ResotreIcon from "../../../assets/icons/restore_account.svg";
 import AccountList from "./AccountList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import { useNavigate, useSearchParams } from "react-router";
 
 interface AccountListProps {
   id: number;
@@ -60,17 +59,14 @@ const Account = () => {
   };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-  const navigate = useNavigate();
 
-  const [tabname] = useSearchParams();
-  const currentTab = tabname.get("tab") || "account";
+  const [userMenu, setUserMenu] = useState("active");
 
-  const handleButtonClick = (type: "account" | "account-inactive") => {
-    navigate(`/admin?tab=${type}`, { replace: true });
+  const handleButtonClick = (type: "active" | "inactive") => {
+    setUserMenu(type);
   };
-
   const filteredUsers = users.filter((user) =>
-    currentTab === "account" ? user.isActive : !user.isActive
+    userMenu === "active" ? user.isActive : !user.isActive
   );
 
   //페이지네이션
@@ -90,6 +86,10 @@ const Account = () => {
     setIsChecked((prev) => !prev);
   };
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [userMenu]);
+
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
       <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] bg-white flex flex-col  bg-white/60">
@@ -102,13 +102,13 @@ const Account = () => {
           <div className="flex gap-[10px]">
             <AdminButton
               text="활성 계정"
-              type={currentTab === "account" ? "green" : "white"}
-              onClick={() => handleButtonClick("account")}
+              type={userMenu === "active" ? "green" : "white"}
+              onClick={() => handleButtonClick("active")}
             />
             <AdminButton
               text="비활성 계정"
-              type={currentTab === "account-inactive" ? "green" : "white"}
-              onClick={() => handleButtonClick("account-inactive")}
+              type={userMenu === "inactive" ? "green" : "white"}
+              onClick={() => handleButtonClick("inactive")}
             />
           </div>
           <div className="flex gap-[10px]">
@@ -124,7 +124,7 @@ const Account = () => {
             />
           </div>
           <div className="flex gap-[5px] w-[80px] justify-end">
-            {currentTab === "account-inactive" && (
+            {userMenu === "account-inactive" && (
               <button>
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
