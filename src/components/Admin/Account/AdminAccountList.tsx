@@ -17,7 +17,7 @@ interface AccountListProps {
   isActive: boolean;
 }
 
-const AccountList = ({
+const AdminAccountList = ({
   user,
   index,
   onUpdateSubscription,
@@ -265,4 +265,4 @@ const AccountList = ({
   );
 };
 
-export default AccountList;
+export default AdminAccountList;
