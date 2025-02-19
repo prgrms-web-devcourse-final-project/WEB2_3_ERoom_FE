@@ -1,13 +1,13 @@
-import AdminButton from "../common/AdminButton";
-import Button from "../common/Button";
-import SearchIcon from "../../assets/icons/search.svg";
-import DeleteIcon from "../../assets/icons/delete.svg";
-import ResotreIcon from "../../assets/icons/restore_account.svg";
+import AdminButton from "../../common/AdminButton";
+import Button from "../../common/Button";
+import SearchIcon from "../../../assets/icons/search.svg";
+import DeleteIcon from "../../../assets/icons/delete.svg";
+import ResotreIcon from "../../../assets/icons/restore_account.svg";
 import AccountList from "./AccountList";
 import { useState } from "react";
-import Pagination from "./Pagination";
-import UnCheckBox from "../../assets/icons/unchecked_box.svg";
-import CheckBox from "../../assets/icons/checked_box.svg";
+import Pagination from "../Pagination";
+import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
+import CheckBox from "../../../assets/icons/checked_box.svg";
 import { useNavigate, useSearchParams } from "react-router";
 
 interface AccountListProps {
