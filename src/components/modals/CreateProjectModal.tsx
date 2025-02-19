@@ -1,10 +1,10 @@
 import Button from "../common/Button";
-import SelectCategory from "../CreateProjectModal/SelectCategory";
-import SelectMember from "../CreateProjectModal/SelectMember";
-import WordCloud from "../CreateProjectModal/WordCloud";
-import WriteProjectName from "../CreateProjectModal/WriteProjectName";
+import SelectCategory from "../EditProjectModal/SelectCategory";
+import SelectMember from "../EditProjectModal/SelectMember";
+import WordCloud from "../EditProjectModal/WordCloud";
+import WriteProjectName from "../EditProjectModal/WriteProjectName";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface CreateProjectModalProps {
   setIsCreateProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
