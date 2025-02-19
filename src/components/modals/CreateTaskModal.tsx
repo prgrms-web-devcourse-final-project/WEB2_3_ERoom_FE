@@ -41,6 +41,7 @@ const CreateTaskModal = ({ onClose }: { onClose: () => void }) => {
       <div>
         <span>일정</span>
         <div className="flex flex-col gap-[10px]">
+          {/* 일정 선택 컴포넌트  */}
           <DateTimeSelect
             title="시작"
             selectedDate={selectedStartDate}
