@@ -11,7 +11,7 @@ import endPageBtnOff from "../../assets/icons/end_page_off.svg";
 interface PaginationProps {
   totalPages: number;
   onPageChange: (selectedPage: number) => void;
-  menu: string;
+  menu?: string;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -24,7 +24,9 @@ const Pagination: React.FC<PaginationProps> = ({
   const [currentGroupStart, setCurrentGroupStart] = useState(1); // 현재 그룹의 시작 페이지
 
   useEffect(() => {
-    setCurrentPage(1);
+    if (menu) {
+      setCurrentPage(1);
+    }
   }, [menu]);
 
   // 현재 그룹의 끝 페이지 계산

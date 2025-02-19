@@ -33,7 +33,6 @@ const ProjectList = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({ ...project });
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDropdown = () => {
     if (isEditing) return;
