@@ -3,11 +3,11 @@ import Button from "../../common/Button";
 import SearchIcon from "../../../assets/icons/search.svg";
 import DeleteIcon from "../../../assets/icons/delete.svg";
 import ResotreIcon from "../../../assets/icons/restore_account.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import { useNavigate, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import ProjectList from "./ProjectList";
 
 interface ProjectsListType {
@@ -56,17 +56,18 @@ const Project = () => {
   };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-  const navigate = useNavigate();
 
   const [tabname] = useSearchParams();
   const currentTab = tabname.get("tab");
 
-  const handleButtonClick = (type: "project" | "project-inactive") => {
-    navigate(`/admin?tab=${type}`, { replace: true });
+  const [projectMenu, setProjectMenu] = useState("active");
+
+  const handleButtonClick = (type: "active" | "inactive") => {
+    setProjectMenu(type);
   };
 
-  const filteredProjects = projects.filter((project) =>
-    currentTab === "project" ? project.isActive : !project.isActive
+  const filterProjects = projects.filter((project) =>
+    projectMenu === "active" ? project.isActive : !project.isActive
   );
 
   //페이지네이션
@@ -75,7 +76,8 @@ const Project = () => {
   const totalPages = Math.ceil(projects.length / itemsPerPage);
 
   // 현재 페이지에 해당하는 데이터만 필터링
-  const paginatedProjects = filteredProjects.slice(
+  // 활성 프로젝트
+  const paginatedProjects = filterProjects.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -86,9 +88,13 @@ const Project = () => {
     setIsChecked((prev) => !prev);
   };
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [projectMenu]);
+
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
-      <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] bg-white flex flex-col  bg-white/60">
+      <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] flex flex-col bg-white/60">
         <div className="pl-[20px] mb-[30px]">
           <span className="text-[22px] font-bold text-main-green">
             프로젝트 정보
@@ -98,13 +104,13 @@ const Project = () => {
           <div className="flex gap-[10px]">
             <AdminButton
               text="활성 프로젝트"
-              type={currentTab === "project" ? "green" : "white"}
-              onClick={() => handleButtonClick("project")}
+              type={projectMenu === "active" ? "green" : "white"}
+              onClick={() => handleButtonClick("active")}
             />
             <AdminButton
               text="비활성 프로젝트"
-              type={currentTab === "project-inactive" ? "green" : "white"}
-              onClick={() => handleButtonClick("project-inactive")}
+              type={projectMenu === "inactive" ? "green" : "white"}
+              onClick={() => handleButtonClick("inactive")}
             />
           </div>
           <div className="flex gap-[10px]">
@@ -120,7 +126,7 @@ const Project = () => {
             />
           </div>
           <div className="flex gap-[5px] w-[80px] justify-end">
-            {currentTab === "account-inactive" && (
+            {projectMenu === "inactive" && (
               <button>
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
@@ -164,7 +170,11 @@ const Project = () => {
           ))}
         </div>
         <div className="flex justify-center items-center mt-auto mb-[30px]">
-          <Pagination totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            menu={projectMenu}
+          />
         </div>
       </div>
     </div>
