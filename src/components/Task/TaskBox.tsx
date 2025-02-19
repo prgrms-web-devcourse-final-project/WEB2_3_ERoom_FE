@@ -10,7 +10,7 @@ const TaskBox = ({ isAll = true }: TaskBoxProps) => {
   if (isAll) {
     return (
       <div
-        className="w-[320px] h-[120px] bg-white border border-main-green01 
+        className="w-[320px] h-[120px] bg-white border border-main-green02
       px-3 py-2 flex flex-col justify-center gap-2"
       >
         <div className="flex justify-between items-center">
