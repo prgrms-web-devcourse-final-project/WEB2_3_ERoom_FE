@@ -4,9 +4,9 @@ import SaveIcon from "../../../assets/icons/save.svg";
 import { twMerge } from "tailwind-merge";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import ProjectStatusBox from "./ProjectStatusBox";
 import { PROGRESS_STATUS } from "../../../constants/status";
 import { progressType } from "../../../constants/progressType";
+import ProgressStatusBox from "../ProgressStatusBox";
 
 interface ProjectsListType {
   id: number;
@@ -20,7 +20,7 @@ interface ProjectsListType {
   tag3: string;
 }
 
-const ProjectList = ({
+const AdminProjectList = ({
   project,
   index,
   onUpdateProject,
@@ -116,7 +116,7 @@ const ProjectList = ({
         <div className="flex justify-center items-center relative">
           {/* 드롭다운박스 */}
           {isEditing ? (
-            <ProjectStatusBox status={status} setStatus={setStatus} />
+            <ProgressStatusBox status={status} setStatus={setStatus} />
           ) : (
             <span>{status}</span>
           )}
@@ -161,4 +161,4 @@ const ProjectList = ({
   );
 };
 
-export default ProjectList;
+export default AdminProjectList;

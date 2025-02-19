@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import { useSearchParams } from "react-router";
-import ProjectList from "./ProjectList";
+import AdminProjectList from "./AdminProjectList";
 
 interface ProjectsListType {
   id: number;
@@ -23,7 +22,7 @@ interface ProjectsListType {
   isActive: boolean;
 }
 
-const Project = () => {
+const AdminProject = () => {
   // 더미 데이터
   const dummyProjects: ProjectsListType[] = Array.from(
     { length: 200 },
@@ -56,10 +55,6 @@ const Project = () => {
   };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-
-  const [tabname] = useSearchParams();
-  const currentTab = tabname.get("tab");
-
   const [projectMenu, setProjectMenu] = useState("active");
 
   const handleButtonClick = (type: "active" | "inactive") => {
@@ -161,7 +156,7 @@ const Project = () => {
             </div>
           </div>
           {paginatedProjects.map((project, index) => (
-            <ProjectList
+            <AdminProjectList
               key={project.id}
               project={project}
               index={(currentPage - 1) * itemsPerPage + index}
@@ -181,4 +176,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default AdminProject;

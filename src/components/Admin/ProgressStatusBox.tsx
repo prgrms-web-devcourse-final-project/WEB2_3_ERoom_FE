@@ -1,9 +1,8 @@
 import { twMerge } from "tailwind-merge";
-import { progressType } from "../../../constants/progressType";
 
 const STATUS_NAME = ["진행 중", "진행 예정", "진행 완료"];
 
-interface ProjectStatusBoxProps {
+interface ProgressStatusBoxProps {
   width?: string;
   height?: string;
   status: string;
@@ -15,12 +14,7 @@ const ProgressStatusBox = ({
   height,
   status,
   setStatus,
-}: ProjectStatusBoxProps) => {
-  const getType = (name: string) => {
-    if (name === "진행 중") return "IN_PROGRESS";
-    else if (name === "진행 예정") return "";
-    else return "COMPLETED";
-  };
+}: ProgressStatusBoxProps) => {
   const handleItemClick = (name: string) => {
     setStatus(name);
   };
