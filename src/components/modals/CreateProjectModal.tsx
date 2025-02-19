@@ -4,7 +4,7 @@ import SelectMember from "../CreateProjectModal/SelectMember";
 import WordCloud from "../CreateProjectModal/WordCloud";
 import WriteProjectName from "../CreateProjectModal/WriteProjectName";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface CreateProjectModalProps {
   setIsCreateProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
