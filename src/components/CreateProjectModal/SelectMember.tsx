@@ -1,7 +1,7 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-interface TeammateType {
+interface MembersType {
   id: number;
   userName: string;
   email: string;
@@ -12,17 +12,17 @@ interface TeammateType {
   delete: string;
 }
 
-interface SelectTeammateProps {
-  data: TeammateType[];
+interface SelectMembersProps {
+  data: MembersType[];
 }
 
-const SelectTeammate = ({ data }: SelectTeammateProps) => {
+const SelectMember = ({ data }: SelectMembersProps) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
   // 필터링된 팀원 목록 상태
-  const [filteredTeammate, setFilteredTeammate] = useState<TeammateType[]>([]);
+  const [filteredMembers, setFilteredMembers] = useState<MembersType[]>([]);
   // 선택된 팀원 상태 관리
-  const [selectedTeammate, setSelectedTeammate] = useState<TeammateType[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<MembersType[]>([]);
 
   /* 검색결과 표시 함수 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,58 +30,65 @@ const SelectTeammate = ({ data }: SelectTeammateProps) => {
     setInputValue(value);
 
     if (value.trim() === "") {
-      setFilteredTeammate([]);
+      setFilteredMembers([]);
       return;
     }
 
     // 팀원 배열에서 입력값을 포함하는 프로젝트 필터링
     const filtered = data
-      .filter((teammate) =>
-        teammate.userName?.toLowerCase().includes(value.toLowerCase())
+      .filter((member) =>
+        member.userName?.toLowerCase().includes(value.toLowerCase())
       )
       .filter(
-        (teammate) =>
-          !selectedTeammate.some((selected) => selected.id === teammate.id)
-      );
-    setFilteredTeammate(filtered);
+        (member) =>
+          !selectedMembers.some((selected) => selected.id === member.id)
+      )
+      .sort((a, b) => a.userName.localeCompare(b.userName));
 
-    setFilteredTeammate(filtered);
+    setFilteredMembers(filtered);
   };
 
   /* 검색 결과 클릭 시, 선택된 팀원 업데이트 */
-  const handleTeammateClick = (teammate: TeammateType) => {
+  const handleMemberClick = (member: MembersType) => {
     // 이미 선택된 팀원이 있는지 확인
-    const isSelected = selectedTeammate.some(
-      (selected) => selected.id === teammate.id
+    const isSelected = selectedMembers.some(
+      (selected) => selected.id === member.id
     );
-
     if (!isSelected) {
-      setSelectedTeammate((prevSelected) => [...prevSelected, teammate]);
+      setSelectedMembers((prevSelected) =>
+        [...prevSelected, member].sort((a, b) =>
+          a.userName.localeCompare(b.userName)
+        )
+      );
     }
 
     // 필터된 팀원 목록에서 선택된 팀원 제외
-    setFilteredTeammate((prevFiltered) =>
-      prevFiltered.filter((filtered) => filtered.id !== teammate.id)
+    setFilteredMembers((prevFiltered) =>
+      prevFiltered.filter((filtered) => filtered.id !== member.id)
     );
   };
 
   /* 취소 버튼 클릭 시 선택된 팀원에서 제거 */
   const handleCancelClick = (id: number) => {
-    setSelectedTeammate((prevSelected) =>
-      prevSelected.filter((teammate) => teammate.id !== id)
+    setSelectedMembers((prevSelected) =>
+      prevSelected
+        .filter((member) => member.id !== id)
+        .sort((a, b) => a.userName.localeCompare(b.userName))
     );
 
     // 취소 후 필터된 팀원 목록에 다시 추가
-    const removedTeammate = selectedTeammate.find(
-      (teammate) => teammate.id === id
-    );
-    if (removedTeammate) {
-      setFilteredTeammate((prevFiltered) => [...prevFiltered, removedTeammate]);
+    const removedMember = selectedMembers.find((member) => member.id === id);
+    if (removedMember) {
+      setFilteredMembers((prevFiltered) =>
+        [...prevFiltered, removedMember].sort((a, b) =>
+          a.userName.localeCompare(b.userName)
+        )
+      );
     }
   };
   // console.log(data);
-  console.log(selectedTeammate);
-  console.log(filteredTeammate);
+  // console.log(selectedMembers);
+  // console.log(filteredMembers);
 
   return (
     <div className="flex flex-col w-full gap-[5px]">
@@ -104,50 +111,50 @@ const SelectTeammate = ({ data }: SelectTeammateProps) => {
         >
           {/* (검색결과) 선택된 팀원 */}
           {inputValue &&
-            selectedTeammate.map((teammate) => (
+            selectedMembers.map((member) => (
               <div
-                key={teammate.id}
+                key={member.id}
                 className="flex justify-between items-center font-semibold
               w-full px-[10px] py-[5px]"
               >
                 {/* 이름 & 이메일 */}
                 <div>
-                  <div className="text-main-green">@{teammate.userName}</div>
-                  <div className="text-gray01">{teammate.email}</div>
+                  <div className="text-main-green">@{member.userName}</div>
+                  <div className="text-gray01">{member.email}</div>
                 </div>
                 {/* 취소버튼 */}
                 <img
                   src={cancelButton}
-                  onClick={() => handleCancelClick(teammate.id)}
+                  onClick={() => handleCancelClick(member.id)}
                   className="cursor-pointer"
                 />
               </div>
             ))}
 
           {/* (검색결과) 필터된 팀원 */}
-          {filteredTeammate.map((teammate) => (
+          {filteredMembers.map((member) => (
             <div
-              key={teammate.id}
+              key={member.id}
               className="flex justify-between items-center cursor-pointer
               font-medium"
-              onClick={() => handleTeammateClick(teammate)}
+              onClick={() => handleMemberClick(member)}
             >
               {/* 이름 & 이메일 */}
               <div className="w-full px-[10px] py-[5px]">
-                <div className="text-main-green">@{teammate.userName}</div>
-                <div className="text-gray01">{teammate.email}</div>
+                <div className="text-main-green">@{member.userName}</div>
+                <div className="text-gray01">{member.email}</div>
               </div>
             </div>
           ))}
 
           {/* (선택결과) 선택된 팀원 이미지 */}
           <div className="flex">
-            {selectedTeammate.map((teammate) => (
+            {selectedMembers.map((member) => (
               <div
-                key={teammate.id}
+                key={member.id}
                 className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
               border-[1px] border-main-green"
-                style={{ backgroundImage: `url(${teammate.profileImage})` }}
+                style={{ backgroundImage: `url(${member.profileImage})` }}
               >
                 <div
                   className="flex justify-center items-center
@@ -155,7 +162,7 @@ const SelectTeammate = ({ data }: SelectTeammateProps) => {
                 text-white text-[14px] text-center font-medium
                   opacity-0 hover:opacity-100 transition-opacity duration-300"
                 >
-                  {teammate.userName}
+                  {member.userName}
                 </div>
               </div>
             ))}
@@ -166,4 +173,4 @@ const SelectTeammate = ({ data }: SelectTeammateProps) => {
   );
 };
 
-export default SelectTeammate;
+export default SelectMember;
