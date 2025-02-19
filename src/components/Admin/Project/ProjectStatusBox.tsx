@@ -1,29 +1,20 @@
 import { twMerge } from "tailwind-merge";
+import { progressType } from "../../../constants/progressType";
 
 const STATUS_NAME = ["진행 중", "진행 예정", "진행 완료"];
 
 interface ProjectStatusBoxProps {
+  width?: string;
+  height?: string;
   status: string;
   setStatus: React.Dispatch<React.SetStateAction<string>>;
-  setEditedProject: React.Dispatch<
-    React.SetStateAction<{
-      id: number;
-      projectName: string;
-      projectStatus: string;
-      createdAt: string;
-      startDate: string;
-      endDate: string;
-      tag1: string;
-      tag2: string;
-      tag3: string;
-    }>
-  >;
 }
 
-const ProjectStatusBox = ({
+const ProgressStatusBox = ({
+  width,
+  height,
   status,
   setStatus,
-  setEditedProject,
 }: ProjectStatusBoxProps) => {
   const getType = (name: string) => {
     if (name === "진행 중") return "IN_PROGRESS";
@@ -32,22 +23,27 @@ const ProjectStatusBox = ({
   };
   const handleItemClick = (name: string) => {
     setStatus(name);
-    setEditedProject((prev) => ({ ...prev, projectStatus: getType(name) }));
   };
 
   return (
     <ul
-      className="border border-main-green w-[100px]
-      bg-main-green03 text-main-green absolute top-0"
+      className={twMerge(
+        `border border-main-green w-[100px]
+      bg-main-green03 text-main-green absolute top-0 z-10`,
+        width
+      )}
     >
       {STATUS_NAME.map((name, idx) => {
         return (
           <li
             key={idx}
-            className={twMerge(`${
-              status === name && "bg-main-green02"
-            } h-[25px] flex items-center justify-center
-            border border-main-green02 hover:bg-main-green02/50`)}
+            className={twMerge(
+              `${
+                status === name && "bg-main-green02"
+              } h-[25px] flex items-center justify-center
+            border border-main-green02 hover:bg-main-green02/50 cursor-pointer`,
+              height
+            )}
             onClick={() => handleItemClick(name)}
           >
             {name}
@@ -58,4 +54,4 @@ const ProjectStatusBox = ({
   );
 };
 
-export default ProjectStatusBox;
+export default ProgressStatusBox;

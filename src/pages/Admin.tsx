@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router";
 import DashBoard from "../components/Admin/DashBoard";
 import Account from "../components/Admin/Account/Account";
 import Project from "../components/Admin/Project/Project";
+import AdminTask from "../components/Admin/Task/AdminTask";
 
 const Admin = () => {
   const [tabName] = useSearchParams();
@@ -14,6 +15,7 @@ const Admin = () => {
       {(tabName.get("tab") === "account" ||
         tabName.get("tab") === "account-inactive") && <Account />}
       {tabName.get("tab") === "project" && <Project />}
+      {tabName.get("tab") === "task" && <AdminTask />}
     </div>
   );
 };
