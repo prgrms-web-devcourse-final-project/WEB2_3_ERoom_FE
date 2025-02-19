@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import ProjectProgressBar from "./ProjectProgressBar";
 import ParticipantIcon from "../common/ParticipantIcon";
 import Button from "../common/Button";
@@ -9,8 +9,13 @@ interface ProjectListBoxProps {
 }
 
 const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white border border-[#CAD2CB] w-full pb-3">
+    <div
+      className="bg-white border border-[#CAD2CB] w-full pb-3 cursor-pointer"
+      onClick={() => navigate(`/project-room/${projectId}`)}
+    >
       <div className="flex gap-5 items-center px-5 font-bold ">
         <p className="text-[50px] font-medium text-main-green02 font-notoTC">
           10
@@ -50,12 +55,14 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
               text="수정"
               size="md"
               css="h-[40px] w-[48px] border-main-green02 text-main-green01"
+              onClick={(e) => e.stopPropagation()}
             />
             {filterProject === "진행 중인 프로젝트" && (
               <Link
                 to={`/meeting-room/${projectId}`}
                 className="h-[40px] bg-[#FFFCE2] text-main-green01 flex items-center justify-center
           border border-main-green01 px-[10px] font-bold rounded-sm"
+                onClick={(e) => e.stopPropagation()}
               >
                 미팅룸 입장
               </Link>
@@ -67,6 +74,7 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
                 text="나가기"
                 size="md"
                 css="h-[40px] w-[65px] border-[#ff6854]/70 bg-white text-[#ff6854]"
+                onClick={(e) => e.stopPropagation()}
               />
             )}
           </div>
