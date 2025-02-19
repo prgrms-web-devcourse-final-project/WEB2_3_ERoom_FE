@@ -8,7 +8,7 @@ import { useState } from "react";
 import Pagination from "./Pagination";
 import UnCheckBox from "../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../assets/icons/checked_box.svg";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 interface AccountListProps {
   id: number;
@@ -61,10 +61,9 @@ const Account = () => {
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const searchParams = new URLSearchParams(location.search);
-  const currentTab = searchParams.get("tab") || "account";
+  const [tabname] = useSearchParams();
+  const currentTab = tabname.get("tab") || "account";
 
   const handleButtonClick = (type: "account" | "account-inactive") => {
     navigate(`/admin?tab=${type}`, { replace: true });
@@ -124,14 +123,14 @@ const Account = () => {
               css="h-[27px] text-[14px] text-main-beige01 bg-header-green"
             />
           </div>
-          <div className="flex gap-[5px]">
+          <div className="flex gap-[5px] w-[80px] justify-end">
             {currentTab === "account-inactive" && (
               <button>
-                <img src={ResotreIcon} />
+                <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
             )}
             <button>
-              <img src={DeleteIcon} />
+              <img src={DeleteIcon} alt="계정 삭제 버튼" />
             </button>
           </div>
         </div>
