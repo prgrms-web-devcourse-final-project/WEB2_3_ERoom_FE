@@ -8,21 +8,23 @@ const AllProjectOutModal = ({
 }: AllProjectOutModalProps) => {
   return (
     <div
-      className="w-[450px] h-[155px] bg-white
-      flex flex-col justify-center items-center gap-3"
+      className="w-[423px]] h-[174px] bg-white px-[100px] py-[50px]
+      flex flex-col justify-center items-center gap-[30px]"
       onClick={(e) => e.stopPropagation()}
     >
-      <p>정말로 모든 프로젝트를 나가시겠습니까?</p>
-      <div className="flex gap-2">
+      <p className="text-header-red font-bold">
+        정말로 모든 프로젝트를 나가시겠습니까?
+      </p>
+      <div className="flex gap-2 w-[112px]">
         <Button
           text="나가기"
           size="md"
-          css="text-white w-[60px] bg-[#ff6854] border-none"
+          css="text-white w-full text-[14px] bg-[#ff6854] border-none"
         />
         <Button
           text="취소"
           size="md"
-          css="text-main-beige01 bg-[#2B3E34] w-[45px] border-none"
+          css="text-main-beige01 w-full text-[14px] bg-[#2B3E34] border-none"
           onClick={() => setIsAllProjectOutModal(false)}
         />
       </div>
