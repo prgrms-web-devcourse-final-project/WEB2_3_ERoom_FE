@@ -36,6 +36,7 @@ const DateTimeSelect = ({
   const nowHours12 = hours24 % 12 || 12;
   // AM/PM 판별
   const nowAmPm = hours24 >= 12 ? "PM" : "AM";
+  const nowMinute = now.getMinutes();
 
   // 각 드롭다운별 ref 생성
   const dropdownRefs = {
@@ -247,7 +248,9 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("hour")}
             >
-              {selectedDate?.hour || String(nowHours12).padStart(2, "0")}
+              {selectedDate?.hour || title === "시작"
+                ? String(nowHours12).padStart(2, "0")
+                : String(nowHours12 + 1).padStart(2, "0")}
             </div>
             {openDropdown === "hour" && (
               <ul
@@ -267,7 +270,7 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("minute")}
             >
-              {selectedDate?.minute || "00"}
+              {selectedDate?.minute || String(nowMinute).padStart(2, "0")}
             </div>
             {openDropdown === "minute" && (
               <ul
