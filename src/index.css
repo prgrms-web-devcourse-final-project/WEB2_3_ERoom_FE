@@ -44,6 +44,7 @@
 /* 스크롤바 커스텀 */
 .scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
