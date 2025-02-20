@@ -1,15 +1,29 @@
-import { useSearchParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import Button from "../../components/common/Button";
 import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
+import { useQuery } from "@tanstack/react-query";
+import { getProjectDetail } from "../../utils/api/getProjectDetail";
 // import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
 
 const ProjectRoomDetail = () => {
+  const { projectId } = useParams();
   const [searchParams] = useSearchParams();
   const [category, setCategory] = useState(searchParams.get("category"));
   const [isCreateTask, setIsCreateTask] = useState(false);
+
+  console.log(projectId);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["ProjectDetail"],
+    queryFn: () => getProjectDetail(projectId!),
+  });
+
+  useEffect(() => {
+    console.log(data, isLoading);
+  }, [data]);
 
   const handleCreateTaskModal = () => {
     setIsCreateTask((prev) => !prev);

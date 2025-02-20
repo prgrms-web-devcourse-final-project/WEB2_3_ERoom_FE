@@ -1,10 +1,17 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
 import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
+import { useQuery } from "@tanstack/react-query";
+import { getProjectList } from "../../utils/api/getProjectList";
+
+interface ProjectRoomData {
+  completed: ProjectListType[];
+  inProgress: ProjectListType[];
+  beforeStart: ProjectListType[];
+}
 
 const FILTER_PROJECT: (
   | "진행 완료 프로젝트"
@@ -24,8 +31,36 @@ const ProjectRoom = () => {
     "진행 완료 프로젝트" | "진행 중인 프로젝트" | "진행 예정 프로젝트"
   >("진행 중인 프로젝트");
 
-  // 임시 배열
-  const [arr, setArr] = useState(Array.from({ length: 20 }, (_, idx) => idx));
+  // 프로젝트리스트 데이터
+  const { data: projectRoomList, isLoading } = useQuery<ProjectRoomData>({
+    queryKey: ["ProjectRoomList"],
+    queryFn: async () => {
+      const dataList: ProjectListType[] = await getProjectList();
+
+      const inProgressData = dataList.filter(
+        (list) => list.status === "IN_PROGRESS"
+      );
+      const completedData = dataList.filter(
+        (list) => list.status === "COMPLETED"
+      );
+      const beforeStartData = dataList.filter(
+        (list) => list.status === "BEFORE_START"
+      );
+
+      return {
+        completed: completedData,
+        inProgress: inProgressData,
+        beforeStart: beforeStartData,
+      };
+    },
+  });
+
+  useEffect(() => {
+    console.log(projectRoomList, isLoading);
+    if (projectRoomList) {
+      console.log(projectRoomList.completed);
+    }
+  }, [projectRoomList]);
 
   // 전체 프로젝트 나가기 모달
   const [isAllProjectOutModal, setIsAllProjectOutModal] =
@@ -100,13 +135,36 @@ const ProjectRoom = () => {
           className="w-full max-h-[calc(100vh-220px)] flex flex-col gap-4 overflow-y-scroll scrollbar-none
           flex-grow  py-10 rounded-[10px]"
         >
-          {arr.map((_, idx) => (
-            <ProjectListBox
-              key={idx}
-              projectId={idx + 1}
-              filterProject={filterProject}
-            />
-          ))}
+          {filterProject === "진행 예정 프로젝트" &&
+            projectRoomList?.beforeStart.map((project, idx) => (
+              <ProjectListBox
+                key={project.id}
+                idx={idx}
+                projectId={+project.id}
+                filterProject={filterProject}
+                projectInfo={project}
+              />
+            ))}
+          {filterProject === "진행 중인 프로젝트" &&
+            projectRoomList?.inProgress.map((project, idx) => (
+              <ProjectListBox
+                key={project.id}
+                idx={idx}
+                projectId={+project.id}
+                filterProject={filterProject}
+                projectInfo={project}
+              />
+            ))}
+          {filterProject === "진행 완료 프로젝트" &&
+            projectRoomList?.completed.map((project, idx) => (
+              <ProjectListBox
+                key={project.id}
+                idx={idx}
+                projectId={+project.id}
+                filterProject={filterProject}
+                projectInfo={project}
+              />
+            ))}
         </div>
       </div>
 
