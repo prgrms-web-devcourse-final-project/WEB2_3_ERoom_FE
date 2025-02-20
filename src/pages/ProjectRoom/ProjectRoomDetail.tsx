@@ -8,6 +8,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjectDetail } from "../../utils/api/getProjectDetail";
 // import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
 
+interface AllTasksType {
+  IN_PROGRESS: TaskType[];
+  COMPLETED: TaskType[];
+  BEFORE_START: TaskType[];
+  HOLD: TaskType[];
+}
+
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();
@@ -16,14 +23,44 @@ const ProjectRoomDetail = () => {
 
   console.log(projectId);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["ProjectDetail"],
-    queryFn: () => getProjectDetail(projectId!),
+  const { data: projectDetailList, isLoading } =
+    useQuery<ProjectDetailListType>({
+      queryKey: ["ProjectDetail"],
+      queryFn: () => getProjectDetail(projectId!),
+    });
+
+  const [allTasks, setAllTasks] = useState<AllTasksType>({
+    IN_PROGRESS: [],
+    COMPLETED: [],
+    BEFORE_START: [],
+    HOLD: [],
   });
+  const [manageTasks, setManageTasks] = useState([]);
 
   useEffect(() => {
-    console.log(data, isLoading);
-  }, [data]);
+    console.log(projectDetailList, isLoading);
+    if (projectDetailList) {
+      // 전체 업무 분류
+      const tasks = projectDetailList.tasks;
+
+      const tasksGroup = tasks.reduce(
+        (acc: AllTasksType, cur: TaskType) => {
+          acc[cur.status]?.push(cur);
+          return acc;
+        },
+        {
+          IN_PROGRESS: [],
+          COMPLETED: [],
+          BEFORE_START: [],
+          HOLD: [],
+        }
+      );
+
+      setAllTasks(tasksGroup);
+
+      console.log(tasksGroup);
+    }
+  }, [projectDetailList]);
 
   useEffect(() => {
     console.log(searchParams.get("category"));
@@ -66,17 +103,13 @@ const ProjectRoomDetail = () => {
           className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
         >
-          <TaskList name="진행 중" />
-          <TaskList name="진행 예정" />
-          <TaskList name="진행 완료" />
-          <TaskList name="보류" />
-          <TaskList name="철회" />
-          <TaskList name="철회" />
-          <TaskList name="철회" />
-          <TaskList name="철회" />
-          <TaskList name="철회" />
-          <TaskList name="철회" />
+          <TaskList name="진행 중" taskInfo={allTasks.IN_PROGRESS} />
+          <TaskList name="진행 예정" taskInfo={allTasks.BEFORE_START} />
+          <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
+          <TaskList name="보류" taskInfo={allTasks.HOLD} />
         </div>
+
+        // </>
       )}
       {/* 담당자 업무 리스트 */}
       {category === "manager" && (
@@ -84,13 +117,13 @@ const ProjectRoomDetail = () => {
           className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
         >
-          <TaskList name="박선형" isAll={false} />
+          {/* <TaskList name="박선형" isAll={false} />
           <TaskList name="한규혁" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
+          <TaskList name="성송원" isAll={false} /> */}
         </div>
       )}
 
