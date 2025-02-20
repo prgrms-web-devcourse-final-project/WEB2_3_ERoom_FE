@@ -109,7 +109,7 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
 
   return (
     <div
-      className="bg-white w-[350px] min-h-[600px] h-full 
+      className="bg-white w-[350px] max-h-full
     flex flex-col gap-[20px] px-[40px] py-[30px] overflow-y-scroll scrollbar"
     >
       <div className="flex justify-center items-center">
