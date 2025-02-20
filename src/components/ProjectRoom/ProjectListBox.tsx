@@ -167,7 +167,7 @@ const ProjectListBox = ({
         </div>
 
         {/* 태그 및 미팅룸 버튼 */}
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           {/* 태그 */}
           <ul className="flex gap-2 text-main-beige text-[14px]">
             <li
