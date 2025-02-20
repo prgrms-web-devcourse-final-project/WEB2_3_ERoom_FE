@@ -34,7 +34,7 @@ const ProjectRoom = () => {
       style={{ maxHeight: "calc(100vh - 50px)" }}
     >
       <div className="bg-white/80 w-full h-full flex flex-col items-center gap-4 px-10">
-        <div className="flex items-center gap-2 justify-around w-full">
+        <div className="flex items-center gap-2 justify-between w-full">
           {/* 프로젝트 필터링 */}
           <ul
             className="flex justify-start items-center gap-5 h-[70px] text-[18px]
