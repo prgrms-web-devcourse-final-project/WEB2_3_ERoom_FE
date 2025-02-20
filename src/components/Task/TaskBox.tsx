@@ -12,7 +12,7 @@ const TaskBox = ({ isAll = true, onClick }: TaskBoxProps) => {
     return (
       <div
         className="w-[320px] h-[120px] bg-white border border-main-green02
-      px-3 py-2 flex flex-col justify-center gap-2"
+        px-3 py-2 flex flex-col justify-center gap-2 cursor-pointer"
         onClick={onClick}
       >
         <div className="flex justify-between items-center">
@@ -49,10 +49,11 @@ const TaskBox = ({ isAll = true, onClick }: TaskBoxProps) => {
     );
   } else {
     // 개인 업무박스
+    /* 로그인 유저의 업무인지 확인하여 편집가능하게 해야 함 */
     return (
       <div
         className="w-[300px] h-[80px] bg-white border border-main-green02 
-  px-3 py-2 flex flex-col justify-center gap-2"
+        px-3 py-2 flex flex-col justify-center gap-2"
       >
         <div className="flex justify-between items-center">
           <p className="font-bold">업무명</p>
