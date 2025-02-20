@@ -105,10 +105,13 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
 
   const [selectedStatus, setSelectedStatus] = useState("진행예정");
 
-  const statusOptions = ["진행완료", "진행 중", "진행예정", "보류", "철회"];
+  const statusOptions = ["진행완료", "진행 중", "진행예정", "보류"];
 
   return (
-    <div className="bg-white w-[350px] min-h-[600px] h-fix flex flex-col gap-[20px] px-[40px] py-[30px] ">
+    <div
+      className="bg-white w-[350px] min-h-[600px] h-full 
+    flex flex-col gap-[20px] px-[40px] py-[30px] overflow-y-scroll scrollbar"
+    >
       <div className="flex justify-center items-center">
         <span className="text-[18px] font-bold">업무 생성</span>
       </div>
@@ -136,14 +139,14 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-[5px]">
         <span className="font-bold text-[16px] text-main-green">진행상태</span>
         <div className="flex flex-col gap-[5px]">
           <div className="flex gap-[5px]">
-            {statusOptions.slice(0, 3).map((status) => (
+            {statusOptions.slice(0, 2).map((status) => (
               <button
                 key={status}
-                className={`w-[80px] h-[27px] font-medium text-[14px] flex justify-center items-center 
+                className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
               ${
                 selectedStatus === status
                   ? "bg-main-green01 text-main-green"
@@ -156,13 +159,13 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
             ))}
           </div>
           <div className="flex gap-[5px]">
-            {statusOptions.slice(3).map((status) => (
+            {statusOptions.slice(2).map((status) => (
               <button
                 key={status}
-                className={`w-[80px] h-[27px] font-medium text-[14px] flex justify-center items-center 
+                className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
               ${
                 selectedStatus === status
-                  ? "bg-main-green01 text-main-green"
+                  ? "bg-main-green01 text-main-beige02"
                   : "bg-gray02 text-gray01"
               }`}
                 onClick={() => setSelectedStatus(status)}
