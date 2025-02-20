@@ -32,7 +32,7 @@ const WriteProjectName = () => {
         className="w-full py-[5px]
         border-[1px] border-gray01 rounded-[5px] text-center
         font-bold text-[14px]"
-        placeholder="프로젝트 검색"
+        placeholder="프로젝트명을 작성해주세요."
         value={inputValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
