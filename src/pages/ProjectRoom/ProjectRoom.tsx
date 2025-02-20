@@ -4,13 +4,20 @@ import { twMerge } from "tailwind-merge";
 import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
 import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
-import CreateProjectModal from "../../components/modals/CreateProjectModal";
+import EditProjectModal from "../../components/modals/EditProjectModal";
 
 const FILTER_PROJECT: (
   | "진행 완료 프로젝트"
   | "진행 중인 프로젝트"
   | "진행 예정 프로젝트"
 )[] = ["진행 완료 프로젝트", "진행 중인 프로젝트", "진행 예정 프로젝트"];
+
+// (임시) 프로젝트 박스 카테고리 데이터 기본 값
+const selectedProjectData = {
+  cate: "",
+  subcate1: [],
+  subcate2: [],
+};
 
 const ProjectRoom = () => {
   const [filterProject, setFilterProject] = useState<
@@ -25,8 +32,7 @@ const ProjectRoom = () => {
     useState<boolean>(false);
 
   // 프로젝트 생성 모달
-  const [isCreateProjectModal, setIsCreateProjectModal] =
-    useState<boolean>(false);
+  const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
 
   return (
     <div
@@ -68,7 +74,7 @@ const ProjectRoom = () => {
                 text="+ 프로젝트 생성"
                 size="md"
                 css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2"
-                onClick={() => setIsCreateProjectModal(true)}
+                onClick={() => setIsEditProjectModal(true)}
               />
             </div>
           )}
@@ -117,14 +123,16 @@ const ProjectRoom = () => {
       )}
 
       {/* 프로젝트 생성 모달 */}
-      {isCreateProjectModal && (
+      {isEditProjectModal && (
         <div
           className="absolute inset-0 w-screen h-fit min-h-screen
           flex justify-center items-center bg-black/70"
-          onClick={() => setIsCreateProjectModal(false)}
+          onClick={() => setIsEditProjectModal(false)}
         >
-          <CreateProjectModal
-            setIsCreateProjectModal={setIsCreateProjectModal}
+          <EditProjectModal
+            selectedProjectData={selectedProjectData}
+            setIsEditProjectModal={setIsEditProjectModal}
+            title="프로젝트 생성"
           />
         </div>
       )}

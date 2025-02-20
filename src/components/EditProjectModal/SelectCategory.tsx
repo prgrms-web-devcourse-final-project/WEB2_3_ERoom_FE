@@ -76,9 +76,7 @@ const SelectCategory = ({
     });
   };
 
-  // console.log(
-  //   categoryData.filter((data) => data.name === selectedData.cate)[0]
-  // );
+  console.log(selectedData);
 
   return (
     <div className="w-full flex flex-col gap-[20px]">
