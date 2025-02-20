@@ -2,14 +2,54 @@ import { Link, useNavigate } from "react-router";
 import ProjectProgressBar from "./ProjectProgressBar";
 import ParticipantIcon from "../common/ParticipantIcon";
 import Button from "../common/Button";
+import { useState } from "react";
+import EditProjectModal from "../modals/EditProjectModal";
 
 interface ProjectListBoxProps {
   projectId: number;
   filterProject: string;
 }
 
+// (임시) 프로젝트 박스 카테고리 데이터
+const selectedProjectData = {
+  cate: "개발",
+  subcate1: ["JavaScript"],
+  subcate2: ["React"],
+};
+
+// (임시) 프로젝트 박스 프로젝트명
+const selectedProjectName = "최종프로젝트";
+
+// (임시) 프로젝트 박스 선택된 멤버
+const selectedProjectMember = [
+  {
+    id: 2,
+    userName: "홍서범",
+    email: "b@gmail.com",
+    password: "1234",
+    grade: "DISABLE",
+    organization: "데브코스2",
+    profileImage:
+      "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
+    delete: "ACTIVE",
+  },
+  {
+    id: 3,
+    userName: "홍홍홍",
+    email: "c@gmail.com",
+    password: "1234",
+    grade: "DISABLE",
+    organization: "데브코스3",
+    profileImage:
+      "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
+    delete: "ACTIVE",
+  },
+];
+
 const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
   const navigate = useNavigate();
+  // 프로젝트 생성 모달
+  const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
 
   return (
     <div
@@ -55,7 +95,10 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
               text="수정"
               size="md"
               css="h-[40px] w-[48px] border-main-green02 text-main-green01"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation(); // 이벤트 전파 방지
+                setIsEditProjectModal(true); // 모달 열기
+              }}
             />
             {filterProject === "진행 중인 프로젝트" && (
               <Link
@@ -74,7 +117,9 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
                 text="나가기"
                 size="md"
                 css="h-[40px] w-[65px] border-[#ff6854]/70 bg-white text-[#ff6854]"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               />
             )}
           </div>
@@ -90,6 +135,26 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
         </li>
         {/* <li className="bg-main-green01 px-2 py-1 rounded-[25px]">#REACT</li> */}
       </ul>
+
+      {/* 프로젝트 생성 모달 */}
+      {isEditProjectModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+          flex justify-center items-center bg-black/70"
+          onClick={(e) => {
+            e.stopPropagation(); // 이벤트 전파 방지
+            setIsEditProjectModal(false); // 모달 닫기
+          }}
+        >
+          <EditProjectModal
+            projectName={selectedProjectName}
+            selectedProjectData={selectedProjectData}
+            setIsEditProjectModal={setIsEditProjectModal}
+            projectMember={selectedProjectMember}
+            title="프로젝트 편집"
+          />
+        </div>
+      )}
     </div>
   );
 };

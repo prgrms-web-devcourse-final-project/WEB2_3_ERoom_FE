@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
 interface MembersType {
@@ -14,15 +14,24 @@ interface MembersType {
 
 interface SelectMembersProps {
   data: MembersType[];
+  selectedData?: MembersType[];
 }
 
-const SelectMember = ({ data }: SelectMembersProps) => {
+const SelectMember = ({ data, selectedData }: SelectMembersProps) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
   // 필터링된 팀원 목록 상태
   const [filteredMembers, setFilteredMembers] = useState<MembersType[]>([]);
   // 선택된 팀원 상태 관리
   const [selectedMembers, setSelectedMembers] = useState<MembersType[]>([]);
+
+  useEffect(() => {
+    if (selectedData) {
+      setSelectedMembers(selectedData);
+    }
+  }, [selectedData]);
+
+  console.log(selectedMembers);
 
   /* 검색결과 표시 함수 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,6 +131,7 @@ const SelectMember = ({ data }: SelectMembersProps) => {
                   <div className="text-main-green">@{member.userName}</div>
                   <div className="text-gray01">{member.email}</div>
                 </div>
+
                 {/* 취소버튼 */}
                 <img
                   src={cancelButton}
@@ -146,29 +156,29 @@ const SelectMember = ({ data }: SelectMembersProps) => {
               </div>
             </div>
           ))}
+        </div>
+      )}
 
-          {/* (선택결과) 선택된 팀원 이미지 */}
-          <div className="flex">
-            {selectedMembers.map((member) => (
-              <div
-                key={member.id}
-                className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
+      {/* (선택결과) 선택된 팀원 이미지 */}
+      <div className="flex">
+        {selectedMembers.map((member) => (
+          <div
+            key={member.id}
+            className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
               border-[1px] border-main-green"
-                style={{ backgroundImage: `url(${member.profileImage})` }}
-              >
-                <div
-                  className="flex justify-center items-center
+            style={{ backgroundImage: `url(${member.profileImage})` }}
+          >
+            <div
+              className="flex justify-center items-center
                   w-full h-full rounded-[100px] bg-main-green/70
                 text-white text-[14px] text-center font-medium
                   opacity-0 hover:opacity-100 transition-opacity duration-300"
-                >
-                  {member.userName}
-                </div>
-              </div>
-            ))}
+            >
+              {member.userName}
+            </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 };
