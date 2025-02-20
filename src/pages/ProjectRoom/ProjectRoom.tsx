@@ -99,12 +99,7 @@ const ProjectRoom = () => {
           </ul>
           {(filterProject === "진행 중인 프로젝트" ||
             filterProject === "진행 예정 프로젝트") && (
-            <div className="flex w-[230px] gap-[10px]">
-              <Button
-                text="프로젝트 선택"
-                size="md"
-                css="border-main-green01 text-main-green01 w-[120px] text-[14px] px-2"
-              />
+            <div className="flex w-fit gap-[10px]">
               <Button
                 text="+ 프로젝트 생성"
                 size="md"
