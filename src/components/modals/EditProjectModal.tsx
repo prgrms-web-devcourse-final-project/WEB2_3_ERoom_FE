@@ -236,14 +236,14 @@ const EditProjectModal = ({
 
   return (
     <div
-      className="w-[700px] min-h-[600px] max-h-full bg-white text-main-green
+      className="w-[700px] min-h-[600px] h-fit bg-white text-main-green
       flex justify-center items-center z-10"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 프로젝트 생성 */}
       <div
         className="
-        w-[350px] h-[600PX] flex flex-col justify-between items-center
+        w-[350px] mix-h-[600PX] h-fit flex flex-col justify-between items-center
         gap-[20px] px-[50px] py-[30px]"
       >
         {/* 제목 */}
