@@ -25,6 +25,43 @@ interface selectedDateType {
   ampm: string;
 }
 
+// (임시) 팀원 배열
+const membersData = [
+  {
+    id: 1,
+    userName: "홍길동",
+    email: "a@gmail.com",
+    password: "1234",
+    grade: "DISABLE",
+    organization: "데브코스1",
+    profileImage:
+      "https://cdn.pixabay.com/photo/2018/01/15/09/17/woman-3083516_1280.jpg",
+    delete: "ACTIVE",
+  },
+  {
+    id: 2,
+    userName: "홍서범",
+    email: "b@gmail.com",
+    password: "1234",
+    grade: "DISABLE",
+    organization: "데브코스2",
+    profileImage:
+      "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
+    delete: "ACTIVE",
+  },
+  {
+    id: 3,
+    userName: "홍홍홍",
+    email: "c@gmail.com",
+    password: "1234",
+    grade: "DISABLE",
+    organization: "데브코스3",
+    profileImage:
+      "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
+    delete: "ACTIVE",
+  },
+];
+
 const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
   //selectedStartDate, selectedEndDate에 데이터 들어갈 수 있게 분리하는 함수
   const parseDateTime = (dateTimeString: string) => {
@@ -66,49 +103,15 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
     ampm: parsedEndDate.ampm,
   });
 
-  // (임시) 팀원 배열
-  const membersData = [
-    {
-      id: 1,
-      userName: "홍길동",
-      email: "a@gmail.com",
-      password: "1234",
-      grade: "DISABLE",
-      organization: "데브코스1",
-      profileImage:
-        "https://cdn.pixabay.com/photo/2018/01/15/09/17/woman-3083516_1280.jpg",
-      delete: "ACTIVE",
-    },
-    {
-      id: 2,
-      userName: "홍서범",
-      email: "b@gmail.com",
-      password: "1234",
-      grade: "DISABLE",
-      organization: "데브코스2",
-      profileImage:
-        "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
-      delete: "ACTIVE",
-    },
-    {
-      id: 3,
-      userName: "홍홍홍",
-      email: "c@gmail.com",
-      password: "1234",
-      grade: "DISABLE",
-      organization: "데브코스3",
-      profileImage:
-        "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
-      delete: "ACTIVE",
-    },
-  ];
-
   const [selectedStatus, setSelectedStatus] = useState("진행예정");
 
-  const statusOptions = ["진행완료", "진행 중", "진행예정", "보류", "철회"];
+  const statusOptions = ["진행완료", "진행 중", "진행예정", "보류"];
 
   return (
-    <div className="bg-white w-[350px] h-[600px] flex flex-col gap-[20px] px-[40px] py-[30px] ">
+    <div
+      className="bg-white w-[350px] max-h-full
+    flex flex-col gap-[20px] px-[40px] py-[30px] overflow-y-scroll scrollbar"
+    >
       <div className="flex justify-center items-center">
         <span className="text-[18px] font-bold">업무 생성</span>
       </div>
@@ -136,14 +139,14 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-[5px]">
         <span className="font-bold text-[16px] text-main-green">진행상태</span>
         <div className="flex flex-col gap-[5px]">
           <div className="flex gap-[5px]">
-            {statusOptions.slice(0, 3).map((status) => (
+            {statusOptions.slice(0, 2).map((status) => (
               <button
                 key={status}
-                className={`w-[80px] h-[27px] font-medium text-[14px] flex justify-center items-center 
+                className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
               ${
                 selectedStatus === status
                   ? "bg-main-green01 text-main-green"
@@ -156,13 +159,13 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
             ))}
           </div>
           <div className="flex gap-[5px]">
-            {statusOptions.slice(3).map((status) => (
+            {statusOptions.slice(2).map((status) => (
               <button
                 key={status}
-                className={`w-[80px] h-[27px] font-medium text-[14px] flex justify-center items-center 
+                className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
               ${
                 selectedStatus === status
-                  ? "bg-main-green01 text-main-green"
+                  ? "bg-main-green01 text-main-beige02"
                   : "bg-gray02 text-gray01"
               }`}
                 onClick={() => setSelectedStatus(status)}
