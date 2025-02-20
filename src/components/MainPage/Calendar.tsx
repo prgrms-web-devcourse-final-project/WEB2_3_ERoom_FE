@@ -28,7 +28,8 @@ const Calendar = () => {
     queryFn: async () => {
       const response = await getProjectList();
       const filterInProgress = response.filter(
-        (project: ProjectListType) => project.status === "IN_PROGRESS"
+        (project: ProjectListType) =>
+          project.status === "IN_PROGRESS" || project.status === "BEFORE_START"
       );
       return filterInProgress.map((project: ProjectListType) => {
         return {
