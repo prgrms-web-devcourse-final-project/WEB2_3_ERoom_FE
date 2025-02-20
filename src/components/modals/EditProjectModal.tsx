@@ -1,9 +1,10 @@
 import Button from "../common/Button";
+import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectCategory from "../EditProjectModal/SelectCategory";
 import SelectMember from "../EditProjectModal/SelectMember";
 import WordCloud from "../EditProjectModal/WordCloud";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // (임시) 프로젝트 배열
 const projectData = [
@@ -121,14 +122,21 @@ const membersData = [
 // 여기까지 임시 데이터
 
 interface EditProjectModalProps {
-  projectName?: string;
-  selectedProjectData: SelectedDataType;
-  projectMember?: MembersType[];
+  selectedProjectData?: selectedProjectData;
+  setSelectedProjectData?: React.Dispatch<
+    React.SetStateAction<selectedProjectData>
+  >;
   setIsEditProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
+  projectMember?: MembersType[];
   title: string;
 }
 
-interface SelectedDataType {
+interface selectedProjectData {
+  projectName: string;
+  projectStatus: string;
+  createdAt: string;
+  startDate: string;
+  endDate: string;
   cate: string;
   subcate1: string[];
   subcate2: string[];
@@ -146,14 +154,67 @@ interface MembersType {
 }
 
 const EditProjectModal = ({
-  projectName,
   selectedProjectData,
   setIsEditProjectModal,
   projectMember,
   title,
 }: EditProjectModalProps) => {
+  // 프로젝트 시작 정보 초기화 상태
+  const [startDateInfo, setStartDateInfo] = useState({
+    year: "",
+    month: "",
+    day: "",
+    hour: "",
+    minute: "",
+    ampm: "",
+  });
+
+  // 프로젝트 종료 정보 초기화 상태
+  const [endDateInfo, setEndDateInfo] = useState({
+    year: "",
+    month: "",
+    day: "",
+    hour: "",
+    minute: "",
+    ampm: "",
+  });
+
+  useEffect(() => {
+    if (selectedProjectData) {
+      const startDate = new Date(selectedProjectData.startDate);
+
+      const year = String(startDate.getFullYear());
+      const month = String(startDate.getMonth() + 1).padStart(2, "0"); // 월 (0부터 시작하므로 +1 필요)
+      const day = String(startDate.getDate()).padStart(2, "0"); // 일
+      const hour = String(startDate.getHours() % 12 || 12).padStart(2, "0"); // 12시간 형식
+      const minute = String(startDate.getMinutes()).padStart(2, "0"); // 분
+      const ampm = startDate.getHours() >= 12 ? "PM" : "AM"; // AM/PM 구분
+
+      setStartDateInfo({ year, month, day, hour, minute, ampm });
+    }
+  }, [selectedProjectData]);
+
+  useEffect(() => {
+    if (selectedProjectData) {
+      const endDate = new Date(selectedProjectData.endDate);
+
+      const year = String(endDate.getFullYear());
+      const month = String(endDate.getMonth() + 1).padStart(2, "0"); // 월 (0부터 시작하므로 +1 필요)
+      const day = String(endDate.getDate()).padStart(2, "0"); // 일
+      const hour = String(endDate.getHours() % 12 || 12).padStart(2, "0"); // 12시간 형식
+      const minute = String(endDate.getMinutes()).padStart(2, "0"); // 분
+      const ampm = endDate.getHours() >= 12 ? "PM" : "AM"; // AM/PM 구분
+
+      setEndDateInfo({ year, month, day, hour, minute, ampm });
+    }
+  }, [selectedProjectData]);
+
   // 선택된 분야, 세부항목 상태
-  const [selectedData, setSelectedData] = useState(selectedProjectData);
+  const [selectedData, setSelectedData] = useState({
+    cate: selectedProjectData?.cate || "",
+    subcate1: selectedProjectData?.subcate1 || [],
+    subcate2: selectedProjectData?.subcate2 || [],
+  });
 
   // 프로젝트 생성 페이지 상태
   const [pages, setPages] = useState<number>(0);
@@ -171,18 +232,18 @@ const EditProjectModal = ({
         .subcategories
     : null;
 
-  // console.log(selectedCateData[0].data);
+  console.log(selectedProjectData?.startDate);
 
   return (
     <div
-      className="w-[700px] min-h-[600px] max-h-full bg-white text-main-green
+      className="w-[700px] min-h-[600px] h-fit bg-white text-main-green
       flex justify-center items-center z-10"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* 프로젝트 생성 */}
+      {/* 프로젝트 생성/편집 */}
       <div
         className="
-        w-[350px] h-full flex flex-col justify-between items-center
+        w-[350px] mix-h-[600PX] h-fit flex flex-col justify-between items-center
         gap-[20px] px-[50px] py-[30px]"
       >
         {/* 제목 */}
@@ -190,10 +251,11 @@ const EditProjectModal = ({
           {pages === 0 ? `${title} (1/2)` : `${title} (2/2)`}
         </p>
 
+        {/* 첫 번째 페이지 */}
         {pages === 0 && (
           <div className="w-full flex flex-col gap-[20px]">
             {/* 프로젝트명 작성 */}
-            <WriteProjectName name={projectName} />
+            <WriteProjectName name={selectedProjectData?.projectName} />
 
             {/* 분야 검색 */}
             <SelectCategory
@@ -203,10 +265,37 @@ const EditProjectModal = ({
             />
           </div>
         )}
+
+        {/* 두 번째 페이지 */}
         {pages === 1 && (
           <div className="w-full flex flex-col gap-[20px]">
             {/* 팀원 검색 */}
             <SelectMember data={membersData} selectedData={projectMember} />
+
+            {/* 기간 설정 */}
+            <div className="flex flex-col gap-[5px]">
+              <p className="w-full font-bold">일정</p>
+
+              {/* 기간 시작 및 종료 */}
+              <div className="flex flex-col gap-[10px]">
+                <div className="z-10">
+                  {/* 시작일 */}
+                  <DateTimeSelect
+                    title="시작"
+                    selectedDate={startDateInfo}
+                    setSelectedDate={setStartDateInfo}
+                  />
+                </div>
+                <div>
+                  {/* 종료일 */}
+                  <DateTimeSelect
+                    title="종료"
+                    selectedDate={endDateInfo}
+                    setSelectedDate={setEndDateInfo}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

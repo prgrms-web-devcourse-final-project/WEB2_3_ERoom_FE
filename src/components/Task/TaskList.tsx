@@ -53,7 +53,7 @@ const TaskList = ({ name, isAll = true }: TaskListProps) => {
         !isAll ? "bg-white/60" : ""
       }`}
     >
-      <h1 className="font-bold text-main-green text-[22px]">{name}</h1>
+      <h1 className="font-bold text-main-green text-[22px] sticky">{name}</h1>
       <TaskBox isAll={isAll} onClick={openModal} />
       <TaskBox isAll={isAll} onClick={openModal} />
       <TaskBox isAll={isAll} onClick={openModal} />
