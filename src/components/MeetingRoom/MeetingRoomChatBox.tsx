@@ -3,6 +3,7 @@ import SendIcon from "../../assets/icons/sendMessage.svg";
 import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import MeetingRoomMessage from "./MeetingRoomMessage";
+import NoteListModal from "../modals/NoteListModal";
 const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const dummyMessages = [
     {
@@ -112,6 +113,12 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
     }
   };
 
+  const [isOpenNoteList, setIsOpenNoteList] = useState(false);
+
+  const handleOpenNoteList = () => {
+    setIsOpenNoteList((prev) => !prev);
+  };
+
   return (
     <div
       className={twMerge(
@@ -126,6 +133,7 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
             text="회의록"
             size="sm"
             css="border-main-green01 bg-white text-main-green01 text-[14px] font-bold"
+            onClick={handleOpenNoteList}
           />
           <Button
             text="미팅룸 나가기"
@@ -134,6 +142,11 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
             css="border-header-red bg-header-red/70 text-white text-[14px] font-bold"
           />
         </div>
+        {isOpenNoteList && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+            <NoteListModal onClose={handleOpenNoteList} />
+          </div>
+        )}
       </div>
       <div className="flex flex-col flex-grow w-[calc(100%-60px)] gap-[10px]">
         <div
