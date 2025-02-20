@@ -31,7 +31,7 @@ const SelectMember = ({ data, selectedData }: SelectMembersProps) => {
     }
   }, [selectedData]);
 
-  console.log(selectedMembers);
+  // console.log(selectedMembers);
 
   /* 검색결과 표시 함수 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
