@@ -114,17 +114,11 @@ const ProjectRoom = () => {
             </div>
           )}
           {filterProject === "진행 완료 프로젝트" && (
-            <div className="flex w-[230px] gap-[10px]">
+            <div className="flex w-fit gap-[10px]">
               <Button
                 text="프로젝트 선택"
                 size="md"
                 css="border-main-green01 text-main-green01 w-[120px] text-[14px] px-2"
-              />
-              <Button
-                text="전체 나가기"
-                size="md"
-                css="border-[#FF6854] text-white bg-[#FF6854]/70 w-[130px] text-[14px] px-2"
-                onClick={() => setIsAllProjectOutModal(true)}
               />
             </div>
           )}
