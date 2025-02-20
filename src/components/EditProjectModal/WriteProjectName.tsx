@@ -1,11 +1,17 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-const WriteProjectName = () => {
+interface WriteProjectNameType {
+  name?: string;
+}
+
+const WriteProjectName = ({ name }: WriteProjectNameType) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
   // 엔터 후 값 저장
-  const [submittedValue, setSubmittedValue] = useState<string | null>(null);
+  const [submittedValue, setSubmittedValue] = useState<string | null>(
+    name || null
+  );
 
   // 인풋 값 상태 업데이트
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -20,7 +20,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
   const width = 300;
   const height = 250;
 
-  console.log(words);
+  // console.log(words);
 
   useEffect(() => {
     if (!svgRef.current) return;
