@@ -247,7 +247,7 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("hour")}
             >
-              {selectedDate?.hour || nowHours12}
+              {selectedDate?.hour || String(nowHours12).padStart(2, "0")}
             </div>
             {openDropdown === "hour" && (
               <ul
