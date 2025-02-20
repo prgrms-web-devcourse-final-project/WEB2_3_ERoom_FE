@@ -240,7 +240,7 @@ const EditProjectModal = ({
       flex justify-center items-center z-10"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* 프로젝트 생성 */}
+      {/* 프로젝트 생성/편집 */}
       <div
         className="
         w-[350px] mix-h-[600PX] h-fit flex flex-col justify-between items-center
