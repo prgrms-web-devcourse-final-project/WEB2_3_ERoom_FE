@@ -5,9 +5,11 @@ export const getProjectDetail = async (projectId: string) => {
     const { data } = await api.get("/project-detail");
 
     // 임시
-    const findProject = data.filter(
+    const findProject = data.find(
       (project: any) => project.projectId === +projectId
     );
     return findProject;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };

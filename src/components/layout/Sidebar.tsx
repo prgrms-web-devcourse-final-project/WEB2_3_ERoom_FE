@@ -74,8 +74,8 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
           </li>
           {SIDE_MENU_LIST.map((menu, idx) => {
             return (
-              <>
-                <li
+              <li key={idx} className="w-full">
+                <div
                   className="font-bold w-full h-[35px] flex flex-col items-center cursor-pointer
                 "
                 >
@@ -89,9 +89,9 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
                     <img src={menu.icon} alt="사이드바 메뉴 아이콘" />
                     <p className="text-header-green">{menu.title}</p>
                   </Link>
-                </li>
+                </div>
                 {menu.src === "manager" && menu.src === projectRoomMenu && (
-                  <div className="">
+                  <div className="pl-5 pt-2">
                     <ManagerCheckBox
                       checkboxId="all"
                       checkboxName="all"
@@ -100,20 +100,16 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
                     {MANAGER.map((member, idx) => {
                       return (
                         <ManagerCheckBox
+                          key={idx}
                           checkboxName={member}
                           checkboxId={`${idx}`}
                           labelName={member}
                         />
                       );
                     })}
-                    <ManagerCheckBox
-                      checkboxId="not"
-                      checkboxName="not"
-                      labelName="미배정"
-                    />
                   </div>
                 )}
-              </>
+              </li>
             );
           })}
         </ul>
