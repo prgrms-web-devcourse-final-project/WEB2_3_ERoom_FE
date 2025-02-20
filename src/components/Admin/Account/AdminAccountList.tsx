@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import EditIcon from "../../assets/icons/edit.svg";
-import SaveIcon from "../../assets/icons/save.svg";
-import Button from "../common/Button";
+import EditIcon from "../../../assets/icons/edit.svg";
+import SaveIcon from "../../../assets/icons/save.svg";
+import Button from "../../common/Button";
 import { twMerge } from "tailwind-merge";
-import UnCheckBox from "../../assets/icons/unchecked_box.svg";
-import CheckBox from "../../assets/icons/checked_box.svg";
+import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
+import CheckBox from "../../../assets/icons/checked_box.svg";
 
 interface AccountListProps {
   id: number;
@@ -17,7 +17,7 @@ interface AccountListProps {
   isActive: boolean;
 }
 
-const AccountList = ({
+const AdminAccountList = ({
   user,
   index,
   onUpdateSubscription,
@@ -265,4 +265,4 @@ const AccountList = ({
   );
 };
 
-export default AccountList;
+export default AdminAccountList;
