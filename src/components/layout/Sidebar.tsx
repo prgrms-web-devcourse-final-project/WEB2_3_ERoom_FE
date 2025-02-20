@@ -76,7 +76,6 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
             return (
               <>
                 <li
-                  key={idx}
                   className="font-bold w-full h-[35px] flex flex-col items-center cursor-pointer
                 "
                 >
