@@ -1,11 +1,17 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-const WriteProjectName = () => {
+interface WriteProjectNameType {
+  name?: string;
+}
+
+const WriteProjectName = ({ name }: WriteProjectNameType) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
   // 엔터 후 값 저장
-  const [submittedValue, setSubmittedValue] = useState<string | null>(null);
+  const [submittedValue, setSubmittedValue] = useState<string | null>(
+    name || null
+  );
 
   // 인풋 값 상태 업데이트
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +38,7 @@ const WriteProjectName = () => {
         className="w-full py-[5px]
         border-[1px] border-gray01 rounded-[5px] text-center
         font-bold text-[14px]"
-        placeholder="프로젝트 검색"
+        placeholder="프로젝트명을 작성해주세요."
         value={inputValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}

@@ -1,14 +1,9 @@
 import Button from "../common/Button";
-import SelectCategory from "../CreateProjectModal/SelectCategory";
-import SelectMember from "../CreateProjectModal/SelectMember";
-import WordCloud from "../CreateProjectModal/WordCloud";
-import WriteProjectName from "../CreateProjectModal/WriteProjectName";
-
+import SelectCategory from "../EditProjectModal/SelectCategory";
+import SelectMember from "../EditProjectModal/SelectMember";
+import WordCloud from "../EditProjectModal/WordCloud";
+import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useState } from "react";
-
-interface CreateProjectModalProps {
-  setIsCreateProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 // (임시) 프로젝트 배열
 const projectData = [
@@ -45,37 +40,37 @@ const categoryData = [
       {
         subname: "사용언어",
         data: [
-          "C",
-          "C++",
-          "C#",
-          "Java",
-          "JavaScript",
-          "TypeScript",
-          "Python",
-          "Go",
-          "PHP",
-          "Swift",
-          "Kotlin",
-          "기타",
+          { text: "C", value: 10 },
+          { text: "C++", value: 20 },
+          { text: "C#", value: 30 },
+          { text: "Java", value: 40 },
+          { text: "JavaScript", value: 50 },
+          { text: "TypeScript", value: 60 },
+          { text: "Python", value: 70 },
+          { text: "Go", value: 80 },
+          { text: "PHP", value: 90 },
+          { text: "Swift", value: 100 },
+          { text: "Kotlin", value: 110 },
+          { text: "기타", value: 120 },
         ],
       },
       {
         subname: "프레임워크/라이브러리",
         data: [
-          "Spring",
-          "React",
-          "Vue.js",
-          "Svelte",
-          "Angular",
-          "Flutter",
-          "Next.js",
-          "Nuxt.js",
-          "Unity",
-          "Unreal",
-          "Django",
-          "Flask",
-          "Bootstrap",
-          "Tailwind CSS",
+          { text: "Spring", value: 10 },
+          { text: "React", value: 20 },
+          { text: "Vue.js", value: 30 },
+          { text: "Svelte", value: 40 },
+          { text: "Angular", value: 50 },
+          { text: "Flutter", value: 60 },
+          { text: "Next.js", value: 70 },
+          { text: "Nuxt.js", value: 80 },
+          { text: "Unity", value: 90 },
+          { text: "Unreal", value: 100 },
+          { text: "Django", value: 110 },
+          { text: "Flask", value: 120 },
+          { text: "Bootstrap", value: 130 },
+          { text: "Tailwind CSS", value: 140 },
         ],
       },
     ],
@@ -123,27 +118,15 @@ const membersData = [
     delete: "ACTIVE",
   },
 ];
-
-// (임시) 워드클라우드 데이터
-const words = [
-  {
-    text: "told",
-    value: 64,
-  },
-  {
-    text: "mistake",
-    value: 11,
-  },
-  {
-    text: "thought",
-    value: 16,
-  },
-  {
-    text: "bad",
-    value: 17,
-  },
-];
 // 여기까지 임시 데이터
+
+interface EditProjectModalProps {
+  projectName?: string;
+  selectedProjectData: SelectedDataType;
+  projectMember?: MembersType[];
+  setIsEditProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+}
 
 interface SelectedDataType {
   cate: string;
@@ -151,48 +134,49 @@ interface SelectedDataType {
   subcate2: string[];
 }
 
-interface SelectedSubCateDataType {
-  subname: string;
-  data: string[];
+interface MembersType {
+  id: number;
+  userName: string;
+  email: string;
+  password: string;
+  grade: string;
+  organization: string;
+  profileImage: string;
+  delete: string;
 }
 
-const CreateProjectModal = ({
-  setIsCreateProjectModal,
-}: CreateProjectModalProps) => {
+const EditProjectModal = ({
+  projectName,
+  selectedProjectData,
+  setIsEditProjectModal,
+  projectMember,
+  title,
+}: EditProjectModalProps) => {
   // 선택된 분야, 세부항목 상태
-  const [selectedData, setSelectedData] = useState({
-    cate: "",
-    subcate1: [] as string[],
-    subcate2: [] as string[],
-  });
-
-  // 선택된 세부항목 데이터 상태
-  const [selectedSubCateData, setSelectedSubCateData] = useState<
-    SelectedSubCateDataType[]
-  >([]);
+  const [selectedData, setSelectedData] = useState(selectedProjectData);
 
   // 프로젝트 생성 페이지 상태
   const [pages, setPages] = useState<number>(0);
 
   // 선택된 분야의 세부항목 이름
   const selectedSubCate =
-    selectedData.cate &&
+    selectedData?.cate &&
     categoryData
-      .filter((data) => data.name === selectedData.cate)[0]
+      .filter((data) => data.name === selectedData?.cate)[0]
       .subcategories?.map((cate) => cate.subname);
 
   // 선택된 분야의 데이터
-  const selectedCateData = selectedData.cate
-    ? categoryData.filter((data) => data.name === selectedData.cate)[0]
+  const selectedCateData = selectedData?.cate
+    ? categoryData.filter((data) => data.name === selectedData?.cate)[0]
         .subcategories
     : null;
 
-  console.log(selectedCateData);
+  // console.log(selectedCateData[0].data);
 
   return (
     <div
-      className="w-[700px] h-[600px] max-h-full bg-white text-main-green
-      flex justify-center items-center"
+      className="w-[700px] min-h-[600px] max-h-full bg-white text-main-green
+      flex justify-center items-center z-10"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 프로젝트 생성 */}
@@ -203,13 +187,13 @@ const CreateProjectModal = ({
       >
         {/* 제목 */}
         <p className="w-full text-center text-[18px] font-bold">
-          {pages === 0 ? "프로젝트 생성 (1/2)" : "프로젝트 생성 (2/2)"}
+          {pages === 0 ? `${title} (1/2)` : `${title} (2/2)`}
         </p>
 
         {pages === 0 && (
           <div className="w-full flex flex-col gap-[20px]">
             {/* 프로젝트명 작성 */}
-            <WriteProjectName />
+            <WriteProjectName name={projectName} />
 
             {/* 분야 검색 */}
             <SelectCategory
@@ -222,7 +206,7 @@ const CreateProjectModal = ({
         {pages === 1 && (
           <div className="w-full flex flex-col gap-[20px]">
             {/* 팀원 검색 */}
-            <SelectMember data={membersData} />
+            <SelectMember data={membersData} selectedData={projectMember} />
           </div>
         )}
 
@@ -246,7 +230,7 @@ const CreateProjectModal = ({
             text="취소"
             size="md"
             css="text-main-beige01 w-full text-[14px] bg-[#2B3E34] border-none"
-            onClick={() => setIsCreateProjectModal(false)}
+            onClick={() => setIsEditProjectModal(false)}
           />
         </div>
       </div>
@@ -266,9 +250,9 @@ const CreateProjectModal = ({
             )}
             {selectedCateData && (
               <WordCloud
-                words={[...selectedCateData[0].data].map((text) => ({
-                  text,
-                  value: Math.random() * 100,
+                words={selectedCateData[0].data.map((contents) => ({
+                  text: contents.text,
+                  value: contents.value,
                 }))}
               />
             )}
@@ -283,9 +267,9 @@ const CreateProjectModal = ({
             )}
             {selectedCateData && (
               <WordCloud
-                words={[...selectedCateData[1].data].map((text) => ({
-                  text,
-                  value: Math.random() * 100,
+                words={selectedCateData[1].data.map((contents) => ({
+                  text: contents.text,
+                  value: contents.value,
                 }))}
               />
             )}
@@ -296,4 +280,4 @@ const CreateProjectModal = ({
   );
 };
 
-export default CreateProjectModal;
+export default EditProjectModal;
