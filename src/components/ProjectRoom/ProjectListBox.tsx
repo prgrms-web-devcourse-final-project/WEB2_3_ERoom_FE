@@ -78,20 +78,26 @@ const ProjectListBox = ({
 
   return (
     <div
-      className="bg-white border border-[#CAD2CB] w-full pb-3 cursor-pointer"
+      className="w-full flex gap-[10px] bg-white 
+      border border-[#CAD2CB] cursor-pointer"
       onClick={() => navigate(`/project-room/${projectId}`)}
     >
-      <div className="flex gap-5 items-center px-5 font-bold ">
-        <p className="text-[50px] font-medium text-main-green02 font-notoTC">
-          {idx + 1}
-        </p>
-        {/* 프로젝트 넘버 */}
+      {/* 프로젝트 넘버 */}
+      <p
+        className="w-[80px] h-[75px] text-[50px] text-center leading-none font-medium 
+      text-main-green02 font-notoTC"
+      >
+        {idx + 1}
+      </p>
 
-        <div className="flex justify-between items-center w-full px-5">
+      {/* 프로젝트 정보 */}
+      <div className="w-full px-[20px] py-[10px] flex flex-col gap-[20px]">
+        {/* 상단 info */}
+        <div className="w-full flex justify-between items-center">
           {/* 프로젝트 명, 기간 */}
-          <div className="w-[210px]">
-            <p>{projectInfo.name}</p>
-            <p>
+          <div className="w-fit font-bold">
+            <p className="w-fit">{projectInfo.name}</p>
+            <p className="w-fit">
               {projectInfo.startDate.split("T")[0]} ~{" "}
               {projectInfo.endDate.split("T")[0]}
             </p>
@@ -99,7 +105,7 @@ const ProjectListBox = ({
 
           {/* 진행률 */}
           <div className="flex flex-col items-center gap-1">
-            <div className="flex justify-center gap-2">
+            <div className="w-[200px] flex justify-center gap-[10px] font-bold">
               <p>진행률</p>
               <p>50.0%</p>
             </div>
@@ -107,9 +113,11 @@ const ProjectListBox = ({
           </div>
 
           {/* 참여인원 */}
-          <div className=" flex items-center gap-4 w-[202px]">
-            <p>참여인원</p>
-            <div className="flex">
+          <div className="w-[200px] flex items-center gap-[10px] font-bold">
+            <p className="w-[56px] text-center">참여인원</p>
+
+            {/* 프로필이미지 모음 */}
+            <div className="w-[130px] flex">
               {members.length > 5
                 ? members
                     .slice(0, 6)
@@ -133,51 +141,70 @@ const ProjectListBox = ({
             </div>
           </div>
 
-          <div className="flex gap-3 items-center">
+          {/* 버튼 모음 */}
+          <div className="w-[130px] flex gap-[10px] items-center">
+            {/* 수정 */}
             <Button
               text="수정"
               size="md"
-              css="h-[40px] w-[48px] border-main-green02 text-main-green01"
+              css="w-full h-[40px] border-main-green02 text-main-green01"
               onClick={(e) => {
                 e.stopPropagation(); // 이벤트 전파 방지
                 setIsEditProjectModal(true); // 모달 열기
               }}
             />
-            {filterProject === "진행 중인 프로젝트" && (
-              <Link
-                to={`/meeting-room/${projectInfo.chatRoomId}`}
-                className="h-[40px] bg-[#FFFCE2] text-main-green01 flex items-center justify-center
-          border border-main-green01 px-[10px] font-bold rounded-sm"
-                onClick={(e) => e.stopPropagation()}
-              >
-                미팅룸 입장
-              </Link>
-            )}
 
-            {(filterProject === "진행 완료 프로젝트" ||
-              filterProject === "진행 예정 프로젝트") && (
-              <Button
-                text="나가기"
-                size="md"
-                css="h-[40px] w-[65px] border-[#ff6854]/70 bg-white text-[#ff6854]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              />
-            )}
+            {/* 나가기 */}
+            <Button
+              text="나가기"
+              size="md"
+              css="w-full h-[40px] border-[#ff6854]/70 bg-white text-[#ff6854]"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            />
           </div>
         </div>
+
+        {/* 태그 및 미팅룸 버튼 */}
+        <div className="flex justify-between">
+          {/* 태그 */}
+          <ul className="flex gap-2 text-main-beige text-[14px]">
+            <li
+              className="h-fit bg-logo-green rounded-[30px] 
+            text-main-beige01 leading-none px-[10px] py-[5px] font-bold"
+            >
+              #개발
+            </li>
+            <li
+              className="h-fit bg-main-beige01 rounded-[30px]
+            text-main-green leading-none px-[10px] py-[5px] border border-logo-green"
+            >
+              # TypeScript
+            </li>
+            <li
+              className="h-fit bg-main-green03 rounded-[30px] 
+            text-main-green leading-none px-[10px] py-[5px] border border-logo-green "
+            >
+              # React
+            </li>
+            {/* <li className="bg-main-green01 px-2 py-1 rounded-[25px]">#REACT</li> */}
+          </ul>
+
+          {/* 미팅룸 버튼 */}
+          {filterProject === "진행 중인 프로젝트" && (
+            <Link
+              to={`/meeting-room/${projectInfo.chatRoomId}`}
+              className="w-[130px] h-[40px] bg-[#FFFCE2] 
+                text-main-green01 flex items-center justify-center
+                border border-main-green01 font-bold rounded-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
+              미팅룸 입장
+            </Link>
+          )}
+        </div>
       </div>
-      <ul className="flex gap-2 ml-[90px] text-main-beige text-[14px]">
-        <li className="bg-main-green02 px-2 py-1 rounded-[25px] text-main-green01">
-          #개발
-        </li>
-        <li className="bg-main-green01 px-2 py-1 rounded-[25px]">#JAVA</li>
-        <li className="bg-white px-2 py-1 rounded-[25px] border border-main-green01 text-main-green01">
-          #HTML
-        </li>
-        {/* <li className="bg-main-green01 px-2 py-1 rounded-[25px]">#REACT</li> */}
-      </ul>
 
       {/* 프로젝트 생성 모달 */}
       {isEditProjectModal && (
