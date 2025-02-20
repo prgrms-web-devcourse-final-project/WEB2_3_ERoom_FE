@@ -25,7 +25,7 @@ const DayNoteList = ({ onClose }: { onClose: () => void }) => {
           </div>
         </div>
       ) : (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
           <NoteDetailModal onClose={onClose} />
         </div>
       )}
