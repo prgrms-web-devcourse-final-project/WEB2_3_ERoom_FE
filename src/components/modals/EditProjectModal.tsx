@@ -243,7 +243,7 @@ const EditProjectModal = ({
       {/* 프로젝트 생성 */}
       <div
         className="
-        w-[350px] h-full flex flex-col justify-between items-center
+        w-[350px] h-[600PX] flex flex-col justify-between items-center
         gap-[20px] px-[50px] py-[30px]"
       >
         {/* 제목 */}
@@ -271,22 +271,30 @@ const EditProjectModal = ({
           <div className="w-full flex flex-col gap-[20px]">
             {/* 팀원 검색 */}
             <SelectMember data={membersData} selectedData={projectMember} />
+
             {/* 기간 설정 */}
-            <div className="z-10">
-              {/* 시작일 */}
-              <DateTimeSelect
-                title="시작"
-                selectedDate={startDateInfo}
-                setSelectedDate={setStartDateInfo}
-              />
-            </div>
-            <div>
-              {/* 종료일 */}
-              <DateTimeSelect
-                title="종료"
-                selectedDate={endDateInfo}
-                setSelectedDate={setEndDateInfo}
-              />
+            <div className="flex flex-col gap-[5px]">
+              <p className="w-full font-bold">일정</p>
+
+              {/* 기간 시작 및 종료 */}
+              <div className="flex flex-col gap-[10px]">
+                <div className="z-10">
+                  {/* 시작일 */}
+                  <DateTimeSelect
+                    title="시작"
+                    selectedDate={startDateInfo}
+                    setSelectedDate={setStartDateInfo}
+                  />
+                </div>
+                <div>
+                  {/* 종료일 */}
+                  <DateTimeSelect
+                    title="종료"
+                    selectedDate={endDateInfo}
+                    setSelectedDate={setEndDateInfo}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}
