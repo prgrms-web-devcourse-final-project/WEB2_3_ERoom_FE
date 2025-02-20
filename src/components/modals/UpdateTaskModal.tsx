@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../CreateModal/DateTimeSelect";
-import SelectMember from "../CreateProjectModal/SelectMember";
-import WriteProjectName from "../CreateProjectModal/WriteProjectName";
+import SelectMember from "../EditProjectModal/SelectMember";
+import WriteProjectName from "../EditProjectModal/WriteProjectName";
 
 interface UpdateTaskModalProps {
   task: {
