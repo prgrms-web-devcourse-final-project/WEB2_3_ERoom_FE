@@ -8,6 +8,8 @@ import EditProjectModal from "../modals/EditProjectModal";
 interface ProjectListBoxProps {
   projectId: number;
   filterProject: string;
+  projectInfo: ProjectListType;
+  idx: number;
 }
 
 // (임시) 프로젝트 박스 카테고리 데이터
@@ -46,10 +48,17 @@ const selectedProjectMember = [
   },
 ];
 
-const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
+const ProjectListBox = ({
+  projectId,
+  filterProject,
+  idx,
+  projectInfo,
+}: ProjectListBoxProps) => {
   const navigate = useNavigate();
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
+
+  const members = projectInfo.memberNames;
 
   return (
     <div
@@ -58,15 +67,18 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
     >
       <div className="flex gap-5 items-center px-5 font-bold ">
         <p className="text-[50px] font-medium text-main-green02 font-notoTC">
-          10
+          {idx + 1}
         </p>
         {/* 프로젝트 넘버 */}
 
         <div className="flex justify-between items-center w-full px-5">
           {/* 프로젝트 명, 기간 */}
-          <div>
-            <p>프로젝트 명</p>
-            <p>2025.02.03 ~ 2025.03.12</p>
+          <div className="w-[210px]">
+            <p>{projectInfo.name}</p>
+            <p>
+              {projectInfo.startDate.split("T")[0]} ~{" "}
+              {projectInfo.endDate.split("T")[0]}
+            </p>
           </div>
 
           {/* 진행률 */}
@@ -79,14 +91,29 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
           </div>
 
           {/* 참여인원 */}
-          <div className=" flex items-center gap-4">
+          <div className=" flex items-center gap-4 w-[202px]">
             <p>참여인원</p>
             <div className="flex">
-              <ParticipantIcon css="" />
+              {members.length > 5
+                ? members
+                    .slice(0, 6)
+                    .map((member, idx) => (
+                      <ParticipantIcon
+                        key={idx}
+                        css={idx > 0 ? "ml-[-5px]" : ""}
+                      />
+                    ))
+                : members.map((menber, idx) => (
+                    <ParticipantIcon
+                      key={idx}
+                      css={idx > 0 ? "ml-[-5px]" : ""}
+                    />
+                  ))}
+              {/* <ParticipantIcon css="" />
               <ParticipantIcon css="ml-[-5px] bg-red-100" />
               <ParticipantIcon css="ml-[-5px] bg-blue-100" />
               <ParticipantIcon css="ml-[-5px] bg-green-100" />
-              <ParticipantIcon css="ml-[-5px] bg-pink-100" />
+              <ParticipantIcon css="ml-[-5px] bg-pink-100" /> */}
             </div>
           </div>
 
@@ -102,7 +129,7 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
             />
             {filterProject === "진행 중인 프로젝트" && (
               <Link
-                to={`/meeting-room/${projectId}`}
+                to={`/meeting-room/${projectInfo.chatRoomId}`}
                 className="h-[40px] bg-[#FFFCE2] text-main-green01 flex items-center justify-center
           border border-main-green01 px-[10px] font-bold rounded-sm"
                 onClick={(e) => e.stopPropagation()}
@@ -125,7 +152,7 @@ const ProjectListBox = ({ projectId, filterProject }: ProjectListBoxProps) => {
           </div>
         </div>
       </div>
-      <ul className="flex gap-2 ml-30 text-main-beige text-[14px]">
+      <ul className="flex gap-2 ml-[90px] text-main-beige text-[14px]">
         <li className="bg-main-green02 px-2 py-1 rounded-[25px] text-main-green01">
           #개발
         </li>
