@@ -188,7 +188,6 @@ const ProjectRoom = () => {
           onClick={() => setIsEditProjectModal(false)}
         >
           <EditProjectModal
-            selectedProjectData={selectedProjectData}
             setIsEditProjectModal={setIsEditProjectModal}
             title="프로젝트 생성"
           />

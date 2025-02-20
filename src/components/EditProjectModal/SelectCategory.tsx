@@ -76,7 +76,7 @@ const SelectCategory = ({
     });
   };
 
-  console.log(selectedData);
+  // console.log(selectedData);
 
   return (
     <div className="w-full flex flex-col gap-[20px]">

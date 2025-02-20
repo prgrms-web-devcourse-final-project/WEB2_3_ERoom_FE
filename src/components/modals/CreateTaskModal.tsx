@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../common/Button";
-import DateTimeSelect from "../CreateModal/DateTimeSelect";
+import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import SelectMember from "../EditProjectModal/SelectMember";
 
