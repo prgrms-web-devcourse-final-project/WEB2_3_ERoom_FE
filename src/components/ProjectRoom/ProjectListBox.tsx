@@ -12,15 +12,28 @@ interface ProjectListBoxProps {
   idx: number;
 }
 
-// (임시) 프로젝트 박스 카테고리 데이터
+interface selectedProjectData {
+  projectName: string;
+  projectStatus: string;
+  createdAt: string;
+  startDate: string;
+  endDate: string;
+  cate: string;
+  subcate1: string[];
+  subcate2: string[];
+}
+
+// (임시) 프로젝트 박스 프로젝트정보
 const selectedProjectData = {
+  projectName: "최종프로젝트",
+  projectStatus: "COMPLETED",
+  createdAt: "2025-02-01T14:30:00",
+  startDate: "2025-02-05T05:17:17.374",
+  endDate: "2025-03-11T05:17:17.374",
   cate: "개발",
   subcate1: ["JavaScript"],
   subcate2: ["React"],
 };
-
-// (임시) 프로젝트 박스 프로젝트명
-const selectedProjectName = "최종프로젝트";
 
 // (임시) 프로젝트 박스 선택된 멤버
 const selectedProjectMember = [
@@ -57,6 +70,9 @@ const ProjectListBox = ({
   const navigate = useNavigate();
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
+  // 프로젝트 박스 정보
+  const [projectDataInfo, setProjectDataInfo] =
+    useState<selectedProjectData>(selectedProjectData);
 
   const members = projectInfo.memberNames;
 
@@ -174,8 +190,8 @@ const ProjectListBox = ({
           }}
         >
           <EditProjectModal
-            projectName={selectedProjectName}
-            selectedProjectData={selectedProjectData}
+            selectedProjectData={projectDataInfo}
+            setSelectedProjectData={setProjectDataInfo}
             setIsEditProjectModal={setIsEditProjectModal}
             projectMember={selectedProjectMember}
             title="프로젝트 편집"
