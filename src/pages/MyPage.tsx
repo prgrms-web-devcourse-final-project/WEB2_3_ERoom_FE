@@ -2,11 +2,13 @@ import { useState } from "react";
 import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import DefaultImg from "../assets/sample_default_profile.png";
+import ConfirmModal from "../components/modals/ConfirmModal";
 
 const MyPage = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
   const [progileImg, setProfileImg] = useState("");
   const [name, setName] = useState<string | undefined>("");
+  const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
@@ -40,6 +42,7 @@ const MyPage = () => {
               개인정보
             </span>
           </div>
+
           <div className="flex gap-[30px] my-[50px]">
             {/* 프로필 이미지 */}
             <button
@@ -101,12 +104,22 @@ const MyPage = () => {
             <Button
               text="탈퇴하기"
               size="md"
-              to="/"
               css="border-none text-[12px] text-main-green01"
+              onClick={() => setIsConfirmModal(true)}
             />
           </div>
         </div>
       </div>
+      {/* 탈퇴 확인 모달 */}
+      {isConfirmModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+            flex justify-center items-center bg-black/70"
+          onClick={() => setIsConfirmModal(false)}
+        >
+          <ConfirmModal value="탈퇴" setIsModal={setIsConfirmModal} />
+        </div>
+      )}
     </section>
   );
 };

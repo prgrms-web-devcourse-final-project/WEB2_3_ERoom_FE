@@ -3,16 +3,13 @@ import { Link, useLocation, useNavigate } from "react-router";
 import alarmIcon from "../../assets/icons/alarm.svg";
 import AlarmModal from "../modals/AlarmModal";
 import headerIcon from "../../assets/icons/headerLogo.svg";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useAuth();
 
-  const [isLogin, setIsLogin] = useState(true);
-
-  // 임시 로그인, 로그아웃 버튼
-  const handleLogin = () => {
-    setIsLogin((prev) => !prev);
-  };
+  console.log(isLogin);
 
   const [isOn, setIsOn] = useState<"Project" | "Meeting" | "">("");
 
@@ -59,6 +56,7 @@ const Header = () => {
   return (
     <>
       <header className="h-[50px] bg-white flex items-center px-5 justify-between">
+        {/* 로고 */}
         <div>
           {/* <h1 className="text-[25px] font-bold" onClick={() => navigate("/")}>
             E:room
@@ -71,9 +69,12 @@ const Header = () => {
           />
         </div>
 
+        {/* 버튼모음 */}
         <ul className="flex font-bold gap-3 text-[#657166]">
           {isLogin ? (
+            /* 로그인 상태 */
             <>
+              {/* 알람버튼 */}
               <li
                 ref={alarmRef}
                 className="cursor-pointer flex justify-center items-center"
@@ -81,10 +82,14 @@ const Header = () => {
               >
                 <img src={alarmIcon} alt="알람 아이콘" />
               </li>
+
+              {/* 마이프로젝트 버튼 */}
               <li className="cursor-pointer">
                 {/* 유저정보api 나온 후 url 수정 필요 */}
                 <Link to={`/project-room`}>마이프로젝트</Link>
               </li>
+
+              {/* 알람 모달 */}
               {isAlarmOpen && (
                 <div
                   ref={modalRef}
@@ -93,25 +98,27 @@ const Header = () => {
                   <AlarmModal onClose={handleAlarmModal} />
                 </div>
               )}
+
+              {/* 마이페이지 버튼 */}
               <li>
                 <Link to={"/mypage"}>마이페이지</Link>
               </li>
-              <li
-                onClick={handleLogin}
-                className="cursor-pointer text-[#FF6854]"
-              >
-                로그아웃
+
+              {/* 로그아웃 버튼 */}
+              <li className="cursor-pointer text-[#FF6854]">
+                <Link to="/" onClick={() => setIsLogin(false)}>
+                  로그아웃
+                </Link>
               </li>
             </>
           ) : (
+            /* 로그아웃 상태 */
             <>
+              {/* 로그인 버튼 */}
               <li>
-                <Link to="/signin" onClick={handleLogin}>
+                <Link to="/signin" onClick={() => setIsLogin(true)}>
                   로그인
                 </Link>
-              </li>
-              <li>
-                <Link to="/signup">회원가입</Link>
               </li>
             </>
           )}
