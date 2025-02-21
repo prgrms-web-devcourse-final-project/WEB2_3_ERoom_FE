@@ -1,10 +1,3 @@
-interface MessageProps {
-  id: number;
-  text: string;
-  sender: string;
-  profile: string;
-}
-
 const MeetingRoomMessage = ({ messages }: { messages: MessageProps[] }) => {
   return (
     <>

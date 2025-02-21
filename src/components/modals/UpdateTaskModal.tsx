@@ -3,64 +3,7 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
-
-interface UpdateTaskModalProps {
-  task: {
-    id: number;
-    name: string;
-    memberId: number;
-    memberName: string;
-    startDate: string;
-    endDate: string;
-  };
-  onClose: () => void;
-}
-
-interface selectedDateType {
-  year: string;
-  month: string;
-  day: string;
-  hour: string;
-  minute: string;
-  ampm: string;
-}
-
-// (임시) 팀원 배열
-const membersData = [
-  {
-    id: 1,
-    userName: "홍길동",
-    email: "a@gmail.com",
-    password: "1234",
-    grade: "DISABLE",
-    organization: "데브코스1",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2018/01/15/09/17/woman-3083516_1280.jpg",
-    delete: "ACTIVE",
-  },
-  {
-    id: 2,
-    userName: "홍서범",
-    email: "b@gmail.com",
-    password: "1234",
-    grade: "DISABLE",
-    organization: "데브코스2",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
-    delete: "ACTIVE",
-  },
-  {
-    id: 3,
-    userName: "홍홍홍",
-    email: "c@gmail.com",
-    password: "1234",
-    grade: "DISABLE",
-    organization: "데브코스3",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
-    delete: "ACTIVE",
-  },
-];
+import { dummy } from "../../dummyData/dummy";
 
 const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
   //selectedStartDate, selectedEndDate에 데이터 들어갈 수 있게 분리하는 함수
@@ -118,7 +61,7 @@ const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
       {/* 업무, 프로젝트 생성에서 공동으로 쓰려면 제목 props로 내리도록 수정 필요 */}
       {/* 기본값 props로 내릴 수 있도록 수정 필요 */}
       <WriteProjectName />
-      <SelectMember data={membersData} />
+      <SelectMember data={dummy.membersData} />
       <div>
         <span className="text-[16px] font-bold">일정</span>
         <div className="flex flex-col gap-[10px]">

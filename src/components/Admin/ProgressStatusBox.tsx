@@ -2,13 +2,6 @@ import { twMerge } from "tailwind-merge";
 
 const STATUS_NAME = ["진행 중", "진행 예정", "진행 완료"];
 
-interface ProgressStatusBoxProps {
-  width?: string;
-  height?: string;
-  status: string;
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-}
-
 const ProgressStatusBox = ({
   width,
   height,

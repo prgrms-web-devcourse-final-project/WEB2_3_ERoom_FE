@@ -1,14 +1,6 @@
 import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 
-interface AdminButtonProps {
-  text: string;
-  type: "green" | "white";
-  to?: string;
-  css?: string;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}
-
 const AdminButton = ({ text, to, type, css, onClick }: AdminButtonProps) => {
   const navigate = useNavigate();
   const BASE_STYLE =

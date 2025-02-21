@@ -22,12 +22,6 @@ ChartJS.register(
   Filler
 );
 
-interface ChartProps {
-  data: number[];
-  labelTitle: string;
-  label: string[];
-}
-
 const Chart = ({ data, labelTitle, label }: ChartProps) => {
   const chartData: ChartData<"line"> = {
     labels: label,

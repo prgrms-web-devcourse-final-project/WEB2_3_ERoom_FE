@@ -1,14 +1,6 @@
 import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 
-interface AlarmBoxProps {
-  project: string;
-  task?: string;
-  theme: "message" | "newTask" | "newProject" | "endProject";
-  css?: string;
-  onRemove?: () => void;
-}
-
 const AlarmBox = ({ project, task, theme, css, onRemove }: AlarmBoxProps) => {
   const navigate = useNavigate();
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";

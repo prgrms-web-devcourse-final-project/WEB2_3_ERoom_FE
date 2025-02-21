@@ -1,22 +1,6 @@
 import { useEffect, useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-interface MembersType {
-  id: number;
-  userName: string;
-  email: string;
-  password: string;
-  grade: string;
-  organization: string;
-  profileImage: string;
-  delete: string;
-}
-
-interface SelectMembersProps {
-  data: MembersType[];
-  selectedData?: MembersType[];
-}
-
 const SelectMember = ({ data, selectedData }: SelectMembersProps) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
