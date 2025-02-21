@@ -4,40 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
-const MeetingRoomChatBox = ({ css }: { css?: string }) => {
-  const dummyMessages = [
-    {
-      id: 1,
-      text: "안녕하세요!",
-      sender: "team",
-      profile:
-        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
-    },
-    {
-      id: 2,
-      text: "회의 시작하겠습니다.",
-      sender: "team",
-      profile:
-        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
-    },
-    {
-      id: 3,
-      text: "네, 확인했습니다!",
-      sender: "user",
-      profile:
-        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
-    },
-    {
-      id: 4,
-      text: "자료 공유드릴게요.",
-      sender: "user",
-      profile:
-        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
-    },
-  ];
+import { dummy } from "../../dummyData/dummy";
 
+const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState(dummyMessages);
+  const [messages, setMessages] = useState(dummy.messagesData);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isComposing, setIsComposing] = useState(false); //조합문자 판별

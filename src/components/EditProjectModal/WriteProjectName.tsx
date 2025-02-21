@@ -1,10 +1,6 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-interface WriteProjectNameType {
-  name?: string;
-}
-
 const WriteProjectName = ({ name }: WriteProjectNameType) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");

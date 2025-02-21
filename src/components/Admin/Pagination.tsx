@@ -8,12 +8,6 @@ import startPageBtnOff from "../../assets/icons/start_page_off.svg";
 import endPageBtnOn from "../../assets/icons/end_page_on.svg";
 import endPageBtnOff from "../../assets/icons/end_page_off.svg";
 
-interface PaginationProps {
-  totalPages: number;
-  onPageChange: (selectedPage: number) => void;
-  menu?: string;
-}
-
 const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,

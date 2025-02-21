@@ -22,19 +22,29 @@ const MyPage = () => {
   };
 
   return (
-    <section className="mypage-background flex justify-center items-center relative min-h-screen">
-      <div className="absolute inset-0 blur"></div>
+    <section
+      className="mypage-background flex justify-center items-center 
+    relative min-h-screen"
+    >
+      {/* 투명 오버레이 */}
+      <div className="absolute inset-0 blur bg-white/20"></div>
+
       <div className="relative z-10">
-        <div className="flex flex-col justify-center items-center w-[680px] h-[559px] bg-[#ffffff94] p-[100px] rounded-[10px]">
+        <div
+          className="flex flex-col justify-center items-center w-[680px] h-[559px] 
+        bg-[#ffffff94] p-[100px] rounded-[10px]"
+        >
+          {/* 모달 제목 */}
           <div className="text-center">
             <span className="text-logo-green-light font-bold text-[20px]">
               개인정보
             </span>
           </div>
           <div className="flex gap-[30px] my-[50px]">
+            {/* 프로필 이미지 */}
             <button
               onClick={() => handleProfileImg}
-              className="w-[200px] h-[206px] overflow-hidden cursor-pointer"
+              className="w-[200px] h-full overflow-hidden cursor-pointer"
             >
               {/* 프로필 기본 이미지 샘플로 넣어둠. 추후 기본이미지 나오면 수정 필요 */}
               <img
@@ -43,7 +53,10 @@ const MyPage = () => {
                 className="w-full h-full object-cover"
               />
             </button>
+
+            {/* 개인정보란 */}
             <div className="flex flex-col gap-[20px]">
+              {/* 이름 */}
               <div className="flex flex-col gap-[10px]">
                 <span className="font-bold">이름</span>
                 <input
@@ -54,12 +67,16 @@ const MyPage = () => {
                   className="w-[250px] h-[33px] pl-[10px] bg-transparent focus:outline-none border-b-[1px] border-b-gray01"
                 />
               </div>
+
+              {/* 이메일 */}
               <div className="flex flex-col gap-[10px]">
                 <span className="font-bold">이메일</span>
                 <div className="pl-[10px]">
                   <span className="text-black01">hong@gmail.com</span>
                 </div>
               </div>
+
+              {/* 소속 */}
               <div className="flex flex-col gap-[10px]">
                 <span className="font-bold">소속</span>
                 <input
@@ -72,8 +89,21 @@ const MyPage = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-center">
-            <Button text="수정하기" size="md" to="/" />
+
+          {/* 버튼 모음 */}
+          <div className="flex flex-col justify-center gap-[10px]">
+            <Button
+              text="수정하기"
+              size="md"
+              to="/"
+              css="bg-main-green01 border border-main-green text-main-beige01"
+            />
+            <Button
+              text="탈퇴하기"
+              size="md"
+              to="/"
+              css="border-none text-[12px] text-main-green01"
+            />
           </div>
         </div>
       </div>

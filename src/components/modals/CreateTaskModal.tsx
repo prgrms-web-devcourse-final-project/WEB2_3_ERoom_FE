@@ -3,56 +3,7 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import SelectMember from "../EditProjectModal/SelectMember";
-
-interface selectedDateType {
-  year: string;
-  month: string;
-  day: string;
-  hour: string;
-  minute: string;
-  ampm: string;
-}
-
-interface CreateTaskProps {
-  onClose: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-// (임시) 팀원 배열
-const membersData = [
-  {
-    id: 1,
-    userName: "홍길동",
-    email: "a@gmail.com",
-    password: "1234",
-    grade: "DISABLE",
-    organization: "데브코스1",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2018/01/15/09/17/woman-3083516_1280.jpg",
-    delete: "ACTIVE",
-  },
-  {
-    id: 2,
-    userName: "홍서범",
-    email: "b@gmail.com",
-    password: "1234",
-    grade: "DISABLE",
-    organization: "데브코스2",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
-    delete: "ACTIVE",
-  },
-  {
-    id: 3,
-    userName: "홍홍홍",
-    email: "c@gmail.com",
-    password: "1234",
-    grade: "DISABLE",
-    organization: "데브코스3",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
-    delete: "ACTIVE",
-  },
-];
+import { dummy } from "../../dummyData/dummy";
 
 const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
   const now = new Date();
@@ -85,7 +36,7 @@ const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
       </div>
       {/* 업무, 프로젝트 생성에서 공동으로 쓰려면 제목 props로 내리도록 수정 필요 */}
       <WriteProjectName />
-      <SelectMember data={membersData} />
+      <SelectMember data={dummy.membersData} />
       <div>
         <span className="text-[16px] font-bold">일정</span>
         <div className="flex flex-col gap-[10px]">

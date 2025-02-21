@@ -3,18 +3,6 @@ import * as d3 from "d3";
 import cloud from "d3-cloud";
 import { scaleSequential } from "d3-scale";
 
-interface Word {
-  text: string;
-  size: number;
-  x?: number;
-  y?: number;
-  rotate?: number;
-}
-
-interface WordCloudProps {
-  words: { text: string; value: number }[];
-}
-
 const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const width = 300;

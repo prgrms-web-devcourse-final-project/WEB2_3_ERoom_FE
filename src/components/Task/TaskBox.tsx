@@ -2,12 +2,6 @@ import { PROGRESS_STATUS } from "../../constants/status";
 import Button from "../common/Button";
 import ParticipantIcon from "../common/ParticipantIcon";
 
-interface TaskBoxProps {
-  isAll?: boolean;
-  onClick: () => void;
-  task: TaskType;
-}
-
 const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
   // 전체 업무 박스
   if (isAll) {
