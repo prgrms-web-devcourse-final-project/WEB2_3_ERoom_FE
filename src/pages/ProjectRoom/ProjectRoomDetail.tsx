@@ -8,13 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjectDetail } from "../../utils/api/getProjectDetail";
 // import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
 
-interface AllTasksType {
-  IN_PROGRESS: TaskType[];
-  COMPLETED: TaskType[];
-  BEFORE_START: TaskType[];
-  HOLD: TaskType[];
-}
-
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();

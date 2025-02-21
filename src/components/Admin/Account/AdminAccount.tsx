@@ -9,17 +9,6 @@ import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 
-interface AccountListProps {
-  id: number;
-  email: string;
-  name: string;
-  registeredDate: string;
-  profileImage: string;
-  organization: string;
-  isSubscribed: boolean;
-  isActive: boolean;
-}
-
 const AdminAccount = () => {
   // 더미 데이터
   const dummyUsers: AccountListProps[] = Array.from(

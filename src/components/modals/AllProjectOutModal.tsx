@@ -1,8 +1,5 @@
 import Button from "../common/Button";
 
-interface AllProjectOutModalProps {
-  setIsAllProjectOutModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
 const AllProjectOutModal = ({
   setIsAllProjectOutModal,
 }: AllProjectOutModalProps) => {

@@ -9,19 +9,6 @@ import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import AdminProjectList from "./AdminProjectList";
 
-interface ProjectsListType {
-  id: number;
-  projectName: string;
-  projectStatus: string;
-  createdAt: string;
-  startDate: string;
-  endDate: string;
-  tag1: string;
-  tag2: string;
-  tag3: string;
-  isActive: boolean;
-}
-
 const AdminProject = () => {
   // 더미 데이터
   const dummyProjects: ProjectsListType[] = Array.from(
