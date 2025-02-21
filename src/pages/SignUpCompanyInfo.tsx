@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Button from "../components/common/Button";
 import DefaultImg from "../assets/sample_default_profile.png";
+import { useAuth } from "../context/AuthContext";
 
 const SignUpCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
   const [progileImg, setProfileImg] = useState("");
+  const [isLogIn, setIsLogIn] = useAuth();
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
@@ -74,6 +76,7 @@ const SignUpCompanyInfo = () => {
           size="md"
           to="/"
           css="bg-main-green01 border-main-green text-main-beige01"
+          onClick={() => setIsLogIn(true)}
         />
       </div>
     </div>
