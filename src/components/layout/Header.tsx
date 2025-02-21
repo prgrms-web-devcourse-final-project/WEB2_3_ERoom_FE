@@ -9,7 +9,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useAuth();
 
-  console.log(isLogin);
+  // console.log(isLogin);
 
   const [isOn, setIsOn] = useState<"Project" | "Meeting" | "">("");
 
