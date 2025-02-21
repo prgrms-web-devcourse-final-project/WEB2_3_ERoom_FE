@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router";
 import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
 import AuthLayout from "./components/layout/AuthLayout";
 import SignUpCompanyInfo from "./pages/SignUpCompanyInfo";
 import MainPage from "./pages/MainPage";
@@ -11,7 +10,6 @@ import ProjectRoomDetail from "./pages/ProjectRoom/ProjectRoomDetail";
 import MyPage from "./pages/MyPage";
 import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
-import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
 
 const App = () => {
