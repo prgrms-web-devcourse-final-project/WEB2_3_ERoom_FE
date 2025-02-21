@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
-  const [isLogIn, setIsLogIn] = useAuth();
+  const [isLogIn, _] = useAuth();
   console.log(isLogIn);
 
   return (
@@ -30,7 +30,7 @@ const MainPage = () => {
         </>
       ) : (
         <>
-          <div></div>
+          <div>로그인 되지 않은 상태의 메인 페이지</div>
         </>
       )}
     </div>
