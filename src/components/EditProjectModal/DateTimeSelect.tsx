@@ -117,7 +117,8 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("year")}
             >
-              {selectedDate?.year || now.getFullYear()}
+              {/* {selectedDate?.year || now.getFullYear()} */}
+              {selectedDate?.year}
             </div>
 
             {/* 드롭다운 */}
@@ -139,8 +140,9 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("month")}
             >
-              {selectedDate?.month ||
-                String(now.getMonth() + 1).padStart(2, "0")}
+              {/* {selectedDate?.month ||
+                String(now.getMonth() + 1).padStart(2, "0")} */}
+              {selectedDate?.month}
             </div>
             {openDropdown === "month" && (
               <ul
@@ -160,7 +162,8 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("day")}
             >
-              {selectedDate?.day || String(now.getDate()).padStart(2, "0")}
+              {/* {selectedDate?.day || String(now.getDate()).padStart(2, "0")} */}
+              {selectedDate?.day}
             </div>
             {openDropdown === "day" && (
               <ul
@@ -195,7 +198,8 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("ampm")}
             >
-              {selectedDate?.ampm || nowAmPm}
+              {/* {selectedDate?.ampm || nowAmPm} */}
+              {selectedDate?.ampm}
             </div>
             {openDropdown === "ampm" && (
               <ul
@@ -226,9 +230,10 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("hour")}
             >
-              {selectedDate?.hour || title === "시작"
+              {/* {selectedDate?.hour || title === "시작"
                 ? String(nowHours12).padStart(2, "0")
-                : String(nowHours12 + 1).padStart(2, "0")}
+                : String(nowHours12 + 1).padStart(2, "0")} */}
+              {selectedDate?.hour}
             </div>
             {openDropdown === "hour" && (
               <ul
@@ -248,7 +253,8 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("minute")}
             >
-              {selectedDate?.minute || String(nowMinute).padStart(2, "0")}
+              {/* {selectedDate?.minute || String(nowMinute).padStart(2, "0")} */}
+              {selectedDate?.minute}
             </div>
             {openDropdown === "minute" && (
               <ul
