@@ -5,6 +5,10 @@ const DateTimeSelect = ({
   setSelectedDate,
   title,
 }: DateTimeSelectProps) => {
+  useEffect(() => {
+    selectedDate;
+  }, []);
+
   const now = new Date();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -199,7 +203,7 @@ const DateTimeSelect = ({
               onClick={() => toggleDropdown("ampm")}
             >
               {/* {selectedDate?.ampm || nowAmPm} */}
-              {selectedDate?.ampm}
+              {selectedDate.ampm}
             </div>
             {openDropdown === "ampm" && (
               <ul

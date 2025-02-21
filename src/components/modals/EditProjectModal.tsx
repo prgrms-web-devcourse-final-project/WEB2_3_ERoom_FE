@@ -9,6 +9,7 @@ import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createProject } from "../../utils/api/createProject";
+import "dayjs/locale/en";
 
 const EditProjectModal = ({
   selectedProjectData,
@@ -44,8 +45,8 @@ const EditProjectModal = ({
 
   useEffect(() => {
     const startDate = selectedProjectData
-      ? dayjs(selectedProjectData.startDate)
-      : dayjs();
+      ? dayjs(selectedProjectData.startDate).locale("en")
+      : dayjs().locale("en");
 
     const year = startDate.format("YYYY");
     const month = startDate.format("MM");
@@ -59,8 +60,9 @@ const EditProjectModal = ({
 
   useEffect(() => {
     const endDate = selectedProjectData
-      ? dayjs(selectedProjectData.endDate)
-      : dayjs();
+      ? dayjs(selectedProjectData.endDate).locale("en")
+      : dayjs().locale("en");
+    console.log(endDate);
     const year = endDate.format("YYYY");
     const month = endDate.format("MM");
     const day = endDate.format("DD");
