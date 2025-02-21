@@ -1,36 +1,9 @@
 import { useState } from "react";
 import Button from "../common/Button";
-<<<<<<< HEAD
-import DateTimeSelect from "../CreateModal/DateTimeSelect";
-import SelectMember from "../EditProjectModal/SelectMember";
-import WriteProjectName from "../EditProjectModal/WriteProjectName";
-
-interface UpdateTaskModalProps {
-  task: {
-    id: number;
-    name: string;
-    memberId: number;
-    memberName: string;
-    startDate: string;
-    endDate: string;
-  };
-  onClose: () => void;
-}
-
-interface selectedDateType {
-  year: string;
-  month: string;
-  day: string;
-  hour: string;
-  minute: string;
-  ampm: string;
-}
-=======
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { dummy } from "../../dummyData/dummy";
->>>>>>> 58e35ca28961a29fec1060c8f0ce99bd424a4ff7
 
 const UpdateTaskModal = ({ task, onClose }: UpdateTaskModalProps) => {
   //selectedStartDate, selectedEndDate에 데이터 들어갈 수 있게 분리하는 함수
