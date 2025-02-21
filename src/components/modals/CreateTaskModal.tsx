@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../CreateModal/DateTimeSelect";
-import WriteProjectName from "../CreateProjectModal/WriteProjectName";
-import SelectMember from "../CreateProjectModal/SelectMember";
+import WriteProjectName from "../EditProjectModal/WriteProjectName";
+import SelectMember from "../EditProjectModal/SelectMember";
 
 interface selectedDateType {
   year: string;
