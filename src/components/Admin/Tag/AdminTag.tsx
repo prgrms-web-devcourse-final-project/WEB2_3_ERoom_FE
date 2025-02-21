@@ -2,6 +2,7 @@ import { useState } from "react";
 import AdminButton from "../../common/AdminButton";
 import AddButton from "../../../assets/button/add_tag.svg";
 import AdminTagList from "./AdminTagList";
+import AdminTagAdd from "./AdminTagAdd";
 
 //랜덤id 생성함수
 const generateId = () => `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -11,7 +12,6 @@ const initialCategories = [
   {
     id: generateId(),
     name: "개발",
-    isEditable: false,
     value: 10,
     subcategories: [
       {
@@ -20,15 +20,14 @@ const initialCategories = [
         isEditable: false,
         value: 10,
         data: [
-          { id: generateId(), text: "C", value: 10, isEditable: false },
-          { id: generateId(), text: "C++", value: 20, isEditable: false },
-          { id: generateId(), text: "C#", value: 30, isEditable: false },
-          { id: generateId(), text: "Java", value: 40, isEditable: false },
+          { id: generateId(), text: "C", value: 10 },
+          { id: generateId(), text: "C++", value: 20 },
+          { id: generateId(), text: "C#", value: 30 },
+          { id: generateId(), text: "Java", value: 40 },
           {
             id: generateId(),
             text: "JavaScript",
             value: 50,
-            isEditable: false,
           },
           {
             id: generateId(),
@@ -165,10 +164,20 @@ const AdminTag = () => {
     initialCategories[0].subcategories[0].data
   );
 
+  const [addCategories, setAddCategories] = useState<
+    | {
+        id: string;
+        name: string;
+        value: number;
+        subcategories: never[];
+        isEditable: boolean;
+      }[]
+    | null
+  >(null);
+
   //  분야 추가
   const handleAddCategory = () => {
-    setCategories([
-      ...categories,
+    setAddCategories([
       {
         id: generateId(),
         name: "",
@@ -271,6 +280,15 @@ const AdminTag = () => {
                 <AdminTagList
                   key={category.id}
                   index={index}
+                  id={category.id}
+                  name={category.name}
+                  onChange={handleCategoryChange}
+                />
+              ))}
+              {addCategories?.map((category, index) => (
+                <AdminTagAdd
+                  key={category.id}
+                  index={index + categories.length}
                   id={category.id}
                   name={category.name}
                   onChange={handleCategoryChange}
