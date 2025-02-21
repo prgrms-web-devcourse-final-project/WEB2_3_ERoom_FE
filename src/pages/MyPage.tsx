@@ -40,6 +40,7 @@ const MyPage = () => {
               개인정보
             </span>
           </div>
+
           <div className="flex gap-[30px] my-[50px]">
             {/* 프로필 이미지 */}
             <button

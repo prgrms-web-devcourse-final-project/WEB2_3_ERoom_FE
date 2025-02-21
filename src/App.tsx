@@ -11,34 +11,37 @@ import ProjectRoomDetail from "./pages/ProjectRoom/ProjectRoomDetail";
 import MyPage from "./pages/MyPage";
 import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
+import { useState } from "react";
+import { AuthProvider } from "./context/AuthContext";
 
 const App = () => {
   return (
-    <Routes>
-      {/* 로그인, 회원가입, 소속등록 페이지 */}
-      <Route element={<AuthLayout />}>
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signup-company-info" element={<SignUpCompanyInfo />} />
-      </Route>
+    <AuthProvider>
+      <Routes>
+        {/* 로그인, 회원가입, 소속등록 페이지 */}
+        <Route element={<AuthLayout />}>
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup-company-info" element={<SignUpCompanyInfo />} />
+        </Route>
 
-      {/* 헤더와 사이드바가 있는 페이지 */}
-      <Route element={<Layout />}>
-        <Route path="/" element={<MainPage />} />
-        <Route
-          path="/project-room/:projectId"
-          element={<ProjectRoomDetail />}
-        />
-        <Route path="/admin" element={<Admin />} />
-      </Route>
+        {/* 헤더와 사이드바가 있는 페이지 */}
+        <Route element={<Layout />}>
+          <Route
+            path="/project-room/:projectId"
+            element={<ProjectRoomDetail />}
+          />
+          <Route path="/admin" element={<Admin />} />
+        </Route>
 
-      {/* 헤더만 있는 페이지 */}
-      <Route element={<HeaderLayout />}>
-        <Route path="/project-room" element={<ProjectRoom />} />
-        <Route path="/meeting-room/:projectId" element={<MeetingRoom />} />
-        <Route path="/mypage" element={<MyPage />} />
-      </Route>
-    </Routes>
+        {/* 헤더만 있는 페이지 */}
+        <Route element={<HeaderLayout />}>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/project-room" element={<ProjectRoom />} />
+          <Route path="/meeting-room/:projectId" element={<MeetingRoom />} />
+          <Route path="/mypage" element={<MyPage />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 };
 
