@@ -12,7 +12,7 @@
   --color-main-green03: #ebe9e2;
   --color-logo-green: #2b3e34;
   --color-header-green: #657166;
-  --color-header-header-green-hover: #2b3e34;
+  --color-header-green-hover: #2b3e34;
   --color-red: #ffe3df;
   --color-header-red: #ff6854;
   --color-header-red-hover: #ff1d00;
@@ -44,6 +44,7 @@
 /* 스크롤바 커스텀 */
 .scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {

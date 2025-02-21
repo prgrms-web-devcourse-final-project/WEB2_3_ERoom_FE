@@ -1,15 +1,6 @@
 import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 
-interface ButtonProps {
-  text: string;
-  size: "md" | "lg" | "sm";
-  to?: string;
-  css?: string;
-  logo?: string;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}
-
 const Button = ({ text, to, size, css, logo, onClick }: ButtonProps) => {
   const navigate = useNavigate();
   const BASE_STYLE =
