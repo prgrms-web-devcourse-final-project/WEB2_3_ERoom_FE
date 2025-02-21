@@ -8,18 +8,6 @@ import { PROGRESS_STATUS } from "../../../constants/status";
 import { progressType } from "../../../utils/progressType";
 import ProgressStatusBox from "../ProgressStatusBox";
 
-interface ProjectsListType {
-  id: number;
-  projectName: string;
-  projectStatus: string;
-  createdAt: string;
-  startDate: string;
-  endDate: string;
-  tag1: string;
-  tag2: string;
-  tag3: string;
-}
-
 const AdminProjectList = ({
   project,
   index,

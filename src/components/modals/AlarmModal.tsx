@@ -1,41 +1,11 @@
 import { useState } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
-
-interface AlarmModalProps {
-  onClose: () => void;
-}
+import { dummy } from "../../dummyData/dummy";
 
 const AlarmModal = ({ onClose }: AlarmModalProps) => {
   // 임시 더미 알람 데이터
-  const [dummyAlarms, setDummyAlarms] = useState([
-    {
-      id: 1,
-      theme: "message" as const,
-      project: "최종 프로젝트",
-    },
-    {
-      id: 2,
-      theme: "newTask" as const,
-      project: "최종 프로젝트",
-      task: "UI 디자인 수정",
-    },
-    { id: 3, theme: "newProject" as const, project: "최종 프로젝트" },
-    { id: 4, theme: "endProject" as const, project: "최종 프로젝트" },
-    {
-      id: 5,
-      theme: "message" as const,
-      project: "최종 프로젝트",
-    },
-    {
-      id: 6,
-      theme: "newTask" as const,
-      project: "최종 프로젝트",
-      task: "UI 디자인 수정",
-    },
-    { id: 7, theme: "newProject" as const, project: "최종 프로젝트" },
-    { id: 8, theme: "endProject" as const, project: "최종 프로젝트" },
-  ]);
+  const [dummyAlarms, setDummyAlarms] = useState(dummy.alarmData);
 
   const handleRemoveAllAlarm = () => {
     setDummyAlarms([]);

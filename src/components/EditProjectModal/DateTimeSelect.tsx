@@ -1,27 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 
-interface DateTimeSelectProps {
-  selectedDate?: {
-    year: string;
-    month: string;
-    day: string;
-    hour: string;
-    minute: string;
-    ampm: string;
-  };
-  setSelectedDate?: React.Dispatch<
-    React.SetStateAction<{
-      year: string;
-      month: string;
-      day: string;
-      hour: string;
-      minute: string;
-      ampm: string;
-    }>
-  >;
-  title?: "시작" | "종료";
-}
-
 const DateTimeSelect = ({
   selectedDate,
   setSelectedDate,
