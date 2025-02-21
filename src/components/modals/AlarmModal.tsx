@@ -48,7 +48,10 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
   };
 
   return (
-    <div className="flex flex-col w-[321px] h-[499px] rounded-[10px] pt-[30px] px-[30px] gap-[30px] bg-white">
+    <div
+      className="flex flex-col w-[321px] h-[499px] rounded-[10px] 
+      pt-[30px] px-[30px] gap-[30px] bg-white drop-shadow-[0_0px_15px_rgba(0,0,0,0.6)]"
+    >
       <div className="flex justify-center">
         <span className="text-center text-main-green text-[18px] font-bold">
           NOTIFICATIONS
