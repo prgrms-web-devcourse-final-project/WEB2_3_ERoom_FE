@@ -116,8 +116,8 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
       </div>
     );
   } else if (pathname.startsWith("/admin")) {
-    // 관리자페이지 사이드바
     return (
+      // 관리자페이지 사이드바
       <div
         className="w-[140px] bg-white min-h-[calc(100vh-50px)] flex-none
         font-bold flex flex-col items-center pt-5 text-main-green01"

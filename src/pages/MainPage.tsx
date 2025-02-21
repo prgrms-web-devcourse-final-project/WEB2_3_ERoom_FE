@@ -2,9 +2,12 @@ import TodaySchedule from "../components/MainPage/TodaySchedule";
 import { useOutletContext } from "react-router";
 import { twMerge } from "tailwind-merge";
 import Calendar from "../components/MainPage/Calendar";
+import { useAuth } from "../context/AuthContext";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
+  const [isLogIn, _] = useAuth();
+  console.log(isLogIn);
 
   return (
     <div
@@ -13,15 +16,23 @@ const MainPage = () => {
         px-5 py-5 flex gap-2 h-[calc(100vh-50px)] ${sidebarToggle ? "" : ""}`
       )}
     >
-      {/* 캘린더 */}
-      <div className="flex-1 pl-[50px] pr-[40px]">
-        <div className="h-[calc(100vh-90px)] border rounded-[10px] border-main-green02 px-5 py-5 bg-white">
-          <Calendar />
-        </div>
-      </div>
+      {isLogIn ? (
+        <>
+          {/* 캘린더 */}
+          <div className="flex-1 pl-[50px] pr-[40px]">
+            <div className="h-[calc(100vh-90px)] border rounded-[10px] border-main-green02 px-5 py-5 bg-white">
+              <Calendar />
+            </div>
+          </div>
 
-      {/* 오늘의 일정 */}
-      <TodaySchedule />
+          {/* 오늘의 일정 */}
+          <TodaySchedule />
+        </>
+      ) : (
+        <>
+          <div>로그인 되지 않은 상태의 메인 페이지</div>
+        </>
+      )}
     </div>
   );
 };
