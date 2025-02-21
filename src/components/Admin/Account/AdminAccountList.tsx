@@ -6,17 +6,6 @@ import { twMerge } from "tailwind-merge";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 
-interface AccountListProps {
-  id: number;
-  email: string;
-  name: string;
-  registeredDate: string;
-  profileImage: string;
-  organization: string;
-  isSubscribed: boolean;
-  isActive: boolean;
-}
-
 const AdminAccountList = ({
   user,
   index,

@@ -1,16 +1,7 @@
 import { useState } from "react";
 import Button from "../common/Button";
-import DateTimeSelect from "../CreateModal/DateTimeSelect";
+import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import CreateAINoteModal from "./CreateAINoteModal";
-
-interface selectedDateType {
-  year: string;
-  month: string;
-  day: string;
-  hour: string;
-  minute: string;
-  ampm: string;
-}
 
 const CreateNotePeriodModal = ({ onClose }: { onClose: () => void }) => {
   const now = new Date();

@@ -23,14 +23,31 @@ const TASK_BUTTON = {
 };
 
 const Calendar = () => {
-  const { data, isLoading } = useQuery<ProjectListType[]>({
+  const { data: projectListData, isLoading } = useQuery<ProjectListType[]>({
     queryKey: ["ProjectList"],
-    queryFn: getProjectList,
+    queryFn: async () => {
+      const response = await getProjectList();
+      const filterInProgress = response.filter(
+        (project: ProjectListType) =>
+          project.status === "IN_PROGRESS" || project.status === "BEFORE_START"
+      );
+      return filterInProgress.map((project: ProjectListType) => {
+        return {
+          id: project.id,
+          title: project.name,
+          data: project.startDate,
+          start: project.startDate.split("T")[0],
+          end: project.endDate.split("T")[0],
+          textColor: "black",
+          color: "#" + project.color,
+        };
+      });
+    },
   });
 
   useEffect(() => {
-    console.log(data, isLoading);
-  }, [data]);
+    console.log(projectListData, isLoading);
+  }, [projectListData]);
 
   // 데이터 수정
   const { mutate } = useMutation({
@@ -59,17 +76,7 @@ const Calendar = () => {
       // 한국어
       locale={koLocale}
       // 데이터
-      events={data?.map((project: ProjectListType) => {
-        return {
-          id: project.id,
-          title: project.name,
-          data: project.startDate,
-          start: project.startDate,
-          end: project.endDate,
-          textColor: "black",
-          color: project.color,
-        };
-      })}
+      events={projectListData}
       // 데이터 클릭이벤트
       eventClick={() => {
         // alert("Event:" + info.event.title);
@@ -78,7 +85,7 @@ const Calendar = () => {
       editable={true}
       droppable={true}
       eventDrop={(info: EventDropArg) => {
-        console.log(dayjs(info.event.start).format("YYYY-MM-DD"));
+        console.log(dayjs(info.event.start));
         mutate(info);
       }}
       // 일정 길이 변경 드래그

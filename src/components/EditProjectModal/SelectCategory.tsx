@@ -3,30 +3,6 @@ import cancelButton from "../../assets/button/cancelButton.svg";
 import triangleUp from "../../assets/button/triangle/triangleUp.svg";
 import triangleDown from "../../assets/button/triangle/triangleDown.svg";
 
-interface CategoryType {
-  name: string;
-  subcategories?: {
-    subname: string;
-    data: { text: string; value: number }[];
-  }[];
-}
-
-interface SelectCategoryProps {
-  selectedData: {
-    cate: string;
-    subcate1: string[];
-    subcate2: string[];
-  };
-  setSelectedData: React.Dispatch<
-    React.SetStateAction<{
-      cate: string;
-      subcate1: string[];
-      subcate2: string[];
-    }>
-  >;
-  categoryData: CategoryType[];
-}
-
 const SelectCategory = ({
   selectedData,
   setSelectedData,
@@ -76,7 +52,7 @@ const SelectCategory = ({
     });
   };
 
-  console.log(selectedData);
+  // console.log(selectedData);
 
   return (
     <div className="w-full flex flex-col gap-[20px]">

@@ -1,16 +1,6 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-interface ProjectDataType {
-  name?: string;
-  startDate?: string;
-  endDate?: string;
-}
-
-interface SelectProjectProps {
-  data: ProjectDataType[];
-}
-
 const SelectProject = ({ data }: SelectProjectProps) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");

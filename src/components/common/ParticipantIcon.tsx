@@ -1,9 +1,5 @@
 import { twMerge } from "tailwind-merge";
 
-interface ParticipantIconProps {
-  css?: string;
-}
-
 const ParticipantIcon = ({ css }: ParticipantIconProps) => {
   // 임시 입니다 추후에 이미지로 변경예정
   return (
