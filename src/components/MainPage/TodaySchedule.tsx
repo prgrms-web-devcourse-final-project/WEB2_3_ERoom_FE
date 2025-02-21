@@ -16,6 +16,7 @@ const TodaySchedule = () => {
   // 1초마다 재랜더링 이슈
   const [time, setTime] = useState(dayjs().format("HH:mm:ss"));
   useEffect(() => {
+    console.log(now);
     const timer = setInterval(() => {
       setTime(dayjs().format("HH:mm:ss"));
     }, 1000);
