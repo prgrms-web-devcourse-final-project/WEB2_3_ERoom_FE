@@ -67,13 +67,13 @@ const ProjectListBox = ({
               {members.length > 5
                 ? members
                     .slice(0, 6)
-                    .map((member, idx) => (
+                    .map((_, idx) => (
                       <ParticipantIcon
                         key={idx}
                         css={idx > 0 ? "ml-[-5px]" : ""}
                       />
                     ))
-                : members.map((menber, idx) => (
+                : members.map((_, idx) => (
                     <ParticipantIcon
                       key={idx}
                       css={idx > 0 ? "ml-[-5px]" : ""}
