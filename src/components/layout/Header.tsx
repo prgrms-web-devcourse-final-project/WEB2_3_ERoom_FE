@@ -93,7 +93,7 @@ const Header = () => {
               {isAlarmOpen && (
                 <div
                   ref={modalRef}
-                  className="absolute top-[50px] transform -translate-x-1/2"
+                  className="absolute top-[50px] transform -translate-x-1/2 z-50"
                 >
                   <AlarmModal onClose={handleAlarmModal} />
                 </div>

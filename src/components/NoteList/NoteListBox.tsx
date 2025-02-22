@@ -2,7 +2,7 @@ const NoteListBox = ({ onClick }: { onClick: () => void }) => {
   return (
     <div
       onClick={onClick}
-      className="flex w-full px-[5px] border border-main-green02"
+      className="flex w-full px-[5px] border border-main-green02 cursor-pointer"
     >
       <div className="flex w-full justify-between">
         <div className="flex items-center">
