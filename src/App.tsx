@@ -10,6 +10,7 @@ import ProjectRoomDetail from "./pages/ProjectRoom/ProjectRoomDetail";
 import MyPage from "./pages/MyPage";
 import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const App = () => {
   return (
@@ -21,20 +22,24 @@ const App = () => {
       </Route>
 
       {/* 헤더와 사이드바가 있는 페이지 */}
-      <Route element={<Layout />}>
-        <Route
-          path="/project-room/:projectId"
-          element={<ProjectRoomDetail />}
-        />
-        <Route path="/admin" element={<Admin />} />
-      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          <Route
+            path="/project-room/:projectId"
+            element={<ProjectRoomDetail />}
+          />
+          <Route path="/admin" element={<Admin />} />
+        </Route>
 
-      {/* 헤더만 있는 페이지 */}
+        {/* 헤더만 있는 페이지 */}
+        <Route element={<HeaderLayout />}>
+          <Route path="/project-room" element={<ProjectRoom />} />
+          <Route path="/meeting-room/:projectId" element={<MeetingRoom />} />
+          <Route path="/mypage" element={<MyPage />} />
+        </Route>
+      </Route>
       <Route element={<HeaderLayout />}>
         <Route path="/" element={<MainPage />} />
-        <Route path="/project-room" element={<ProjectRoom />} />
-        <Route path="/meeting-room/:projectId" element={<MeetingRoom />} />
-        <Route path="/mypage" element={<MyPage />} />
       </Route>
     </Routes>
   );
