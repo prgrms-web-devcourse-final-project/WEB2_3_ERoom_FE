@@ -6,7 +6,7 @@ import { useAuthStore } from "../store/authStore";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
-  const { isAuthenticated } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
 
   return (
     <div
@@ -15,7 +15,7 @@ const MainPage = () => {
         px-5 py-5 flex gap-2 h-[calc(100vh-50px)] ${sidebarToggle ? "" : ""}`
       )}
     >
-      {isAuthenticated ? (
+      {user ? (
         <>
           {/* 캘린더 */}
           <div className="flex-1 pl-[50px] pr-[40px]">
