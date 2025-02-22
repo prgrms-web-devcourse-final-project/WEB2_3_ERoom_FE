@@ -8,7 +8,7 @@ interface selectedDateType {
 }
 
 interface DateTimeSelectProps {
-  selectedDate?: {
+  selectedDate: {
     year: string;
     month: string;
     day: string;
@@ -16,7 +16,7 @@ interface DateTimeSelectProps {
     minute: string;
     ampm: string;
   };
-  setSelectedDate?: React.Dispatch<
+  setSelectedDate: React.Dispatch<
     React.SetStateAction<{
       year: string;
       month: string;

@@ -53,4 +53,6 @@ interface SelectProjectProps {
 
 interface WriteProjectNameType {
   name?: string;
+  newProjectNameValue?: string;
+  setNewProjectNameValue?: React.Dispatch<React.SetStateAction<string>>;
 }

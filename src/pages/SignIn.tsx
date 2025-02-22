@@ -2,11 +2,10 @@ import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuthStore } from "../store/authStore";
 
 const SignIn = () => {
-  const [isLogedIn, setIsLogedIn] = useAuth();
+  const { login } = useAuthStore();
 
   return (
     <div
@@ -28,7 +27,7 @@ const SignIn = () => {
           css="bg-kakao border-gray01 text-black gap-[10px]"
           logo={KakaoLogo}
           to="/"
-          onClick={() => setIsLogedIn(true)}
+          onClick={() => login()}
         />
         {/* (임시) 회원가입 되지 않은 상태 */}
         <Button
@@ -37,7 +36,7 @@ const SignIn = () => {
           css="bg-white border-gray01 text-black gap-[10px]"
           logo={GoogleLogo}
           to="/signup-company-info"
-          onClick={() => setIsLogedIn(true)}
+          onClick={() => login()}
         />
       </div>
     </div>

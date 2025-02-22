@@ -2,12 +2,11 @@ import TodaySchedule from "../components/MainPage/TodaySchedule";
 import { useOutletContext } from "react-router";
 import { twMerge } from "tailwind-merge";
 import Calendar from "../components/MainPage/Calendar";
-import { useAuth } from "../context/AuthContext";
+import { useAuthStore } from "../store/authStore";
 
 const MainPage = () => {
   const sidebarToggle = useOutletContext();
-  const [isLogIn, _] = useAuth();
-  console.log(isLogIn);
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <div
@@ -16,7 +15,7 @@ const MainPage = () => {
         px-5 py-5 flex gap-2 h-[calc(100vh-50px)] ${sidebarToggle ? "" : ""}`
       )}
     >
-      {isLogIn ? (
+      {isAuthenticated ? (
         <>
           {/* 캘린더 */}
           <div className="flex-1 pl-[50px] pr-[40px]">

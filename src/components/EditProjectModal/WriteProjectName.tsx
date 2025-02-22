@@ -1,9 +1,13 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-const WriteProjectName = ({ name }: WriteProjectNameType) => {
+const WriteProjectName = ({
+  name,
+  newProjectNameValue,
+  setNewProjectNameValue,
+}: WriteProjectNameType) => {
   // 인풋값 상태 관리
-  const [inputValue, setInputValue] = useState("");
+
   // 엔터 후 값 저장
   const [submittedValue, setSubmittedValue] = useState<string | null>(
     name || null
@@ -11,16 +15,20 @@ const WriteProjectName = ({ name }: WriteProjectNameType) => {
 
   // 인풋 값 상태 업데이트
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    if (setNewProjectNameValue) {
+      setNewProjectNameValue(e.target.value);
+    }
   };
 
   // 엔터 키 입력 시 값 저장
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       // 엔터 키가 눌리면 제출된 값으로 저장
-      setSubmittedValue(inputValue);
+      if (newProjectNameValue) {
+        setSubmittedValue(newProjectNameValue);
+      }
       // 인풋창 초기화
-      setInputValue("");
+      if (setNewProjectNameValue) setNewProjectNameValue("");
     }
   };
 
@@ -35,10 +43,10 @@ const WriteProjectName = ({ name }: WriteProjectNameType) => {
         border-[1px] border-gray01 rounded-[5px] text-center
         font-bold text-[14px]"
         placeholder="프로젝트명을 작성해주세요."
-        value={inputValue}
+        value={newProjectNameValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
-      ></input>
+      />
 
       {/* 작성내용 */}
       {submittedValue && (
