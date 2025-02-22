@@ -25,15 +25,15 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
           </p>
           {task.status !== "IN_PROGRESS" ? (
             <Button
-              text={"업무시작"}
+              text={"시작"}
               size="md"
-              css="border-main-green01 h-[22px] w-[70px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
+              css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
             />
           ) : (
             <Button
-              text={"업무완료"}
+              text={"완료"}
               size="md"
-              css="border-none h-[22px] w-[70px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
+              css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
             />
           )}
         </div>
