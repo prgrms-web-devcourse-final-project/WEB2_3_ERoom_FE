@@ -12,4 +12,6 @@ interface MembersType {
 interface SelectMembersProps {
   data: MembersType[];
   selectedData?: MembersType[];
+  selectedMembers: MembersType[];
+  setSelectedMembers: React.Dispatch<React.SetStateAction<MembersType[]>>;
 }

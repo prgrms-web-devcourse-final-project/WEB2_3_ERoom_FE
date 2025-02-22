@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 
-const SelectMember = ({ data, selectedData }: SelectMembersProps) => {
+const SelectMember = ({
+  data,
+  selectedData,
+  selectedMembers,
+  setSelectedMembers,
+}: SelectMembersProps) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
   // 필터링된 팀원 목록 상태
   const [filteredMembers, setFilteredMembers] = useState<MembersType[]>([]);
-  // 선택된 팀원 상태 관리
-  const [selectedMembers, setSelectedMembers] = useState<MembersType[]>([]);
+
+  // 선택한 팀원 관리 props로 변경
 
   useEffect(() => {
     if (selectedData) {
@@ -15,7 +20,7 @@ const SelectMember = ({ data, selectedData }: SelectMembersProps) => {
     }
   }, [selectedData]);
 
-  // console.log(selectedMembers);
+  console.log(selectedMembers);
 
   /* 검색결과 표시 함수 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
