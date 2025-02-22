@@ -3,9 +3,16 @@ import "../styles/AuthLayout.css";
 import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
+import { Navigate, useNavigate } from "react-router";
 
 const SignIn = () => {
-  const { login } = useAuthStore();
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
+  const user = useAuthStore((state) => state.user);
+
+  if (user) {
+    return <Navigate to={"/"} replace />;
+  }
 
   return (
     <div
@@ -26,8 +33,7 @@ const SignIn = () => {
           size="lg"
           css="bg-kakao border-gray01 text-black gap-[10px]"
           logo={KakaoLogo}
-          to="/"
-          onClick={() => login()}
+          onClick={() => login({ username: "asd" })}
         />
         {/* (임시) 회원가입 되지 않은 상태 */}
         <Button
@@ -35,8 +41,7 @@ const SignIn = () => {
           size="lg"
           css="bg-white border-gray01 text-black gap-[10px]"
           logo={GoogleLogo}
-          to="/signup-company-info"
-          onClick={() => login()}
+          onClick={() => login({ username: "asd" })}
         />
       </div>
     </div>

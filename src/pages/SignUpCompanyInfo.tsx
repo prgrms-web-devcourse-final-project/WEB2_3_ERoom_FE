@@ -131,7 +131,7 @@ const SignUpCompanyInfo = () => {
           size="md"
           to="/"
           css="border-logo-green text-logo-green"
-          onClick={() => login()}
+          onClick={() => login({ username: "asd" })}
         />
         <Button
           text="취소"

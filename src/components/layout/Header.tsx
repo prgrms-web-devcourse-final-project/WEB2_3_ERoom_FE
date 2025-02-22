@@ -7,7 +7,8 @@ import { useAuthStore } from "../../store/authStore";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, login, logout } = useAuthStore();
+  const logout = useAuthStore((state) => state.logout);
+  const isAuthenticated = useAuthStore((state) => state.user);
 
   // console.log(isLogin);
 
@@ -105,10 +106,15 @@ const Header = () => {
               </li>
 
               {/* 로그아웃 버튼 */}
-              <li className="cursor-pointer text-[#FF6854]">
-                <Link to="/" onClick={() => logout()}>
-                  로그아웃
-                </Link>
+              <li
+                className="cursor-pointer text-[#FF6854]"
+                onClick={() => {
+                  logout();
+                  useAuthStore.persist.clearStorage();
+                  navigate("/");
+                }}
+              >
+                로그아웃
               </li>
             </>
           ) : (
@@ -116,9 +122,7 @@ const Header = () => {
             <>
               {/* 로그인 버튼 */}
               <li>
-                <Link to="/signin" onClick={() => login()}>
-                  로그인
-                </Link>
+                <Link to="/signin">로그인</Link>
               </li>
             </>
           )}

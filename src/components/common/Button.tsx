@@ -15,6 +15,7 @@ const Button = ({ text, to, size, css, logo, onClick }: ButtonProps) => {
   return (
     <>
       <button
+        type="button"
         className={twMerge(BASE_STYLE, SIZE_STYLE, css)}
         onClick={(e) => (to ? navigate(to) : onClick && onClick(e))}
       >
