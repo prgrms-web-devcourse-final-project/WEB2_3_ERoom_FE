@@ -42,8 +42,8 @@ const MyPage = () => {
 
       <div className="relative z-10">
         <div
-          className="flex flex-col justify-center items-center w-[680px] h-[559px] 
-        bg-[#ffffff94] p-[100px] rounded-[10px]"
+          className="flex flex-col justify-center items-center w-[680px] h-full 
+        bg-[#ffffff94] px-[100px] py-[50px] rounded-[10px] gap-[50px]"
         >
           {/* 모달 제목 */}
           <div className="text-center">
@@ -52,10 +52,10 @@ const MyPage = () => {
             </span>
           </div>
 
-          <div className="flex gap-[30px] my-[50px]">
+          <div className="h-fit flex gap-[30px]">
             {/* 프로필 이미지 */}
             <div
-              className="flex flex-col justify-between items-center w-full h-full 
+              className="flex flex-col justify-between items-center w-[200px] h-[200px] 
               overflow-hidden gap-[10px]"
             >
               {/* 프로필 기본 이미지 샘플로 넣어둠. 추후 기본이미지 나오면 수정 필요 */}
@@ -115,9 +115,9 @@ const MyPage = () => {
             </div>
 
             {/* 개인정보란 */}
-            <div className="flex flex-col gap-[20px]">
+            <div className="flex flex-col gap-[10px]">
               {/* 이름 */}
-              <div className="flex flex-col gap-[15px]">
+              <div className="flex flex-col gap-[5px]">
                 <span className="font-bold">이름</span>
                 <input
                   type="text"
@@ -129,7 +129,7 @@ const MyPage = () => {
               </div>
 
               {/* 이메일 */}
-              <div className="flex flex-col gap-[10px]">
+              <div className="flex flex-col gap-[5px]">
                 <span className="font-bold">이메일</span>
                 <div className="pl-[10px]">
                   <span className="text-black01">hong@gmail.com</span>
@@ -137,7 +137,7 @@ const MyPage = () => {
               </div>
 
               {/* 소속 */}
-              <div className="flex flex-col gap-[10px]">
+              <div className="flex flex-col gap-[5px]">
                 <span className="font-bold">소속</span>
                 <input
                   type="text"
