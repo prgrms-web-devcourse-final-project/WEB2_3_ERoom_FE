@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { dummy } from "../../dummyData/dummy";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
@@ -6,6 +7,9 @@ import SelectMember from "../EditProjectModal/SelectMember";
 import WordCloud from "../EditProjectModal/WordCloud";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { createProject } from "../../utils/api/createProject";
+import "dayjs/locale/en";
 
 const EditProjectModal = ({
   selectedProjectData,
@@ -13,6 +17,9 @@ const EditProjectModal = ({
   projectMember,
   title,
 }: EditProjectModalProps) => {
+  // // 프로젝트 생성 요청 Request
+  // const []
+
   // 프로젝트 시작 정보 초기화 상태
   const [startDateInfo, setStartDateInfo] = useState({
     year: "",
@@ -33,34 +40,38 @@ const EditProjectModal = ({
     ampm: "",
   });
 
+  // 프로젝트 네임
+  const [newProjectNameValue, setNewProjectNameValue] = useState<string>("");
+
   useEffect(() => {
-    if (selectedProjectData) {
-      const startDate = new Date(selectedProjectData.startDate);
+    const startDate = selectedProjectData
+      ? dayjs(selectedProjectData.startDate).locale("en")
+      : dayjs().locale("en");
 
-      const year = String(startDate.getFullYear());
-      const month = String(startDate.getMonth() + 1).padStart(2, "0"); // 월 (0부터 시작하므로 +1 필요)
-      const day = String(startDate.getDate()).padStart(2, "0"); // 일
-      const hour = String(startDate.getHours() % 12 || 12).padStart(2, "0"); // 12시간 형식
-      const minute = String(startDate.getMinutes()).padStart(2, "0"); // 분
-      const ampm = startDate.getHours() >= 12 ? "PM" : "AM"; // AM/PM 구분
+    const year = startDate.format("YYYY");
+    const month = startDate.format("MM");
+    const day = startDate.format("DD");
+    const hour = startDate.format("hh"); // 12시간 형식
+    const minute = startDate.format("mm");
+    const ampm = startDate.format("A"); // AM/PM
 
-      setStartDateInfo({ year, month, day, hour, minute, ampm });
-    }
+    setStartDateInfo({ year, month, day, hour, minute, ampm });
   }, [selectedProjectData]);
 
   useEffect(() => {
-    if (selectedProjectData) {
-      const endDate = new Date(selectedProjectData.endDate);
-
-      const year = String(endDate.getFullYear());
-      const month = String(endDate.getMonth() + 1).padStart(2, "0"); // 월 (0부터 시작하므로 +1 필요)
-      const day = String(endDate.getDate()).padStart(2, "0"); // 일
-      const hour = String(endDate.getHours() % 12 || 12).padStart(2, "0"); // 12시간 형식
-      const minute = String(endDate.getMinutes()).padStart(2, "0"); // 분
-      const ampm = endDate.getHours() >= 12 ? "PM" : "AM"; // AM/PM 구분
-
-      setEndDateInfo({ year, month, day, hour, minute, ampm });
-    }
+    const endDate = selectedProjectData
+      ? dayjs(selectedProjectData.endDate).locale("en")
+      : dayjs().locale("en");
+    console.log(endDate);
+    const year = endDate.format("YYYY");
+    const month = endDate.format("MM");
+    const day = endDate.format("DD");
+    const hour = selectedProjectData
+      ? endDate.format("hh")
+      : String(+endDate.format("hh") + 1); // 12시간 형식
+    const minute = endDate.format("mm");
+    const ampm = endDate.format("A"); // AM/PM
+    setEndDateInfo({ year, month, day, hour, minute, ampm });
   }, [selectedProjectData]);
 
   // 선택된 분야, 세부항목 상태
@@ -86,7 +97,37 @@ const EditProjectModal = ({
         .subcategories
     : null;
 
-  console.log(selectedProjectData?.startDate);
+  // 멤버 선택 임시
+  const [selectedMembers, setSelectedMembers] = useState<MembersType[]>([]);
+
+  // 최종 새프로젝트 정보
+  // 시작날짜 포맷
+  const startFormattedDate = dayjs(
+    `${startDateInfo.year}-${startDateInfo.month}-${startDateInfo.day} ${startDateInfo.hour}:${startDateInfo.minute} ${startDateInfo.ampm}`,
+    "YYYY-MM-DD hh:mm A"
+  ).format("YYYY-MM-DDTHH:mm:ss");
+
+  // 종료날짜 포맷
+  const endFormatDate = dayjs(
+    `${endDateInfo.year}-${endDateInfo.month}-${endDateInfo.day} ${endDateInfo.hour}:${endDateInfo.minute} ${endDateInfo.ampm}`,
+    "YYYY-MM-DD hh:mm A"
+  ).format("YYYY-MM-DDTHH:mm:ss");
+
+  // 새 프로젝트 생성 정보
+  const newProjectInfo = {
+    name: newProjectNameValue,
+    category: selectedData.cate,
+    subCategories1: selectedData.subcate1,
+    subCategories2: selectedData.subcate2,
+    startDate: startFormattedDate,
+    endDate: endFormatDate,
+    invitedMemberIds: selectedMembers,
+    status: "BEFORE_START",
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: (newProjectInfo: any) => createProject(newProjectInfo),
+  });
 
   return (
     <div
@@ -109,7 +150,11 @@ const EditProjectModal = ({
         {pages === 0 && (
           <div className="w-full flex flex-col gap-[20px]">
             {/* 프로젝트명 작성 */}
-            <WriteProjectName name={selectedProjectData?.projectName} />
+            <WriteProjectName
+              name={selectedProjectData?.projectName}
+              newProjectNameValue={newProjectNameValue}
+              setNewProjectNameValue={setNewProjectNameValue}
+            />
 
             {/* 분야 검색 */}
             <SelectCategory
@@ -127,6 +172,8 @@ const EditProjectModal = ({
             <SelectMember
               data={dummy.membersData}
               selectedData={projectMember}
+              selectedMembers={selectedMembers}
+              setSelectedMembers={setSelectedMembers}
             />
 
             {/* 기간 설정 */}
@@ -169,7 +216,11 @@ const EditProjectModal = ({
               text="생성하기"
               size="md"
               css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
-              onClick={() => setPages(1)}
+              onClick={() => {
+                setPages(1);
+                console.log(newProjectInfo);
+                mutate(newProjectInfo);
+              }}
             />
           )}
           <Button
