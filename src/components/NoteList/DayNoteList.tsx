@@ -6,7 +6,11 @@ const DayNoteList = ({ onClose }: { onClose: () => void }) => {
   const [openNoteDetail, setOpenNoteDetail] = useState(false);
 
   const handleNoteDetail = () => {
-    setOpenNoteDetail((prev) => !prev);
+    setOpenNoteDetail(true);
+  };
+
+  const handleGoBack = () => {
+    setOpenNoteDetail(false);
   };
   return (
     <>
@@ -26,7 +30,7 @@ const DayNoteList = ({ onClose }: { onClose: () => void }) => {
         </div>
       ) : (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <NoteDetailModal onClose={onClose} />
+          <NoteDetailModal onClose={onClose} onGoBack={handleGoBack} />
         </div>
       )}
     </>

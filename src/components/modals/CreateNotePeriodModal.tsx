@@ -41,14 +41,14 @@ const CreateNotePeriodModal = ({ onClose }: { onClose: () => void }) => {
           <div className="mb-[20px]">
             <span className="text-[16px] font-bold text-main-green">
               회의 시간 설정
-              <div className="z-40">
+              <div className="relative z-40">
                 <DateTimeSelect
                   title="시작"
                   selectedDate={selectedStartDate}
                   setSelectedDate={setSelectedStartDate}
                 />
               </div>
-              <div className="z-10">
+              <div className="relative z-0">
                 <DateTimeSelect
                   title="종료"
                   selectedDate={selectedEndDate}
