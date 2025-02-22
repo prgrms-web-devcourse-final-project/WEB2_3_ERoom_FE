@@ -3,15 +3,15 @@ import { Link, useLocation, useNavigate } from "react-router";
 import alarmIcon from "../../assets/icons/alarm.svg";
 import AlarmModal from "../modals/AlarmModal";
 import headerIcon from "../../assets/icons/headerLogo.svg";
-import { useAuth } from "../../context/AuthContext";
+import { useAuthStore } from "../../store/authStore";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useAuth();
+  const { isAuthenticated, login, logout } = useAuthStore();
 
-  console.log(isLogin);
+  // console.log(isLogin);
 
-  const [isOn, setIsOn] = useState<"Project" | "Meeting" | "">("");
+  const [_, setIsOn] = useState<"Project" | "Meeting" | "">("");
 
   const { pathname } = useLocation();
   useEffect(() => {
@@ -71,7 +71,7 @@ const Header = () => {
 
         {/* 버튼모음 */}
         <ul className="flex font-bold gap-3 text-[#657166]">
-          {isLogin ? (
+          {isAuthenticated ? (
             /* 로그인 상태 */
             <>
               {/* 알람버튼 */}
@@ -106,7 +106,7 @@ const Header = () => {
 
               {/* 로그아웃 버튼 */}
               <li className="cursor-pointer text-[#FF6854]">
-                <Link to="/" onClick={() => setIsLogin(false)}>
+                <Link to="/" onClick={() => logout()}>
                   로그아웃
                 </Link>
               </li>
@@ -116,7 +116,7 @@ const Header = () => {
             <>
               {/* 로그인 버튼 */}
               <li>
-                <Link to="/signin" onClick={() => setIsLogin(true)}>
+                <Link to="/signin" onClick={() => login()}>
                   로그인
                 </Link>
               </li>
