@@ -1,4 +1,4 @@
-import { useAuth } from "../../context/AuthContext";
+import { useAuthStore } from "../../store/authStore";
 import Button from "../common/Button";
 
 const ConfirmModal = ({
@@ -8,7 +8,7 @@ const ConfirmModal = ({
   value: string;
   setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [_, setIsLogIn] = useAuth();
+  const { logout } = useAuthStore();
 
   return (
     <div
@@ -33,7 +33,7 @@ const ConfirmModal = ({
           onClick={(e) => {
             e.stopPropagation();
             setIsModal(false);
-            setIsLogIn(false);
+            logout();
           }}
         />
 
