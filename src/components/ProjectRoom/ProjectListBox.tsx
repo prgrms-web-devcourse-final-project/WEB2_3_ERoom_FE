@@ -20,8 +20,10 @@ const ProjectListBox = ({
     dummy.selectedProjectData
   );
 
-  const members = projectInfo.memberNames;
+  const members = projectInfo.members;
 
+  const subcate1 = projectInfo.subCategories1.data;
+  const subcate2 = projectInfo.subCategories2.data;
   return (
     <div
       className="w-full flex gap-[10px] bg-white 
@@ -53,9 +55,9 @@ const ProjectListBox = ({
           <div className="flex flex-col items-center gap-1">
             <div className="w-[200px] flex justify-center gap-[10px] font-bold">
               <p>진행률</p>
-              <p>50.0%</p>
+              <p>{projectInfo.progressRate.toFixed(1)}%</p>
             </div>
-            <ProjectProgressBar />
+            <ProjectProgressBar progress={projectInfo.progressRate} />
           </div>
 
           {/* 참여인원 */}
@@ -67,23 +69,20 @@ const ProjectListBox = ({
               {members.length > 5
                 ? members
                     .slice(0, 6)
-                    .map((_, idx) => (
+                    .map((member, idx) => (
                       <ParticipantIcon
                         key={idx}
                         css={idx > 0 ? "ml-[-5px]" : ""}
+                        imgSrc={member.profile}
                       />
                     ))
-                : members.map((_, idx) => (
+                : members.map((member, idx) => (
                     <ParticipantIcon
                       key={idx}
-                      css={idx > 0 ? "ml-[-5px]" : ""}
+                      css={idx > 0 ? "ml-[-7px]" : ""}
+                      imgSrc={member.profile}
                     />
                   ))}
-              {/* <ParticipantIcon css="" />
-              <ParticipantIcon css="ml-[-5px] bg-red-100" />
-              <ParticipantIcon css="ml-[-5px] bg-blue-100" />
-              <ParticipantIcon css="ml-[-5px] bg-green-100" />
-              <ParticipantIcon css="ml-[-5px] bg-pink-100" /> */}
             </div>
           </div>
 
@@ -120,21 +119,30 @@ const ProjectListBox = ({
               className="h-fit bg-logo-green rounded-[30px] 
             text-main-beige01 leading-none px-[10px] py-[5px] font-bold"
             >
-              #개발
+              # {projectInfo.category}
             </li>
-            <li
-              className="h-fit bg-main-beige01 rounded-[30px]
+            {subcate1.map((cate, idx) => {
+              return (
+                <li
+                  key={idx}
+                  className="h-fit bg-main-beige01 rounded-[30px]
             text-main-green leading-none px-[10px] py-[5px] border border-logo-green"
-            >
-              # TypeScript
-            </li>
-            <li
-              className="h-fit bg-main-green03 rounded-[30px] 
+                >
+                  # {cate}
+                </li>
+              );
+            })}
+            {subcate2.map((cate, idx) => {
+              return (
+                <li
+                  key={idx}
+                  className="h-fit bg-main-green03 rounded-[30px] 
             text-main-green leading-none px-[10px] py-[5px] border border-logo-green "
-            >
-              # React
-            </li>
-            {/* <li className="bg-main-green01 px-2 py-1 rounded-[25px]">#REACT</li> */}
+                >
+                  # {cate}
+                </li>
+              );
+            })}
           </ul>
 
           {/* 미팅룸 버튼 */}

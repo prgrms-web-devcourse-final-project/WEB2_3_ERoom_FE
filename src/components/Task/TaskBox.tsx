@@ -43,7 +43,7 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
           className="w-full h-[30px] bg-gradient-to-b from-white to-main-green02 rounded-full
         flex justify-start items-center gap-2"
         >
-          <ParticipantIcon />
+          <ParticipantIcon css="w-[30px] h-[30px]" />
           <p className="font-medium text-main-green">
             {task.assignedMemberName}
           </p>

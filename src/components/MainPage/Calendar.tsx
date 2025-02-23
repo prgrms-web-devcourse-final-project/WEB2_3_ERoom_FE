@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
 import dayjs from "dayjs";
 import { queryClient } from "../../main";
-import { EventDropArg } from "@fullcalendar/core/index.js";
+import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 
 // 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
 const PROJECT_BUTTON = {
@@ -23,7 +23,8 @@ const TASK_BUTTON = {
 };
 
 const Calendar = () => {
-  const { data: projectListData, isLoading } = useQuery<ProjectListType[]>({
+  // fullcalandar 타입 때문에 EventInput 타입 적용
+  const { data: projectListData, isLoading } = useQuery<EventInput[]>({
     queryKey: ["ProjectList"],
     queryFn: async () => {
       const response = await getProjectList();
@@ -38,8 +39,8 @@ const Calendar = () => {
           data: project.startDate,
           start: project.startDate.split("T")[0],
           end: project.endDate.split("T")[0],
-          textColor: "black",
-          color: "#" + project.color,
+          textColor: "#" + project.colors.text,
+          color: "#" + project.colors.background,
         };
       });
     },

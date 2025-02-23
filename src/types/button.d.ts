@@ -17,4 +17,5 @@ interface AdminButtonProps {
 
 interface ParticipantIconProps {
   css?: string;
+  imgSrc?: string;
 }
