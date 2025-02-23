@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createProject } from "../../utils/api/createProject";
 import "dayjs/locale/en";
+import { randomColor } from "../../utils/randomColor";
 
 const EditProjectModal = ({
   selectedProjectData,
@@ -17,9 +18,6 @@ const EditProjectModal = ({
   projectMember,
   title,
 }: EditProjectModalProps) => {
-  // // 프로젝트 생성 요청 Request
-  // const []
-
   // 프로젝트 시작 정보 초기화 상태
   const [startDateInfo, setStartDateInfo] = useState({
     year: "",
@@ -123,6 +121,7 @@ const EditProjectModal = ({
     endDate: endFormatDate,
     invitedMemberIds: selectedMembers,
     status: "BEFORE_START",
+    colors: randomColor("calendar"),
   };
 
   const { mutate } = useMutation({
