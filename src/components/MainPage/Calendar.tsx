@@ -5,11 +5,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getProjectList } from "../../utils/api/getProjectList";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
 import dayjs from "dayjs";
 import { queryClient } from "../../main";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
+import { useNavigate } from "react-router";
 
 // 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
 const PROJECT_BUTTON = {
@@ -23,6 +24,8 @@ const TASK_BUTTON = {
 };
 
 const Calendar = () => {
+  const navigate = useNavigate();
+
   // fullcalandar 타입 때문에 EventInput 타입 적용
   const { data: projectListData, isLoading } = useQuery<EventInput[]>({
     queryKey: ["ProjectList"],
@@ -37,8 +40,8 @@ const Calendar = () => {
           id: project.id,
           title: project.name,
           data: project.startDate,
-          start: project.startDate.split("T")[0],
-          end: project.endDate.split("T")[0],
+          start: project.startDate,
+          end: project.endDate,
           textColor: "#" + project.colors.text,
           color: "#" + project.colors.background,
         };
@@ -76,12 +79,14 @@ const Calendar = () => {
       }}
       // 한국어
       locale={koLocale}
+      displayEventTime={false}
       // 데이터
       events={projectListData}
       // 데이터 클릭이벤트
-      eventClick={() => {
-        // alert("Event:" + info.event.title);
+      eventClick={(info) => {
+        navigate(`project-room/${info.event.id}`);
       }}
+      dayMaxEvents={3}
       // 드래그
       editable={true}
       droppable={true}
