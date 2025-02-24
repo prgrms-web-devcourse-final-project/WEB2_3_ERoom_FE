@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from "react-router";
+import { useOutletContext, useParams, useSearchParams } from "react-router";
 import Button from "../../components/common/Button";
 import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
@@ -6,7 +6,8 @@ import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox"
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectDetail } from "../../utils/api/getProjectDetail";
-// import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
+import { OutletContextType } from "../../components/layout/Layout";
+import { useSideManagerStore } from "../../store/sideMemberStore";
 
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
@@ -14,7 +15,7 @@ const ProjectRoomDetail = () => {
   const [category, setCategory] = useState(searchParams.get("category"));
   const [isEditTaskModal, setIsEditTaskModal] = useState<boolean>(false);
 
-  console.log(projectId);
+  const { setManagers } = useOutletContext<OutletContextType>();
 
   const { data: projectDetailList, isLoading } =
     useQuery<ProjectDetailListType>({
@@ -28,11 +29,14 @@ const ProjectRoomDetail = () => {
     BEFORE_START: [],
     HOLD: [],
   });
-  const [manageTasks, setManageTasks] = useState([]);
+  const [manageTasks, setManageTasks] = useState<ManageTasksType[]>([]);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
     if (projectDetailList) {
+      // 사이드메 담당자 탭 멤버 설정
+      setManagers(projectDetailList.members);
+
       // 전체 업무 분류
       const tasks = projectDetailList.tasks;
 
@@ -51,9 +55,48 @@ const ProjectRoomDetail = () => {
 
       setAllTasks(tasksGroup);
 
-      console.log(tasksGroup);
+      // 담당자별 업무
+      const manageGroupTasks = tasks.reduce<{ name: string; tasks: Task[] }[]>(
+        (acc, task) => {
+          const assignee = task.assignedMemberName;
+          const existingGroup = acc.find((group) => group.name === assignee);
+
+          if (existingGroup) {
+            existingGroup.tasks.push(task);
+          } else {
+            acc.push({ name: assignee, tasks: [task] });
+          }
+
+          return acc;
+        },
+        []
+      );
+      setManageTasks(manageGroupTasks);
     }
   }, [projectDetailList]);
+
+  // 사이드바에서 체크된 담당자
+  const checkedManagers = useSideManagerStore((state) => state.checkedManagers);
+
+  const [filterManageTasks, setFilterManageTasks] = useState<ManageTasksType[]>(
+    []
+  );
+
+  useEffect(() => {
+    console.log(checkedManagers);
+    console.log(manageTasks);
+
+    const filterTasks = manageTasks
+      .map((task) => {
+        if (checkedManagers.includes(task.name)) {
+          return task;
+        }
+      })
+      .filter((value) => value !== undefined);
+    console.log(filterTasks);
+
+    setFilterManageTasks(filterTasks);
+  }, [checkedManagers]);
 
   useEffect(() => {
     console.log(searchParams.get("category"));
@@ -108,8 +151,6 @@ const ProjectRoomDetail = () => {
               <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
               <TaskList name="보류" taskInfo={allTasks.HOLD} />
             </div>
-
-            // </>
           )}
           {/* 담당자 업무 리스트 */}
           {category === "manager" && (
@@ -117,13 +158,17 @@ const ProjectRoomDetail = () => {
               className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
             >
-              {/* <TaskList name="박선형" isAll={false} />
-          <TaskList name="한규혁" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} /> */}
+              {filterManageTasks.map((task, idx) => {
+                return (
+                  <div key={idx}>
+                    <TaskList
+                      isAll={false}
+                      taskInfo={task.tasks}
+                      name={task.name}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
 

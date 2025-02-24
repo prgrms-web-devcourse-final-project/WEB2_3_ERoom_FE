@@ -59,18 +59,30 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
         px-3 py-2 flex flex-col justify-center gap-2"
       >
         <div className="flex justify-between items-center">
-          <p className="font-bold">업무명</p>
-          <p className="text-[12px] font-medium">진행 중</p>
+          <p className="font-bold">{task.title}</p>
+          <p className="text-[12px] font-medium">
+            {PROGRESS_STATUS[task.status]}
+          </p>
         </div>
 
         {/* 기간, 업무완료,시잔 버튼 */}
         <div className="flex justify-between items-center">
-          <p className="text-[12px]">2025.02.12 ~ 2025.02.12</p>
-          <Button
-            text={"업무완료"}
-            size="md"
-            css="border-none h-[22px] w-[70px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
-          />
+          <p className="text-[12px]">
+            {task.startDate.split("T")[0]} ~ {task.endDate.split("T")[0]}
+          </p>
+          {task.status !== "IN_PROGRESS" ? (
+            <Button
+              text={"시작"}
+              size="md"
+              css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
+            />
+          ) : (
+            <Button
+              text={"완료"}
+              size="md"
+              css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
+            />
+          )}
         </div>
       </div>
     );
