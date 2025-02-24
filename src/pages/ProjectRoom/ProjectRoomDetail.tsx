@@ -7,7 +7,7 @@ import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectDetail } from "../../utils/api/getProjectDetail";
 import { OutletContextType } from "../../components/layout/Layout";
-// import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
+import { useSideManagerStore } from "../../store/sideMemberStore";
 
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
@@ -16,8 +16,6 @@ const ProjectRoomDetail = () => {
   const [isEditTaskModal, setIsEditTaskModal] = useState<boolean>(false);
 
   const { setManagers } = useOutletContext<OutletContextType>();
-
-  console.log(projectId);
 
   const { data: projectDetailList, isLoading } =
     useQuery<ProjectDetailListType>({
@@ -56,8 +54,6 @@ const ProjectRoomDetail = () => {
       );
 
       setAllTasks(tasksGroup);
-      console.log(allTasks);
-      console.log(tasks);
 
       // 담당자별 업무
       const manageGroupTasks = tasks.reduce<{ name: string; tasks: any[] }[]>(
@@ -75,12 +71,39 @@ const ProjectRoomDetail = () => {
         },
         []
       );
-
-      console.log(manageGroupTasks);
       setManageTasks(manageGroupTasks);
-      console.log(manageTasks);
     }
   }, [projectDetailList]);
+
+  // 사이드바에서 체크된 담당자
+  const checkedManagers = useSideManagerStore((state) => state.checkedManagers);
+
+  const [filterManageTasks, setFilterManageTasks] = useState<any[]>([]);
+
+  useEffect(() => {
+    console.log(checkedManagers);
+    console.log(manageTasks);
+
+    console.log(
+      manageTasks
+        .map((task) => {
+          if (checkedManagers.includes(task.name)) {
+            return task;
+          }
+        })
+        .filter((value) => value !== undefined)
+    );
+    const filterTasks = manageTasks
+      .map((task) => {
+        if (checkedManagers.includes(task.name)) {
+          return task;
+        }
+      })
+      .filter((value) => value !== undefined);
+    console.log(filterTasks);
+
+    setFilterManageTasks(filterTasks);
+  }, [checkedManagers]);
 
   useEffect(() => {
     console.log(searchParams.get("category"));
@@ -135,8 +158,6 @@ const ProjectRoomDetail = () => {
               <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
               <TaskList name="보류" taskInfo={allTasks.HOLD} />
             </div>
-
-            // </>
           )}
           {/* 담당자 업무 리스트 */}
           {category === "manager" && (
@@ -144,7 +165,7 @@ const ProjectRoomDetail = () => {
               className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
             >
-              {manageTasks.map((task, idx) => {
+              {filterManageTasks.map((task, idx) => {
                 return (
                   <div key={idx}>
                     <TaskList

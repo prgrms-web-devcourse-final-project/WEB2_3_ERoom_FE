@@ -86,11 +86,7 @@ const Sidebar = ({
   };
 
   // 🔹 개별 체크박스 핸들러
-  const handleManagerCheck = (name: string, isChecked: boolean) => {
-    // const updatedChecked = isChecked
-    //   ? [...checkedManagers, name]
-    // : checkedManagers.filter((manager) => manager !== name);
-
+  const handleManagerCheck = (name: string) => {
     handleManagerClick(name);
   };
 
@@ -150,12 +146,7 @@ const Sidebar = ({
                           checkboxId={`${member.id}`}
                           labelName={member.username}
                           checked={checkedManagers.includes(member.username)}
-                          onChange={(e) =>
-                            handleManagerCheck(
-                              member.username,
-                              e.target.checked
-                            )
-                          }
+                          onChange={() => handleManagerCheck(member.username)}
                         />
                       );
                     })}
