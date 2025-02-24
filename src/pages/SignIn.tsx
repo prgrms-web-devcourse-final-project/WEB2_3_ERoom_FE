@@ -4,6 +4,8 @@ import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
 import { Navigate, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { postSignIn } from "../api/auth";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -33,7 +35,15 @@ const SignIn = () => {
           size="lg"
           css="bg-kakao border-gray01 text-black gap-[10px]"
           logo={KakaoLogo}
-          onClick={() => login({ username: "asd" })}
+          onClick={async () => {
+            try {
+              const data = await postSignIn("qwerty1@gmail.com", "1234");
+              console.log(data);
+              login({ username: "asd" });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
         />
         {/* (임시) 회원가입 되지 않은 상태 */}
         <Button
