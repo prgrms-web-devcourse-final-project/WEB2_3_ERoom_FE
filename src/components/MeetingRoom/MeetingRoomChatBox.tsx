@@ -106,12 +106,6 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
             css="border-main-green01 bg-white text-main-green01 text-[14px] font-bold"
             onClick={handleOpenNoteList}
           />
-          <Button
-            text="미팅룸 나가기"
-            to="/project-room"
-            size="sm"
-            css="border-header-red bg-header-red/70 text-white text-[14px] font-bold"
-          />
         </div>
         {isOpenNoteList && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">

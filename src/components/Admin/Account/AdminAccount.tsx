@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
+import { testAPI } from "../../../api/test";
 
 const AdminAccount = () => {
   // 더미 데이터
@@ -60,7 +61,7 @@ const AdminAccount = () => {
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // 한 페이지에 보여줄 항목 개수
+  const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
   // 현재 페이지에 해당하는 데이터만 필터링
@@ -113,14 +114,16 @@ const AdminAccount = () => {
             />
           </div>
           <div className="flex gap-[5px] w-[80px] justify-end">
-            {userMenu === "account-inactive" && (
+            {userMenu === "inactive" && (
               <button>
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
             )}
-            <button>
-              <img src={DeleteIcon} alt="계정 삭제 버튼" />
-            </button>
+            {userMenu === "active" && (
+              <button>
+                <img src={DeleteIcon} alt="계정 삭제 버튼" />
+              </button>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-[10px] flex-grow mb-[30px]">
