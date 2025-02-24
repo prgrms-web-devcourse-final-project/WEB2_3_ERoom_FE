@@ -5,12 +5,16 @@ interface ManagerCheckBoxProps {
   checkboxId: string;
   checkboxName: string;
   labelName: string;
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const ManagerCheckBox = ({
   checkboxId,
   checkboxName,
   labelName,
+  checked,
+  onChange,
 }: ManagerCheckBoxProps) => {
   return (
     <div className="relative flex items-center gap-2 font-bold transition-all">
@@ -24,7 +28,8 @@ const ManagerCheckBox = ({
           id={checkboxId}
           name={checkboxName}
           className={twMerge(`peer hidden`)}
-          onChange={(e) => e.target.checked}
+          checked={checked}
+          onChange={onChange}
         />
         <div
           className="w-[13px] h-[13px] bg-white border border-gray01 flex items-center justify-center peer-checked:border-header-green-hoverlight
