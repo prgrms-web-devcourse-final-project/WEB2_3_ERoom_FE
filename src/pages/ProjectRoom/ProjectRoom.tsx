@@ -6,6 +6,12 @@ import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectList } from "../../utils/api/getProjectList";
+import {
+  createProject,
+  fetchProjectDetail,
+  fetchProjectList,
+} from "../../api/project";
+import { fetchMemberList } from "../../api/admin";
 
 interface ProjectRoomData {
   completed: ProjectListType[];
@@ -68,6 +74,27 @@ const ProjectRoom = () => {
 
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchProjectList();
+    fetchMemberList();
+    createProject(
+      "프로젝트 이름",
+      "프로젝트 설명",
+      "개발",
+      ["백엔드", "프론트엔드"],
+      ["Spring", "React"],
+      "2025-02-19T09:00:00",
+      "2025-06-30T18:00:00",
+      [2, 3, 4]
+    )
+      .then((data) => {
+        console.log("프로젝트 생성 완료:", data);
+      })
+      .catch((error) => {
+        console.error("프로젝트 생성 중 오류 발생:", error);
+      });
+  }, []);
 
   return (
     <div
