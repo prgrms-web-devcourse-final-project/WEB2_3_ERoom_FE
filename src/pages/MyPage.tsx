@@ -3,7 +3,7 @@ import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import defaultImg from "../assets/defaultImg.svg";
 import ConfirmModal from "../components/modals/ConfirmModal";
-//병합테스트용 주석
+
 const MyPage = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
   const [progileImg, setProfileImg] = useState<string | null>(null);
