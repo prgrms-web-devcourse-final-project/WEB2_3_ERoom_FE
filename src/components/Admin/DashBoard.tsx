@@ -34,37 +34,6 @@ const DashBoard = () => {
             label={["4주전", "3주전", "2주전", "1주전", "오늘"]}
           />
         </div>
-
-        {/* 결제 데이터 */}
-        <div className="mt-10">
-          <p className="font-bold text-[20px] mb-5">결제 데이터</p>
-
-          <ul className="flex gap-5 font-bold mb-5">
-            {PAY_DATA_FILTER.map((payData, idx) => {
-              return (
-                <li
-                  key={idx}
-                  className={twMerge(
-                    `w-[80px] h-[30px] bg-white flex items-center justify-center
-                    border border-header-green rounded-[3px] text-header-green cursor-pointer
-                    ${
-                      payDataTab === payData &&
-                      "text-main-beige01 bg-header-green border-none"
-                    }`
-                  )}
-                  onClick={() => setPayDataTab(payData)}
-                >
-                  {payData}
-                </li>
-              );
-            })}
-          </ul>
-          <Chart
-            labelTitle="매출액"
-            data={[15, 13, 20, 0, 10]}
-            label={["1/17", "1/22", "2/1", "2/11", "오늘"]}
-          />
-        </div>
       </div>
     </div>
   );

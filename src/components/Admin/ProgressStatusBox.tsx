@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-const STATUS_NAME = ["진행 중", "진행 예정", "진행 완료"];
+const STATUS_NAME = ["진행 중", "진행 예정", "진행 완료", "보류"];
 
 const ProgressStatusBox = ({
   width,

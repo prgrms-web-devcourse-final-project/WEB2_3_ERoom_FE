@@ -54,7 +54,7 @@ const AdminProject = () => {
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // 한 페이지에 보여줄 항목 개수
+  const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
   const totalPages = Math.ceil(projects.length / itemsPerPage);
 
   // 현재 페이지에 해당하는 데이터만 필터링
@@ -150,13 +150,13 @@ const AdminProject = () => {
               onUpdateProject={handleUpdateProject}
             />
           ))}
-        </div>
-        <div className="flex justify-center items-center mt-auto mb-[30px]">
-          <Pagination
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            menu={projectMenu}
-          />
+          <div className="flex justify-center items-center mt-auto mt-[30px]">
+            <Pagination
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              menu={projectMenu}
+            />
+          </div>
         </div>
       </div>
     </div>
