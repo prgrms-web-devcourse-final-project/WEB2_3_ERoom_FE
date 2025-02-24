@@ -12,4 +12,10 @@ interface ProjectDetailListType {
   projectId: number;
   projectName: string;
   tasks: TaskType[];
+  members: {
+    id: number;
+    username: string;
+    email: string;
+    profile: string;
+  }[];
 }

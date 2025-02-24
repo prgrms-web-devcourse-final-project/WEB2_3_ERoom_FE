@@ -9,7 +9,6 @@ import sideLeftArrow from "../../assets/icons/sideLeftArrow.svg";
 import sideRightArrow from "../../assets/icons/sideRightArrow.svg";
 import accountIcon from "../../assets/icons/dashboard/accountIcon.svg";
 import dashboardIcon from "../../assets/icons/dashboard/dashboardIcon.svg";
-import payIcon from "../../assets/icons/dashboard/payIcon.svg";
 import projectIcon from "../../assets/icons/dashboard/projectIcon.svg";
 import tagIcon from "../../assets/icons/dashboard/tagIcon.svg";
 import taskIcon from "../../assets/icons/dashboard/taskIcon.svg";
@@ -30,17 +29,26 @@ const ADMIN_SIDE_MENU_LIST = [
   { title: "태그 관리", icon: tagIcon, src: "tag" },
 ];
 
-// 임시 담당자
-const MANAGER = ["한규혁", "박선형", "성송원", "김휘연", "유수호"];
-
 interface SidebarProps {
   sidebarToggle: boolean;
   setSidebarToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  managers: {
+    id: number;
+    username: string;
+    email: string;
+    profile: string;
+  }[];
 }
 
-const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
+const Sidebar = ({
+  sidebarToggle,
+  setSidebarToggle,
+  managers,
+}: SidebarProps) => {
   const { pathname } = useLocation();
   const [sidebarTab] = useSearchParams();
+
+  console.log("managers", managers);
 
   // 관리자페이지 사이드 메뉴
   const [adminSideMenu, setAdminSideMenu] = useState(sidebarTab.get("tab"));
@@ -93,16 +101,16 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
                   <div className="pl-5 pt-2">
                     <ManagerCheckBox
                       checkboxId="all"
-                      checkboxName="all"
+                      checkboxName="담당자"
                       labelName="전체"
                     />
-                    {MANAGER.map((member, idx) => {
+                    {managers.map((member) => {
                       return (
                         <ManagerCheckBox
-                          key={idx}
-                          checkboxName={member}
-                          checkboxId={`${idx}`}
-                          labelName={member}
+                          key={member.id}
+                          checkboxName={"담당자"}
+                          checkboxId={`${member.id}`}
+                          labelName={member.username}
                         />
                       );
                     })}

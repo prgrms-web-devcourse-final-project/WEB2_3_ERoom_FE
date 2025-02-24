@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from "react-router";
+import { useOutletContext, useParams, useSearchParams } from "react-router";
 import Button from "../../components/common/Button";
 import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox"
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectDetail } from "../../utils/api/getProjectDetail";
+import { OutletContextType } from "../../components/layout/Layout";
 // import newTaskIcon from "../../assets/icons/newTaskIcon.svg";
 
 const ProjectRoomDetail = () => {
@@ -13,6 +14,8 @@ const ProjectRoomDetail = () => {
   const [searchParams] = useSearchParams();
   const [category, setCategory] = useState(searchParams.get("category"));
   const [isEditTaskModal, setIsEditTaskModal] = useState<boolean>(false);
+
+  const { setManagers } = useOutletContext<OutletContextType>();
 
   console.log(projectId);
 
@@ -28,11 +31,14 @@ const ProjectRoomDetail = () => {
     BEFORE_START: [],
     HOLD: [],
   });
-  const [manageTasks, setManageTasks] = useState([]);
+  const [manageTasks, setManageTasks] = useState<any[]>([]);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
     if (projectDetailList) {
+      // 사이드메 담당자 탭 멤버 설정
+      setManagers(projectDetailList.members);
+
       // 전체 업무 분류
       const tasks = projectDetailList.tasks;
 
@@ -50,8 +56,29 @@ const ProjectRoomDetail = () => {
       );
 
       setAllTasks(tasksGroup);
+      console.log(allTasks);
+      console.log(tasks);
 
-      console.log(tasksGroup);
+      // 담당자별 업무
+      const manageGroupTasks = tasks.reduce<{ name: string; tasks: any[] }[]>(
+        (acc, task) => {
+          const assignee = task.assignedMemberName;
+          const existingGroup = acc.find((group) => group.name === assignee);
+
+          if (existingGroup) {
+            existingGroup.tasks.push(task);
+          } else {
+            acc.push({ name: assignee, tasks: [task] });
+          }
+
+          return acc;
+        },
+        []
+      );
+
+      console.log(manageGroupTasks);
+      setManageTasks(manageGroupTasks);
+      console.log(manageTasks);
     }
   }, [projectDetailList]);
 
@@ -117,13 +144,17 @@ const ProjectRoomDetail = () => {
               className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
             >
-              {/* <TaskList name="박선형" isAll={false} />
-          <TaskList name="한규혁" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} />
-          <TaskList name="성송원" isAll={false} /> */}
+              {manageTasks.map((task, idx) => {
+                return (
+                  <div key={idx}>
+                    <TaskList
+                      isAll={false}
+                      taskInfo={task.tasks}
+                      name={task.name}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
 

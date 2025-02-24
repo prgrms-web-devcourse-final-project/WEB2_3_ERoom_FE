@@ -24,6 +24,7 @@ const ManagerCheckBox = ({
           id={checkboxId}
           name={checkboxName}
           className={twMerge(`peer hidden`)}
+          onChange={(e) => e.target.checked}
         />
         <div
           className="w-[13px] h-[13px] bg-white border border-gray01 flex items-center justify-center peer-checked:border-header-green-hoverlight
@@ -35,7 +36,7 @@ const ManagerCheckBox = ({
           className="w-[11px] h-[11px] hidden peer-checked:block absolute left-[1px]"
         />
 
-        <span className="peer-checked:text-header-green-hoverlight cursor-pointer">
+        <span className="peer-checked:text-header-green-hover cursor-pointer">
           {labelName}
         </span>
       </label>
