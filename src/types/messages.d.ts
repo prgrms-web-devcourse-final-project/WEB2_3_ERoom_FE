@@ -4,3 +4,12 @@ interface MessageProps {
   sender: string;
   profile: string;
 }
+
+interface Message {
+  messageId: number;
+  chatRoomId: number;
+  senderName: string;
+  senderProfile: string | null;
+  message: string;
+  sentAt: string;
+}

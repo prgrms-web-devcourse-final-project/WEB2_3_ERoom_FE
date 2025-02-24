@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
-import { dummy } from "../../dummyData/dummy";
+import { getMeetingroom } from "../../api/meetingroom";
 
 const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState(dummy.messagesData);
+  const [messages, setMessages] = useState<Message[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isComposing, setIsComposing] = useState(false); //조합문자 판별
@@ -51,38 +51,52 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
     }
   };
 
-  const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
-    if (e) e.preventDefault();
-    if (text.trim() === "") return;
-    const newMessage = {
-      id: messages.length + 1,
-      text,
-      sender: "user" as const,
-      profile:
-        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
-    };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setText("");
-
-    if (textAreaRef.current) {
-      textAreaRef.current.style.height = "27px";
-    }
-
-    setTimeout(() => {
-      if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop =
-          chatContainerRef.current.scrollHeight;
+  useEffect(() => {
+    const loadChatroom = async () => {
+      try {
+        const data = await getMeetingroom(1); // 추후 프로젝트 id 동적으로 받기
+        setMessages(data.groupChatRoom.messages);
+        console.log(data.groupChatRoom);
+      } catch (error) {
+        console.error(error);
       }
-    }, 100);
-  };
+    };
+    loadChatroom();
+  }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      if (isComposing) return;
-      e.preventDefault();
-      handleSendMessage(e);
-    }
-  };
+  //추후 웹소켓 및 post api 적용
+  // const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
+  //   if (e) e.preventDefault();
+  //   if (text.trim() === "") return;
+  //   const newMessage = {
+  //     id: messages.length + 1,
+  //     text,
+  //     sender: "user" as const,
+  //     profile:
+  //       "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
+  //   };
+  //   setMessages((prevMessages) => [...prevMessages, newMessage]);
+  //   setText("");
+
+  //   if (textAreaRef.current) {
+  //     textAreaRef.current.style.height = "27px";
+  //   }
+
+  //   setTimeout(() => {
+  //     if (chatContainerRef.current) {
+  //       chatContainerRef.current.scrollTop =
+  //         chatContainerRef.current.scrollHeight;
+  //     }
+  //   }, 100);
+  // };
+
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  //   if (e.key === "Enter" && !e.shiftKey) {
+  //     if (isComposing) return;
+  //     e.preventDefault();
+  //     handleSendMessage(e);
+  //   }
+  // };
 
   const [isOpenNoteList, setIsOpenNoteList] = useState(false);
 
@@ -121,14 +135,14 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
           <MeetingRoomMessage messages={messages} />
         </div>
         <form
-          onSubmit={handleSendMessage}
+          // onSubmit={handleSendMessage}
           className="w-full h-auto flex bg-main-green01 rounded-[10px] pr-[15px] items-center "
         >
           <textarea
             ref={textAreaRef}
             value={text}
             onChange={handleHeight}
-            onKeyDown={handleKeyDown}
+            // onKeyDown={handleKeyDown}
             onCompositionStart={() => setIsComposing(true)}
             onCompositionEnd={() => setIsComposing(false)}
             className="ml-[15px] mr-[10px] w-full my-[5px] rounded-[5px] bg-white resize-none px-[10px] pt-[7px] pb-[5px] text-[14px] focus:outline-none overflow-y-auto scrollbar-none leading-[17px] placeholder:text-[14px] max-h-[120px] min-h-[27px]"

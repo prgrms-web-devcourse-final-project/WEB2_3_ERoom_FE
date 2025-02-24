@@ -6,11 +6,7 @@ import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectList } from "../../utils/api/getProjectList";
-import {
-  createProject,
-  fetchProjectDetail,
-  fetchProjectList,
-} from "../../api/project";
+import { createProject, fetchProjectList } from "../../api/project";
 import { fetchMemberList } from "../../api/admin";
 
 interface ProjectRoomData {
