@@ -61,78 +61,87 @@ const ProjectRoomDetail = () => {
   }, [searchParams.get("category")]);
 
   return (
-    <div
-      className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
+    <>
+      {/* 미팅룸 */}
+      {category === "meeting" ? (
+        <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-white/60 ">
+          <MeetingRoomChatBox css="pb-[30px]" />
+        </div>
+      ) : (
+        <div
+          className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
       flex flex-col gap-[30px]
       bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
-    >
-      <div className="w-full flex justify-between items-center">
-        {/* 헤더 */}
-        <div className="flex flex-col justify-between items-start gap-[10px]">
-          <h1 className="font-bold text-[22px]">프로젝트 명</h1>
+        >
+          <div className="w-full flex justify-between items-center">
+            {/* 헤더 */}
+            <div className="flex flex-col justify-between items-start gap-[10px]">
+              <h1 className="font-bold text-[22px]">프로젝트 명</h1>
 
-          {/* 태그 목록 */}
-          <div className="flex justify-start gap-[10px]">
-            <p># 개발</p>
-            <p># 리액트</p>
-            <p># TypeScript</p>
-            <p># Tailwind CSS</p>
-          </div>
-        </div>
+              {/* 태그 목록 */}
+              <div className="flex justify-start gap-[10px]">
+                <p># 개발</p>
+                <p># 리액트</p>
+                <p># TypeScript</p>
+                <p># Tailwind CSS</p>
+              </div>
+            </div>
 
-        {/* 업무 생성 버튼 */}
-        <Button
-          text="+ 업무 생성"
-          size="md"
-          css="bg-transparent border-main-green01 
+            {/* 업무 생성 버튼 */}
+            <Button
+              text="+ 업무 생성"
+              size="md"
+              css="bg-transparent border-main-green01 
               text-main-green01 text-[14px]"
-          onClick={() => setIsEditTaskModal(true)}
-        />
-      </div>
+              onClick={() => setIsEditTaskModal(true)}
+            />
+          </div>
 
-      {/* 전체 업무 리스트 */}
-      {(category === "all" || !category) && (
-        <div
-          className="w-full h-full overflow-scroll scrollbar
+          {/* 전체 업무 리스트 */}
+          {(category === "all" || !category) && (
+            <div
+              className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
-        >
-          <TaskList name="진행 중" taskInfo={allTasks.IN_PROGRESS} />
-          <TaskList name="진행 예정" taskInfo={allTasks.BEFORE_START} />
-          <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
-          <TaskList name="보류" taskInfo={allTasks.HOLD} />
-        </div>
+            >
+              <TaskList name="진행 중" taskInfo={allTasks.IN_PROGRESS} />
+              <TaskList name="진행 예정" taskInfo={allTasks.BEFORE_START} />
+              <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
+              <TaskList name="보류" taskInfo={allTasks.HOLD} />
+            </div>
 
-        // </>
-      )}
-      {/* 담당자 업무 리스트 */}
-      {category === "manager" && (
-        <div
-          className="w-full h-full overflow-scroll scrollbar
+            // </>
+          )}
+          {/* 담당자 업무 리스트 */}
+          {category === "manager" && (
+            <div
+              className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
-        >
-          {/* <TaskList name="박선형" isAll={false} />
+            >
+              {/* <TaskList name="박선형" isAll={false} />
           <TaskList name="한규혁" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} />
           <TaskList name="성송원" isAll={false} /> */}
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* 업무 생성 모달 */}
-      {isEditTaskModal && (
-        <div
-          className="fixed inset-0 flex items-center justify-center 
+          {/* 업무 생성 모달 */}
+          {isEditTaskModal && (
+            <div
+              className="fixed inset-0 flex items-center justify-center 
         bg-black/70 z-50"
-          onClick={() => {
-            setIsEditTaskModal(false);
-          }}
-        >
-          <CreateTaskModal onClose={setIsEditTaskModal} />
+              onClick={() => {
+                setIsEditTaskModal(false);
+              }}
+            >
+              <CreateTaskModal onClose={setIsEditTaskModal} />
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

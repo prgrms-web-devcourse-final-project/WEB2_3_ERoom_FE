@@ -27,7 +27,6 @@ const ADMIN_SIDE_MENU_LIST = [
   { title: "계정 관리", icon: accountIcon, src: "account" },
   { title: "프로젝트 관리", icon: projectIcon, src: "project" },
   { title: "업무 관리", icon: taskIcon, src: "task" },
-  { title: "결제 내역 관리", icon: payIcon, src: "pay" },
   { title: "태그 관리", icon: tagIcon, src: "tag" },
 ];
 
