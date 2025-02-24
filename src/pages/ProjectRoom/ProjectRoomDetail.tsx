@@ -29,7 +29,7 @@ const ProjectRoomDetail = () => {
     BEFORE_START: [],
     HOLD: [],
   });
-  const [manageTasks, setManageTasks] = useState<any[]>([]);
+  const [manageTasks, setManageTasks] = useState<ManageTasksType[]>([]);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
@@ -56,7 +56,7 @@ const ProjectRoomDetail = () => {
       setAllTasks(tasksGroup);
 
       // 담당자별 업무
-      const manageGroupTasks = tasks.reduce<{ name: string; tasks: any[] }[]>(
+      const manageGroupTasks = tasks.reduce<{ name: string; tasks: Task[] }[]>(
         (acc, task) => {
           const assignee = task.assignedMemberName;
           const existingGroup = acc.find((group) => group.name === assignee);
@@ -78,21 +78,14 @@ const ProjectRoomDetail = () => {
   // 사이드바에서 체크된 담당자
   const checkedManagers = useSideManagerStore((state) => state.checkedManagers);
 
-  const [filterManageTasks, setFilterManageTasks] = useState<any[]>([]);
+  const [filterManageTasks, setFilterManageTasks] = useState<ManageTasksType[]>(
+    []
+  );
 
   useEffect(() => {
     console.log(checkedManagers);
     console.log(manageTasks);
 
-    console.log(
-      manageTasks
-        .map((task) => {
-          if (checkedManagers.includes(task.name)) {
-            return task;
-          }
-        })
-        .filter((value) => value !== undefined)
-    );
     const filterTasks = manageTasks
       .map((task) => {
         if (checkedManagers.includes(task.name)) {

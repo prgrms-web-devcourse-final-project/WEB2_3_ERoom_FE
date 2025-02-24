@@ -11,7 +11,7 @@ interface TaskType {
 interface ProjectDetailListType {
   projectId: number;
   projectName: string;
-  tasks: TaskType[];
+  tasks: Task[];
   members: {
     id: number;
     username: string;
