@@ -5,13 +5,8 @@ import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
-import { getProjectList } from "../../utils/api/getProjectList";
-import {
-  createProject,
-  fetchProjectDetail,
-  fetchProjectList,
-} from "../../api/project";
-import { fetchMemberList } from "../../api/admin";
+import { postProject, getProjectList } from "../../api/project";
+import { getMemberList } from "../../api/admin";
 
 interface ProjectRoomData {
   completed: ProjectListType[];
@@ -71,7 +66,7 @@ const ProjectRoom = () => {
   useEffect(() => {
     fetchProjectList();
     fetchMemberList();
-    createProject(
+    postProject(
       "프로젝트 이름",
       "프로젝트 설명",
       "개발",
