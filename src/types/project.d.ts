@@ -117,3 +117,11 @@ interface patchProjectResponseType {
   chatRoomId: number;
   progressRate: number;
 }
+
+//프로젝트 검색 api 반환값 타입 지정
+interface ProjectSearchResult {
+  id: number;
+  name: string;
+  creator: string;
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
+}
