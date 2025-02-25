@@ -168,7 +168,6 @@ const SelectCategory = ({
                 <div key={index}>
                   {/* 세부항목 선택창 */}
                   <div
-                    key={index}
                     className="flex flex-col gap-[10px] w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px] text-center 
                   text-gray01 text-[14px] font-bold"
                   >
@@ -240,8 +239,9 @@ const SelectCategory = ({
 
                   {/* 두 번째 선택항목 표시 */}
                   {index === 1 &&
-                    selectedData.subCategories2?.map((item) => (
+                    selectedData.subCategories2?.map((item, idx) => (
                       <div
+                        key={idx}
                         className="flex justify-between text-logo-green text-[14px]
                                 py-[5px] px-[10px] font-bold"
                       >

@@ -42,12 +42,12 @@ export const getProjectById = async (
 
 //프로젝트 수정 API
 export const patchProjectById = async (
-  projectId: string,
+  projectId: number,
   updateData: patchProjectRequestType
 ): Promise<patchProjectResponseType> => {
   try {
     const response = await api.patch(
-      ` /api/projects/${projectId}/update`,
+      `/api/projects/${projectId}/update`,
       updateData
     );
     console.log("프로젝트 수정 성공", response.data);
