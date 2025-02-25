@@ -60,8 +60,6 @@ interface ProjectType {
   progressRate: number;
 }
 
-export type ProjectListType = ProjectType[];
-
 //postProject API 타입 지정
 interface postProjectType {
   name: string;

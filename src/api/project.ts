@@ -1,14 +1,7 @@
-import {
-  patchProjectRequestType,
-  patchProjectResponseType,
-  postProjectType,
-  ProjectDetailType,
-  ProjectListType,
-} from "../types/project";
 import { api } from "./api";
 
 // 프로젝트 리스트 정보 가져오는 API
-export const getProjectList = async (): Promise<ProjectListType> => {
+export const getProjectList = async (): Promise<ProjectType[]> => {
   try {
     const response = await api.get("/api/projects/list ");
     console.log(response.data);
