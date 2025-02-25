@@ -101,7 +101,7 @@ const EditProjectModal = ({
   });
 
   // 최종 새프로젝트 정보
-  // 선택한 팀원 상태
+  // 선택한 팀원 상태 api수정되면 추가 수정필요
   const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
 
   // 시작날짜 포맷
@@ -117,10 +117,10 @@ const EditProjectModal = ({
   ).format("YYYY-MM-DDTHH:mm:ss");
 
   // 새 프로젝트 생성 정보
-  const newProjectInfo = {
+  const newProjectInfo: postProjectType = {
     name: newProjectNameValue,
     description: "",
-    category: selectedCategory.category,
+    category: selectedCategory.category || "",
     subCategories1: ["C", "C++"],
     subCategories2: ["React", "Vue.js"],
     startDate: startFormattedDate,
@@ -129,12 +129,13 @@ const EditProjectModal = ({
   };
 
   const { mutateAsync } = useMutation({
-    mutationFn: (newProjectInfo: any) => postProject(newProjectInfo),
+    mutationFn: (newProjectInfo: postProjectType) =>
+      postProject(newProjectInfo),
   });
 
   // selectedProject?.members || []
 
-  const newProjectPost = async (newProjectInfo: any) => {
+  const newProjectPost = async (newProjectInfo: postProjectType) => {
     try {
       const response = await mutateAsync(newProjectInfo);
       console.log(response);
@@ -144,15 +145,15 @@ const EditProjectModal = ({
     }
   };
 
-  // 수정데이터
-  const editProjectInfo = {
+  // 수정데이터 //이슈 invitedMemberIds -> memberIds로 변경 시 오류
+  const editProjectInfo: patchProjectRequestType = {
     name: newProjectNameValue,
-    category: selectedCategory.category,
-    subCategories1: selectedCategory.subCategories1,
-    subCategories2: selectedCategory.subCategories2,
+    category: selectedCategory.category || "",
+    subCategories1: selectedCategory.subCategories1 || [],
+    subCategories2: selectedCategory.subCategories2 || [],
     startDate: startFormattedDate,
     endDate: endFormatDate,
-    invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
+    memberIds: selectedMember.map((memberInfo) => memberInfo.id),
     status: "IN_PROGRESS",
   };
 
@@ -162,8 +163,8 @@ const EditProjectModal = ({
       selectedProject,
       editProjectInfo,
     }: {
-      selectedProject: any;
-      editProjectInfo: any;
+      selectedProject: ProjectListType;
+      editProjectInfo: patchProjectRequestType;
     }) => patchProjectById(selectedProject.id, editProjectInfo),
   });
 

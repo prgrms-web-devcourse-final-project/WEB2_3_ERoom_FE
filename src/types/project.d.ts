@@ -64,7 +64,7 @@ interface ProjectType {
 //postProject API 타입 지정
 interface postProjectType {
   name: string;
-  description: string;
+  description?: string;
   category: string;
   subCategories1: string[];
   subCategories2: string[];

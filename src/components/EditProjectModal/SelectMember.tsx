@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import cancelButton from "../../assets/button/cancelButton.svg";
-import { debounceFunction } from "../../utils/debounce";
 import { useQuery } from "@tanstack/react-query";
 import { searchMembers } from "../../api/search";
 import { debounce } from "lodash";
@@ -13,8 +11,6 @@ const SelectMember = ({
 }: SelectMembersProps) => {
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
-  // 필터링된 팀원 목록 상태
-  const [filteredMembers, setFilteredMembers] = useState<MemberType[]>([]);
 
   useEffect(() => {
     console.log(selectedMembers);
@@ -38,30 +34,6 @@ const SelectMember = ({
     }
   }, [selectedData]);
 
-  /* 검색결과 표시 함수 */
-  // const filterMembers = useCallback(
-  //   (value: string) => {
-  //     if (value.trim() === "") {
-  //       setFilteredMembers([]);
-  //       return;
-  //     }
-
-  //     // 팀원 배열에서 입력값을 포함하는 프로젝트 필터링
-  //     const filtered = dummy.membersData
-  //       .filter((member) =>
-  //         member.username?.toLowerCase().includes(value.toLowerCase())
-  //       )
-  //       .filter(
-  //         (member) =>
-  //           !selectedMembers?.some((selected) => selected.id === member.id)
-  //       )
-  //       .sort((a, b) => a.username.localeCompare(b.username));
-
-  //     setFilteredMembers(filtered);
-  //   },
-  //   [dummy.membersData, selectedMembers]
-  // );
-
   /* 디바운스된 핸들러 */
   const debouncedSearch = useCallback(
     debounce(() => {
@@ -78,14 +50,6 @@ const SelectMember = ({
     return () => debouncedSearch.cancel();
   }, [inputValue]);
 
-  // --------------------------------------------------------
-  /* 검색어 변경 핸들러 */
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   setInputValue(value);
-  //   debouncedFilter(value);
-  // };
-
   /* 검색 결과 클릭 시, 선택된 팀원 업데이트 */
   const handleMemberClick = (member: MemberType) => {
     // 이미 선택된 팀원이 있는지 확인
@@ -101,11 +65,6 @@ const SelectMember = ({
         )
       );
     }
-
-    // 필터된 팀원 목록에서 선택된 팀원 제외
-    setFilteredMembers((prevFiltered) =>
-      prevFiltered.filter((filtered) => filtered.id !== member.id)
-    );
   };
 
   /* 취소 버튼 클릭 시 선택된 팀원에서 제거 */
@@ -116,18 +75,6 @@ const SelectMember = ({
           .filter((member) => member.id !== id)
           .sort((a, b) => a.username.localeCompare(b.username))
       );
-
-    // 취소 후 필터된 팀원 목록에 다시 추가
-    const removedMember =
-      selectedMembers && selectedMembers.find((member) => member.id === id);
-
-    if (removedMember) {
-      setFilteredMembers((prevFiltered) =>
-        [...prevFiltered, removedMember].sort((a, b) =>
-          a.username.localeCompare(b.username)
-        )
-      );
-    }
   };
 
   return (
