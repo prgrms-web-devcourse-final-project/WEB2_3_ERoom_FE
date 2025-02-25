@@ -44,11 +44,14 @@ const Calendar = () => {
         return {
           id: project.id,
           title: project.name,
-          data: project.startDate,
           start: project.startDate,
           end: project.endDate,
           textColor: "#" + colors.text,
           color: "#" + colors.background,
+          category: project.category,
+          subCategories1: project.subCategories1,
+          subCategories2: project.subCategories2,
+          status: project.status,
         };
       });
     },
@@ -61,9 +64,6 @@ const Calendar = () => {
   // 데이터 수정
   const { mutate } = useMutation({
     mutationFn: (info: EventDropArg) => dragChange(info),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ProjectList"] });
-    },
   });
 
   if (isLoading) {
@@ -84,6 +84,7 @@ const Calendar = () => {
       }}
       // 한국어
       locale={koLocale}
+      timeZone="local"
       displayEventTime={false}
       // 데이터
       events={projectListData}
@@ -92,12 +93,13 @@ const Calendar = () => {
         navigate(`project-room/${info.event.id}`);
       }}
       dayMaxEvents={3}
+      dayMaxEventRows={true}
       // 드래그
       editable={true}
       droppable={true}
       eventDrop={(info: EventDropArg) => {
-        console.log(dayjs(info.event.start));
         mutate(info);
+        console.log(info);
       }}
       // 일정 길이 변경 드래그
       eventResize={(info: any) => {
