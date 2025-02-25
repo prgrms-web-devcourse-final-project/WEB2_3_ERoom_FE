@@ -1,16 +1,15 @@
 import { api } from "./api";
 
-export const getMeetingroom = async (projectId: number) => {
+//미팅룸 채팅 내역 가져오는 API
+export const getMeetingroom = async (
+  projectId: number
+): Promise<MeetingroomType> => {
   try {
-    const response = await api.get(`/api/projects/${projectId}/chatroom`, {
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_JSESSION}`,
-      },
-    });
+    const response = await api.get(`/api/projects/${projectId}/chatroom`);
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Error project detail list:", error);
+    console.error("Error chat list:", error);
     throw error;
   }
 };

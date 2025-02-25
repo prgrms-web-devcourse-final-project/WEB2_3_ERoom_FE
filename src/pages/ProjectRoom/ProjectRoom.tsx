@@ -5,9 +5,8 @@ import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
-import { getProjectList } from "../../utils/api/getProjectList";
-import { createProject, fetchProjectList } from "../../api/project";
-import { fetchMemberList } from "../../api/admin";
+import { postProject, getProjectList } from "../../api/project";
+import { getMemberList } from "../../api/admin";
 
 interface ProjectRoomData {
   completed: ProjectListType[];
@@ -20,13 +19,6 @@ const FILTER_PROJECT: (
   | "진행 중인 프로젝트"
   | "진행 예정 프로젝트"
 )[] = ["진행 완료 프로젝트", "진행 중인 프로젝트", "진행 예정 프로젝트"];
-
-// (임시) 프로젝트 박스 카테고리 데이터 기본 값
-const selectedProjectData = {
-  cate: "",
-  subcate1: [],
-  subcate2: [],
-};
 
 const ProjectRoom = () => {
   const [filterProject, setFilterProject] = useState<
@@ -71,27 +63,6 @@ const ProjectRoom = () => {
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetchProjectList();
-    fetchMemberList();
-    createProject(
-      "프로젝트 이름",
-      "프로젝트 설명",
-      "개발",
-      ["백엔드", "프론트엔드"],
-      ["Spring", "React"],
-      "2025-02-19T09:00:00",
-      "2025-06-30T18:00:00",
-      [2, 3, 4]
-    )
-      .then((data) => {
-        console.log("프로젝트 생성 완료:", data);
-      })
-      .catch((error) => {
-        console.error("프로젝트 생성 중 오류 발생:", error);
-      });
-  }, []);
-
   return (
     <div
       className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
@@ -131,20 +102,11 @@ const ProjectRoom = () => {
               />
             </div>
           )}
-          {filterProject === "진행 완료 프로젝트" && (
-            <div className="flex w-fit gap-[10px]">
-              <Button
-                text="프로젝트 선택"
-                size="md"
-                css="border-main-green01 text-main-green01 w-[120px] text-[14px] px-2"
-              />
-            </div>
-          )}
         </div>
 
         {/* 프로젝트 목록 섹션 */}
         <div
-          className="w-full max-h-[calc(100vh-220px)] flex flex-col gap-4 overflow-y-scroll scrollbar-none
+          className="w-full max-h-[calc(100vh-220px)] min-h-[500px] flex flex-col gap-4 overflow-y-scroll scrollbar-none
           flex-grow  py-10 rounded-[10px]"
         >
           {filterProject === "진행 예정 프로젝트" &&

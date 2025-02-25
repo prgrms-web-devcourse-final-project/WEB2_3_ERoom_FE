@@ -9,11 +9,11 @@ import sideLeftArrow from "../../assets/icons/sideLeftArrow.svg";
 import sideRightArrow from "../../assets/icons/sideRightArrow.svg";
 import accountIcon from "../../assets/icons/dashboard/accountIcon.svg";
 import dashboardIcon from "../../assets/icons/dashboard/dashboardIcon.svg";
-import payIcon from "../../assets/icons/dashboard/payIcon.svg";
 import projectIcon from "../../assets/icons/dashboard/projectIcon.svg";
 import tagIcon from "../../assets/icons/dashboard/tagIcon.svg";
 import taskIcon from "../../assets/icons/dashboard/taskIcon.svg";
 import ManagerCheckBox from "./ManagerCheckBox";
+import { useSideManagerStore } from "../../store/sideMemberStore";
 
 const SIDE_MENU_LIST = [
   // 프로젝트룸
@@ -30,17 +30,26 @@ const ADMIN_SIDE_MENU_LIST = [
   { title: "태그 관리", icon: tagIcon, src: "tag" },
 ];
 
-// 임시 담당자
-const MANAGER = ["한규혁", "박선형", "성송원", "김휘연", "유수호"];
-
 interface SidebarProps {
   sidebarToggle: boolean;
   setSidebarToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  managers: {
+    id: number;
+    username: string;
+    profile: string;
+    email?: string;
+  }[];
 }
 
-const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
+const Sidebar = ({
+  sidebarToggle,
+  setSidebarToggle,
+  managers,
+}: SidebarProps) => {
   const { pathname } = useLocation();
   const [sidebarTab] = useSearchParams();
+
+  // console.log("managers", managers);
 
   // 관리자페이지 사이드 메뉴
   const [adminSideMenu, setAdminSideMenu] = useState(sidebarTab.get("tab"));
@@ -49,6 +58,37 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
   const [projectRoomMenu, setProjectRoomMenu] = useState(
     sidebarTab.get("category")
   );
+
+  const checkedManagers = useSideManagerStore((state) => state.checkedManagers);
+  const handleAllClick = useSideManagerStore((state) => state.handleAllClick);
+  const handleUnAllClick = useSideManagerStore(
+    (state) => state.handleUnAllClick
+  );
+  const handleManagerClick = useSideManagerStore(
+    (state) => state.handleManagerClick
+  );
+
+  useEffect(() => {
+    if (managers) {
+      // 초기 체크박스 전체선택
+      const allManagerName = managers.map((manager) => manager.username);
+      handleAllClick(allManagerName);
+    }
+  }, [managers]);
+
+  const handleAllCheck = (isChecked: boolean) => {
+    if (isChecked) {
+      const allManagerNames = managers.map((m) => m.username);
+      handleAllClick(allManagerNames);
+    } else {
+      handleUnAllClick();
+    }
+  };
+
+  // 🔹 개별 체크박스 핸들러
+  const handleManagerCheck = (name: string) => {
+    handleManagerClick(name);
+  };
 
   useEffect(() => {
     if (pathname.startsWith("/admin")) {
@@ -95,14 +135,18 @@ const Sidebar = ({ sidebarToggle, setSidebarToggle }: SidebarProps) => {
                       checkboxId="all"
                       checkboxName="all"
                       labelName="전체"
+                      checked={checkedManagers.length === managers.length}
+                      onChange={(e) => handleAllCheck(e.target.checked)}
                     />
-                    {MANAGER.map((member, idx) => {
+                    {managers.map((member) => {
                       return (
                         <ManagerCheckBox
-                          key={idx}
-                          checkboxName={member}
-                          checkboxId={`${idx}`}
-                          labelName={member}
+                          key={member.id}
+                          checkboxName={member.username}
+                          checkboxId={`${member.id}`}
+                          labelName={member.username}
+                          checked={checkedManagers.includes(member.username)}
+                          onChange={() => handleManagerCheck(member.username)}
                         />
                       );
                     })}

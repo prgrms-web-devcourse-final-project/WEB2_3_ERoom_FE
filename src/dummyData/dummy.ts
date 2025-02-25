@@ -57,85 +57,83 @@ const projectData = [
 // (임시) 카테고리 데이터
 const categoryData = [
   {
-    name: "개발",
-    subcategories: [
-      {
-        subname: "사용언어",
-        data: [
-          { text: "C", value: 10 },
-          { text: "C++", value: 20 },
-          { text: "C#", value: 30 },
-          { text: "Java", value: 40 },
-          { text: "JavaScript", value: 50 },
-          { text: "TypeScript", value: 60 },
-          { text: "Python", value: 70 },
-          { text: "Go", value: 80 },
-          { text: "PHP", value: 90 },
-          { text: "Swift", value: 100 },
-          { text: "Kotlin", value: 110 },
-          { text: "기타", value: 120 },
-        ],
-      },
-      {
-        subname: "프레임워크/라이브러리",
-        data: [
-          { text: "Spring", value: 10 },
-          { text: "React", value: 20 },
-          { text: "Vue.js", value: 30 },
-          { text: "Svelte", value: 40 },
-          { text: "Angular", value: 50 },
-          { text: "Flutter", value: 60 },
-          { text: "Next.js", value: 70 },
-          { text: "Nuxt.js", value: 80 },
-          { text: "Unity", value: 90 },
-          { text: "Unreal", value: 100 },
-          { text: "Django", value: 110 },
-          { text: "Flask", value: 120 },
-          { text: "Bootstrap", value: 130 },
-          { text: "Tailwind CSS", value: 140 },
-        ],
-      },
-    ],
+    category: "개발",
+    subcategories1: {
+      name: "사용언어",
+      data: [
+        { name: "C", value: 10 },
+        { name: "C++", value: 20 },
+        { name: "C#", value: 30 },
+        { name: "Java", value: 40 },
+        { name: "JavaScript", value: 50 },
+        { name: "TypeScript", value: 60 },
+        { name: "Python", value: 70 },
+        { name: "Go", value: 80 },
+        { name: "PHP", value: 90 },
+        { name: "Swift", value: 100 },
+        { name: "Kotlin", value: 110 },
+        { name: "기타", value: 120 },
+      ],
+    },
+    subcategories2: {
+      name: "프레임워크/라이브러리",
+      data: [
+        { name: "Spring", value: 10 },
+        { name: "React", value: 20 },
+        { name: "Vue.js", value: 30 },
+        { name: "Svelte", value: 40 },
+        { name: "Angular", value: 50 },
+        { name: "Flutter", value: 60 },
+        { name: "Next.js", value: 70 },
+        { name: "Nuxt.js", value: 80 },
+        { name: "Unity", value: 90 },
+        { name: "Unreal", value: 100 },
+        { name: "Django", value: 110 },
+        { name: "Flask", value: 120 },
+        { name: "Bootstrap", value: 130 },
+        { name: "Tailwind CSS", value: 140 },
+      ],
+    },
   },
-  { name: "교육" },
-  { name: "금융" },
-  { name: "디자인" },
-  { name: "제조" },
-  { name: "기타" },
+  { category: "교육" },
+  { category: "금융" },
+  { category: "디자인" },
+  { category: "제조" },
+  { category: "기타" },
 ];
 
 // (임시) 팀원 배열
 const membersData = [
   {
     id: 1,
-    userName: "홍길동",
+    username: "홍길동",
     email: "a@gmail.com",
     password: "1234",
     grade: "DISABLE",
     organization: "데브코스1",
-    profileImage:
+    profile:
       "https://cdn.pixabay.com/photo/2018/01/15/09/17/woman-3083516_1280.jpg",
     delete: "ACTIVE",
   },
   {
     id: 2,
-    userName: "홍서범",
+    username: "홍서범",
     email: "b@gmail.com",
     password: "1234",
     grade: "DISABLE",
     organization: "데브코스2",
-    profileImage:
+    profile:
       "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
     delete: "ACTIVE",
   },
   {
     id: 3,
-    userName: "홍홍홍",
+    username: "홍홍홍",
     email: "c@gmail.com",
     password: "1234",
     grade: "DISABLE",
     organization: "데브코스3",
-    profileImage:
+    profile:
       "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
     delete: "ACTIVE",
   },
@@ -145,23 +143,23 @@ const membersData = [
 const selectedMemberData = [
   {
     id: 2,
-    userName: "홍서범",
+    username: "홍서범",
     email: "b@gmail.com",
     password: "1234",
     grade: "DISABLE",
     organization: "데브코스2",
-    profileImage:
+    profile:
       "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_1280.jpg",
     delete: "ACTIVE",
   },
   {
     id: 3,
-    userName: "홍홍홍",
+    username: "홍홍홍",
     email: "c@gmail.com",
     password: "1234",
     grade: "DISABLE",
     organization: "데브코스3",
-    profileImage:
+    profile:
       "https://cdn.pixabay.com/photo/2018/01/21/14/16/woman-3096664_1280.jpg",
     delete: "ACTIVE",
   },

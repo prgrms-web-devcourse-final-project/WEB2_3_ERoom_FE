@@ -4,7 +4,9 @@ import ParticipantIcon from "../common/ParticipantIcon";
 import Button from "../common/Button";
 import { useState } from "react";
 import EditProjectModal from "../modals/EditProjectModal";
-import { dummy } from "../../dummyData/dummy";
+import { deleteProject, leaveProject } from "../../api/project";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import ConfirmModal from "../modals/ConfirmModal";
 
 const ProjectListBox = ({
   projectId,
@@ -15,15 +17,34 @@ const ProjectListBox = ({
   const navigate = useNavigate();
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
-  // 프로젝트 박스 정보
-  const [projectDataInfo, setProjectDataInfo] = useState<selectedProjectData>(
-    dummy.selectedProjectData
-  );
-
-  const members = projectInfo.members;
+  // 프로젝트 나가기 모달
+  const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
 
   const subcate1 = projectInfo.subCategories1.data;
   const subcate2 = projectInfo.subCategories2.data;
+
+  // 프로젝트 나가기
+  const { mutate: deleteProjectMutation } = useMutation({
+    mutationFn: async () => await deleteProject(String(projectId!)),
+    onSuccess: () => {
+      console.log("프로젝트 삭제 완료");
+    },
+    onError: (error) => {
+      console.error("프로젝트 삭제 실패:", error);
+    },
+  });
+
+  // 프로젝트 나가기
+  const { mutate: leaveProjectMutation } = useMutation({
+    mutationFn: async () => await leaveProject(String(projectId!)),
+    onSuccess: () => {
+      console.log("프로젝트 나가기 완료");
+    },
+    onError: (error) => {
+      console.error("프로젝트 나가기 실패:", error);
+    },
+  });
+
   return (
     <div
       className="w-full flex gap-[10px] bg-white 
@@ -66,8 +87,8 @@ const ProjectListBox = ({
 
             {/* 프로필이미지 모음 */}
             <div className="w-[130px] flex">
-              {members.length > 5
-                ? members
+              {projectInfo.members.length > 5
+                ? projectInfo.members
                     .slice(0, 6)
                     .map((member, idx) => (
                       <ParticipantIcon
@@ -76,7 +97,7 @@ const ProjectListBox = ({
                         imgSrc={member.profile}
                       />
                     ))
-                : members.map((member, idx) => (
+                : projectInfo.members.map((member, idx) => (
                     <ParticipantIcon
                       key={idx}
                       css={idx > 0 ? "ml-[-7px]" : ""}
@@ -106,6 +127,7 @@ const ProjectListBox = ({
               css="w-full h-[40px] border-[#ff6854]/70 bg-white text-[#ff6854]"
               onClick={(e) => {
                 e.stopPropagation();
+                setIsLeaveModal(true);
               }}
             />
           </div>
@@ -160,7 +182,7 @@ const ProjectListBox = ({
         </div>
       </div>
 
-      {/* 프로젝트 생성 모달 */}
+      {/* 프로젝트 편집 모달 */}
       {isEditProjectModal && (
         <div
           className="absolute inset-0 w-screen h-fit min-h-screen
@@ -171,12 +193,24 @@ const ProjectListBox = ({
           }}
         >
           <EditProjectModal
-            selectedProjectData={projectDataInfo}
-            setSelectedProjectData={setProjectDataInfo}
+            selectedData={projectInfo}
             setIsEditProjectModal={setIsEditProjectModal}
-            projectMember={dummy.selectedMemberData}
             title="프로젝트 편집"
           />
+        </div>
+      )}
+
+      {/* 프로젝트 나가기 모달 */}
+      {isLeaveModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+          flex justify-center items-center bg-black/70"
+          onClick={(e) => {
+            e.stopPropagation(); // 이벤트 전파 방지
+            setIsLeaveModal(false); // 모달 닫기
+          }}
+        >
+          <ConfirmModal value="나가기" setIsModal={setIsLeaveModal} />
         </div>
       )}
     </div>

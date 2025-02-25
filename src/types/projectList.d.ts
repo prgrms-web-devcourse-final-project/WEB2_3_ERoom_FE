@@ -8,7 +8,7 @@ interface ProjectListType {
   startDate: string; // ISO8601 날짜 문자열
   endDate: string; // ISO8601 날짜 문자열
   status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"; // 프로젝트 상태 Enum
-  members: Member[];
+  members: MemberType[];
   chatRoomId: number;
   progressRate: number;
   colors: Colors;
@@ -17,13 +17,6 @@ interface ProjectListType {
 interface SubCategory {
   name: string;
   data: string[];
-}
-
-interface Member {
-  id: number;
-  username: string;
-  email: string;
-  profile: string; // 프로필 이미지 URL
 }
 
 interface Colors {

@@ -3,7 +3,6 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import SelectMember from "../EditProjectModal/SelectMember";
-import { dummy } from "../../dummyData/dummy";
 
 const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
   const now = new Date();
@@ -25,6 +24,12 @@ const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
     ampm: now.getHours() >= 12 ? "PM" : "AM",
   });
 
+  // 작성한 업무명 상태
+  const [newTaskName, setNewTaskName] = useState<string>("");
+
+  // 선택한 팀원 상태
+  const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
+
   return (
     <div
       className="bg-white w-[350px] min-h-[497px] 
@@ -35,8 +40,16 @@ const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
         <span className="text-[18px] font-bold">업무 생성</span>
       </div>
       {/* 업무, 프로젝트 생성에서 공동으로 쓰려면 제목 props로 내리도록 수정 필요 */}
-      <WriteProjectName />
-      <SelectMember data={dummy.membersData} />
+      <WriteProjectName
+        value="업무"
+        newProjectNameValue={newTaskName}
+        setNewProjectNameValue={setNewTaskName}
+      />
+      <SelectMember
+        value="업무"
+        selectedMembers={selectedMember}
+        setSelectedMembers={setSelectedMember}
+      />
       <div>
         <span className="text-[16px] font-bold">일정</span>
         <div className="flex flex-col gap-[10px]">
