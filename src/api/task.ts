@@ -13,19 +13,6 @@ export const fetchTask = async (taskId: string) => {
   }
 };
 
-export const projectDetail = async (projectId: string) => {
-  try {
-    const response = await api.get(`/api/projects/${projectId}/detail`, {
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_JSESSION}`,
-      },
-    });
-    console.log(response.data);
-  } catch (error) {
-    console.error("Error project detail list:", error);
-  }
-};
-
 export const createTask = async (
   projectId: number,
   title: string,

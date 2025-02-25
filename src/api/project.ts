@@ -49,3 +49,48 @@ export const createProject = async (
     throw error;
   }
 };
+
+export const projectDetail = async (projectId: string) => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/detail`, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_JSESSION}`,
+      },
+    });
+    console.log("프로젝트 상세정보:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error project detail list:", error);
+    throw error;
+  }
+};
+
+export const deleteProject = async (projectId: string) => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/delete`, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_JSESSION}`,
+      },
+    });
+    console.log("프로젝트 삭제:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error project delete:", error);
+    throw error;
+  }
+};
+
+export const leaveProject = async (projectId: string) => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/leave`, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_JSESSION}`,
+      },
+    });
+    console.log("프로젝트 나가기:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error project leave:", error);
+    throw error;
+  }
+};

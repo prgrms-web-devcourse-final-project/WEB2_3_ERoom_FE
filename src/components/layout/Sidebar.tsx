@@ -36,8 +36,8 @@ interface SidebarProps {
   managers: {
     id: number;
     username: string;
-    email: string;
     profile: string;
+    email?: string;
   }[];
 }
 
@@ -49,7 +49,7 @@ const Sidebar = ({
   const { pathname } = useLocation();
   const [sidebarTab] = useSearchParams();
 
-  console.log("managers", managers);
+  // console.log("managers", managers);
 
   // 관리자페이지 사이드 메뉴
   const [adminSideMenu, setAdminSideMenu] = useState(sidebarTab.get("tab"));
