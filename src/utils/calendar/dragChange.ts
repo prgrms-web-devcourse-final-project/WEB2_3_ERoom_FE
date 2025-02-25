@@ -13,7 +13,7 @@ export const dragChange = async (info: EventDropArg) => {
   try {
     const response = await api.patch(`/api/projects/${info.event.id}/update`, {
       name: info.event.title,
-      category: projectData.catagory,
+      category: projectData.category,
       subCategories1: projectData.subCategories1,
       subCategories2: projectData.subCategories2,
       status: projectData.status,
