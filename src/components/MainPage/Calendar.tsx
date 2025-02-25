@@ -4,13 +4,13 @@ import koLocale from "@fullcalendar/core/locales/ko";
 import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getProjectList } from "../../utils/api/getProjectList";
 import { useEffect, useState } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
 import dayjs from "dayjs";
 import { queryClient } from "../../main";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
+import { getProjectList } from "../../api/project";
 
 // 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
 const PROJECT_BUTTON = {
@@ -42,8 +42,8 @@ const Calendar = () => {
           data: project.startDate,
           start: project.startDate,
           end: project.endDate,
-          textColor: "#" + project.colors.text,
-          color: "#" + project.colors.background,
+          // textColor: "#" + project.colors.text,
+          // color: "#" + project.colors.background,
         };
       });
     },

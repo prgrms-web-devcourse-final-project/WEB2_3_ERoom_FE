@@ -218,7 +218,7 @@ const SelectCategory = ({
 
                   {/* 첫 번째 선택항목 표시 */}
                   {index === 0 &&
-                    (selectedData.subCategories1?.data || []).map((item) => (
+                    selectedData.subCategories1?.map((item) => (
                       <div
                         key={item}
                         className="flex justify-between text-logo-green text-[14px]
@@ -238,7 +238,7 @@ const SelectCategory = ({
 
                   {/* 두 번째 선택항목 표시 */}
                   {index === 1 &&
-                    (selectedData.subCategories2?.data || []).map((item) => (
+                    selectedData.subCategories2?.map((item) => (
                       <div
                         className="flex justify-between text-logo-green text-[14px]
                                 py-[5px] px-[10px] font-bold"

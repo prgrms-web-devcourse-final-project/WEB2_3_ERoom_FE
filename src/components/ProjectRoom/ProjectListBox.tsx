@@ -4,8 +4,6 @@ import ParticipantIcon from "../common/ParticipantIcon";
 import Button from "../common/Button";
 import { useState } from "react";
 import EditProjectModal from "../modals/EditProjectModal";
-import { deleteProject, leaveProject } from "../../api/project";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import ConfirmModal from "../modals/ConfirmModal";
 
 const ProjectListBox = ({
@@ -20,30 +18,8 @@ const ProjectListBox = ({
   // 프로젝트 나가기 모달
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
 
-  const subcate1 = projectInfo.subCategories1.data;
-  const subcate2 = projectInfo.subCategories2.data;
-
-  // 프로젝트 나가기
-  const { mutate: deleteProjectMutation } = useMutation({
-    mutationFn: async () => await deleteProject(String(projectId!)),
-    onSuccess: () => {
-      console.log("프로젝트 삭제 완료");
-    },
-    onError: (error) => {
-      console.error("프로젝트 삭제 실패:", error);
-    },
-  });
-
-  // 프로젝트 나가기
-  const { mutate: leaveProjectMutation } = useMutation({
-    mutationFn: async () => await leaveProject(String(projectId!)),
-    onSuccess: () => {
-      console.log("프로젝트 나가기 완료");
-    },
-    onError: (error) => {
-      console.error("프로젝트 나가기 실패:", error);
-    },
-  });
+  const subcate1 = projectInfo.subCategories1;
+  const subcate2 = projectInfo.subCategories2;
 
   return (
     <div
@@ -87,21 +63,21 @@ const ProjectListBox = ({
 
             {/* 프로필이미지 모음 */}
             <div className="w-[130px] flex">
-              {projectInfo.members.length > 5
-                ? projectInfo.members
+              {projectInfo.memberProfiles.length > 5
+                ? projectInfo.memberProfiles
                     .slice(0, 6)
                     .map((member, idx) => (
                       <ParticipantIcon
                         key={idx}
                         css={idx > 0 ? "ml-[-5px]" : ""}
-                        imgSrc={member.profile}
+                        imgSrc={member}
                       />
                     ))
-                : projectInfo.members.map((member, idx) => (
+                : projectInfo.memberProfiles.map((member, idx) => (
                     <ParticipantIcon
                       key={idx}
                       css={idx > 0 ? "ml-[-7px]" : ""}
-                      imgSrc={member.profile}
+                      imgSrc={member}
                     />
                   ))}
             </div>
@@ -193,6 +169,7 @@ const ProjectListBox = ({
           }}
         >
           <EditProjectModal
+            projectId={projectId}
             selectedData={projectInfo}
             setIsEditProjectModal={setIsEditProjectModal}
             title="프로젝트 편집"
@@ -210,7 +187,11 @@ const ProjectListBox = ({
             setIsLeaveModal(false); // 모달 닫기
           }}
         >
-          <ConfirmModal value="나가기" setIsModal={setIsLeaveModal} />
+          <ConfirmModal
+            projectId={projectId}
+            value="나가기"
+            setIsModal={setIsLeaveModal}
+          />
         </div>
       )}
     </div>
