@@ -1,13 +1,13 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
+import save2 from "../../assets/icons/save2.svg";
 
 const WriteProjectName = ({
+  value,
   name,
   newProjectNameValue,
   setNewProjectNameValue,
 }: WriteProjectNameType) => {
-  // 인풋값 상태 관리
-
   // 엔터 후 값 저장
   const [submittedValue, setSubmittedValue] = useState<string | null>(
     name || null
@@ -32,21 +32,41 @@ const WriteProjectName = ({
     }
   };
 
+  // 저장 버튼 클릭 시 처리
+  const handleSaveClick = () => {
+    if (newProjectNameValue) {
+      setSubmittedValue(newProjectNameValue);
+      if (setNewProjectNameValue) setNewProjectNameValue("");
+    }
+  };
+
+  // console.log(newProjectNameValue);
+  // console.log(submittedValue);
+
   return (
     <div className="w-full">
-      {/* 프로젝트명 */}
-      <p className="w-full font-bold">프로젝트명</p>
+      {/* 프로젝트명 / 업무명 */}
+      <p className="w-full font-bold">{`${value}명`}</p>
 
-      {/* input창 */}
-      <input
-        className="w-full py-[5px]
+      <div className="flex gap-[5px]">
+        {/* input창 */}
+        <input
+          className="w-full py-[5px]
         border-[1px] border-gray01 rounded-[5px] text-center
-        font-bold text-[14px]"
-        placeholder="프로젝트명을 작성해주세요."
-        value={newProjectNameValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyPress}
-      />
+        font-bold text-[14px] text-logo-green placeholder-gray01"
+          placeholder={`${value}명을 작성해주세요.`}
+          value={newProjectNameValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
+        />
+
+        {/* 저장버튼 */}
+        <img
+          src={save2}
+          className="w-[32px] cursor-pointer"
+          onClick={handleSaveClick}
+        />
+      </div>
 
       {/* 작성내용 */}
       {submittedValue && (

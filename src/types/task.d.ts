@@ -1,13 +1,7 @@
 interface UpdateTaskModalProps {
-  task: {
-    id: number;
-    name: string;
-    memberId: number;
-    memberName: string;
-    startDate: string;
-    endDate: string;
-  };
+  task: Task;
   onClose: () => void;
+  value: string;
 }
 
 interface selectedDateType {
@@ -26,18 +20,18 @@ interface CreateTaskProps {
 interface TaskListProps {
   name: string;
   isAll?: boolean;
-  taskInfo: TaskType[];
+  taskInfo: Task[];
 }
 
 interface TaskBoxProps {
   isAll?: boolean;
   onClick: () => void;
-  task: TaskType;
+  task: Task;
 }
 
 interface AllTasksType {
-  IN_PROGRESS: TaskType[];
-  COMPLETED: TaskType[];
-  BEFORE_START: TaskType[];
-  HOLD: TaskType[];
+  IN_PROGRESS: Task[];
+  COMPLETED: Task[];
+  BEFORE_START: Task[];
+  HOLD: Task[];
 }

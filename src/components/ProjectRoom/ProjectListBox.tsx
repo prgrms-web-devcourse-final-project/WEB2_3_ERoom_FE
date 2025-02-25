@@ -4,7 +4,6 @@ import ParticipantIcon from "../common/ParticipantIcon";
 import Button from "../common/Button";
 import { useState } from "react";
 import EditProjectModal from "../modals/EditProjectModal";
-import { dummy } from "../../dummyData/dummy";
 
 const ProjectListBox = ({
   projectId,
@@ -15,15 +14,11 @@ const ProjectListBox = ({
   const navigate = useNavigate();
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
-  // 프로젝트 박스 정보
-  const [projectDataInfo, setProjectDataInfo] = useState<selectedProjectData>(
-    dummy.selectedProjectData
-  );
-
-  const members = projectInfo.members;
 
   const subcate1 = projectInfo.subCategories1.data;
   const subcate2 = projectInfo.subCategories2.data;
+
+  console.log(projectInfo);
   return (
     <div
       className="w-full flex gap-[10px] bg-white 
@@ -66,8 +61,8 @@ const ProjectListBox = ({
 
             {/* 프로필이미지 모음 */}
             <div className="w-[130px] flex">
-              {members.length > 5
-                ? members
+              {projectInfo.members.length > 5
+                ? projectInfo.members
                     .slice(0, 6)
                     .map((member, idx) => (
                       <ParticipantIcon
@@ -76,7 +71,7 @@ const ProjectListBox = ({
                         imgSrc={member.profile}
                       />
                     ))
-                : members.map((member, idx) => (
+                : projectInfo.members.map((member, idx) => (
                     <ParticipantIcon
                       key={idx}
                       css={idx > 0 ? "ml-[-7px]" : ""}
@@ -160,7 +155,7 @@ const ProjectListBox = ({
         </div>
       </div>
 
-      {/* 프로젝트 생성 모달 */}
+      {/* 프로젝트 편집 모달 */}
       {isEditProjectModal && (
         <div
           className="absolute inset-0 w-screen h-fit min-h-screen
@@ -171,10 +166,8 @@ const ProjectListBox = ({
           }}
         >
           <EditProjectModal
-            selectedProjectData={projectDataInfo}
-            setSelectedProjectData={setProjectDataInfo}
+            selectedData={projectInfo}
             setIsEditProjectModal={setIsEditProjectModal}
-            projectMember={dummy.selectedMemberData}
             title="프로젝트 편집"
           />
         </div>

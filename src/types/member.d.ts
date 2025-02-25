@@ -9,9 +9,16 @@ interface MembersType {
   delete: string;
 }
 
+interface MemberType {
+  username: string;
+  profile: string;
+  email: string;
+  id: number;
+}
+
 interface SelectMembersProps {
-  data: MembersType[];
-  selectedData?: MembersType[];
-  selectedMembers: MembersType[];
-  setSelectedMembers: React.Dispatch<React.SetStateAction<MembersType[]>>;
+  selectedData?: Task | ProjectListType;
+  selectedMembers?: MemberType[];
+  setSelectedMembers?: React.Dispatch<React.SetStateAction<selectedMembers>>;
+  value: string;
 }

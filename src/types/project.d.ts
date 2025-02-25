@@ -1,10 +1,6 @@
 interface EditProjectModalProps {
-  selectedProjectData?: selectedProjectData;
-  setSelectedProjectData?: React.Dispatch<
-    React.SetStateAction<selectedProjectData>
-  >;
+  selectedData?: ProjectListType;
   setIsEditProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
-  projectMember?: MembersType[];
   title: string;
 }
 
@@ -30,17 +26,6 @@ interface ProjectListBoxProps {
   idx: number;
 }
 
-interface selectedProjectData {
-  projectName: string;
-  projectStatus: string;
-  createdAt: string;
-  startDate: string;
-  endDate: string;
-  cate: string;
-  subcate1: string[];
-  subcate2: string[];
-}
-
 interface ProjectDataType {
   name?: string;
   startDate?: string;
@@ -52,6 +37,7 @@ interface SelectProjectProps {
 }
 
 interface WriteProjectNameType {
+  value: string;
   name?: string;
   newProjectNameValue?: string;
   setNewProjectNameValue?: React.Dispatch<React.SetStateAction<string>>;

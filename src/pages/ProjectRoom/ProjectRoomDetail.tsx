@@ -14,7 +14,7 @@ const ProjectRoomDetail = () => {
   const [category, setCategory] = useState(searchParams.get("category"));
   const [isEditTaskModal, setIsEditTaskModal] = useState<boolean>(false);
 
-  console.log(projectId);
+  // console.log(projectId);
 
   const { data: projectDetailList, isLoading } =
     useQuery<ProjectDetailListType>({
@@ -28,7 +28,6 @@ const ProjectRoomDetail = () => {
     BEFORE_START: [],
     HOLD: [],
   });
-  const [manageTasks, setManageTasks] = useState([]);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
@@ -37,7 +36,7 @@ const ProjectRoomDetail = () => {
       const tasks = projectDetailList.tasks;
 
       const tasksGroup = tasks.reduce(
-        (acc: AllTasksType, cur: TaskType) => {
+        (acc: AllTasksType, cur: Task) => {
           acc[cur.status]?.push(cur);
           return acc;
         },

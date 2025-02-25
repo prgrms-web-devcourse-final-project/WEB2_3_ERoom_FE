@@ -4,7 +4,6 @@ import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
 import { Navigate, useNavigate } from "react-router";
-import { useEffect } from "react";
 import { postSignIn } from "../api/auth";
 
 const SignIn = () => {
@@ -37,7 +36,7 @@ const SignIn = () => {
           logo={KakaoLogo}
           onClick={async () => {
             try {
-              const data = await postSignIn("qwerty1@gmail.com", "1234");
+              const data = await postSignIn("qwerty2@gmail.com", "1234");
               console.log(data);
               login({ username: "asd" });
             } catch (error) {
