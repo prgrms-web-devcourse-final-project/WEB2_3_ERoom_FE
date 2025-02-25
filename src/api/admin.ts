@@ -1,6 +1,6 @@
 import { api } from "./api";
 
-export const fetchMemberList = async () => {
+export const getMemberList = async () => {
   try {
     const response = await api.get("/admin/manage/member/list", {
       params: { status: "active" },
