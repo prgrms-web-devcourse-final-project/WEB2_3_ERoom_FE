@@ -1,6 +1,4 @@
-import { update } from "lodash";
 import {
-  patchProjectByIdType,
   patchProjectRequestType,
   patchProjectResponseType,
   postProjectType,
@@ -12,7 +10,6 @@ import { api } from "./api";
 // 프로젝트 리스트 정보 가져오는 API
 export const getProjectList = async (): Promise<ProjectListType> => {
   try {
-    const response = await api.get("/api/projects/list ");
     const response = await api.get("/api/projects/list ");
     console.log(response.data);
     return response.data;
