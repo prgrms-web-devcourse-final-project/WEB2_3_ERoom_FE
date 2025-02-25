@@ -101,6 +101,9 @@ const EditProjectModal = ({
   });
 
   // 최종 새프로젝트 정보
+  // 선택한 팀원 상태
+  const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
+
   // 시작날짜 포맷
   const startFormattedDate = dayjs(
     `${startDateInfo.year}-${startDateInfo.month}-${startDateInfo.day} ${startDateInfo.hour}:${startDateInfo.minute} ${startDateInfo.ampm}`,
@@ -122,15 +125,13 @@ const EditProjectModal = ({
     subCategories2: ["React", "Vue.js"],
     startDate: startFormattedDate,
     endDate: endFormatDate,
-    invitedMemberIds: [],
+    invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
   };
 
   const { mutateAsync } = useMutation({
     mutationFn: (newProjectInfo: any) => postProject(newProjectInfo),
   });
 
-  // 선택한 팀원 상태
-  const [selectedMember, setSelectedMember] = useState<MemberType[]>();
   // selectedProject?.members || []
 
   const newProjectPost = async (newProjectInfo: any) => {
@@ -151,7 +152,7 @@ const EditProjectModal = ({
     subCategories2: selectedCategory.subCategories2,
     startDate: startFormattedDate,
     endDate: endFormatDate,
-    invitedMemberIds: [2, 3],
+    invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
     status: "IN_PROGRESS",
   };
 

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 import { debounceFunction } from "../../utils/debounce";
-import { dummy } from "../../dummyData/dummy";
+import { useQuery } from "@tanstack/react-query";
+import { searchMembers } from "../../api/search";
+import { debounce } from "lodash";
 
 const SelectMember = ({
   selectedData,
@@ -14,6 +16,21 @@ const SelectMember = ({
   // 필터링된 팀원 목록 상태
   const [filteredMembers, setFilteredMembers] = useState<MemberType[]>([]);
 
+  useEffect(() => {
+    console.log(selectedMembers);
+  }, [selectedMembers]);
+
+  // 검색 함수
+  const { data: searchMember, refetch } = useQuery<MemberType[]>({
+    queryKey: ["searchMember", inputValue],
+    queryFn: () => searchMembers(inputValue),
+    enabled: false,
+  });
+
+  useEffect(() => {
+    console.log("searchmember", searchMember);
+  }, [searchMember]);
+
   // 선택한 팀원 관리 props로 변경
   useEffect(() => {
     if (selectedMembers && setSelectedMembers) {
@@ -22,40 +39,52 @@ const SelectMember = ({
   }, [selectedData]);
 
   /* 검색결과 표시 함수 */
-  const filterMembers = useCallback(
-    (value: string) => {
-      if (value.trim() === "") {
-        setFilteredMembers([]);
-        return;
-      }
+  // const filterMembers = useCallback(
+  //   (value: string) => {
+  //     if (value.trim() === "") {
+  //       setFilteredMembers([]);
+  //       return;
+  //     }
 
-      // 팀원 배열에서 입력값을 포함하는 프로젝트 필터링
-      const filtered = dummy.membersData
-        .filter((member) =>
-          member.username?.toLowerCase().includes(value.toLowerCase())
-        )
-        .filter(
-          (member) =>
-            !selectedMembers?.some((selected) => selected.id === member.id)
-        )
-        .sort((a, b) => a.username.localeCompare(b.username));
+  //     // 팀원 배열에서 입력값을 포함하는 프로젝트 필터링
+  //     const filtered = dummy.membersData
+  //       .filter((member) =>
+  //         member.username?.toLowerCase().includes(value.toLowerCase())
+  //       )
+  //       .filter(
+  //         (member) =>
+  //           !selectedMembers?.some((selected) => selected.id === member.id)
+  //       )
+  //       .sort((a, b) => a.username.localeCompare(b.username));
 
-      setFilteredMembers(filtered);
-    },
-    [dummy.membersData, selectedMembers]
-  );
+  //     setFilteredMembers(filtered);
+  //   },
+  //   [dummy.membersData, selectedMembers]
+  // );
 
   /* 디바운스된 핸들러 */
-  const debouncedFilter = useCallback(debounceFunction(filterMembers, 300), [
-    filterMembers,
-  ]);
+  const debouncedSearch = useCallback(
+    debounce(() => {
+      if (inputValue.trim()) {
+        refetch();
+      }
+    }, 500),
+    [inputValue]
+  );
 
+  useEffect(() => {
+    debouncedSearch();
+
+    return () => debouncedSearch.cancel();
+  }, [inputValue]);
+
+  // --------------------------------------------------------
   /* 검색어 변경 핸들러 */
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    debouncedFilter(value);
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   setInputValue(value);
+  //   debouncedFilter(value);
+  // };
 
   /* 검색 결과 클릭 시, 선택된 팀원 업데이트 */
   const handleMemberClick = (member: MemberType) => {
@@ -112,7 +141,7 @@ const SelectMember = ({
           font-bold text-[14px] text-logo-green placeholder-gray01"
         placeholder={value === "업무" ? "담당자 검색" : "팀원 검색"}
         value={inputValue}
-        onChange={handleInputChange}
+        onChange={(e) => setInputValue(e.target.value)}
       />
 
       {/* 검색 결과 목록 */}
@@ -122,35 +151,17 @@ const SelectMember = ({
           font-bold"
         >
           {/* (검색결과) 선택된 팀원 */}
-          {inputValue &&
-            selectedMembers?.map((member) => (
-              <div
-                key={member.id}
-                className="flex justify-between items-center font-semibold
-              w-full px-[10px] py-[5px]"
-              >
-                {/* 이름 & 이메일 */}
-                <div>
-                  <div className="text-main-green">@{member.username}</div>
-                  <div className="text-gray01">{member.email}</div>
-                </div>
-
-                {/* 취소버튼 */}
-                <img
-                  src={cancelButton}
-                  onClick={() => handleCancelClick(member.id)}
-                  className="cursor-pointer"
-                />
-              </div>
-            ))}
 
           {/* (검색결과) 필터된 팀원 */}
-          {filteredMembers.map((member) => (
+          {searchMember?.map((member) => (
             <div
               key={member.id}
               className="flex justify-between items-center cursor-pointer
               font-medium"
-              onClick={() => handleMemberClick(member)}
+              onClick={() => {
+                setInputValue("");
+                handleMemberClick(member);
+              }}
             >
               {/* 이름 & 이메일 */}
               <div className="w-full px-[10px] py-[5px]">
@@ -168,8 +179,9 @@ const SelectMember = ({
           <div
             key={member.id}
             className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
-              border-[1px] border-main-green"
+              border-[1px] border-main-green cursor-pointer"
             style={{ backgroundImage: `url(${member.profile})` }}
+            onClick={() => handleCancelClick(member.id)}
           >
             <div
               className="flex justify-center items-center

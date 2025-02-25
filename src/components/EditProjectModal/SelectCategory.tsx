@@ -15,7 +15,7 @@ const SelectCategory = ({
     subCategories2: false,
   });
 
-  console.log(selectedData);
+  // console.log(selectedData);
 
   // 토글 클릭 상태 함수
   const toggleSubcategory = (index: number) => {
@@ -97,7 +97,7 @@ const SelectCategory = ({
     });
   };
 
-  console.log(selectedData);
+  // console.log(selectedData);
 
   return (
     <div className="w-full flex flex-col gap-[20px]">
