@@ -1,7 +1,7 @@
 import { api } from "./api";
 
 // 프로젝트 리스트 정보 가져오는 API
-export const getProjectList = async (): Promise<ProjectType[]> => {
+export const getProjectList = async () => {
   try {
     const response = await api.get("/api/projects/list ");
     console.log(response.data);
@@ -55,5 +55,40 @@ export const patchProjectById = async (
   } catch (error) {
     console.error("프로젝트 수정 오류", error);
     throw new Error("프로젝트 수정하기 오류");
+  }
+};
+// 프로젝트 상세
+export const projectDetail = async (projectId: string) => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/detail`);
+    console.log("프로젝트 상세정보:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error project detail list:", error);
+    throw error;
+  }
+};
+
+// 프로젝트삭제
+export const deleteProject = async (projectId: string) => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/delete`);
+    console.log("프로젝트 삭제:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error project delete:", error);
+    throw error;
+  }
+};
+
+// 프로젝트 나가기
+export const leaveProject = async (projectId: string) => {
+  try {
+    const response = await api.get(`/api/projects/${projectId}/leave`);
+    console.log("프로젝트 나가기:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error project leave:", error);
+    throw error;
   }
 };
