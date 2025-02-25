@@ -1,8 +1,7 @@
-import { ProjectSearchResult } from "../types/project";
 import { api } from "./api";
 
 // 멤버 검색 API
-export const searchMembers = async (name: string): Promise<MemberType> => {
+export const searchMembers = async (name: string): Promise<MemberType[]> => {
   try {
     const response = await api.get(`/api/search/members`, {
       params: { name },

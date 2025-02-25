@@ -170,7 +170,7 @@ const ProjectListBox = ({
         >
           <EditProjectModal
             projectId={projectId}
-            selectedData={projectInfo}
+            selectedProject={projectInfo}
             setIsEditProjectModal={setIsEditProjectModal}
             title="프로젝트 편집"
           />

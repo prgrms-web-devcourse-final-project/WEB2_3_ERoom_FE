@@ -21,16 +21,16 @@ const WriteProjectName = ({
   };
 
   // 엔터 키 입력 시 값 저장
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      // 엔터 키가 눌리면 제출된 값으로 저장
-      if (newProjectNameValue) {
-        setSubmittedValue(newProjectNameValue);
-      }
-      // 인풋창 초기화
-      if (setNewProjectNameValue) setNewProjectNameValue("");
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter") {
+  //     // 엔터 키가 눌리면 제출된 값으로 저장
+  //     if (newProjectNameValue) {
+  //       setSubmittedValue(newProjectNameValue);
+  //     }
+  //     // 인풋창 초기화
+  //     if (setNewProjectNameValue) setNewProjectNameValue("");
+  //   }
+  // };
 
   // 저장 버튼 클릭 시 처리
   const handleSaveClick = () => {
@@ -57,7 +57,7 @@ const WriteProjectName = ({
           placeholder={`${value}명을 작성해주세요.`}
           value={newProjectNameValue}
           onChange={handleInputChange}
-          onKeyDown={handleKeyPress}
+          // onKeyDown={handleKeyPress}
         />
 
         {/* 저장버튼 */}
