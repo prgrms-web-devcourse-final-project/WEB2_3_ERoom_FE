@@ -89,8 +89,8 @@ interface ProjectDetailType {
   memberProfiles: (string | null)[];
 }
 
-//patchProjectById  반환값 타입 지정
-interface patchProjectByIdType {
+//patchProjectById  입력값 타입 지정
+interface patchProjectRequestType {
   name: string;
   category: string;
   subCategories1: string[];
@@ -99,4 +99,21 @@ interface patchProjectByIdType {
   endDate: string;
   status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
   memberIds: number[];
+}
+
+//patchProjectById 반환값 타입 지정
+interface patchProjectResponseType {
+  id: number;
+  name: string;
+  createdAt: string;
+  category: string;
+  subCategories1: string[];
+  subCategories2: string[];
+  startDate: string;
+  endDate: string;
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
+  memberNames: string[];
+  memberProfiles: (string | null)[];
+  chatRoomId: number;
+  progressRate: number;
 }
