@@ -19,7 +19,7 @@ const TaskList = ({ name, isAll = true, taskInfo }: TaskListProps) => {
   return (
     <div
       className={`flex flex-col gap-4 items-center px-2 py-1 min-w-[320px] bg-white/60
-          ${!isAll ? "bg-white/60" : ""}`}
+          ${!isAll ? "bg-white/60" : ""} bg-white/60`}
     >
       <h1 className="font-bold text-main-green text-[22px] sticky">{name}</h1>
       {taskInfo.map((task) => {

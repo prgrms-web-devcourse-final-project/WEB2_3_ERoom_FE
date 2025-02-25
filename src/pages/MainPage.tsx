@@ -1,18 +1,16 @@
 import TodaySchedule from "../components/MainPage/TodaySchedule";
-import { useOutletContext } from "react-router";
 import { twMerge } from "tailwind-merge";
 import Calendar from "../components/MainPage/Calendar";
 import { useAuthStore } from "../store/authStore";
 
 const MainPage = () => {
-  const sidebarToggle = useOutletContext();
   const user = useAuthStore((state) => state.user);
 
   return (
     <div
       className={twMerge(
         `bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0
-        px-5 py-5 flex gap-2 h-[calc(100vh-50px)] ${sidebarToggle ? "" : ""}`
+        px-5 py-5 flex gap-2 h-[calc(100vh-50px)]`
       )}
     >
       {user ? (

@@ -12,15 +12,10 @@ interface ProjectDetailListType {
   projectId: number;
   projectName: string;
   tasks: Task[];
-}
-
-interface Task {
-  assignedMemberName: string;
-  assignedMemberProfile: string;
-  endDate: string;
-  participants: string[];
-  startDate: string;
-  status: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD";
-  taskId: number;
-  title: string;
+  members: {
+    id: number;
+    username: string;
+    email: string;
+    profile: string;
+  }[];
 }
