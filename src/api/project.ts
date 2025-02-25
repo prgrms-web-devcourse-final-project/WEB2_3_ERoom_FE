@@ -57,20 +57,21 @@ export const patchProjectById = async (
     throw new Error("프로젝트 수정하기 오류");
   }
 };
+
 // 프로젝트 상세
-export const projectDetail = async (projectId: string) => {
+export const getProjectDetail = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/detail`);
     console.log("프로젝트 상세정보:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error project detail list:", error);
+    console.error("Error project detail:", error);
     throw error;
   }
 };
 
 // 프로젝트삭제
-export const deleteProject = async (projectId: string) => {
+export const deleteProject = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/delete`);
     console.log("프로젝트 삭제:", response.data);
@@ -82,7 +83,7 @@ export const deleteProject = async (projectId: string) => {
 };
 
 // 프로젝트 나가기
-export const leaveProject = async (projectId: string) => {
+export const leaveProject = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/leave`);
     console.log("프로젝트 나가기:", response.data);

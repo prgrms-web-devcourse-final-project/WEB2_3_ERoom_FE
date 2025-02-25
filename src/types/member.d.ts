@@ -12,7 +12,7 @@ interface MembersType {
 interface MemberType {
   username: string;
   profile: string;
-  email: string;
+  email?: string;
   id: number;
 }
 

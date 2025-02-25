@@ -1,4 +1,5 @@
 interface EditProjectModalProps {
+  projectId?: number;
   selectedData?: ProjectListType;
   setIsEditProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;

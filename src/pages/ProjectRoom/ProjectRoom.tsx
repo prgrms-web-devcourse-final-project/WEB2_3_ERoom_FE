@@ -5,8 +5,7 @@ import Button from "../../components/common/Button";
 import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
-import { postProject, getProjectList } from "../../api/project";
-import { getMemberList } from "../../api/admin";
+import { getProjectList } from "../../api/project";
 
 interface ProjectRoomData {
   completed: ProjectListType[];
@@ -40,7 +39,10 @@ const ProjectRoom = () => {
       const beforeStartData = dataList.filter(
         (list) => list.status === "BEFORE_START"
       );
-
+      console.log(dataList);
+      console.log(dataList.filter((list) => list.status === "IN_PROGRESS"));
+      console.log(dataList.filter((list) => list.status === "COMPLETED"));
+      console.log(dataList.filter((list) => list.status === "BEFORE_START"));
       return {
         completed: completedData,
         inProgress: inProgressData,
