@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createProject } from "../../utils/api/createProject";
 import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
+import { EditProjectModalProps } from "../../types/project";
 
 const EditProjectModal = ({
   selectedData,

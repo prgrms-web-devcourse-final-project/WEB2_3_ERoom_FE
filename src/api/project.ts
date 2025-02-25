@@ -13,6 +13,7 @@ import { api } from "./api";
 export const getProjectList = async (): Promise<ProjectListType> => {
   try {
     const response = await api.get("/api/projects/list ");
+    const response = await api.get("/api/projects/list ");
     console.log(response.data);
     return response.data;
   } catch (error) {

@@ -6,8 +6,8 @@ import { useState } from "react";
 interface ManagersType {
   id: number;
   username: string;
-  email: string;
   profile: string;
+  email?: string;
 }
 
 export interface OutletContextType {
