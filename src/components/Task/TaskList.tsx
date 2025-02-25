@@ -1,19 +1,13 @@
 import { useState } from "react";
 import TaskBox from "./TaskBox";
 import UpdateTaskModal from "../modals/UpdateTaskModal";
+import { useQuery } from "@tanstack/react-query";
 
 const TaskList = ({ name, isAll = true, taskInfo }: TaskListProps) => {
-  const [selectedTask, setSelectedTask] = useState<{
-    id: number;
-    name: string;
-    memberId: number;
-    memberName: string;
-    startDate: string;
-    endDate: string;
-  } | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const openModal = () => {
-    // setSelectedTask(dummyTasks[0]); // 임의로 첫 번째 더미 데이터를 선택
+  const openModal = (task: Task) => {
+    setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
   };
 
   const closeModal = () => {
@@ -32,7 +26,7 @@ const TaskList = ({ name, isAll = true, taskInfo }: TaskListProps) => {
         return (
           <TaskBox
             key={task.taskId}
-            onClick={openModal}
+            onClick={() => openModal(task)}
             isAll={isAll}
             task={task}
           />
@@ -41,7 +35,11 @@ const TaskList = ({ name, isAll = true, taskInfo }: TaskListProps) => {
 
       {selectedTask && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <UpdateTaskModal task={selectedTask} onClose={closeModal} />
+          <UpdateTaskModal
+            task={selectedTask}
+            onClose={closeModal}
+            value="편집"
+          />
         </div>
       )}
     </div>

@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import { dummy } from "../../dummyData/dummy";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectCategory from "../EditProjectModal/SelectCategory";
@@ -13,9 +12,8 @@ import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
 
 const EditProjectModal = ({
-  selectedProjectData,
+  selectedData,
   setIsEditProjectModal,
-  projectMember,
   title,
 }: EditProjectModalProps) => {
   // 프로젝트 시작 정보 초기화 상태
@@ -42,8 +40,8 @@ const EditProjectModal = ({
   const [newProjectNameValue, setNewProjectNameValue] = useState<string>("");
 
   useEffect(() => {
-    const startDate = selectedProjectData
-      ? dayjs(selectedProjectData.startDate).locale("en")
+    const startDate = selectedData
+      ? dayjs(selectedData.startDate).locale("en")
       : dayjs().locale("en");
 
     const year = startDate.format("YYYY");
@@ -54,49 +52,38 @@ const EditProjectModal = ({
     const ampm = startDate.format("A"); // AM/PM
 
     setStartDateInfo({ year, month, day, hour, minute, ampm });
-  }, [selectedProjectData]);
+  }, [selectedData]);
 
   useEffect(() => {
-    const endDate = selectedProjectData
-      ? dayjs(selectedProjectData.endDate).locale("en")
+    const endDate = selectedData
+      ? dayjs(selectedData.endDate).locale("en")
       : dayjs().locale("en");
     console.log(endDate);
     const year = endDate.format("YYYY");
     const month = endDate.format("MM");
     const day = endDate.format("DD");
-    const hour = selectedProjectData
+    const hour = selectedData
       ? endDate.format("hh")
       : String(+endDate.format("hh") + 1); // 12시간 형식
     const minute = endDate.format("mm");
     const ampm = endDate.format("A"); // AM/PM
     setEndDateInfo({ year, month, day, hour, minute, ampm });
-  }, [selectedProjectData]);
+  }, [selectedData]);
 
   // 선택된 분야, 세부항목 상태
-  const [selectedData, setSelectedData] = useState({
-    cate: selectedProjectData?.cate || "",
-    subcate1: selectedProjectData?.subcate1 || [],
-    subcate2: selectedProjectData?.subcate2 || [],
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>({
+    category: selectedData?.category,
+    subCategories1: selectedData?.subCategories1,
+    subCategories2: selectedData?.subCategories2,
   });
+
+  console.log(selectedData);
 
   // 프로젝트 생성 페이지 상태
   const [pages, setPages] = useState<number>(0);
 
-  // 선택된 분야의 세부항목 이름
-  const selectedSubCate =
-    selectedData?.cate &&
-    dummy.categoryData
-      .filter((data) => data.name === selectedData?.cate)[0]
-      .subcategories?.map((cate) => cate.subname);
-
-  // 선택된 분야의 데이터
-  const selectedCateData = selectedData?.cate
-    ? dummy.categoryData.filter((data) => data.name === selectedData?.cate)[0]
-        .subcategories
-    : null;
-
   // 멤버 선택 임시
-  const [selectedMembers, setSelectedMembers] = useState<MembersType[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState(selectedData?.members);
 
   // 최종 새프로젝트 정보
   // 시작날짜 포맷
@@ -114,9 +101,9 @@ const EditProjectModal = ({
   // 새 프로젝트 생성 정보
   const newProjectInfo = {
     name: newProjectNameValue,
-    category: selectedData.cate,
-    subCategories1: selectedData.subcate1,
-    subCategories2: selectedData.subcate2,
+    category: selectedCategory.category,
+    subCategories1: selectedCategory.subCategories1,
+    subCategories2: selectedCategory.subCategories2,
     startDate: startFormattedDate,
     endDate: endFormatDate,
     invitedMemberIds: selectedMembers,
@@ -127,6 +114,11 @@ const EditProjectModal = ({
   const { mutate } = useMutation({
     mutationFn: (newProjectInfo: any) => createProject(newProjectInfo),
   });
+
+  // 선택한 팀원 상태
+  const [selectedMember, setSelectedMember] = useState<MemberType[]>(
+    selectedData?.members || []
+  );
 
   return (
     <div
@@ -150,16 +142,16 @@ const EditProjectModal = ({
           <div className="w-full flex flex-col gap-[20px]">
             {/* 프로젝트명 작성 */}
             <WriteProjectName
-              name={selectedProjectData?.projectName}
+              value="프로젝트"
+              name={selectedData?.name}
               newProjectNameValue={newProjectNameValue}
               setNewProjectNameValue={setNewProjectNameValue}
             />
 
             {/* 분야 검색 */}
             <SelectCategory
-              selectedData={selectedData}
-              setSelectedData={setSelectedData}
-              categoryData={dummy.categoryData}
+              selectedData={selectedCategory}
+              setSelectedData={setSelectedCategory}
             />
           </div>
         )}
@@ -169,10 +161,9 @@ const EditProjectModal = ({
           <div className="w-full flex flex-col gap-[20px]">
             {/* 팀원 검색 */}
             <SelectMember
-              data={dummy.membersData}
-              selectedData={projectMember}
-              selectedMembers={selectedMembers}
-              setSelectedMembers={setSelectedMembers}
+              value="프로젝트"
+              selectedMembers={selectedMember}
+              setSelectedMembers={setSelectedMember}
             />
 
             {/* 기간 설정 */}
@@ -232,38 +223,38 @@ const EditProjectModal = ({
       </div>
 
       {/* 워드 클라우드 */}
-      {pages === 0 && selectedSubCate && (
+      {/* {pages === 0 && selectedCategory.subCategories1 && (
         <div
           className="w-[350px] h-[600px] py-[20px]
           flex flex-col justify-between items-center"
-        >
-          {/* 세부항목1 워드클라우드 */}
-          <div className="flex flex-col items-center">
-            {selectedSubCate && (
+        > */}
+      {/* 세부항목1 워드클라우드 */}
+      {/* <div className="flex flex-col items-center">
+            {selectedCategory.subCategories1 && (
               <div className="text-main-green font-bold">
-                {selectedSubCate[0]}
+                {selectedCategory.subCategories1.data}
               </div>
             )}
-            {selectedCateData && (
+            {selectedCategory.subCategories1 && (
               <WordCloud
-                words={selectedCateData[0].data.map((contents) => ({
+                words={selectedCategory.subCategories1.data.map((contents) => ({
                   text: contents.text,
                   value: contents.value,
                 }))}
               />
             )}
-          </div>
+          </div> */}
 
-          {/* 세부항목2 워드클라우드 */}
-          <div className="flex flex-col items-center">
-            {selectedSubCate && (
+      {/* 세부항목2 워드클라우드 */}
+      {/* <div className="flex flex-col items-center">
+            {selectedCategory.subCategories2 && (
               <div className="text-main-green font-bold">
-                {selectedSubCate[1]}
+                {selectedCategory.subCategories2.data}
               </div>
             )}
-            {selectedCateData && (
+            {selectedCategory.subCategories2 && (
               <WordCloud
-                words={selectedCateData[1].data.map((contents) => ({
+                words={selectedCategory.subCategories2.data.map((contents) => ({
                   text: contents.text,
                   value: contents.value,
                 }))}
@@ -271,7 +262,7 @@ const EditProjectModal = ({
             )}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

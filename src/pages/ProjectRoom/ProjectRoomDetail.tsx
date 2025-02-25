@@ -41,7 +41,7 @@ const ProjectRoomDetail = () => {
       const tasks = projectDetailList.tasks;
 
       const tasksGroup = tasks.reduce(
-        (acc: AllTasksType, cur: TaskType) => {
+        (acc: AllTasksType, cur: Task) => {
           acc[cur.status]?.push(cur);
           return acc;
         },

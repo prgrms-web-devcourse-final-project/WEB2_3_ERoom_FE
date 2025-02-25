@@ -1,23 +1,16 @@
 interface CategoryType {
-  name: string;
-  subcategories?: {
-    subname: string;
-    data: { text: string; value: number }[];
-  }[];
+  category?: string;
+  subCategories1?: {
+    name: string;
+    data: string[];
+  };
+  subCategories2?: {
+    name: string;
+    data: string[];
+  };
 }
 
 interface SelectCategoryProps {
-  selectedData: {
-    cate: string;
-    subcate1: string[];
-    subcate2: string[];
-  };
-  setSelectedData: React.Dispatch<
-    React.SetStateAction<{
-      cate: string;
-      subcate1: string[];
-      subcate2: string[];
-    }>
-  >;
-  categoryData: CategoryType[];
+  selectedData: CategoryType;
+  setSelectedData: React.Dispatch<React.SetStateAction<selectedData>>;
 }

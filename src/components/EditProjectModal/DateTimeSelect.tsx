@@ -103,7 +103,7 @@ const DateTimeSelect = ({
     }
   }, [openDropdown]);
 
-  console.log(selectedDate);
+  // console.log(selectedDate);
 
   return (
     <div className="flex flex-col gap-[5px]">
