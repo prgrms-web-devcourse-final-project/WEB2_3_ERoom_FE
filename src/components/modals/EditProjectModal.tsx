@@ -7,9 +7,10 @@ import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createProject } from "../../utils/api/createProject";
 import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
+import { postProject } from "../../api/project";
+import { useNavigate } from "react-router";
 import { getProjectDetail } from "../../api/project";
 
 const EditProjectModal = ({
@@ -18,6 +19,8 @@ const EditProjectModal = ({
   setIsEditProjectModal,
   title,
 }: EditProjectModalProps) => {
+  const navigate = useNavigate();
+
   // 프로젝트 시작 정보 초기화 상태
   const [startDateInfo, setStartDateInfo] = useState({
     year: "",
@@ -79,7 +82,7 @@ const EditProjectModal = ({
     const day = endDate.format("DD");
     const hour = projectDetailList
       ? endDate.format("hh")
-      : String(+endDate.format("hh") + 1); // 12시간 형식
+      : endDate.add(1, "hour").format("hh"); // 12시간 형식
     const minute = endDate.format("mm");
     const ampm = endDate.format("A"); // AM/PM
     setEndDateInfo({ year, month, day, hour, minute, ampm });
@@ -135,9 +138,10 @@ const EditProjectModal = ({
   // 새 프로젝트 생성 정보
   const newProjectInfo = {
     name: newProjectNameValue,
+    description: "",
     category: selectedCategory.category,
-    subCategories1: selectedCategory.subCategories1,
-    subCategories2: selectedCategory.subCategories2,
+    subCategories1: ["C", "C++"],
+    subCategories2: ["React", "Vue.js"],
     startDate: startFormattedDate,
     endDate: endFormatDate,
     invitedMembers: selectedMember,
@@ -145,8 +149,8 @@ const EditProjectModal = ({
     colors: randomColor("calendar"),
   };
 
-  const { mutate } = useMutation({
-    mutationFn: (newProjectInfo: any) => createProject(newProjectInfo),
+  const { mutateAsync } = useMutation({
+    mutationFn: (newProjectInfo: any) => postProject(newProjectInfo),
   });
 
   const statusOptions = {
@@ -162,6 +166,17 @@ const EditProjectModal = ({
       selectedData?.status.toUpperCase() as keyof typeof statusOptions
     ]
   );
+
+  const newProjectPost = async (newProjectInfo: any) => {
+    try {
+      const response = await mutateAsync(newProjectInfo);
+
+      console.log(response);
+      navigate(`/project-room/${response.id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -275,7 +290,7 @@ const EditProjectModal = ({
               onClick={() => {
                 setPages(1);
                 console.log(newProjectInfo);
-                mutate(newProjectInfo);
+                newProjectPost(newProjectInfo);
               }}
             />
           )}

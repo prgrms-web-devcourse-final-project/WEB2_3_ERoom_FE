@@ -1,13 +1,7 @@
 interface CategoryType {
   category?: string;
-  subCategories1?: {
-    name: string;
-    data: string[];
-  };
-  subCategories2?: {
-    name: string;
-    data: string[];
-  };
+  subCategories1?: string[];
+  subCategories2?: string[];
 }
 
 interface temporaryCategory {

@@ -46,15 +46,15 @@ const SelectCategory = ({
   const handleSubcategories = (item: string, index: number) => {
     setSelectedData((prev: CategoryType) => {
       if (index === 1) {
-        const currentSubcategories = prev.subCategories1?.data || [];
+        const currentSubcategories = prev.subCategories1;
 
         // 선택된 항목 삭제
-        if (currentSubcategories.some((data) => data === item)) {
+        if (currentSubcategories?.some((data) => data === item)) {
           return {
             ...prev,
             subCategories1: {
               ...prev.subCategories1,
-              data: currentSubcategories.filter((sub) => sub !== item),
+              ...currentSubcategories.filter((sub) => sub !== item),
             },
           };
         }
@@ -64,15 +64,16 @@ const SelectCategory = ({
           ...prev,
           subCategories1: {
             ...prev.subCategories1,
-            data: [...currentSubcategories, item],
+            ...currentSubcategories,
+            item,
           },
         };
       }
 
       if (index === 2) {
-        const currentSubcategories = prev.subCategories2?.data || [];
+        const currentSubcategories = prev.subCategories2;
 
-        if (currentSubcategories.includes(item)) {
+        if (currentSubcategories?.includes(item)) {
           return {
             ...prev,
             subCategories2: {
@@ -86,7 +87,8 @@ const SelectCategory = ({
           ...prev,
           subCategories2: {
             ...prev.subCategories2,
-            data: [...currentSubcategories, item],
+            ...currentSubcategories,
+            item,
           },
         };
       }
@@ -95,7 +97,7 @@ const SelectCategory = ({
     });
   };
 
-  // console.log(selectedData);
+  console.log(selectedData);
 
   return (
     <div className="w-full flex flex-col gap-[20px]">
