@@ -67,7 +67,7 @@ const EditProjectModal = ({
     const day = endDate.format("DD");
     const hour = selectedData
       ? endDate.format("hh")
-      : String(+endDate.format("hh") + 1); // 12시간 형식
+      : endDate.add(1, "hour").format("hh"); // 12시간 형식
     const minute = endDate.format("mm");
     const ampm = endDate.format("A"); // AM/PM
     setEndDateInfo({ year, month, day, hour, minute, ampm });
