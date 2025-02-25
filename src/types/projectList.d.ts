@@ -3,8 +3,8 @@ interface ProjectListType {
   name: string;
   createdAt: string; // ISO8601 날짜 문자열
   category: string;
-  subCategories1: SubCategory;
-  subCategories2: SubCategory;
+  subCategories1: string[];
+  subCategories2: string[];
   startDate: string; // ISO8601 날짜 문자열
   endDate: string; // ISO8601 날짜 문자열
   status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"; // 프로젝트 상태 Enum
