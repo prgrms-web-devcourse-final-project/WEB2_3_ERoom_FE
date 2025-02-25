@@ -63,27 +63,6 @@ const ProjectRoom = () => {
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetchProjectList();
-    fetchMemberList();
-    postProject(
-      "프로젝트 이름",
-      "프로젝트 설명",
-      "개발",
-      ["백엔드", "프론트엔드"],
-      ["Spring", "React"],
-      "2025-02-19T09:00:00",
-      "2025-06-30T18:00:00",
-      [2, 3, 4]
-    )
-      .then((data) => {
-        console.log("프로젝트 생성 완료:", data);
-      })
-      .catch((error) => {
-        console.error("프로젝트 생성 중 오류 발생:", error);
-      });
-  }, []);
-
   return (
     <div
       className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
