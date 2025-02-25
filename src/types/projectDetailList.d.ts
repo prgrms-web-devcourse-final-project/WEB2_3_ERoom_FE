@@ -19,3 +19,17 @@ interface ProjectDetailListType {
     profile: string;
   }[];
 }
+
+interface ProjectDetailType {
+  category: string;
+  members: {
+    id: number;
+    username: string;
+    profile: string;
+  }[];
+  projectId: number;
+  projectName: string;
+  subCategories1: string[];
+  subCategories2: string[];
+  tasks: Task[];
+}

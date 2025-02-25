@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useQuery } from "@tanstack/react-query";
-import { getProjectDetail } from "../../utils/api/getProjectDetail";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
+import { projectDetail } from "../../api/project";
 
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
@@ -17,11 +17,13 @@ const ProjectRoomDetail = () => {
 
   const { setManagers } = useOutletContext<OutletContextType>();
 
-  const { data: projectDetailList, isLoading } =
-    useQuery<ProjectDetailListType>({
-      queryKey: ["ProjectDetail"],
-      queryFn: () => getProjectDetail(projectId!),
-    });
+  // 프로젝트 상세 정보 불러오기
+  const { data: projectDetailList, isLoading } = useQuery<ProjectDetailType>({
+    queryKey: ["ProjectDetail", projectId],
+    queryFn: async () => {
+      return await projectDetail(projectId!);
+    },
+  });
 
   const [allTasks, setAllTasks] = useState<AllTasksType>({
     IN_PROGRESS: [],
