@@ -20,8 +20,8 @@ const ProjectListBox = ({
   // 프로젝트 나가기 모달
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
 
-  const subcate1 = projectInfo.subCategories1.data;
-  const subcate2 = projectInfo.subCategories2.data;
+  const subcate1 = projectInfo.subCategories1;
+  const subcate2 = projectInfo.subCategories2;
 
   // 프로젝트 나가기
   const { mutate: deleteProjectMutation } = useMutation({
@@ -86,7 +86,7 @@ const ProjectListBox = ({
             <p className="w-[56px] text-center">참여인원</p>
 
             {/* 프로필이미지 모음 */}
-            <div className="w-[130px] flex">
+            {/* <div className="w-[130px] flex">
               {projectInfo.members.length > 5
                 ? projectInfo.members
                     .slice(0, 6)
@@ -104,7 +104,7 @@ const ProjectListBox = ({
                       imgSrc={member.profile}
                     />
                   ))}
-            </div>
+            </div> */}
           </div>
 
           {/* 버튼 모음 */}

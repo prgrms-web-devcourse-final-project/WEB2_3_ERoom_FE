@@ -3,7 +3,7 @@ import { api } from "./api";
 // 프로젝트 리스트 정보 가져오는 API
 export const getProjectList = async () => {
   try {
-    const response = await api.get("/api/projects/list ");
+    const response = await api.get("/api/projects/list");
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -15,7 +15,7 @@ export const getProjectList = async () => {
 //프로젝트 생성 API
 export const postProject = async (projectData: postProjectType) => {
   try {
-    const response = await api.post("/api/projects/create ", projectData);
+    const response = await api.post("/api/projects/create", projectData);
     console.log("생성된 프로젝트:", response.data);
     return response.data;
   } catch (error) {

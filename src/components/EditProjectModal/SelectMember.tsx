@@ -45,8 +45,6 @@ const SelectMember = ({
     [dummy.membersData, selectedMembers]
   );
 
-  // console.log(selectedMembers);
-
   /* 디바운스된 핸들러 */
   const debouncedFilter = useCallback(debounceFunction(filterMembers, 300), [
     filterMembers,
@@ -102,9 +100,6 @@ const SelectMember = ({
       );
     }
   };
-  // console.log(data);
-  // console.log(selectedMembers);
-  // console.log(filteredMembers);
 
   return (
     <div className="flex flex-col w-full gap-[5px]">
