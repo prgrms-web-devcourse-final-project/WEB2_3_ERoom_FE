@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
 import { getMeetingroom } from "../../api/meetingroom";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
