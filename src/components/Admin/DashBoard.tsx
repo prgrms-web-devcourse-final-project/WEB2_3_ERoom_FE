@@ -1,37 +1,53 @@
-import { twMerge } from "tailwind-merge";
+import { useQuery } from "@tanstack/react-query";
 import Chart from "./Chart";
-import { useState } from "react";
-
-const PAY_DATA_FILTER = ["일일 매출", "월간 매출", "연간 매출"];
+import { getAdminDashboard } from "../../api/admin";
+import dayjs from "dayjs";
 
 const DashBoard = () => {
-  const [payDataTab, setPayDataTab] = useState("일일 매출");
+  const { data: dashboardData } = useQuery<DashboardType[]>({
+    queryKey: ["AdminDashboardData"],
+    queryFn: getAdminDashboard,
+  });
+
+  if (!dashboardData) {
+    return <div>로딩</div>;
+  }
+
+  const totalMembers = dashboardData[0].totalMembers;
+  const newMembers = dashboardData[0].newMembers;
 
   return (
     <div
-      className="pl-8 pr-8 h-[calc(100vh-50px)] overflow-y-scroll
+      className="pl-8 pr-8 h-[calc(100vh-50px)] 
     bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
     >
       <div className="bg-white/60 px-5">
         <h1 className="font-bold text-[27px] mb-4">회원 데이터</h1>
-        <p className="text-main-green font-bold mb-2">누적 회원 수</p>
         <div
           className="border border-main-green02 w-[170px] h-[50px] flex gap-2 mb-5
-          items-center justify-center text-main-green01 font-bold rounded-[10px]"
+            items-center justify-center text-main-green01 font-bold rounded-[10px]"
         >
-          총 구독 회원 <p className="text-[25px] text-header-red">127명</p>
+          총 회원{" "}
+          <p className="text-[25px] text-header-red">
+            {totalMembers[totalMembers.length - 1].totalMembers}명
+          </p>
         </div>
+        <p className="text-main-green font-bold mb-2">누적 회원 수</p>
         <Chart
-          data={[60, 80, 120, 120, 140]}
+          data={totalMembers.map((totalInfo) => totalInfo.totalMembers)}
           labelTitle="누적 회원 수"
-          label={["4주전", "3주전", "2주전", "1주전", "오늘"]}
+          label={totalMembers.map((totalInfo) =>
+            dayjs(totalInfo.startDate).format("MM/DD")
+          )}
         />
         <div className="mt-10">
           <p className="font-bold mb-5">신규 회원 수</p>
           <Chart
-            data={[30, 20, 40, 0, 15]}
+            data={newMembers.map((newInfo) => newInfo.newMembers)}
             labelTitle="신규 회원 수"
-            label={["4주전", "3주전", "2주전", "1주전", "오늘"]}
+            label={newMembers.map((newInfo) =>
+              dayjs(newInfo.date).format("MM/DD")
+            )}
           />
         </div>
       </div>

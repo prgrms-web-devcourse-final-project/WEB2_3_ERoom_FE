@@ -1,3 +1,18 @@
+interface TotalMember {
+  startDate: string; // "YYYY-MM-DD" 형식의 날짜
+  totalMembers: number;
+}
+
+interface NewMember {
+  date: string; // "YYYY-MM-DD" 형식의 날짜
+  newMembers: number;
+}
+
+interface DashboardType {
+  totalMembers: TotalMember[];
+  newMembers: NewMember[];
+}
+
 interface AccountListProps {
   id: number;
   email: string;

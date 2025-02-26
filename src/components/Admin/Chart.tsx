@@ -43,6 +43,7 @@ const Chart = ({ data, labelTitle, label }: ChartProps) => {
 
   const options: ChartOptions<"line"> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
@@ -59,7 +60,7 @@ const Chart = ({ data, labelTitle, label }: ChartProps) => {
 
   return (
     <div className="">
-      <Line data={chartData} options={options} height={50} />
+      <Line data={chartData} options={options} height={420} />
     </div>
   );
 };
