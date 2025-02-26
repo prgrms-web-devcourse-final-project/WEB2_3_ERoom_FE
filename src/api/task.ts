@@ -9,25 +9,9 @@ export const fetchTask = async (taskId: string) => {
   }
 };
 
-export const createTask = async (
-  projectId: number,
-  title: string,
-  startDate: string,
-  endDate: string,
-  status: string,
-  assignedMemberId: number,
-  participanyIds: number[]
-) => {
+export const createTask = async (taskData: CreateTask) => {
   try {
-    const response = await api.post("/api/tasks/create", {
-      projectId,
-      title,
-      startDate,
-      endDate,
-      status,
-      assignedMemberId,
-      participanyIds,
-    });
+    const response = await api.post("/api/tasks/create", { taskData });
     console.log("생성된 업무:", response.data);
     return response.data;
   } catch (error) {

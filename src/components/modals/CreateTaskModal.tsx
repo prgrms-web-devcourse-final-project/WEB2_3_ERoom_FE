@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import SelectMember from "../EditProjectModal/SelectMember";
 
-const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
+const CreateTaskModal = ({
+  onClose,
+  setData,
+  projectId,
+  setIsClicked,
+}: CreateTaskProps) => {
   const now = new Date();
   const [selectedStartDate, setSelectedStartDate] = useState<selectedDateType>({
     year: String(now.getFullYear()),
@@ -15,6 +20,7 @@ const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
     ampm: now.getHours() >= 12 ? "PM" : "AM",
   });
 
+  // 선택한 일정 상태
   const [selectedEndDate, setSelectedEndDate] = useState<selectedDateType>({
     year: String(now.getFullYear()),
     month: String(now.getMonth() + 1).padStart(2, "0"),
@@ -24,11 +30,57 @@ const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
     ampm: now.getHours() >= 12 ? "PM" : "AM",
   });
 
+  // 데이터 형식에 맞게 일정 변경 함수
+  const formatDateTime = (dateObj: selectedDateType) => {
+    return `${dateObj.year}-${dateObj.month}-${dateObj.day}T${
+      dateObj.ampm === "PM"
+        ? String((Number(dateObj.hour) % 12) + 12).padStart(2, "0")
+        : dateObj.hour
+    }:${dateObj.minute}:00`;
+  };
+  const formattedStartDateTime = formatDateTime(selectedStartDate);
+  const formattedEndDateTime = formatDateTime(selectedEndDate);
+  // console.log(formattedStartDateTime);
+  // console.log(formattedEndDateTime);
+
   // 작성한 업무명 상태
   const [newTaskName, setNewTaskName] = useState<string>("");
+  // console.log("업무명 :", newTaskName);
 
-  // 선택한 팀원 상태
+  // 선택한 담당자 상태
   const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
+  // console.log("담당자 :", selectedMember);
+
+  useEffect(() => {
+    // 생성할 업무 정보
+    const createTask = {
+      projectId: projectId,
+      title: newTaskName || "",
+      startDate: formattedStartDateTime,
+      endDate: formattedEndDateTime,
+      status: "BEFORE_START",
+      assignedMemberId: selectedMember[0]?.id,
+      participantIds: [selectedMember[0]?.id],
+      colors: { background: "#ff5733", text: "#ffffff" }, // 임시값
+    };
+
+    // 누락된 정보 확인
+    const isEmpty = Object.values(createTask).some(
+      (value) => value === "" || value === null || value === undefined
+    );
+
+    // 누락정보 없을 시 set함수 호출
+    if (!isEmpty) {
+      setData(createTask);
+    }
+  }, [
+    newTaskName,
+    formattedStartDateTime,
+    formattedEndDateTime,
+    selectedMember,
+    projectId,
+    setData,
+  ]);
 
   return (
     <div
@@ -75,6 +127,9 @@ const CreateTaskModal = ({ onClose }: CreateTaskProps) => {
           text="생성하기"
           size="md"
           css="border border-main-green01 text-main-green01 font-bold text-[14px]  w-[89px] h-[27px]"
+          onClick={() => {
+            setIsClicked(true);
+          }}
         />
         <Button
           text="취소"

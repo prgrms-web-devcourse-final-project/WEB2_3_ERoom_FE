@@ -4,18 +4,21 @@ import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectDetail } from "../../api/project";
+import { createTask } from "../../api/task";
 
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();
   const [category, setCategory] = useState(searchParams.get("category"));
   const [isEditTaskModal, setIsEditTaskModal] = useState<boolean>(false);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const { setManagers } = useOutletContext<OutletContextType>();
+  console.log(isClicked);
 
   // 프로젝트 상세 정보 불러오기
   const { data: projectDetailList, isLoading } = useQuery<ProjectDetailType>({
@@ -25,12 +28,49 @@ const ProjectRoomDetail = () => {
     },
   });
 
+  const [newTaskInfo, setNewTaskInfo] = useState<CreateTask>({
+    projectId: Number(projectId),
+    title: "",
+    startDate: "",
+    endDate: "",
+    status: "BEFORE_START",
+    assignedMemberId: 0,
+    participantIds: [0],
+    colors: { background: "#ff5733", text: "#ffffff" },
+  });
+  console.log(newTaskInfo);
+
+  // 업무 생성
+  const { mutateAsync } = useMutation({
+    mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
+  });
+
+  const handleCreateTask = async () => {
+    try {
+      await mutateAsync(newTaskInfo);
+      setIsEditTaskModal(false); // 모달 닫기
+      setIsClicked(false); // 클릭 상태 초기화
+    } catch (error) {
+      console.error(error);
+      setIsClicked(false);
+    }
+  };
+
+  // 생성버튼이 클릭되었을 때 생성함수 호출
+  useEffect(() => {
+    if (isClicked) {
+      handleCreateTask();
+      setIsClicked(false);
+    }
+  }, [isClicked]);
+
   const [allTasks, setAllTasks] = useState<AllTasksType>({
     IN_PROGRESS: [],
     COMPLETED: [],
     BEFORE_START: [],
     HOLD: [],
   });
+
   const [manageTasks, setManageTasks] = useState<ManageTasksType[]>([]);
 
   useEffect(() => {
@@ -115,20 +155,34 @@ const ProjectRoomDetail = () => {
       ) : (
         <div
           className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
-      flex flex-col gap-[30px]
-      bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
+          flex flex-col gap-[30px]
+          bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
         >
           <div className="w-full flex justify-between items-center">
             {/* 헤더 */}
             <div className="flex flex-col justify-between items-start gap-[10px]">
-              <h1 className="font-bold text-[22px]">프로젝트 명</h1>
+              <h1 className="font-bold text-[22px]">
+                {projectDetailList?.projectName}
+              </h1>
 
               {/* 태그 목록 */}
               <div className="flex justify-start gap-[10px]">
-                <p># 개발</p>
-                <p># 리액트</p>
-                <p># TypeScript</p>
-                <p># Tailwind CSS</p>
+                {/* 분야 */}
+                {projectDetailList?.category && (
+                  <p># {projectDetailList?.category}</p>
+                )}
+
+                {/* 세부분야 1 */}
+                {projectDetailList?.subCategories1 &&
+                  projectDetailList?.subCategories1.map((item) => (
+                    <p key={item}># {item}</p>
+                  ))}
+
+                {/* 세부분야2 */}
+                {projectDetailList?.subCategories2 &&
+                  projectDetailList?.subCategories2.map((item) => (
+                    <p key={item}># {item}</p>
+                  ))}
               </div>
             </div>
 
@@ -178,12 +232,17 @@ const ProjectRoomDetail = () => {
           {isEditTaskModal && (
             <div
               className="fixed inset-0 flex items-center justify-center 
-        bg-black/70 z-50"
+            bg-black/70 z-50"
               onClick={() => {
                 setIsEditTaskModal(false);
               }}
             >
-              <CreateTaskModal onClose={setIsEditTaskModal} />
+              <CreateTaskModal
+                onClose={setIsEditTaskModal}
+                setData={setNewTaskInfo}
+                projectId={Number(projectId)}
+                setIsClicked={setIsClicked}
+              />
             </div>
           )}
         </div>
