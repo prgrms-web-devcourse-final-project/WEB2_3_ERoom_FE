@@ -96,7 +96,7 @@ interface patchProjectRequestType {
   subCategories2: string[];
   startDate: string;
   endDate: string;
-  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED";
   memberIds: number[];
 }
 

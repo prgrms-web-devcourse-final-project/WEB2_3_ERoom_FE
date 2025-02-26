@@ -5,10 +5,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
-import dayjs from "dayjs";
-import { queryClient } from "../../main";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";

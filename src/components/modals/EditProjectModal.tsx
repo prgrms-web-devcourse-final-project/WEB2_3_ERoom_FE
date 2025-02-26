@@ -11,6 +11,10 @@ import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
 import { patchProjectById, postProject } from "../../api/project";
 import { useNavigate } from "react-router";
+import { progressType } from "../../utils/progressType";
+import { PROGRESS_STATUS } from "../../constants/status";
+
+const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
 const EditProjectModal = ({
   selectedProject,
@@ -46,9 +50,16 @@ const EditProjectModal = ({
   // 프로젝트 네임
   const [newProjectNameValue, setNewProjectNameValue] = useState<string>("");
 
+  // 진행 상태 저장
+  const [editStatus, setEditStatus] = useState<
+    "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"
+  >(selectedProject!.status);
+
   useEffect(() => {
     if (selectedProject) {
       setNewProjectNameValue(selectedProject.name);
+
+      setEditStatus(selectedProject.status); // 멘토님 질문
     }
 
     const startDate = selectedProject
@@ -133,8 +144,6 @@ const EditProjectModal = ({
       postProject(newProjectInfo),
   });
 
-  // selectedProject?.members || []
-
   const newProjectPost = async (newProjectInfo: postProjectType) => {
     try {
       const response = await mutateAsync(newProjectInfo);
@@ -154,7 +163,7 @@ const EditProjectModal = ({
     startDate: startFormattedDate,
     endDate: endFormatDate,
     memberIds: selectedMember.map((memberInfo) => memberInfo.id),
-    status: "IN_PROGRESS",
+    status: editStatus,
   };
 
   // 수정 요청 함수
@@ -233,6 +242,30 @@ const EditProjectModal = ({
                 </div>
               </div>
             </div>
+            {/* 진행 상태 */}
+            {selectedProject && (
+              <div className="flex flex-col gap-[5px]">
+                <p className="font-bold text-[16px] text-main-green">
+                  진행상태
+                </p>
+                <div className="flex gap-[5px]">
+                  {EDIT_MODAL_STATUS.map((status, idx) => (
+                    <button
+                      key={idx}
+                      className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center cursor-pointer
+              ${
+                PROGRESS_STATUS[editStatus] === status
+                  ? "bg-main-green01 text-main-beige01"
+                  : "bg-gray02 text-gray01"
+              }`}
+                      onClick={() => setEditStatus(progressType(status))}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
