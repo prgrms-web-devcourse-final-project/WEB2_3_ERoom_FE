@@ -21,11 +21,16 @@ const EditProjectModal = ({
   setIsEditProjectModal,
   title,
 }: EditProjectModalProps) => {
-  // 프로젝트 생성 페이지 상태
-  const [pages, setPages] = useState<number>(0);
   const navigate = useNavigate();
 
+  // 프로젝트 생성 페이지 상태
+  const [pages, setPages] = useState<number>(0);
+
+  // 2번페이지로 가기 전 프로젝트명 빈칸 오류
+  const [pageError, setPageError] = useState(false);
+
   useEffect(() => {
+    // 임시 삭제예정
     console.log("selectedProject", selectedProject);
   }, []);
 
@@ -51,9 +56,7 @@ const EditProjectModal = ({
   const [newProjectNameValue, setNewProjectNameValue] = useState<string>("");
 
   // 진행 상태 저장
-  const [editStatus, setEditStatus] = useState<
-    "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"
-  >(selectedProject!.status);
+  const [editStatus, setEditStatus] = useState<string>("");
 
   useEffect(() => {
     if (selectedProject) {
@@ -137,6 +140,7 @@ const EditProjectModal = ({
     startDate: startFormattedDate,
     endDate: endFormatDate,
     invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
+    colors: randomColor("calendar")!, // 멘토님 질문
   };
 
   const { mutateAsync } = useMutation({
@@ -167,7 +171,7 @@ const EditProjectModal = ({
   };
 
   // 수정 요청 함수
-  const { mutate: editProjectFn } = useMutation({
+  const { mutateAsync: editProjectFn } = useMutation({
     mutationFn: ({
       selectedProject,
       editProjectInfo,
@@ -176,6 +180,23 @@ const EditProjectModal = ({
       editProjectInfo: patchProjectRequestType;
     }) => patchProjectById(selectedProject.id, editProjectInfo),
   });
+
+  const editProject = async (
+    selectedProject: ProjectListType,
+    editProjectInfo: patchProjectRequestType
+  ) => {
+    try {
+      const response = await editProjectFn({
+        selectedProject,
+        editProjectInfo,
+      });
+      console.log(response);
+      navigate(0);
+    } catch (error) {
+      console.error(error);
+      alert("오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div
@@ -286,7 +307,7 @@ const EditProjectModal = ({
                   onClick={() => {
                     setPages(1);
                     console.log(editProjectInfo);
-                    editProjectFn({ selectedProject, editProjectInfo });
+                    editProject(selectedProject, editProjectInfo);
                   }}
                 />
               )

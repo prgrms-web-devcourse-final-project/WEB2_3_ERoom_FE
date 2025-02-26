@@ -26,9 +26,6 @@ const TASK_BUTTON = {
 const Calendar = () => {
   const navigate = useNavigate();
 
-  // 임시 컬러
-  const colors = randomColor("calendar")!;
-
   // fullcalandar 타입 때문에 EventInput 타입 적용
   const { data: projectListData, isLoading } = useQuery<EventInput[]>({
     queryKey: ["ProjectList"],
@@ -44,8 +41,8 @@ const Calendar = () => {
           title: project.name,
           start: project.startDate,
           end: project.endDate,
-          textColor: "#" + colors.text,
-          color: "#" + colors.background,
+          textColor: project.colors.text,
+          color: project.colors.background,
           category: project.category,
           subCategories1: project.subCategories1,
           subCategories2: project.subCategories2,

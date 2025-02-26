@@ -71,6 +71,7 @@ interface postProjectType {
   startDate: string;
   endDate: string;
   invitedMemberIds: number[];
+  colors: { background: string; text: string };
 }
 
 // getProjectById API 타입 지정
@@ -96,7 +97,7 @@ interface patchProjectRequestType {
   subCategories2: string[];
   startDate: string;
   endDate: string;
-  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED";
+  status: string;
   memberIds: number[];
 }
 
