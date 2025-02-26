@@ -36,3 +36,12 @@ interface MeetingroomType {
   status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
   groupChatRoom: ChatRoom;
 }
+
+//MeetingRoomMessage컴포넌트에서 받는 타입
+interface MessageType {
+  messageId: number;
+  senderName: string;
+  senderProfile: string | null;
+  message: string;
+  sentAt: string;
+}

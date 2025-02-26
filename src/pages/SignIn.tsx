@@ -5,10 +5,12 @@ import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
 import { Navigate } from "react-router";
 import { postSignIn } from "../api/auth";
+import useKakaoLogin from "../hooks/useKakaoLogin";
 
 const SignIn = () => {
   const login = useAuthStore((state) => state.login);
   const user = useAuthStore((state) => state.user);
+  const { handleKakaoLogin, loading } = useKakaoLogin();
 
   if (user) {
     return <Navigate to={"/"} replace />;
@@ -33,6 +35,8 @@ const SignIn = () => {
           size="lg"
           css="bg-kakao border-gray01 text-black gap-[10px]"
           logo={KakaoLogo}
+          // onClick={handleKakaoLogin} 카카오로그인
+          //임시 세션값 통한 로그인
           onClick={async () => {
             try {
               const data = await postSignIn("qwerty1@gmail.com", "1234");

@@ -4,11 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
-import { dummy } from "../../dummyData/dummy";
+import { getMeetingroom } from "../../api/meetingroom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
-const MeetingRoomChatBox = ({ css }: { css?: string }) => {
+const MeetingRoomChatBox = ({
+  css,
+  projectId,
+}: {
+  css?: string;
+  projectId: number;
+}) => {
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState(dummy.messagesData);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isComposing, setIsComposing] = useState(false); //조합문자 판별
@@ -51,17 +60,96 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
     }
   };
 
+  //채팅 내역 API 요청하는 useQuery
+  const { data: messageList = null } = useQuery<MeetingroomType>({
+    queryKey: ["meetingroom", projectId],
+    queryFn: () => getMeetingroom(projectId),
+    select: (data) => data || ({} as MeetingroomType),
+  });
+
+  useEffect(() => {
+    if (messageList?.groupChatRoom?.messages) {
+      setMessages(messageList.groupChatRoom.messages);
+    }
+    console.log("API 요청 중... projectId:", projectId);
+  }, [projectId]);
+
+  useEffect(() => {
+    console.log("채팅 내역 데이터:", messageList);
+    console.log(
+      "채팅 내역 메시지 데이터:",
+      messageList?.groupChatRoom?.messages
+    );
+    if (messageList?.groupChatRoom?.messages) {
+      setMessages(messageList.groupChatRoom.messages);
+    }
+  }, [messageList]);
+
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const queryClient = useQueryClient();
+
+  //웹소켓 연결 설정
+  useEffect(() => {
+    if (!messageList?.groupChatRoom?.chatRoomId) return;
+
+    if (messageList?.groupChatRoom?.messages) {
+      setMessages(messageList.groupChatRoom.messages);
+    }
+
+    const socket = new SockJS(`${import.meta.env.VITE_API_URL}ws`);
+    const client = new Client({
+      webSocketFactory: () => socket,
+      reconnectDelay: 5000, // 재연결 설정 (5초)
+      onConnect: () => {
+        console.log("Connected to WebSocket");
+
+        // 기존 구독을 해제하고 새로 구독
+        client.unsubscribe(
+          `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`
+        );
+
+        // 채팅방 구독
+        client.subscribe(
+          `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`,
+          (msg) => {
+            const newMessage = JSON.parse(msg.body);
+            console.log("새로운 메시지 도착:", newMessage);
+
+            // 새 메시지를 추가하지 않고, 서버 데이터를 다시 불러오도록 트리거
+            queryClient.invalidateQueries({
+              queryKey: ["meetingroom", projectId],
+            });
+          }
+        );
+
+        setStompClient(client);
+      },
+      onStompError: (frame) => {
+        console.error("STOMP Error:", frame);
+      },
+    });
+    client.activate();
+
+    return () => {
+      if (client) client.deactivate();
+    };
+  }, [messageList?.groupChatRoom.chatRoomId]);
+
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
     if (e) e.preventDefault();
-    if (text.trim() === "") return;
-    const newMessage = {
-      id: messages.length + 1,
-      text,
-      sender: "user" as const,
-      profile:
-        "https://cdn.pixabay.com/photo/2017/07/31/11/44/laptop-2557571_1280.jpg",
-    };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    if (!stompClient || !text.trim() || !messageList?.groupChatRoom.chatRoomId)
+      return;
+
+    stompClient.publish({
+      destination: "/app/chat/send",
+      body: JSON.stringify({
+        senderName: "member3", // 추후 로그인한 사용자 id값으로 수정
+        message: text,
+        chatRoomId: messageList.groupChatRoom.chatRoomId,
+        senderProfile: messageList.groupChatRoom.senderProfile, // 프로필 이미지 추가
+      }),
+    });
+
     setText("");
 
     if (textAreaRef.current) {
@@ -98,7 +186,7 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
       )}
     >
       <div className="flex justify-between w-[calc(100%-60px)] ">
-        <span className="font-bold">프로젝트 명</span>
+        <span className="font-bold">{messageList?.projectName}</span>
         <div className="flex gap-[10px]">
           <Button
             text="회의록"
