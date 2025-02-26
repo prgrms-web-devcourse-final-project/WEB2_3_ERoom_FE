@@ -3,7 +3,7 @@ import { api } from "./api";
 // 프로젝트 리스트 정보 가져오는 API
 export const getProjectList = async () => {
   try {
-    const response = await api.get("/api/projects/list ");
+    const response = await api.get("/api/projects/list");
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -15,7 +15,7 @@ export const getProjectList = async () => {
 //프로젝트 생성 API
 export const postProject = async (projectData: postProjectType) => {
   try {
-    const response = await api.post("/api/projects/create ", projectData);
+    const response = await api.post("/api/projects/create", projectData);
     console.log("생성된 프로젝트:", response.data);
     return response.data;
   } catch (error) {
@@ -42,12 +42,12 @@ export const getProjectById = async (
 
 //프로젝트 수정 API
 export const patchProjectById = async (
-  projectId: string,
+  projectId: number,
   updateData: patchProjectRequestType
 ): Promise<patchProjectResponseType> => {
   try {
     const response = await api.patch(
-      ` /api/projects/${projectId}/update`,
+      `/api/projects/${projectId}/update`,
       updateData
     );
     console.log("프로젝트 수정 성공", response.data);
@@ -57,20 +57,21 @@ export const patchProjectById = async (
     throw new Error("프로젝트 수정하기 오류");
   }
 };
+
 // 프로젝트 상세
-export const projectDetail = async (projectId: string) => {
+export const getProjectDetail = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/detail`);
     console.log("프로젝트 상세정보:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error project detail list:", error);
+    console.error("Error project detail:", error);
     throw error;
   }
 };
 
 // 프로젝트삭제
-export const deleteProject = async (projectId: string) => {
+export const deleteProject = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/delete`);
     console.log("프로젝트 삭제:", response.data);
@@ -82,7 +83,7 @@ export const deleteProject = async (projectId: string) => {
 };
 
 // 프로젝트 나가기
-export const leaveProject = async (projectId: string) => {
+export const leaveProject = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/leave`);
     console.log("프로젝트 나가기:", response.data);

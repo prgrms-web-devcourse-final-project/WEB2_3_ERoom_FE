@@ -15,7 +15,7 @@ const SelectCategory = ({
     subCategories2: false,
   });
 
-  console.log(selectedData);
+  // console.log(selectedData);
 
   // 토글 클릭 상태 함수
   const toggleSubcategory = (index: number) => {
@@ -46,15 +46,15 @@ const SelectCategory = ({
   const handleSubcategories = (item: string, index: number) => {
     setSelectedData((prev: CategoryType) => {
       if (index === 1) {
-        const currentSubcategories = prev.subCategories1?.data || [];
+        const currentSubcategories = prev.subCategories1;
 
         // 선택된 항목 삭제
-        if (currentSubcategories.some((data) => data === item)) {
+        if (currentSubcategories?.some((data) => data === item)) {
           return {
             ...prev,
             subCategories1: {
               ...prev.subCategories1,
-              data: currentSubcategories.filter((sub) => sub !== item),
+              ...currentSubcategories.filter((sub) => sub !== item),
             },
           };
         }
@@ -64,15 +64,16 @@ const SelectCategory = ({
           ...prev,
           subCategories1: {
             ...prev.subCategories1,
-            data: [...currentSubcategories, item],
+            ...currentSubcategories,
+            item,
           },
         };
       }
 
       if (index === 2) {
-        const currentSubcategories = prev.subCategories2?.data || [];
+        const currentSubcategories = prev.subCategories2;
 
-        if (currentSubcategories.includes(item)) {
+        if (currentSubcategories?.includes(item)) {
           return {
             ...prev,
             subCategories2: {
@@ -86,7 +87,8 @@ const SelectCategory = ({
           ...prev,
           subCategories2: {
             ...prev.subCategories2,
-            data: [...currentSubcategories, item],
+            ...currentSubcategories,
+            item,
           },
         };
       }
@@ -166,7 +168,6 @@ const SelectCategory = ({
                 <div key={index}>
                   {/* 세부항목 선택창 */}
                   <div
-                    key={index}
                     className="flex flex-col gap-[10px] w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px] text-center 
                   text-gray01 text-[14px] font-bold"
                   >
@@ -218,7 +219,7 @@ const SelectCategory = ({
 
                   {/* 첫 번째 선택항목 표시 */}
                   {index === 0 &&
-                    (selectedData.subCategories1?.data || []).map((item) => (
+                    selectedData.subCategories1?.map((item) => (
                       <div
                         key={item}
                         className="flex justify-between text-logo-green text-[14px]
@@ -238,8 +239,9 @@ const SelectCategory = ({
 
                   {/* 두 번째 선택항목 표시 */}
                   {index === 1 &&
-                    (selectedData.subCategories2?.data || []).map((item) => (
+                    selectedData.subCategories2?.map((item, idx) => (
                       <div
+                        key={idx}
                         className="flex justify-between text-logo-green text-[14px]
                                 py-[5px] px-[10px] font-bold"
                       >

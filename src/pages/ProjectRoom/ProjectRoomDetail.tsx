@@ -7,7 +7,7 @@ import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
-import { projectDetail } from "../../api/project";
+import { getProjectDetail } from "../../api/project";
 
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
@@ -21,7 +21,7 @@ const ProjectRoomDetail = () => {
   const { data: projectDetailList, isLoading } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
     queryFn: async () => {
-      return await projectDetail(projectId!);
+      return await getProjectDetail(Number(projectId!));
     },
   });
 
@@ -110,7 +110,7 @@ const ProjectRoomDetail = () => {
       {/* 미팅룸 */}
       {category === "meeting" ? (
         <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-white/60 ">
-          <MeetingRoomChatBox css="pb-[30px]" />
+          <MeetingRoomChatBox css="pb-[30px]" projectId={Number(projectId)} />
         </div>
       ) : (
         <div
