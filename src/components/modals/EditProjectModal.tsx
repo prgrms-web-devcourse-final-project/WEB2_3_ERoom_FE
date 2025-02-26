@@ -57,11 +57,8 @@ const EditProjectModal = ({
 
   // 2번페이지로 가기 전 프로젝트명 빈칸 오류
   const [pageError, setPageError] = useState(false);
-
-  // useEffect(() => {
-  //   if (!newProjectNameValue.trim().length) setPageError(true);
-  //   else setPageError(false);
-  // }, [newProjectNameValue]);
+  // 카테고리오류
+  const [cateError, setCateError] = useState(false);
 
   useEffect(() => {
     if (selectedProject) {

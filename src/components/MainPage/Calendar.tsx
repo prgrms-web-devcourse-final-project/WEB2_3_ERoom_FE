@@ -10,7 +10,6 @@ import { dragChange } from "../../utils/calendar/dragChange";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";
-import { randomColor } from "../../utils/randomColor";
 
 // 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
 const PROJECT_BUTTON = {
