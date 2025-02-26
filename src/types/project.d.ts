@@ -1,6 +1,6 @@
 interface EditProjectModalProps {
   projectId?: number;
-  selectedData?: ProjectListType;
+  selectedProject?: ProjectListType;
   setIsEditProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
 }
@@ -64,13 +64,14 @@ interface ProjectType {
 //postProject API 타입 지정
 interface postProjectType {
   name: string;
-  description: string;
+  description?: string;
   category: string;
   subCategories1: string[];
   subCategories2: string[];
   startDate: string;
   endDate: string;
   invitedMemberIds: number[];
+  colors: { background: string; text: string };
 }
 
 // getProjectById API 타입 지정
@@ -96,7 +97,7 @@ interface patchProjectRequestType {
   subCategories2: string[];
   startDate: string;
   endDate: string;
-  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
+  status: string;
   memberIds: number[];
 }
 

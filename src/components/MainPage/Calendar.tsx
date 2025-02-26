@@ -5,10 +5,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
-import dayjs from "dayjs";
-import { queryClient } from "../../main";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";
@@ -28,9 +26,6 @@ const TASK_BUTTON = {
 const Calendar = () => {
   const navigate = useNavigate();
 
-  // 임시 컬러
-  const colors = randomColor("calendar")!;
-
   // fullcalandar 타입 때문에 EventInput 타입 적용
   const { data: projectListData, isLoading } = useQuery<EventInput[]>({
     queryKey: ["ProjectList"],
@@ -44,11 +39,14 @@ const Calendar = () => {
         return {
           id: project.id,
           title: project.name,
-          data: project.startDate,
           start: project.startDate,
           end: project.endDate,
-          textColor: "#" + colors.text,
-          color: "#" + colors.background,
+          textColor: project.colors.text,
+          color: project.colors.background,
+          category: project.category,
+          subCategories1: project.subCategories1,
+          subCategories2: project.subCategories2,
+          status: project.status,
         };
       });
     },
@@ -61,9 +59,6 @@ const Calendar = () => {
   // 데이터 수정
   const { mutate } = useMutation({
     mutationFn: (info: EventDropArg) => dragChange(info),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ProjectList"] });
-    },
   });
 
   if (isLoading) {
@@ -84,6 +79,7 @@ const Calendar = () => {
       }}
       // 한국어
       locale={koLocale}
+      timeZone="local"
       displayEventTime={false}
       // 데이터
       events={projectListData}
@@ -92,12 +88,13 @@ const Calendar = () => {
         navigate(`project-room/${info.event.id}`);
       }}
       dayMaxEvents={3}
+      dayMaxEventRows={true}
       // 드래그
       editable={true}
       droppable={true}
       eventDrop={(info: EventDropArg) => {
-        console.log(dayjs(info.event.start));
         mutate(info);
+        console.log(info);
       }}
       // 일정 길이 변경 드래그
       eventResize={(info: any) => {

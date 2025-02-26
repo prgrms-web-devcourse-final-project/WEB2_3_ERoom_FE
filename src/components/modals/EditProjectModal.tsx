@@ -3,23 +3,36 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectCategory from "../EditProjectModal/SelectCategory";
 import SelectMember from "../EditProjectModal/SelectMember";
-// import WordCloud from "../EditProjectModal/WordCloud";
+import WordCloud from "../EditProjectModal/WordCloud";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
-import { postProject } from "../../api/project";
+import { patchProjectById, postProject } from "../../api/project";
 import { useNavigate } from "react-router";
-import { getProjectDetail } from "../../api/project";
+import { progressType } from "../../utils/progressType";
+import { PROGRESS_STATUS } from "../../constants/status";
+
+const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
 const EditProjectModal = ({
-  projectId,
-  selectedData,
+  selectedProject,
   setIsEditProjectModal,
   title,
 }: EditProjectModalProps) => {
   const navigate = useNavigate();
+
+  // 프로젝트 생성 페이지 상태
+  const [pages, setPages] = useState<number>(0);
+
+  // 2번페이지로 가기 전 프로젝트명 빈칸 오류
+  const [pageError, setPageError] = useState(false);
+
+  useEffect(() => {
+    // 임시 삭제예정
+    console.log("selectedProject", selectedProject);
+  }, []);
 
   // 프로젝트 시작 정보 초기화 상태
   const [startDateInfo, setStartDateInfo] = useState({
@@ -30,7 +43,6 @@ const EditProjectModal = ({
     minute: "",
     ampm: "",
   });
-
   // 프로젝트 종료 정보 초기화 상태
   const [endDateInfo, setEndDateInfo] = useState({
     year: "",
@@ -40,89 +52,72 @@ const EditProjectModal = ({
     minute: "",
     ampm: "",
   });
-
   // 프로젝트 네임
   const [newProjectNameValue, setNewProjectNameValue] = useState<string>("");
 
-  // 프로젝트 상세 정보 불러오기
-  const { data: projectDetailList, isLoading } = useQuery<ProjectDetailType>({
-    queryKey: ["ProjectDetail", projectId],
-    queryFn: async () => {
-      const projectData = await getProjectDetail(Number(projectId!));
-      return projectData;
-    },
-  });
+  // 진행 상태 저장
+  const [editStatus, setEditStatus] = useState<string>("");
 
-  console.log(projectDetailList, isLoading);
-
-  // 일정시작
   useEffect(() => {
-    const startDate = selectedData
-      ? dayjs(projectDetailList?.startDate).locale("en")
+    if (selectedProject) {
+      setNewProjectNameValue(selectedProject.name);
+
+      setEditStatus(selectedProject.status); // 멘토님 질문
+    }
+
+    const startDate = selectedProject
+      ? dayjs(selectedProject.startDate).locale("en")
       : dayjs().locale("en");
 
-    const year = startDate.format("YYYY");
-    const month = startDate.format("MM");
-    const day = startDate.format("DD");
-    const hour = startDate.format("hh"); // 12시간 형식
-    const minute = startDate.format("mm");
-    const ampm = startDate.format("A"); // AM/PM
+    const startYear = startDate.format("YYYY");
+    const startMonth = startDate.format("MM");
+    const startDay = startDate.format("DD");
+    const startHour = startDate.format("hh"); // 12시간 형식
+    const startMinute = startDate.format("mm");
+    const startAmpm = startDate.format("A"); // AM/PM
 
-    setStartDateInfo({ year, month, day, hour, minute, ampm });
-  }, [projectDetailList]);
+    setStartDateInfo({
+      year: startYear,
+      month: startMonth,
+      day: startDay,
+      hour: startHour,
+      minute: startMinute,
+      ampm: startAmpm,
+    });
 
-  // 일정종료
-  useEffect(() => {
-    const endDate = projectDetailList
-      ? dayjs(projectDetailList.endDate).locale("en")
+    const endDate = selectedProject
+      ? dayjs(selectedProject.endDate).locale("en")
       : dayjs().locale("en");
-    console.log(endDate);
-    const year = endDate.format("YYYY");
-    const month = endDate.format("MM");
-    const day = endDate.format("DD");
-    const hour = projectDetailList
+    const endYear = endDate.format("YYYY");
+    const endMonth = endDate.format("MM");
+    const endDay = endDate.format("DD");
+    const endHour = selectedProject
       ? endDate.format("hh")
       : endDate.add(1, "hour").format("hh"); // 12시간 형식
-    const minute = endDate.format("mm");
-    const ampm = endDate.format("A"); // AM/PM
-    setEndDateInfo({ year, month, day, hour, minute, ampm });
-  }, [projectDetailList]);
+    const endMinute = endDate.format("mm");
+    const endAmpm = endDate.format("A"); // AM/PM
+
+    setEndDateInfo({
+      year: endYear,
+      month: endMonth,
+      day: endDay,
+      hour: endHour,
+      minute: endMinute,
+      ampm: endAmpm,
+    });
+  }, [selectedProject]);
 
   // 선택된 분야, 세부항목 상태
-  const [selectedCategory, setSelectedCategory] = useState<temporaryCategory>({
-    category: projectDetailList?.category,
-    subCategories1: projectDetailList?.subCategories1,
-    subCategories2: projectDetailList?.subCategories2,
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>({
+    category: selectedProject?.category,
+    subCategories1: selectedProject?.subCategories1,
+    subCategories2: selectedProject?.subCategories2,
   });
 
-  // 선택한 팀원 상태
-  const [selectedMember, setSelectedMember] = useState(
-    projectDetailList?.members
-  );
-
-  // 분야 및 팀원 상태 업데이트
-  useEffect(() => {
-    // 분야
-    const categoryData = projectDetailList?.category;
-    const subCategories1 = projectDetailList?.subCategories1;
-    const subCategories2 = projectDetailList?.subCategories2;
-    // 팀원
-    const members = projectDetailList?.members;
-
-    setSelectedCategory({
-      category: categoryData,
-      subCategories1: subCategories1,
-      subCategories2: subCategories2,
-    });
-    setSelectedMember(members);
-  }, [projectDetailList]);
-
-  // console.log(selectedCategory);
-
-  // 프로젝트 생성 페이지 상태
-  const [pages, setPages] = useState<number>(0);
-
   // 최종 새프로젝트 정보
+  // 선택한 팀원 상태 api수정되면 추가 수정필요
+  const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
+
   // 시작날짜 포맷
   const startFormattedDate = dayjs(
     `${startDateInfo.year}-${startDateInfo.month}-${startDateInfo.day} ${startDateInfo.hour}:${startDateInfo.minute} ${startDateInfo.ampm}`,
@@ -136,45 +131,70 @@ const EditProjectModal = ({
   ).format("YYYY-MM-DDTHH:mm:ss");
 
   // 새 프로젝트 생성 정보
-  const newProjectInfo = {
+  const newProjectInfo: postProjectType = {
     name: newProjectNameValue,
     description: "",
-    category: selectedCategory.category,
+    category: selectedCategory.category || "",
     subCategories1: ["C", "C++"],
     subCategories2: ["React", "Vue.js"],
     startDate: startFormattedDate,
     endDate: endFormatDate,
-    invitedMembers: selectedMember,
-    status: "BEFORE_START",
-    colors: randomColor("calendar"),
+    invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
+    colors: randomColor("calendar")!, // 멘토님 질문
   };
 
   const { mutateAsync } = useMutation({
-    mutationFn: (newProjectInfo: any) => postProject(newProjectInfo),
+    mutationFn: (newProjectInfo: postProjectType) =>
+      postProject(newProjectInfo),
   });
 
-  const statusOptions = {
-    COMPLETE: "진행완료",
-    IN_PROGRESS: "진행 중",
-    BEFORE_START: "진행예정",
-    HOLD: "보류",
-  };
-
-  // 진행상태
-  const [selectedStatus, setSelectedStatus] = useState(
-    statusOptions[
-      selectedData?.status.toUpperCase() as keyof typeof statusOptions
-    ]
-  );
-
-  const newProjectPost = async (newProjectInfo: any) => {
+  const newProjectPost = async (newProjectInfo: postProjectType) => {
     try {
       const response = await mutateAsync(newProjectInfo);
-
       console.log(response);
       navigate(`/project-room/${response.id}`);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // 수정데이터 //이슈 invitedMemberIds -> memberIds로 변경 시 오류
+  const editProjectInfo: patchProjectRequestType = {
+    name: newProjectNameValue,
+    category: selectedCategory.category || "",
+    subCategories1: selectedCategory.subCategories1 || [],
+    subCategories2: selectedCategory.subCategories2 || [],
+    startDate: startFormattedDate,
+    endDate: endFormatDate,
+    memberIds: selectedMember.map((memberInfo) => memberInfo.id),
+    status: editStatus,
+  };
+
+  // 수정 요청 함수
+  const { mutateAsync: editProjectFn } = useMutation({
+    mutationFn: ({
+      selectedProject,
+      editProjectInfo,
+    }: {
+      selectedProject: ProjectListType;
+      editProjectInfo: patchProjectRequestType;
+    }) => patchProjectById(selectedProject.id, editProjectInfo),
+  });
+
+  const editProject = async (
+    selectedProject: ProjectListType,
+    editProjectInfo: patchProjectRequestType
+  ) => {
+    try {
+      const response = await editProjectFn({
+        selectedProject,
+        editProjectInfo,
+      });
+      console.log(response);
+      navigate(0);
+    } catch (error) {
+      console.error(error);
+      alert("오류가 발생했습니다.");
     }
   };
 
@@ -194,18 +214,16 @@ const EditProjectModal = ({
         <p className="w-full text-center text-[18px] font-bold">
           {pages === 0 ? `${title} (1/2)` : `${title} (2/2)`}
         </p>
-
         {/* 첫 번째 페이지 */}
         {pages === 0 && (
           <div className="w-full flex flex-col gap-[20px]">
             {/* 프로젝트명 작성 */}
             <WriteProjectName
               value="프로젝트"
-              name={selectedData?.name}
+              name={selectedProject?.name}
               newProjectNameValue={newProjectNameValue}
               setNewProjectNameValue={setNewProjectNameValue}
             />
-
             {/* 분야 검색 */}
             <SelectCategory
               selectedData={selectedCategory}
@@ -213,7 +231,6 @@ const EditProjectModal = ({
             />
           </div>
         )}
-
         {/* 두 번째 페이지 */}
         {pages === 1 && (
           <div className="w-full flex flex-col gap-[20px]">
@@ -223,11 +240,9 @@ const EditProjectModal = ({
               selectedMembers={selectedMember}
               setSelectedMembers={setSelectedMember}
             />
-
             {/* 기간 설정 */}
             <div className="flex flex-col gap-[5px]">
               <p className="w-full font-bold">일정</p>
-
               {/* 기간 시작 및 종료 */}
               <div className="flex flex-col gap-[10px]">
                 <div className="z-10">
@@ -248,29 +263,30 @@ const EditProjectModal = ({
                 </div>
               </div>
             </div>
-
             {/* 진행 상태 */}
-            <div className="flex flex-col gap-[5px]">
-              <p className="font-bold text-[16px] text-main-green">진행상태</p>
-              <div className="flex gap-[5px]">
-                {Object.values(statusOptions)
-                  .slice(0, 3)
-                  .map((status) => (
+            {selectedProject && (
+              <div className="flex flex-col gap-[5px]">
+                <p className="font-bold text-[16px] text-main-green">
+                  진행상태
+                </p>
+                <div className="flex gap-[5px]">
+                  {EDIT_MODAL_STATUS.map((status, idx) => (
                     <button
-                      key={status}
+                      key={idx}
                       className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center cursor-pointer
               ${
-                selectedStatus === status
+                PROGRESS_STATUS[editStatus] === status
                   ? "bg-main-green01 text-main-beige01"
                   : "bg-gray02 text-gray01"
               }`}
-                      onClick={() => setSelectedStatus(status)}
+                      onClick={() => setEditStatus(progressType(status))}
                     >
                       {status}
                     </button>
                   ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -282,18 +298,32 @@ const EditProjectModal = ({
             css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
             onClick={() => setPages(pages === 0 ? 1 : 0)}
           />
-          {pages === 1 && (
-            <Button
-              text="생성하기"
-              size="md"
-              css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
-              onClick={() => {
-                setPages(1);
-                console.log(newProjectInfo);
-                newProjectPost(newProjectInfo);
-              }}
-            />
-          )}
+          {selectedProject
+            ? pages === 1 && (
+                <Button
+                  text="수정하기"
+                  size="md"
+                  css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
+                  onClick={() => {
+                    setPages(1);
+                    console.log(editProjectInfo);
+                    editProject(selectedProject, editProjectInfo);
+                  }}
+                />
+              )
+            : pages === 1 && (
+                <Button
+                  text="생성하기"
+                  size="md"
+                  css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
+                  onClick={() => {
+                    setPages(1);
+                    console.log(newProjectInfo);
+                    newProjectPost(newProjectInfo);
+                  }}
+                />
+              )}
+
           <Button
             text="취소"
             size="md"
@@ -302,7 +332,6 @@ const EditProjectModal = ({
           />
         </div>
       </div>
-
       {/* 워드 클라우드 */}
       {/* {pages === 0 && selectedCategory.subCategories1 && (
         <div
@@ -325,7 +354,6 @@ const EditProjectModal = ({
               />
             )}
           </div> */}
-
       {/* 세부항목2 워드클라우드 */}
       {/* <div className="flex flex-col items-center">
             {selectedCategory.subCategories2 && (
@@ -347,5 +375,4 @@ const EditProjectModal = ({
     </div>
   );
 };
-
 export default EditProjectModal;
