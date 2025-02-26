@@ -1,12 +1,15 @@
 import { useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 import save2 from "../../assets/icons/save2.svg";
+import { twMerge } from "tailwind-merge";
 
 const WriteProjectName = ({
   value,
   name,
   newProjectNameValue,
   setNewProjectNameValue,
+  pageError,
+  setPageError,
 }: WriteProjectNameType) => {
   // 엔터 후 값 저장
   const [submittedValue, setSubmittedValue] = useState<string | null>(
@@ -17,6 +20,11 @@ const WriteProjectName = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (setNewProjectNameValue) {
       setNewProjectNameValue(e.target.value);
+    }
+
+    if (setPageError) {
+      if (!e.target.value.trim().length) setPageError(true);
+      else setPageError(false);
     }
   };
 
@@ -47,13 +55,20 @@ const WriteProjectName = ({
     <div className="w-full">
       {/* 프로젝트명 / 업무명 */}
       <p className="w-full font-bold">{`${value}명`}</p>
+      {pageError && (
+        <p className="text-[13px] text-header-red-hover">
+          프로젝트 이름을 입력해주세요
+        </p>
+      )}
 
       <div className="flex gap-[5px]">
         {/* input창 */}
         <input
-          className="w-full py-[5px]
+          className={twMerge(`w-full py-[5px]
         border-[1px] border-gray01 rounded-[5px] text-center
-        font-bold text-[14px] text-logo-green placeholder-gray01"
+        font-bold text-[14px] text-logo-green placeholder-gray01 ${
+          pageError ? "border-header-red-hover outline-header-red-hover" : ""
+        }`)}
           placeholder={`${value}명을 작성해주세요.`}
           value={newProjectNameValue}
           onChange={handleInputChange}
