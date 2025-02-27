@@ -15,7 +15,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
     setSelectedTask(null);
   };
 
-  console.log(taskInfo);
+  // console.log(taskInfo);
 
   /* 업무 수정 */
   const updateMutation = useMutation({
@@ -86,6 +86,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
             }}
             isAll={isAll}
             task={task}
+            onUpdate={handleUpdateTask}
           />
         );
       })}
