@@ -11,11 +11,11 @@ import { queryClient } from "../../../main";
 const AdminAccountList = ({
   user,
   index,
-}: // onUpdateUser,
-{
+  setDeleteAccountId,
+}: {
   user: AccountListProps;
   index: number;
-  // onUpdateUser: (id: number, updatedUser: Partial<AccountListProps>) => void;
+  setDeleteAccountId: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
@@ -24,15 +24,6 @@ const AdminAccountList = ({
 
   const [organizationWidth, setOrganizationWidth] = useState(10);
   const [profileImageWidth, setProfileImageWidth] = useState(10);
-
-  // const handleSubscribed = () => {
-  //   onUpdateSubscription(user.id, !user.isSubscribed);
-  // };
-
-  // const handleSaveClick = () => {
-  //   setIsEditing(false);
-  //   onUpdateUser(user.id, editedUser);
-  // };
 
   const handleEditClick = () => setIsEditing(true);
 
@@ -67,6 +58,14 @@ const AdminAccountList = ({
   };
 
   const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    if (isChecked) {
+      setDeleteAccountId(user.memberId);
+    } else {
+      setDeleteAccountId(null);
+    }
+  }, [isChecked]);
 
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);

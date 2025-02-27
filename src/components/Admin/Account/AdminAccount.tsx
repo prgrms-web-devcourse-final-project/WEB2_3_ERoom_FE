@@ -8,73 +8,58 @@ import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import { useQuery } from "@tanstack/react-query";
-import { getMemberList } from "../../../api/admin";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  deleteAdminAccount,
+  getInActiveMemberList,
+  getMemberList,
+} from "../../../api/admin";
+import { queryClient } from "../../../main";
 
 const AdminAccount = () => {
-  // 더미 데이터
-  // const dummyUsers: AccountListProps[] = Array.from(
-  //   { length: 200 },
-  //   (_, i) => ({
-  //     id: i + 1,
-  //     email: `user${i + 1}@example.com`,
-  //     name: `사용자${i + 1}`,
-  //     registeredDate: `2025.02.${String(i + 1).padStart(2, "0")}`,
-  //     profileImage: "https://via.placeholder.com/50",
-  //     organization: `데브코스 프론트엔드 ${(i % 3) + 1}기`,
-  //     isSubscribed: i % 2 === 0,
-  //     isActive: i % 3 !== 0,
-  //   })
-  // );
-
-  // 멤버 데이터
+  // 활성 멤버 데이터
   const { data: AllMemberData } = useQuery<AccountListProps[]>({
     queryKey: ["AdminAllMemberData"],
     queryFn: getMemberList,
   });
 
-  // const [users, setUsers] = useState(dummyUsers);
+  // 비활성 멤버 데이터
+  const { data: inActiveMemberData } = useQuery<AccountListProps[]>({
+    queryKey: ["AdminInactiveMemberData"],
+    queryFn: getInActiveMemberList,
+  });
+  useEffect(() => {
+    console.log(inActiveMemberData);
+  }, [inActiveMemberData]);
 
-  // const handleUpdateSubscription = (id: number, isSubscribed: boolean) => {
-  //   setUsers((prevUsers) =>
-  //     prevUsers.map((user) =>
-  //       user.id === id ? { ...user, isSubscribed } : user
-  //     )
-  //   );
-  // };
-
-  //추후 유저 정보 업데이트 API 나오면 연동 추가
-  // const handleUpdateUser = (
-  //   id: number,
-  //   updatedUser: Partial<AccountListProps>
-  // ) => {
-  //   setUsers((prevUsers) =>
-  //     prevUsers.map((user) =>
-  //       user.id === id ? { ...user, ...updatedUser } : user
-  //     )
-  //   );
-  // };
+  const [memberData, setMemberData] = useState<AccountListProps[]>([]);
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-
-  const [userMenu, setUserMenu] = useState("active");
+  const [userMenu, setUserMenu] = useState<"active" | "inactive">("active");
 
   const handleButtonClick = (type: "active" | "inactive") => {
     setUserMenu(type);
   };
-  // const filteredUsers = users.filter((user) =>
-  //   userMenu === "active" ? user.isActive : !user.isActive
-  // );
+
+  useEffect(() => {
+    if (AllMemberData && inActiveMemberData) {
+      if (userMenu === "active") {
+        setMemberData(AllMemberData);
+      } else {
+        setMemberData(inActiveMemberData);
+      }
+    }
+  }, [userMenu, AllMemberData, inActiveMemberData]);
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
-  const totalPages = AllMemberData
-    ? Math.ceil(AllMemberData.length / itemsPerPage)
+  const totalPages = memberData
+    ? Math.ceil(memberData.length / itemsPerPage)
     : 1;
 
   // 현재 페이지에 해당하는 데이터만 필터링
-  const paginatedUsers = AllMemberData?.slice(
+  const paginatedUsers = memberData?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -88,6 +73,15 @@ const AdminAccount = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [userMenu]);
+
+  // 관리자 계정 비활성(삭제)
+  const [deleteAccountId, setDeleteAccountId] = useState<number | null>(null);
+
+  const { mutate } = useMutation({
+    mutationFn: (memberId: number) => deleteAdminAccount(memberId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] }),
+  });
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -124,12 +118,21 @@ const AdminAccount = () => {
           </div>
           <div className="flex gap-[5px] w-[80px] justify-end">
             {userMenu === "inactive" && (
-              <button>
+              <button className="cursor-pointer">
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
             )}
             {userMenu === "active" && (
-              <button>
+              <button
+                className="cursor-pointer"
+                onClick={() => {
+                  if (!deleteAccountId) {
+                    return alert("유저를 선택해주세요");
+                  }
+                  mutate(deleteAccountId);
+                  alert("유저가 삭제되었습니다");
+                }}
+              >
                 <img src={DeleteIcon} alt="계정 삭제 버튼" />
               </button>
             )}
@@ -139,7 +142,7 @@ const AdminAccount = () => {
           {/* 제목 부분 */}
           <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
             <div className="flex justify-center items-center">
-              <button onClick={toggleCheckBox}>
+              <button onClick={toggleCheckBox} className="cursor-pointer">
                 <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
               </button>
             </div>
@@ -164,7 +167,7 @@ const AdminAccount = () => {
               key={user.memberId}
               user={user}
               index={(currentPage - 1) * itemsPerPage + index}
-              // onUpdateUser={handleUpdateUser}
+              setDeleteAccountId={setDeleteAccountId}
             />
           ))}
         </div>

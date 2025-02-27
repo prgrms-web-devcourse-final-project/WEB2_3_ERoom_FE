@@ -9,7 +9,7 @@ export const getAdminDashboard = async () => {
   } catch (error) {}
 };
 
-// 관리자 계정 관리
+// 관리자 활성 계정 관리
 export const getMemberList = async () => {
   try {
     const response = await api.get("/admin/manage/member/list", {
@@ -36,5 +36,28 @@ export const editAdminAccount = async (
     return response;
   } catch (error) {
     console.error(error);
+  }
+};
+
+// 관리자 비활성화 계정 관리
+export const getInActiveMemberList = async () => {
+  try {
+    const response = await api.get("/admin/manage/member/list", {
+      params: { deleteStatus: "deleted" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching member list:", error);
+  }
+};
+
+// 관리자 계정 비활성(삭제)
+export const deleteAdminAccount = async (member_id: number) => {
+  try {
+    const response = api.delete(`/admin/manage/member/${member_id}/delete`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 };
