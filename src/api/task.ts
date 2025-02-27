@@ -11,7 +11,7 @@ export const fetchTask = async (taskId: string) => {
 
 export const createTask = async (taskData: CreateTask) => {
   try {
-    const response = await api.post("/api/tasks/create", { taskData });
+    const response = await api.post("/api/tasks/create", taskData);
     console.log("생성된 업무:", response.data);
     return response.data;
   } catch (error) {
