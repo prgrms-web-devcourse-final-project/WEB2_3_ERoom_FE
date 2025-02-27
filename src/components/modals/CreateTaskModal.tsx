@@ -3,8 +3,38 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import SelectMember from "../EditProjectModal/SelectMember";
+import { useMutation } from "@tanstack/react-query";
+import { createTask } from "../../api/task";
 
-const CreateTaskModal = ({ onClose, projectId, onClick }: CreateTaskProps) => {
+const CreateTaskModal = ({
+  onClose,
+  projectId,
+  refetch,
+  setIsModal,
+}: CreateTaskProps) => {
+  /* 업무 생성 */
+  const { mutateAsync } = useMutation({
+    mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
+  });
+
+  const handleCreateTask = async (taskData: CreateTask) => {
+    try {
+      console.log("업무 생성 요청:", taskData); // 디버깅용 로그
+      await mutateAsync(taskData);
+      console.log("업무 생성 완료");
+
+      // 프로젝트 상세 정보를 다시 불러옴
+      await refetch();
+
+      // 모달을 닫기 전에 데이터가 반영되었는지 확인
+      setTimeout(() => {
+        setIsModal(false);
+      }, 50); // 비동기 처리 후 UI 반영을 위해 약간의 딜레이 추가
+    } catch (error) {
+      console.error("업무 생성 실패 :", error);
+    }
+  };
+
   const now = new Date();
   // 선택한 일정 시작 상태
   const [selectedStartDate, setSelectedStartDate] = useState<selectedDateType>({
@@ -65,7 +95,7 @@ const CreateTaskModal = ({ onClose, projectId, onClick }: CreateTaskProps) => {
     };
 
     // 상태가 변경된 이후에 mutate 실행
-    onClick(newTask);
+    handleCreateTask(newTask);
   };
 
   return (
