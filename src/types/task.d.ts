@@ -15,9 +15,8 @@ interface selectedDateType {
 
 interface CreateTaskProps {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
-  setData: React.Dispatch<React.SetStateAction<data>>;
   projectId: number;
-  setIsClicked: React.Dispatch<React.SetStateAction<isClicked>>;
+  onClick: (task: CreateTask) => void;
 }
 
 interface TaskListProps {

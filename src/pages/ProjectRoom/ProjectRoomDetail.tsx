@@ -15,55 +15,45 @@ const ProjectRoomDetail = () => {
   const [searchParams] = useSearchParams();
   const [category, setCategory] = useState(searchParams.get("category"));
   const [isEditTaskModal, setIsEditTaskModal] = useState<boolean>(false);
-  const [isClicked, setIsClicked] = useState<boolean>(false);
 
   const { setManagers } = useOutletContext<OutletContextType>();
-  console.log(isClicked);
 
   // 프로젝트 상세 정보 불러오기
-  const { data: projectDetailList, isLoading } = useQuery<ProjectDetailType>({
+  const {
+    data: projectDetailList,
+    isLoading,
+    refetch,
+  } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
     queryFn: async () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
 
-  const [newTaskInfo, setNewTaskInfo] = useState<CreateTask>({
-    projectId: Number(projectId),
-    title: "",
-    startDate: "",
-    endDate: "",
-    status: "BEFORE_START",
-    assignedMemberId: 0,
-    participantIds: [0],
-    colors: { background: "#ff5733", text: "#ffffff" },
-  });
-  console.log(newTaskInfo);
-
   // 업무 생성
   const { mutateAsync } = useMutation({
     mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
   });
 
-  const handleCreateTask = async () => {
+  const handleCreateTask = async (taskData: CreateTask) => {
     try {
-      await mutateAsync(newTaskInfo);
-      setIsEditTaskModal(false); // 모달 닫기
-      setIsClicked(false); // 클릭 상태 초기화
+      console.log("업무 생성 요청:", taskData); // 디버깅용 로그
+      await mutateAsync(taskData);
+      console.log("업무 생성 완료");
+
+      // 프로젝트 상세 정보를 다시 불러옴
+      await refetch();
+
+      // 모달을 닫기 전에 데이터가 반영되었는지 확인
+      setTimeout(() => {
+        setIsEditTaskModal(false);
+      }, 100); // 비동기 처리 후 UI 반영을 위해 약간의 딜레이 추가
     } catch (error) {
-      console.error(error);
-      setIsClicked(false);
+      console.error("업무 생성 실패 :", error);
     }
   };
 
-  // 생성버튼이 클릭되었을 때 생성함수 호출
-  useEffect(() => {
-    if (isClicked) {
-      handleCreateTask();
-      setIsClicked(false);
-    }
-  }, [isClicked]);
-
+  // 전체 업무 상태
   const [allTasks, setAllTasks] = useState<AllTasksType>({
     IN_PROGRESS: [],
     COMPLETED: [],
@@ -192,7 +182,9 @@ const ProjectRoomDetail = () => {
               size="md"
               css="bg-transparent border-main-green01 
               text-main-green01 text-[14px]"
-              onClick={() => setIsEditTaskModal(true)}
+              onClick={() => {
+                setIsEditTaskModal(true);
+              }}
             />
           </div>
 
@@ -200,7 +192,7 @@ const ProjectRoomDetail = () => {
           {(category === "all" || !category) && (
             <div
               className="w-full h-full overflow-scroll scrollbar
-          flex justify-start gap-[30px]"
+              flex justify-start gap-[30px]"
             >
               <TaskList name="진행 중" taskInfo={allTasks.IN_PROGRESS} />
               <TaskList name="진행 예정" taskInfo={allTasks.BEFORE_START} />
@@ -239,9 +231,8 @@ const ProjectRoomDetail = () => {
             >
               <CreateTaskModal
                 onClose={setIsEditTaskModal}
-                setData={setNewTaskInfo}
                 projectId={Number(projectId)}
-                setIsClicked={setIsClicked}
+                onClick={handleCreateTask}
               />
             </div>
           )}
