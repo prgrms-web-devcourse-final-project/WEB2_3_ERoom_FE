@@ -4,16 +4,42 @@ import Button from "../common/Button";
 import ParticipantIcon from "../common/ParticipantIcon";
 import { getTaskById } from "../../api/task";
 
-const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
-  const { data: updatedData, isLoading } = useQuery<GetUpdateTask>({
+const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
+  const { data: updatedData } = useQuery<GetUpdateTask>({
     queryKey: ["UpdatedData", task.taskId],
     queryFn: async () => {
       return await getTaskById(task.taskId);
     },
   });
 
-  // console.log(updatedData, isLoading);
+  // console.log(updatedData);
   // console.log(task);
+
+  /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
+  const handleStateStart = () => {
+    if (!updatedData) return; // undefined 체크
+
+    const { id, participantProfiles, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
+    const dataChange: UpdateTask = {
+      ...dataWithoutId,
+      status: "IN_PROGRESS" as const,
+    }; // as const 추가
+
+    if (onUpdate) onUpdate(task.taskId, dataChange);
+  };
+
+  /* 완료버튼 클릭 -> 진행 완료 상태 변경 함수 */
+  const handleCompleteStart = () => {
+    if (!updatedData) return; // undefined 체크
+
+    const { id, participantProfiles, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
+    const dataChange: UpdateTask = {
+      ...dataWithoutId,
+      status: "COMPLETED" as const,
+    }; // as const 추가
+
+    if (onUpdate) onUpdate(task.taskId, dataChange);
+  };
 
   // 전체 업무 박스
   if (isAll && updatedData) {
@@ -31,7 +57,12 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
         </div>
 
         {/* 기간, 업무완료,시잔 버튼 */}
-        <div className="flex justify-between items-center">
+        <div
+          className="flex justify-between items-center"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <p className="text-[12px]">
             {updatedData.startDate.split("T")[0]} ~{" "}
             {updatedData.endDate.split("T")[0]}
@@ -40,12 +71,14 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
             <Button
               text={"시작"}
               size="md"
+              onClick={handleStateStart}
               css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
             />
           ) : (
             <Button
               text={"완료"}
               size="md"
+              onClick={handleCompleteStart}
               css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
             />
           )}
@@ -54,14 +87,14 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
         {/* 담당자 */}
         <div
           className="w-full h-[30px] bg-gradient-to-b from-white to-main-green02 rounded-full
-        flex justify-start items-center gap-2"
+          flex justify-start items-center gap-2"
         >
           <ParticipantIcon
             css="w-[30px] h-[30px]"
             imgSrc={updatedData?.participantProfiles[0]}
           />
           <p className="font-medium text-main-green">
-            {updatedData.assignedMemberId}
+            {task.assignedMemberName}
           </p>
         </div>
       </div>
@@ -81,7 +114,7 @@ const TaskBox = ({ isAll = true, onClick, task }: TaskBoxProps) => {
           </p>
         </div>
 
-        {/* 기간, 업무완료,시잔 버튼 */}
+        {/* 기간, 업무 완료/시작 버튼 */}
         <div className="flex justify-between items-center">
           <p className="text-[12px]">
             {task.startDate.split("T")[0]} ~ {task.endDate.split("T")[0]}
