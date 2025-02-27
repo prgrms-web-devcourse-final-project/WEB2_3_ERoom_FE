@@ -143,7 +143,7 @@ const MeetingRoomChatBox = ({
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
-        senderName: "member1", // 추후 로그인한 사용자 id값으로 수정
+        senderName: "당나라", // 추후 로그인한 사용자 id값으로 수정
         message: text,
         chatRoomId: messageList.groupChatRoom.chatRoomId,
         senderProfile: messageList.groupChatRoom.senderProfile, // 프로필 이미지 추가
@@ -197,7 +197,10 @@ const MeetingRoomChatBox = ({
         </div>
         {isOpenNoteList && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-            <NoteListModal onClose={handleOpenNoteList} />
+            <NoteListModal
+              onClose={handleOpenNoteList}
+              chatRoomId={messageList?.groupChatRoom.chatRoomId}
+            />
           </div>
         )}
       </div>

@@ -41,12 +41,12 @@ const WriteProjectName = ({
   // };
 
   // 저장 버튼 클릭 시 처리
-  const handleSaveClick = () => {
-    if (newProjectNameValue) {
-      setSubmittedValue(newProjectNameValue);
-      if (setNewProjectNameValue) setNewProjectNameValue("");
-    }
-  };
+  // const handleSaveClick = () => {
+  //   if (newProjectNameValue) {
+  //     setSubmittedValue(newProjectNameValue);
+  //     if (setNewProjectNameValue) setNewProjectNameValue("");
+  //   }
+  // };
 
   // console.log(newProjectNameValue);
   // console.log(submittedValue);
@@ -76,15 +76,15 @@ const WriteProjectName = ({
         />
 
         {/* 저장버튼 */}
-        <img
+        {/* <img
           src={save2}
           className="w-[32px] cursor-pointer"
           onClick={handleSaveClick}
-        />
+        /> */}
       </div>
 
       {/* 작성내용 */}
-      {submittedValue && (
+      {/* {submittedValue && (
         <div
           className="flex justify-between text-logo-green text-[14px]
           p-[5px] font-bold"
@@ -96,7 +96,7 @@ const WriteProjectName = ({
             className="cursor-pointer"
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

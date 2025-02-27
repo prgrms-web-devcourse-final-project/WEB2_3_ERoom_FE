@@ -188,7 +188,8 @@ const ProjectListBox = ({
           }}
         >
           <ConfirmModal
-            projectId={projectId}
+            processId={projectId}
+            processType="프로젝트"
             value="나가기"
             setIsModal={setIsLeaveModal}
           />

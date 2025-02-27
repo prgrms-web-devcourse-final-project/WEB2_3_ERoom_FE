@@ -18,19 +18,26 @@ const ProjectRoomDetail = () => {
   const { setManagers } = useOutletContext<OutletContextType>();
 
   // 프로젝트 상세 정보 불러오기
-  const { data: projectDetailList, isLoading } = useQuery<ProjectDetailType>({
+  const {
+    data: projectDetailList,
+    isLoading,
+    refetch,
+  } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
     queryFn: async () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
+  // console.log(projectDetailList);
 
+  // 전체 업무 상태
   const [allTasks, setAllTasks] = useState<AllTasksType>({
     IN_PROGRESS: [],
     COMPLETED: [],
     BEFORE_START: [],
     HOLD: [],
   });
+
   const [manageTasks, setManageTasks] = useState<ManageTasksType[]>([]);
 
   useEffect(() => {
@@ -115,20 +122,34 @@ const ProjectRoomDetail = () => {
       ) : (
         <div
           className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
-      flex flex-col gap-[30px]
-      bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
+          flex flex-col gap-[30px]
+          bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
         >
           <div className="w-full flex justify-between items-center">
             {/* 헤더 */}
             <div className="flex flex-col justify-between items-start gap-[10px]">
-              <h1 className="font-bold text-[22px]">프로젝트 명</h1>
+              <h1 className="font-bold text-[22px]">
+                {projectDetailList?.projectName}
+              </h1>
 
               {/* 태그 목록 */}
               <div className="flex justify-start gap-[10px]">
-                <p># 개발</p>
-                <p># 리액트</p>
-                <p># TypeScript</p>
-                <p># Tailwind CSS</p>
+                {/* 분야 */}
+                {projectDetailList?.category && (
+                  <p># {projectDetailList?.category}</p>
+                )}
+
+                {/* 세부분야 1 */}
+                {projectDetailList?.subCategories1 &&
+                  projectDetailList?.subCategories1.map((item) => (
+                    <p key={item}># {item}</p>
+                  ))}
+
+                {/* 세부분야2 */}
+                {projectDetailList?.subCategories2 &&
+                  projectDetailList?.subCategories2.map((item) => (
+                    <p key={item}># {item}</p>
+                  ))}
               </div>
             </div>
 
@@ -138,7 +159,9 @@ const ProjectRoomDetail = () => {
               size="md"
               css="bg-transparent border-main-green01 
               text-main-green01 text-[14px]"
-              onClick={() => setIsEditTaskModal(true)}
+              onClick={() => {
+                setIsEditTaskModal(true);
+              }}
             />
           </div>
 
@@ -146,12 +169,28 @@ const ProjectRoomDetail = () => {
           {(category === "all" || !category) && (
             <div
               className="w-full h-full overflow-scroll scrollbar
-          flex justify-start gap-[30px]"
+              flex justify-start gap-[30px]"
             >
-              <TaskList name="진행 중" taskInfo={allTasks.IN_PROGRESS} />
-              <TaskList name="진행 예정" taskInfo={allTasks.BEFORE_START} />
-              <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
-              <TaskList name="보류" taskInfo={allTasks.HOLD} />
+              <TaskList
+                name="진행 중"
+                taskInfo={allTasks.IN_PROGRESS}
+                refetch={refetch}
+              />
+              <TaskList
+                name="진행 예정"
+                taskInfo={allTasks.BEFORE_START}
+                refetch={refetch}
+              />
+              <TaskList
+                name="진행 완료"
+                taskInfo={allTasks.COMPLETED}
+                refetch={refetch}
+              />
+              <TaskList
+                name="보류"
+                taskInfo={allTasks.HOLD}
+                refetch={refetch}
+              />
             </div>
           )}
           {/* 담당자 업무 리스트 */}
@@ -167,6 +206,7 @@ const ProjectRoomDetail = () => {
                       isAll={false}
                       taskInfo={task.tasks}
                       name={task.name}
+                      refetch={refetch}
                     />
                   </div>
                 );
@@ -178,12 +218,17 @@ const ProjectRoomDetail = () => {
           {isEditTaskModal && (
             <div
               className="fixed inset-0 flex items-center justify-center 
-        bg-black/70 z-50"
+            bg-black/70 z-50"
               onClick={() => {
                 setIsEditTaskModal(false);
               }}
             >
-              <CreateTaskModal onClose={setIsEditTaskModal} />
+              <CreateTaskModal
+                onClose={setIsEditTaskModal}
+                projectId={Number(projectId)}
+                refetch={refetch}
+                setIsModal={setIsEditTaskModal}
+              />
             </div>
           )}
         </div>
