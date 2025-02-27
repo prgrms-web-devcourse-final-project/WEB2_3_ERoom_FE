@@ -8,45 +8,52 @@ import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
-import { testAPI } from "../../../api/test";
+import { useQuery } from "@tanstack/react-query";
+import { getMemberList } from "../../../api/admin";
 
 const AdminAccount = () => {
   // 더미 데이터
-  const dummyUsers: AccountListProps[] = Array.from(
-    { length: 200 },
-    (_, i) => ({
-      id: i + 1,
-      email: `user${i + 1}@example.com`,
-      name: `사용자${i + 1}`,
-      registeredDate: `2025.02.${String(i + 1).padStart(2, "0")}`,
-      profileImage: "https://via.placeholder.com/50",
-      organization: `데브코스 프론트엔드 ${(i % 3) + 1}기`,
-      isSubscribed: i % 2 === 0,
-      isActive: i % 3 !== 0,
-    })
-  );
+  // const dummyUsers: AccountListProps[] = Array.from(
+  //   { length: 200 },
+  //   (_, i) => ({
+  //     id: i + 1,
+  //     email: `user${i + 1}@example.com`,
+  //     name: `사용자${i + 1}`,
+  //     registeredDate: `2025.02.${String(i + 1).padStart(2, "0")}`,
+  //     profileImage: "https://via.placeholder.com/50",
+  //     organization: `데브코스 프론트엔드 ${(i % 3) + 1}기`,
+  //     isSubscribed: i % 2 === 0,
+  //     isActive: i % 3 !== 0,
+  //   })
+  // );
 
-  const [users, setUsers] = useState(dummyUsers);
+  // 멤버 데이터
+  const { data: AllMemberData } = useQuery<AccountListProps[]>({
+    queryKey: ["AdminAllMemberData"],
+    queryFn: getMemberList,
+  });
 
-  const handleUpdateSubscription = (id: number, isSubscribed: boolean) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id ? { ...user, isSubscribed } : user
-      )
-    );
-  };
+  // const [users, setUsers] = useState(dummyUsers);
+
+  // const handleUpdateSubscription = (id: number, isSubscribed: boolean) => {
+  //   setUsers((prevUsers) =>
+  //     prevUsers.map((user) =>
+  //       user.id === id ? { ...user, isSubscribed } : user
+  //     )
+  //   );
+  // };
 
   //추후 유저 정보 업데이트 API 나오면 연동 추가
-  const handleUpdateUser = (
-    id: number,
-    updatedUser: Partial<AccountListProps>
-  ) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id ? { ...user, ...updatedUser } : user
-      )
-    );
-  };
+  // const handleUpdateUser = (
+  //   id: number,
+  //   updatedUser: Partial<AccountListProps>
+  // ) => {
+  //   setUsers((prevUsers) =>
+  //     prevUsers.map((user) =>
+  //       user.id === id ? { ...user, ...updatedUser } : user
+  //     )
+  //   );
+  // };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
 
@@ -55,17 +62,19 @@ const AdminAccount = () => {
   const handleButtonClick = (type: "active" | "inactive") => {
     setUserMenu(type);
   };
-  const filteredUsers = users.filter((user) =>
-    userMenu === "active" ? user.isActive : !user.isActive
-  );
+  // const filteredUsers = users.filter((user) =>
+  //   userMenu === "active" ? user.isActive : !user.isActive
+  // );
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
-  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const totalPages = AllMemberData
+    ? Math.ceil(AllMemberData.length / itemsPerPage)
+    : 1;
 
   // 현재 페이지에 해당하는 데이터만 필터링
-  const paginatedUsers = filteredUsers.slice(
+  const paginatedUsers = AllMemberData?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -147,16 +156,15 @@ const AdminAccount = () => {
               <span>등록일</span>
             </div>
             <div className="flex justify-center items-center">
-              <span>구독</span>
+              <span>수정</span>
             </div>
           </div>
-          {paginatedUsers.map((user, index) => (
+          {paginatedUsers?.map((user, index) => (
             <AccountList
-              key={user.id}
+              key={user.memberId}
               user={user}
               index={(currentPage - 1) * itemsPerPage + index}
-              onUpdateSubscription={handleUpdateSubscription}
-              onUpdateUser={handleUpdateUser}
+              // onUpdateUser={handleUpdateUser}
             />
           ))}
         </div>
