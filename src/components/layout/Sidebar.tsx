@@ -51,10 +51,10 @@ const Sidebar = ({
 
   // console.log("managers", managers);
 
-  // 관리자페이지 사이드 메뉴
+  /* 관리자페이지 사이드 메뉴 */
   const [adminSideMenu, setAdminSideMenu] = useState(sidebarTab.get("tab"));
 
-  // 프로젝트룸 사이드 메뉴
+  /* 프로젝트룸 사이드 메뉴 */
   const [projectRoomMenu, setProjectRoomMenu] = useState(
     sidebarTab.get("category")
   );
@@ -69,12 +69,12 @@ const Sidebar = ({
   );
 
   useEffect(() => {
-    if (managers) {
+    if (managers.length > 0) {
       // 초기 체크박스 전체선택
       const allManagerName = managers.map((manager) => manager.username);
       handleAllClick(allManagerName);
     }
-  }, [managers]);
+  }, []);
 
   const handleAllCheck = (isChecked: boolean) => {
     if (isChecked) {
@@ -85,7 +85,7 @@ const Sidebar = ({
     }
   };
 
-  // 🔹 개별 체크박스 핸들러
+  // 개별 체크박스 핸들러
   const handleManagerCheck = (name: string) => {
     handleManagerClick(name);
   };
@@ -105,6 +105,7 @@ const Sidebar = ({
     return (
       <div className="w-[140px] bg-white min-h-[calc(100vh-50px)] flex-none">
         <ul className="flex flex-col items-center gap-6 pt-10 w-full">
+          {/* 업무페이지 나가기 버튼 */}
           <li>
             <Link to="/project-room" className="flex flex-col items-center">
               <img src={outProjectIcon} alt="프로젝트 나가기 버튼" />
@@ -129,8 +130,11 @@ const Sidebar = ({
                     <p className="text-header-green">{menu.title}</p>
                   </Link>
                 </div>
+
+                {/* 담당자 */}
                 {menu.src === "manager" && menu.src === projectRoomMenu && (
                   <div className="pl-5 pt-2">
+                    {/* 전체 */}
                     <ManagerCheckBox
                       checkboxId="all"
                       checkboxName="all"
@@ -138,18 +142,20 @@ const Sidebar = ({
                       checked={checkedManagers.length === managers.length}
                       onChange={(e) => handleAllCheck(e.target.checked)}
                     />
-                    {managers.map((member) => {
-                      return (
-                        <ManagerCheckBox
-                          key={member.id}
-                          checkboxName={member.username}
-                          checkboxId={`${member.id}`}
-                          labelName={member.username}
-                          checked={checkedManagers.includes(member.username)}
-                          onChange={() => handleManagerCheck(member.username)}
-                        />
-                      );
-                    })}
+
+                    {/* 담당자별 */}
+                    {managers.map((member) => (
+                      <ManagerCheckBox
+                        key={member.id}
+                        checkboxName={member.username}
+                        checkboxId={`${member.id}`}
+                        labelName={member.username}
+                        checked={checkedManagers.includes(member.username)}
+                        onChange={() => {
+                          handleManagerCheck(member.username);
+                        }}
+                      />
+                    ))}
                   </div>
                 )}
               </li>
