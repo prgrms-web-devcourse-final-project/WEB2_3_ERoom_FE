@@ -1,8 +1,8 @@
 import { useState } from "react";
 import TaskBox from "./TaskBox";
 import UpdateTaskModal from "../modals/UpdateTaskModal";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteTask } from "../../api/task";
+import { useMutation } from "@tanstack/react-query";
+import { deleteTask, updateTask } from "../../api/task";
 
 const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -15,19 +15,50 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
     setSelectedTask(null);
   };
 
-  /* 업무 삭제 */
-  const { mutateAsync } = useMutation({
-    mutationFn: (taskId: number) => deleteTask(taskId),
+  console.log(taskInfo);
+
+  /* 업무 수정 */
+  const updateMutation = useMutation({
+    mutationFn: ({
+      taskId,
+      updateData,
+    }: {
+      taskId: number;
+      updateData: UpdateTask;
+    }) => updateTask(taskId, updateData),
   });
 
-  const handleCreateTask = async (taskId: number) => {
+  const handleUpdateTask = async (taskId: number, updateData: UpdateTask) => {
     try {
-      console.log("업무 삭제 요청:", taskId); // 디버깅용 로그
-      await mutateAsync(taskId);
-      console.log("업무 삭제 완료");
+      await updateMutation.mutateAsync({ taskId, updateData });
+      console.log("업무 수정 완료:", taskId, updateData);
 
       // 프로젝트 상세 정보를 다시 불러옴
-      await refetch();
+      refetch();
+
+      closeModal(); // 모달 닫기
+    } catch (error) {
+      console.error("업무 수정 실패:", error);
+    }
+  };
+
+  /* 업무 삭제 */
+  const deleteMutation = useMutation({
+    mutationFn: async (taskId: number) => {
+      await deleteTask(taskId);
+
+      refetch(); // 삭제 후 refetch 호출
+    },
+  });
+
+  const handleDeleteTask = async (taskId: number) => {
+    try {
+      console.log("업무 삭제 요청:", taskId); // 디버깅용 로그
+      await deleteMutation.mutateAsync(taskId);
+      console.log("업무 삭제 완료");
+
+      // 업무 상세 정보를 다시 불러옴
+      refetch();
 
       // 모달을 닫기 전에 데이터가 반영되었는지 확인
       setTimeout(() => {
@@ -50,7 +81,9 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
         return (
           <TaskBox
             key={task.taskId}
-            onClick={() => openModal(task)}
+            onClick={() => {
+              openModal(task);
+            }}
             isAll={isAll}
             task={task}
           />
@@ -63,7 +96,9 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
             task={selectedTask}
             onClose={closeModal}
             value="편집"
-            onClick={handleCreateTask}
+            onDelete={handleDeleteTask}
+            onUpdate={handleUpdateTask}
+            refetch={refetch}
           />
         </div>
       )}

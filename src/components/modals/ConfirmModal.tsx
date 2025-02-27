@@ -29,16 +29,16 @@ const ConfirmModal = ({
     },
   });
 
-  // 프로젝트 삭제
-  const { mutate: deleteProjectMutation } = useMutation({
-    mutationFn: async () => await deleteProject(processId!),
-    onSuccess: () => {
-      console.log("프로젝트 삭제 완료");
-    },
-    onError: (error) => {
-      console.error("프로젝트 삭제 실패:", error);
-    },
-  });
+  // // 프로젝트 삭제
+  // const { mutate: deleteProjectMutation } = useMutation({
+  //   mutationFn: async () => await deleteProject(processId!),
+  //   onSuccess: () => {
+  //     console.log("프로젝트 삭제 완료");
+  //   },
+  //   onError: (error) => {
+  //     console.error("프로젝트 삭제 실패:", error);
+  //   },
+  // });
 
   return (
     <div

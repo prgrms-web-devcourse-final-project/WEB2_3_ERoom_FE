@@ -29,6 +29,7 @@ const ProjectRoomDetail = () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
+  console.log(projectDetailList);
 
   /* 업무 생성 */
   const { mutateAsync } = useMutation({
