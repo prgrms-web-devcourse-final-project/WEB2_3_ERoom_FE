@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import EditIcon from "../../../assets/icons/edit.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
-import Button from "../../common/Button";
 import { twMerge } from "tailwind-merge";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import { useMutation } from "@tanstack/react-query";
 import { editAdminAccount } from "../../../api/admin";
+import { queryClient } from "../../../main";
 
 const AdminAccountList = ({
   user,
@@ -87,7 +87,7 @@ const AdminAccountList = ({
   };
 
   // 계정관리 수정 함수
-  const { mutateAsync } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: ({
       memberId,
       editAccountData,
@@ -95,15 +95,9 @@ const AdminAccountList = ({
       memberId: number;
       editAccountData: EditAccountType;
     }) => editAdminAccount(memberId, editAccountData),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] }),
   });
-
-  // const editAccount = async () => {
-  //   try {
-  //     const response =
-  //   } catch (error) {
-
-  //   }
-  // }
 
   return (
     <div
@@ -132,7 +126,7 @@ const AdminAccountList = ({
               value={editedUser.username}
               onChange={handleInputChange}
               className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
-              style={{ width: `${editedUser.username.length + 1}ch` }}
+              style={{ width: `${editedUser.username.length + 2}ch` }}
             />
           ) : (
             <span>{user.username}</span>
@@ -159,14 +153,18 @@ const AdminAccountList = ({
                 type="button"
                 className="cursor-pointer"
                 onClick={() => {
-                  mutateAsync({ memberId: user.memberId, editAccountData });
+                  mutate({ memberId: user.memberId, editAccountData });
                   console.log(editAccountData, user.memberId);
+                  setIsEditing(false);
                 }}
               >
                 <img src={SaveIcon} alt="저장" />
               </button>
               <p
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  setEditedUser({ ...user });
+                  setIsEditing(false);
+                }}
                 className="w-[37px] h-[24px] border flex items-center justify-center rounded-[5px]
                 text-header-green border-header-green cursor-pointer"
               >
