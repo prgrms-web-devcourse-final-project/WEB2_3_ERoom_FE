@@ -14,11 +14,11 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        "/temp": {
-          target: env.VITE_API_URL, // .env 파일에 정의한 VITE_API_URL 사용
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/temp/, ""),
-        },
+        // "/temp": {
+        //   target: env.VITE_API_URL, // .env 파일에 정의한 VITE_API_URL 사용
+        //   changeOrigin: true,
+        //   rewrite: (path) => path.replace(/^\/temp/, ""),
+        // },
         "/ws": {
           target: env.VITE_API_URL, // 웹소켓 백엔드 주소
           ws: true, // 웹소켓 지원 활성화
