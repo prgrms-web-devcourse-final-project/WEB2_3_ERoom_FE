@@ -12,9 +12,6 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: ["d3", "d3-cloud"],
     },
-    compilerOptions: {
-      types: ["node"],
-    },
     server: {
       proxy: {
         "/temp": {
@@ -22,7 +19,16 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/temp/, ""),
         },
+        "/ws": {
+          target: env.VITE_API_URL, // 웹소켓 백엔드 주소
+          ws: true, // 웹소켓 지원 활성화
+          changeOrigin: true,
+          secure: false,
+        },
       },
+    },
+    define: {
+      global: "window",
     },
   };
 });

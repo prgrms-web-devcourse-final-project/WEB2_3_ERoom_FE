@@ -1,23 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import EditIcon from "../../../assets/icons/edit.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
-import Button from "../../common/Button";
 import { twMerge } from "tailwind-merge";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
+import { useMutation } from "@tanstack/react-query";
+import { editAdminAccount } from "../../../api/admin";
+import { queryClient } from "../../../main";
 
 const AdminAccountList = ({
   user,
   index,
-  onUpdateSubscription,
-  onUpdateUser,
+  setDeleteAccountId,
 }: {
   user: AccountListProps;
   index: number;
-  onUpdateSubscription: (id: number, isSubscribed: boolean) => void;
-  onUpdateUser: (id: number, updatedUser: Partial<AccountListProps>) => void;
+  setDeleteAccountId: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
   const [isComposing, setIsComposing] = useState(false);
@@ -25,20 +24,6 @@ const AdminAccountList = ({
 
   const [organizationWidth, setOrganizationWidth] = useState(10);
   const [profileImageWidth, setProfileImageWidth] = useState(10);
-
-  const handleDropdown = () => {
-    if (isEditing) return;
-    setIsOpen((prev) => !prev);
-  };
-
-  const handleSubscribed = () => {
-    onUpdateSubscription(user.id, !user.isSubscribed);
-  };
-
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    onUpdateUser(user.id, editedUser);
-  };
 
   const handleEditClick = () => setIsEditing(true);
 
@@ -74,20 +59,50 @@ const AdminAccountList = ({
 
   const [isChecked, setIsChecked] = useState(false);
 
+  useEffect(() => {
+    if (isChecked) {
+      setDeleteAccountId(user.memberId);
+    } else {
+      setDeleteAccountId(null);
+    }
+  }, [isChecked]);
+
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);
   };
 
   useEffect(() => {
-    setOrganizationWidth(getTextWidth(editedUser.organization));
-    setProfileImageWidth(getTextWidth(editedUser.profileImage));
-  }, [editedUser.organization, editedUser.profileImage]);
+    setOrganizationWidth(getTextWidth(editedUser.organization || ""));
+    setProfileImageWidth(getTextWidth(editedUser.profile || ""));
+  }, [editedUser.organization, editedUser.profile]);
+
+  // 계정 관리 수정데이터
+  const editAccountData: EditAccountType = {
+    username: editedUser.username,
+    createdAt: editedUser.createdAt,
+    memberGrade: null,
+    organization: editedUser.organization,
+    profile: editedUser.profile,
+  };
+
+  // 계정관리 수정 함수
+  const { mutate } = useMutation({
+    mutationFn: ({
+      memberId,
+      editAccountData,
+    }: {
+      memberId: number;
+      editAccountData: EditAccountType;
+    }) => editAdminAccount(memberId, editAccountData),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] }),
+  });
 
   return (
     <div
       className={twMerge(
-        "flex flex-col cursor-pointer",
-        isOpen ? "bg-main-green03" : "bg-transparent"
+        "flex flex-col",
+        isEditing ? "bg-main-green03" : "bg-transparent"
       )}
     >
       <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[37px] w-full text-main-green text-[14px] py-[5px] ">
@@ -96,82 +111,77 @@ const AdminAccountList = ({
             <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
           </button>
         </div>
-        <div
-          className="flex justify-center items-center"
-          onClick={handleDropdown}
-        >
+        <div className="flex justify-center items-center">
           <span>{index + 1}</span>
         </div>
-        <div
-          className="flex justify-center items-center"
-          onClick={handleDropdown}
-        >
+        <div className="flex justify-center items-center">
+          <span>{user.email}</span>
+        </div>
+        <div className="flex justify-center items-center">
           {isEditing ? (
             <input
               type="text"
-              name="email"
-              value={editedUser.email}
+              name="username"
+              value={editedUser.username}
               onChange={handleInputChange}
               className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
-              style={{ width: `${editedUser.email.length + 1}ch` }}
+              style={{ width: `${editedUser.username.length + 2}ch` }}
             />
           ) : (
-            <span>{user.email}</span>
+            <span>{user.username}</span>
           )}
         </div>
-        <div
-          className="flex justify-center items-center"
-          onClick={handleDropdown}
-        >
-          {isEditing ? (
-            <input
-              type="text"
-              name="name"
-              value={editedUser.name}
-              onChange={handleInputChange}
-              className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
-              style={{ width: `${editedUser.name.length + 1}ch` }}
-            />
-          ) : (
-            <span>{user.name}</span>
-          )}
-        </div>
-        <div
-          className="flex justify-center items-center"
-          onClick={handleDropdown}
-        >
+        <div className="flex justify-center items-center">
           {isEditing ? (
             <input
               type="text"
               name="registeredDate"
-              value={editedUser.registeredDate}
+              value={editedUser.createdAt}
               onChange={handleInputChange}
               className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
-              style={{ width: `${editedUser.registeredDate.length + 1}ch` }}
+              style={{ width: `${editedUser.createdAt.length + 1}ch` }}
             />
           ) : (
-            <span>{user.registeredDate}</span>
+            <span>{user.createdAt}</span>
           )}
         </div>
         <div className="flex justify-center items-center">
-          {user.isSubscribed ? (
-            <Button
-              size="sm"
-              text="비구독"
-              css="font-bold text-[14px] text-header-red border border-header-red bg-white h-[27px]"
-              onClick={handleSubscribed}
-            />
+          {isEditing ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="cursor-pointer"
+                onClick={() => {
+                  mutate({ memberId: user.memberId, editAccountData });
+                  console.log(editAccountData, user.memberId);
+                  setIsEditing(false);
+                }}
+              >
+                <img src={SaveIcon} alt="저장" />
+              </button>
+              <p
+                onClick={() => {
+                  setEditedUser({ ...user });
+                  setIsEditing(false);
+                }}
+                className="w-[37px] h-[24px] border flex items-center justify-center rounded-[5px]
+                text-header-green border-header-green cursor-pointer"
+              >
+                취소
+              </p>
+            </div>
           ) : (
-            <Button
-              size="sm"
-              text="구독"
-              css="font-bold text-[14px] text-main-beige01 bg-header-green h-[27px]"
-              onClick={handleSubscribed}
-            />
+            <button
+              type="button"
+              onClick={handleEditClick}
+              className="cursor-pointer"
+            >
+              <img src={EditIcon} alt="수정" />
+            </button>
           )}
         </div>
       </div>
-      {isOpen && (
+      {isEditing && (
         <div>
           <div className="grid grid-cols-[10%_1fr_10%] h-[37px] w-full text-main-green text-[14px] ">
             <div></div>
@@ -182,12 +192,14 @@ const AdminAccountList = ({
                   ref={inputRef}
                   type="text"
                   name="organization"
-                  value={editedUser.organization}
+                  value={editedUser.organization || ""}
                   onChange={handleInputChange}
                   onCompositionStart={() => setIsComposing(true)}
                   onCompositionEnd={() => {
                     setIsComposing(false);
-                    setOrganizationWidth(getTextWidth(editedUser.organization));
+                    setOrganizationWidth(
+                      getTextWidth(editedUser.organization || "")
+                    );
                   }}
                   className="h-full focus:outline-none border-b border-b-header-green"
                   style={{
@@ -214,13 +226,15 @@ const AdminAccountList = ({
                 <input
                   ref={inputRef}
                   type="text"
-                  name="profileImage"
-                  value={editedUser.profileImage}
+                  name="profile"
+                  value={editedUser.profile || ""}
                   onChange={handleInputChange}
                   onCompositionStart={() => setIsComposing(true)}
                   onCompositionEnd={() => {
                     setIsComposing(false);
-                    setProfileImageWidth(getTextWidth(editedUser.profileImage));
+                    setProfileImageWidth(
+                      getTextWidth(editedUser.profile || "")
+                    );
                   }}
                   className="h-full focus:outline-none border-b border-b-header-green"
                   style={{
@@ -233,18 +247,7 @@ const AdminAccountList = ({
                   }}
                 />
               ) : (
-                <span className="flex items-center">{user.profileImage}</span>
-              )}
-            </div>
-            <div className="flex justify-center items-center">
-              {isEditing ? (
-                <button onClick={handleSaveClick} className="cursor-pointer">
-                  <img src={SaveIcon} alt="저장" />
-                </button>
-              ) : (
-                <button onClick={handleEditClick} className="cursor-pointer">
-                  <img src={EditIcon} alt="수정" />
-                </button>
+                <span className="flex items-center">{user.profile}</span>
               )}
             </div>
           </div>

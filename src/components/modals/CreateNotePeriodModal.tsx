@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import CreateAINoteModal from "./CreateAINoteModal";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getAINote } from "../../api/meetingroom";
 
-const CreateNotePeriodModal = ({ onClose }: { onClose: () => void }) => {
+const CreateNotePeriodModal = ({
+  onClose,
+  chatRoomId,
+}: {
+  onClose: () => void;
+  chatRoomId: number;
+}) => {
   const now = new Date();
   const [selectedStartDate, setSelectedStartDate] = useState<selectedDateType>({
     year: String(now.getFullYear()),
@@ -24,19 +32,71 @@ const CreateNotePeriodModal = ({ onClose }: { onClose: () => void }) => {
   });
 
   const [isRunAI, setIsRunAI] = useState(false);
+  const [title, setTitle] = useState("");
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
+
+  //ISO 형식으로 변환하는 함수
+  const formatDateFromISO = (date: selectedDateType) => {
+    let formattedHour = date.hour;
+    if (date.ampm === "PM" && date.hour !== "12") {
+      formattedHour = String(Number(date.hour) + 12);
+    } else if (date.ampm === "AM" && date.hour === "12") {
+      formattedHour = "00";
+    }
+    return `${date.year}-${date.month}-${date.day}T${formattedHour}:${date.minute}:00`;
+  };
+
+  const startTime = formatDateFromISO(selectedStartDate);
+  const endTime = formatDateFromISO(selectedEndDate);
+
+  const {
+    mutate: fetchAINote,
+    data: AINote,
+    isPending,
+  } = useMutation<
+    AINoteType,
+    Error,
+    { chatRoomId: number; startTime: string; endTime: string }
+  >({
+    mutationFn: async ({ chatRoomId, startTime, endTime }) =>
+      await getAINote(chatRoomId, startTime, endTime),
+  });
 
   const handleRunAI = () => {
+    fetchAINote({
+      chatRoomId,
+      startTime,
+      endTime,
+    });
     setIsRunAI(true);
   };
+
+  useEffect(() => {
+    console.log(" AI 회의록 데이터:", AINote);
+  }, [AINote]);
 
   return (
     <>
       {!isRunAI ? (
-        <div className="w-[380px] h-[293px] bg-white px-[50px] py-[30px]">
+        <div className="w-[380px] h-[364px] bg-white px-[50px] py-[30px]">
           <div className="flex justify-center">
             <span className="text-[16px] font-bold text-main-green">
               회의록
             </span>
+          </div>
+          <div className="flex flex-col mb-[20px] gap-[5px]">
+            <span className="text-[16px] font-bold text-main-green">
+              회의록 제목
+            </span>
+            <input
+              type="text"
+              className="w-full h-[27px] border border-gray01 rounded-[2px] text-[14px] font-bold text-main-green text-center focus:outline-none"
+              placeholder="제목을 작성해주세요"
+              onChange={handleChange}
+            ></input>
           </div>
           <div className="mb-[20px]">
             <span className="text-[16px] font-bold text-main-green">
@@ -74,7 +134,14 @@ const CreateNotePeriodModal = ({ onClose }: { onClose: () => void }) => {
         </div>
       ) : (
         <div className="fixed inset-0 flex items-center justify-center  z-50">
-          <CreateAINoteModal onClose={onClose} />
+          <CreateAINoteModal
+            onClose={onClose}
+            AINote={AINote}
+            title={title}
+            isLoading={isPending}
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
+          />
         </div>
       )}
     </>

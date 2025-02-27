@@ -1,12 +1,33 @@
+interface TotalMember {
+  startDate: string; // "YYYY-MM-DD" 형식의 날짜
+  totalMembers: number;
+}
+
+interface NewMember {
+  date: string; // "YYYY-MM-DD" 형식의 날짜
+  newMembers: number;
+}
+
+interface DashboardType {
+  totalMembers: TotalMember[];
+  newMembers: NewMember[];
+}
+
 interface AccountListProps {
-  id: number;
+  memberId: number;
   email: string;
-  name: string;
-  registeredDate: string;
-  profileImage: string;
-  organization: string;
-  isSubscribed: boolean;
-  isActive: boolean;
+  username: string;
+  createdAt: string;
+  profile: string | null;
+  organization: string | null;
+}
+
+interface EditAccountType {
+  username: string;
+  createdAt: string;
+  memberGrade: string | null;
+  organization: string | null;
+  profile: string | null;
 }
 
 interface ProjectsListType {

@@ -11,6 +11,7 @@ import MyPage from "./pages/MyPage";
 import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import KakaoRedirect from "./pages/KakaoRedirect";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
       <Route element={<AuthLayout />}>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup-company-info" element={<SignUpCompanyInfo />} />
+        <Route path="/auth/kakao/callback" element={<KakaoRedirect />} />
       </Route>
 
       {/* 헤더와 사이드바가 있는 페이지 */}

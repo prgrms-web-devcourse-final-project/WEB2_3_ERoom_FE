@@ -26,9 +26,6 @@ const EditProjectModal = ({
   // 프로젝트 생성 페이지 상태
   const [pages, setPages] = useState<number>(0);
 
-  // 2번페이지로 가기 전 프로젝트명 빈칸 오류
-  const [pageError, setPageError] = useState(false);
-
   useEffect(() => {
     // 임시 삭제예정
     console.log("selectedProject", selectedProject);
@@ -57,6 +54,11 @@ const EditProjectModal = ({
 
   // 진행 상태 저장
   const [editStatus, setEditStatus] = useState<string>("");
+
+  // 2번페이지로 가기 전 프로젝트명 빈칸 오류
+  const [pageError, setPageError] = useState(false);
+  // 카테고리오류
+  const [cateError, setCateError] = useState(false);
 
   useEffect(() => {
     if (selectedProject) {
@@ -223,6 +225,8 @@ const EditProjectModal = ({
               name={selectedProject?.name}
               newProjectNameValue={newProjectNameValue}
               setNewProjectNameValue={setNewProjectNameValue}
+              pageError={pageError}
+              setPageError={setPageError}
             />
             {/* 분야 검색 */}
             <SelectCategory
@@ -296,7 +300,13 @@ const EditProjectModal = ({
             text={pages === 0 ? "다음" : "이전"}
             size="md"
             css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
-            onClick={() => setPages(pages === 0 ? 1 : 0)}
+            onClick={() => {
+              if (!newProjectNameValue.trim().length) {
+                setPageError(true);
+                return;
+              }
+              setPages(pages === 0 ? 1 : 0);
+            }}
           />
           {selectedProject
             ? pages === 1 && (

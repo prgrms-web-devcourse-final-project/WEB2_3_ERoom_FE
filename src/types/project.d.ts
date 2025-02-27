@@ -42,6 +42,8 @@ interface WriteProjectNameType {
   name?: string;
   newProjectNameValue?: string;
   setNewProjectNameValue?: React.Dispatch<React.SetStateAction<string>>;
+  pageError?: boolean;
+  setPageError?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 //getProjectList API 반환값 타입 지정 (멤버이름, 프로필 객체로 수정될 예정)

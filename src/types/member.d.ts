@@ -1,11 +1,11 @@
 interface MembersType {
   id: number;
-  userName: string;
+  username: string;
   email: string;
   password: string;
   grade: string;
   organization: string;
-  profileImage: string;
+  profileImage?: string;
   delete: string;
 }
 
