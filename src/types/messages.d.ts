@@ -45,3 +45,48 @@ interface MessageType {
   message: string;
   sentAt: string;
 }
+
+//AI 회의록 관련 타입 정의
+interface AIMessage {
+  role: string;
+  content: string;
+  refusal: string | null;
+}
+
+interface Choice {
+  index: number;
+  message: AIMessage;
+  logprobs: any | null;
+  finish_reason: string;
+}
+
+interface Usage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  prompt_tokens_details: TokenDetails;
+  completion_tokens_details: CompletionTokenDetails;
+}
+
+interface TokenDetails {
+  cached_tokens: number;
+  audio_tokens: number;
+}
+
+interface CompletionTokenDetails {
+  reasoning_tokens: number;
+  audio_tokens: number;
+  accepted_prediction_tokens: number;
+  rejected_prediction_tokens: number;
+}
+
+interface AINoteType {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  choices: Choice[];
+  usage: Usage;
+  service_tier: string;
+  system_fingerprint: string | null;
+}

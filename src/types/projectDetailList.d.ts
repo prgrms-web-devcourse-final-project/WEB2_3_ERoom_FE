@@ -33,3 +33,9 @@ interface ProjectDetailType {
   subCategories2: string[];
   tasks: Task[];
 }
+
+interface ProjectMembers {
+  id: number;
+  username: string;
+  profile: string;
+}

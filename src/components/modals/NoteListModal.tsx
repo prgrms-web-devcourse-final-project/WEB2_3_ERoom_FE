@@ -3,7 +3,13 @@ import Button from "../common/Button";
 import DayNoteList from "../NoteList/DayNoteList";
 import CreateNotePeriodModal from "./CreateNotePeriodModal";
 
-const NoteListModal = ({ onClose }: { onClose: () => void }) => {
+const NoteListModal = ({
+  onClose,
+  chatRoomId,
+}: {
+  onClose: () => void;
+  chatRoomId: number;
+}) => {
   const [isCreateNote, setIsCreateNote] = useState(false);
   const handleCreateNotePeriod = () => {
     setIsCreateNote(true);
@@ -41,7 +47,7 @@ const NoteListModal = ({ onClose }: { onClose: () => void }) => {
         </div>
       ) : (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <CreateNotePeriodModal onClose={onClose} />
+          <CreateNotePeriodModal onClose={onClose} chatRoomId={chatRoomId} />
         </div>
       )}
     </>
