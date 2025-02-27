@@ -42,9 +42,8 @@ const Calendar = () => {
           end: project.endDate,
           textColor: project.colors.text,
           color: project.colors.background,
-          category: project.category,
-          subCategories1: project.subCategories1,
-          subCategories2: project.subCategories2,
+          category: project.categoryName,
+          subCategories: project.subCategories,
           status: project.status,
         };
       });

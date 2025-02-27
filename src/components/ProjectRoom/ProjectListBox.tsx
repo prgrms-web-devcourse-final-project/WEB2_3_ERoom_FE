@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import { useState } from "react";
 import EditProjectModal from "../modals/EditProjectModal";
 import ConfirmModal from "../modals/ConfirmModal";
+import { twMerge } from "tailwind-merge";
 
 const ProjectListBox = ({
   projectId,
@@ -17,9 +18,6 @@ const ProjectListBox = ({
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
   // 프로젝트 나가기 모달
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
-
-  const subcate1 = projectInfo.subCategories1;
-  const subcate2 = projectInfo.subCategories2;
 
   return (
     <div
@@ -63,21 +61,21 @@ const ProjectListBox = ({
 
             {/* 프로필이미지 모음 */}
             <div className="w-[130px] flex">
-              {projectInfo.memberProfiles.length > 5
-                ? projectInfo.memberProfiles
+              {projectInfo.members.length > 5
+                ? projectInfo.members
                     .slice(0, 6)
                     .map((member, idx) => (
                       <ParticipantIcon
                         key={idx}
                         css={idx > 0 ? "ml-[-5px]" : ""}
-                        imgSrc={member}
+                        imgSrc={member.profile || ""}
                       />
                     ))
-                : projectInfo.memberProfiles.map((member, idx) => (
+                : projectInfo.members.map((member, idx) => (
                     <ParticipantIcon
                       key={idx}
                       css={idx > 0 ? "ml-[-7px]" : ""}
-                      imgSrc={member}
+                      imgSrc={member.profile || ""}
                     />
                   ))}
             </div>
@@ -117,29 +115,24 @@ const ProjectListBox = ({
               className="h-fit bg-logo-green rounded-[30px] 
             text-main-beige01 leading-none px-[10px] py-[5px] font-bold"
             >
-              # {projectInfo.category}
+              # {projectInfo.categoryName}
             </li>
-            {subcate1.map((cate, idx) => {
-              return (
-                <li
-                  key={idx}
-                  className="h-fit bg-main-beige01 rounded-[30px]
-            text-main-green leading-none px-[10px] py-[5px] border border-logo-green"
-                >
-                  # {cate}
-                </li>
-              );
-            })}
-            {subcate2.map((cate, idx) => {
-              return (
-                <li
-                  key={idx}
-                  className="h-fit bg-main-green03 rounded-[30px] 
-            text-main-green leading-none px-[10px] py-[5px] border border-logo-green "
-                >
-                  # {cate}
-                </li>
-              );
+
+            {projectInfo.subCategories.map((subCate, subCateIdx) => {
+              return subCate.tags.map((tag) => {
+                return (
+                  <li
+                    key={tag.id}
+                    className={twMerge(`h-fit bg-main-beige01 rounded-[30px]
+                  text-main-green leading-none px-[10px] py-[5px] 
+                      border border-logo-green ${
+                        subCateIdx === 1 ? "bg-main-green03" : ""
+                      }`)}
+                  >
+                    # {tag.name}
+                  </li>
+                );
+              });
             })}
           </ul>
 

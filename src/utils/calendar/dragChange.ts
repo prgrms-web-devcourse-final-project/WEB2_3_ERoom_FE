@@ -13,12 +13,21 @@ export const dragChange = async (info: EventDropArg) => {
   try {
     const response = await api.patch(`/api/projects/${info.event.id}/update`, {
       name: info.event.title,
-      category: projectData.category,
-      subCategories1: projectData.subCategories1,
-      subCategories2: projectData.subCategories2,
+      categoryId: projectData.categoryId,
+      subCategories: [
+        {
+          subCategoryId: 3,
+          tagIds: [9, 10, 11],
+        },
+        {
+          subCategoryId: 4,
+          tagIds: [12, 13, 14],
+        },
+      ],
       status: projectData.status,
       startDate,
       endDate,
+      membersIds: [1],
     });
     console.log(response);
     return response;

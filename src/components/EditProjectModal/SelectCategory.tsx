@@ -1,103 +1,92 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cancelButton from "../../assets/button/cancelButton.svg";
 import triangleUp from "../../assets/button/triangle/triangleUp.svg";
 import triangleDown from "../../assets/button/triangle/triangleDown.svg";
-import { dummy } from "../../dummyData/dummy";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategory } from "../../api/admin";
+
+// 선택된 데이터 타입
+interface SelectedDataType {
+  categoryId: number | null;
+  categoryName: string;
+  subCategories: {
+    subCategoryId: number;
+    tagIds: number[];
+  }[];
+}
 
 const SelectCategory = ({
   selectedData,
   setSelectedData,
-}: SelectCategoryProps) => {
-  // 각 항목 클릭 상태
-  const [isClicked, setIsClicked] = useState({
-    category: false,
-    subCategories1: false,
-    subCategories2: false,
+}: {
+  selectedData: SelectedDataType;
+  setSelectedData: React.Dispatch<React.SetStateAction<SelectedDataType>>;
+}) => {
+  // API에서 카테고리 정보 가져오기
+  const { data: allCategoryData } = useQuery<AllCategoryType[]>({
+    queryKey: ["AllCategoryData"],
+    queryFn: getAllCategory,
   });
 
-  // console.log(selectedData);
+  // 드롭다운 상태
+  const [isClicked, setIsClicked] = useState<{ [key: string]: boolean }>({});
 
-  // 토글 클릭 상태 함수
-  const toggleSubcategory = (index: number) => {
-    setIsClicked((prev) => {
-      // 토글할 키값 결정
-      const key =
-        index === 1 ? "subCategories1" : index === 2 ? "subCategories2" : null;
+  useEffect(() => {
+    if (!selectedData.categoryId && selectedData.categoryName) {
+      const categoryId = allCategoryData?.find(
+        (data) => data.name === selectedData.categoryName
+      );
+      setSelectedData((prev: any) => ({ ...prev, categoryId: categoryId?.id }));
+    }
+  }, [selectedData]);
 
-      // key가 존재하면 해당 값만 변경
-      if (key) {
-        return { ...prev, [key]: !prev[key] };
-      }
-
-      return prev;
-    });
-  };
+  useEffect(() => {
+    console.log(selectedData);
+  }, [selectedData]);
 
   // 분야 변경 함수
-  const handleCategoryChange = (category: string) => {
-    setSelectedData(() => ({
-      category: category,
-      subCategories1: [],
-      subCategories2: [],
-    }));
-  };
-
-  // 선택된 항목 상태 함수
-  const handleSubcategories = (item: string, index: number) => {
-    setSelectedData((prev: CategoryType) => {
-      if (index === 1) {
-        const currentSubcategories = prev.subCategories1;
-
-        // 선택된 항목 삭제
-        if (currentSubcategories?.some((data) => data === item)) {
-          return {
-            ...prev,
-            subCategories1: {
-              ...prev.subCategories1,
-              ...currentSubcategories.filter((sub) => sub !== item),
-            },
-          };
-        }
-
-        // 선택되지 않은 항목 추가
-        return {
-          ...prev,
-          subCategories1: {
-            ...prev.subCategories1,
-            ...currentSubcategories,
-            item,
-          },
-        };
-      }
-
-      if (index === 2) {
-        const currentSubcategories = prev.subCategories2;
-
-        if (currentSubcategories?.includes(item)) {
-          return {
-            ...prev,
-            subCategories2: {
-              ...prev.subCategories2,
-              data: currentSubcategories.filter((sub) => sub !== item),
-            },
-          };
-        }
-
-        return {
-          ...prev,
-          subCategories2: {
-            ...prev.subCategories2,
-            ...currentSubcategories,
-            item,
-          },
-        };
-      }
-
-      return prev;
+  const handleCategoryChange = (categoryId: number, categoryName: string) => {
+    setSelectedData({
+      categoryId,
+      categoryName,
+      subCategories: [],
     });
   };
 
-  // console.log(selectedData);
+  // 세부항목 선택 함수
+  const handleSubcategories = (subCategoryId: number, tagId: number) => {
+    setSelectedData((prev) => {
+      // 현재 subCategoryId가 기존 데이터에 있는지 확인
+      const existingSubCategory = prev.subCategories.find(
+        (sub) => sub.subCategoryId === subCategoryId
+      );
+
+      if (existingSubCategory) {
+        // tagIds 배열을 복사하여 새로운 값 추가/제거 (불변성 유지)
+        const updatedTagIds = existingSubCategory.tagIds.includes(tagId)
+          ? existingSubCategory.tagIds.filter((id) => id !== tagId) // 이미 있으면 제거
+          : [...existingSubCategory.tagIds, tagId]; // 없으면 추가
+
+        // 기존 subCategories 배열에서 해당 subCategory만 업데이트
+        const updatedSubCategories = prev.subCategories.map((sub) =>
+          sub.subCategoryId === subCategoryId
+            ? { ...sub, tagIds: updatedTagIds }
+            : sub
+        );
+
+        return { ...prev, subCategories: updatedSubCategories };
+      } else {
+        // subCategoryId가 없으면 새롭게 추가
+        return {
+          ...prev,
+          subCategories: [
+            ...prev.subCategories,
+            { subCategoryId, tagIds: [tagId] },
+          ],
+        };
+      }
+    });
+  };
 
   return (
     <div className="w-full flex flex-col gap-[20px]">
@@ -110,38 +99,30 @@ const SelectCategory = ({
           className={`flex flex-col gap-[10px]
           w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px]
           text-center ${
-            selectedData.category ? "text-logo-green" : "text-gray01"
-          } text-[14px] font-bold cursor-pointer`}
+            selectedData.categoryName ? "text-logo-green" : "text-gray01"
+          }
+          text-[14px] font-bold cursor-pointer`}
           onClick={() =>
             setIsClicked((prev) => ({ ...prev, category: !prev.category }))
           }
         >
           <div className="flex justify-between">
-            <p>
-              {selectedData.category
-                ? selectedData.category
-                : "분야를 선택해주세요."}
-            </p>
+            <p>{selectedData.categoryName || "분야를 선택해주세요."}</p>
             <img src={isClicked.category ? triangleUp : triangleDown} />
           </div>
 
           {/* 클릭 시 드롭다운 항목 */}
           {isClicked.category && (
             <div className="flex flex-col w-full gap-[10px]">
-              {/* 구분선 */}
               <hr className="border-gray01" />
 
-              {/* 분야 항목 */}
-              {dummy.categoryData.map((data) => (
+              {allCategoryData?.map((data) => (
                 <div
-                  key={data.category}
+                  key={data.id}
                   className="hover:text-logo-green hover:bg-main-green02"
-                  onClick={() => {
-                    handleCategoryChange(data.category);
-                    console.log(data.category);
-                  }}
+                  onClick={() => handleCategoryChange(data.id, data.name)}
                 >
-                  {data.category}
+                  {data.name}
                 </div>
               ))}
             </div>
@@ -150,116 +131,84 @@ const SelectCategory = ({
       </div>
 
       {/* 세부항목 */}
-      <div className="flex flex-col gap-[5px]">
-        {selectedData.category && <p className="w-full font-bold">세부항목</p>}
-        {selectedData.category &&
-          Object.values(
-            dummy.categoryData.filter(
-              (data) => data.category === selectedData.category
-            )[0]
-          )
-            .slice(1, 3)
-            .map((subcate, index) => {
-              const subcategoryKey = subcate.name;
-              const items = subcate.data;
-              if (!items) return null;
+      {selectedData.categoryId && (
+        <div className="flex flex-col gap-[5px]">
+          <p className="w-full font-bold">세부항목</p>
 
-              return (
-                <div key={index}>
-                  {/* 세부항목 선택창 */}
+          {allCategoryData
+            ?.find((category) => category.id === selectedData.categoryId)
+            ?.subcategories.map((subcate) => (
+              <div key={subcate.id}>
+                {/* 세부항목 선택창 */}
+                <div className="flex flex-col gap-[10px] w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px] text-center text-gray01 text-[14px] font-bold">
                   <div
-                    className="flex flex-col gap-[10px] w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px] text-center 
-                  text-gray01 text-[14px] font-bold"
+                    className="flex justify-between cursor-pointer"
+                    onClick={() =>
+                      setIsClicked((prev) => ({
+                        ...prev,
+                        [subcate.id]: !prev[subcate.id],
+                      }))
+                    }
                   >
-                    <div
-                      className="flex justify-between"
-                      onClick={() => toggleSubcategory(index + 1)}
-                    >
-                      {/* 세부항목명 */}
-                      <div>{subcategoryKey}</div>
-
-                      {/* 토글 버튼 */}
-                      <img
-                        src={
-                          Object.values(isClicked)[index + 1]
-                            ? triangleUp
-                            : triangleDown
-                        }
-                        className="cursor-pointer"
-                      />
-                    </div>
-                    {/* 클릭 시 드롭다운 목록 */}
-                    {Object.values(isClicked)[index + 1] && (
-                      <div className="flex flex-col overflow-y-auto h-[150px] scrollbar">
-                        <div className="flex flex-col gap-[10px]">
-                          {/* 구분선 */}
-                          <hr />
-
-                          {/* 상세항목 목록 */}
-                          {items.map(
-                            (
-                              item: { name: string; value: number },
-                              idx: number
-                            ) => (
-                              <div
-                                key={idx}
-                                className="hover:text-logo-green hover:bg-main-green02"
-                                onClick={() =>
-                                  handleSubcategories(item.name, index + 1)
-                                }
-                              >
-                                {item.name}
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    <div>{subcate.name}</div>
+                    <img
+                      src={isClicked[subcate.id] ? triangleUp : triangleDown}
+                    />
                   </div>
 
-                  {/* 첫 번째 선택항목 표시 */}
-                  {index === 0 &&
-                    selectedData.subCategories1?.map((item) => (
-                      <div
-                        key={item}
-                        className="flex justify-between text-logo-green text-[14px]
-                                py-[5px] px-[10px] font-bold"
-                      >
-                        {/* 선택항목명 */}
-                        <div key={item}>{item}</div>
-
-                        {/* 취소버튼 */}
-                        <img
-                          src={cancelButton}
-                          onClick={() => handleSubcategories(item, index + 1)}
-                          className="cursor-pointer"
-                        />
+                  {isClicked[subcate.id] && (
+                    <div className="flex flex-col overflow-y-auto h-[150px] scrollbar">
+                      <div className="flex flex-col gap-[10px]">
+                        <hr />
+                        {subcate.tags.map((tag) => (
+                          <div
+                            key={tag.id}
+                            className={`hover:text-logo-green hover:bg-main-green02 cursor-pointer ${
+                              selectedData.subCategories.some(
+                                (sub) =>
+                                  sub.subCategoryId === subcate.id &&
+                                  sub.tagIds.includes(tag.id)
+                              )
+                                ? "text-logo-green"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleSubcategories(subcate.id, tag.id)
+                            }
+                          >
+                            {tag.name}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-
-                  {/* 두 번째 선택항목 표시 */}
-                  {index === 1 &&
-                    selectedData.subCategories2?.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex justify-between text-logo-green text-[14px]
-                                py-[5px] px-[10px] font-bold"
-                      >
-                        {/* 선택항목명 */}
-                        <div key={item}>{item}</div>
-
-                        {/* 취소버튼 */}
-                        <img
-                          src={cancelButton}
-                          onClick={() => handleSubcategories(item, index + 1)}
-                          className="cursor-pointer"
-                        />
-                      </div>
-                    ))}
+                    </div>
+                  )}
                 </div>
-              );
-            })}
-      </div>
+
+                {/* 선택된 세부항목 표시 */}
+                {selectedData.subCategories
+                  .find((sub) => sub.subCategoryId === subcate.id)
+                  ?.tagIds.map((tagId) => {
+                    const tagName = subcate.tags.find(
+                      (tag) => tag.id === tagId
+                    )?.name;
+                    return tagName ? (
+                      <div
+                        key={tagId}
+                        className="flex justify-between text-logo-green text-[14px] py-[5px] px-[10px] font-bold"
+                      >
+                        <div>{tagName}</div>
+                        <img
+                          src={cancelButton}
+                          onClick={() => handleSubcategories(subcate.id, tagId)}
+                          className="cursor-pointer"
+                        />
+                      </div>
+                    ) : null;
+                  })}
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };
