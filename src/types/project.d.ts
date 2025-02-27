@@ -51,25 +51,32 @@ interface ProjectType {
   id: number;
   name: string;
   createdAt: string;
-  category: string;
-  subCategories1: string[];
-  subCategories2: string[];
+  categoryName: string;
+  subCategories: SubCategoryType[];
   startDate: string;
   endDate: string;
-  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
-  memberNames: string[];
-  memberProfiles: (string | null)[];
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED";
+  members: ProjectMemberType[];
   chatRoomId: number;
   progressRate: number;
+  colors: Colors;
+}
+
+interface ProjectMemberType {
+  memberId: number;
+  username: string;
+  profile: string | null;
 }
 
 //postProject API 타입 지정
 interface postProjectType {
   name: string;
   description?: string;
-  category: string;
-  subCategories1: string[];
-  subCategories2: string[];
+  categoryId: number;
+  subCategories: {
+    subCategoryId: number;
+    tagIds: nubmer[];
+  }[];
   startDate: string;
   endDate: string;
   invitedMemberIds: number[];
@@ -94,9 +101,8 @@ interface ProjectDetailType {
 //patchProjectById  입력값 타입 지정
 interface patchProjectRequestType {
   name: string;
-  category: string;
-  subCategories1: string[];
-  subCategories2: string[];
+  categoryId: number;
+  subCategories: { subCategoryId: number; tagIds: number[] }[];
   startDate: string;
   endDate: string;
   status: string;

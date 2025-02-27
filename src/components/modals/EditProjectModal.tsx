@@ -109,11 +109,16 @@ const EditProjectModal = ({
     });
   }, [selectedProject]);
 
+  const subCate = selectedProject?.subCategories.map((data) => ({
+    subCategoryId: data.id,
+    tagIds: data.tags.map((tag) => tag.id),
+  }));
+
   // 선택된 분야, 세부항목 상태
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>({
-    category: selectedProject?.category,
-    subCategories1: selectedProject?.subCategories1,
-    subCategories2: selectedProject?.subCategories2,
+  const [selectedCategory, setSelectedCategory] = useState<any>({
+    categoryId: null,
+    categoryName: selectedProject?.categoryName,
+    subCategories: subCate,
   });
 
   // 최종 새프로젝트 정보
@@ -136,13 +141,12 @@ const EditProjectModal = ({
   const newProjectInfo: postProjectType = {
     name: newProjectNameValue,
     description: "",
-    category: selectedCategory.category || "",
-    subCategories1: ["C", "C++"],
-    subCategories2: ["React", "Vue.js"],
+    categoryId: selectedCategory.categoryId,
+    subCategories: selectedCategory.subCategories,
     startDate: startFormattedDate,
     endDate: endFormatDate,
     invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
-    colors: randomColor("calendar")!, // 멘토님 질문
+    colors: randomColor("calendar")!,
   };
 
   const { mutateAsync } = useMutation({
@@ -163,9 +167,8 @@ const EditProjectModal = ({
   // 수정데이터 //이슈 invitedMemberIds -> memberIds로 변경 시 오류
   const editProjectInfo: patchProjectRequestType = {
     name: newProjectNameValue,
-    category: selectedCategory.category || "",
-    subCategories1: selectedCategory.subCategories1 || [],
-    subCategories2: selectedCategory.subCategories2 || [],
+    categoryId: selectedCategory.categoryId || 0,
+    subCategories: selectedCategory.subCategories,
     startDate: startFormattedDate,
     endDate: endFormatDate,
     memberIds: selectedMember.map((memberInfo) => memberInfo.id),
@@ -316,7 +319,7 @@ const EditProjectModal = ({
                   css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
                   onClick={() => {
                     setPages(1);
-                    console.log(editProjectInfo);
+                    console.log(editProjectInfo, selectedProject);
                     editProject(selectedProject, editProjectInfo);
                   }}
                 />
