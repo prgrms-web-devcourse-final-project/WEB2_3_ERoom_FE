@@ -3,8 +3,20 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
+import ConfirmModal from "./ConfirmModal";
+import { getTaskById } from "../../api/task";
+import { useQuery } from "@tanstack/react-query";
 
-const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
+const UpdateTaskModal = ({
+  task,
+  onClose,
+  value,
+  onDelete,
+  onUpdate,
+  refetch,
+}: UpdateTaskModalProps) => {
+  const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
+
   //selectedStartDate, selectedEndDate에 데이터 들어갈 수 있게 분리하는 함수
   const parseDateTime = (dateTimeString: string) => {
     const [datePart, timePart] = dateTimeString.split("T");
@@ -46,28 +58,64 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
   });
 
   const statusOptions = {
-    COMPLETE: "진행완료",
+    COMPLETED: "진행완료",
     IN_PROGRESS: "진행 중",
     BEFORE_START: "진행예정",
     HOLD: "보류",
   };
 
+  // 업무 정보 불러오기
+  const { data: updatedData } = useQuery<GetUpdateTask>({
+    queryKey: ["UpdatedData", task.taskId],
+    queryFn: async () => {
+      return await getTaskById(task.taskId);
+    },
+  });
+
   // 진행상태
   const [selectedStatus, setSelectedStatus] = useState(
     statusOptions[task.status.toUpperCase() as keyof typeof statusOptions]
   );
-  // console.log(selectedStatus);
 
-  const [memberData, setMemberData] = useState([
+  // 진행상태 데이터 형식에 맞게 변환
+  const reversedStatusOptions = Object.fromEntries(
+    Object.entries(statusOptions).map(([key, value]) => [value, key])
+  ) as Record<string, "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD">;
+
+  // 선택된 담당자 상태
+  const [memberData, setMemberData] = useState<MemberType[]>([
     {
       username: task.assignedMemberName,
-      profile: task.assignedMemberProfile,
+      profile: updatedData?.participantProfiles[0] || "",
       email: "",
-      id: 0,
+      id: updatedData?.participantIds[0] || 0,
     },
   ]);
 
   const [taskName, setTaskName] = useState<string>(task.title);
+
+  // 데이터 형식에 맞게 일정 변경 함수
+  const formatDateTime = (dateObj: selectedDateType) => {
+    return `${dateObj.year}-${dateObj.month}-${dateObj.day}T${
+      dateObj.ampm === "PM"
+        ? String((Number(dateObj.hour) % 12) + 12).padStart(2, "0")
+        : dateObj.hour
+    }:${dateObj.minute}:00`;
+  };
+
+  // 작성된 업무 정보
+  const taskInfo = {
+    title: taskName,
+    startDate: formatDateTime(selectedStartDate),
+    endDate: formatDateTime(selectedEndDate),
+    status: reversedStatusOptions[selectedStatus],
+    assignedMemberId: memberData[0].id,
+    participantIds: [memberData[0].id],
+  };
+
+  // console.log(task);
+  // console.log(updatedData, isLoading);
+  // console.log(taskInfo);
 
   return (
     <div
@@ -86,7 +134,7 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
         name={taskName}
       />
       <SelectMember
-        selectedData={task}
+        selectedData={updatedData}
         selectedMembers={memberData}
         setSelectedMembers={setMemberData}
         value="업무"
@@ -112,15 +160,18 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
         </div>
       </div>
       <div className="flex flex-col gap-[5px]">
+        {/* 진행 상태 */}
         <span className="font-bold text-[16px] text-main-green">진행상태</span>
         <div className="flex flex-col gap-[5px]">
+          {/* 진행완료, 진행중 */}
           <div className="flex gap-[5px]">
             {Object.values(statusOptions)
               .slice(0, 2)
               .map((status) => (
                 <button
                   key={status}
-                  className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
+                  className={`w-full h-[27px] font-medium text-[14px] 
+                    flex justify-center items-center cursor-pointer
               ${
                 selectedStatus === status
                   ? "bg-main-green01 text-main-beige01"
@@ -132,13 +183,16 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
                 </button>
               ))}
           </div>
+
+          {/* 진행예정 보류 */}
           <div className="flex gap-[5px]">
             {Object.values(statusOptions)
               .slice(2)
               .map((status) => (
                 <button
                   key={status}
-                  className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
+                  className={`w-full h-[27px] font-medium text-[14px] 
+                    flex justify-center items-center cursor-pointer
               ${
                 selectedStatus === status
                   ? "bg-main-green01 text-main-beige01"
@@ -156,7 +210,19 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
         <Button
           text="저장하기"
           size="md"
+          onClick={() => {
+            if (onUpdate) {
+              onUpdate(task.taskId, taskInfo);
+              refetch();
+            }
+          }}
           css="border border-main-green01 text-main-green01 font-bold text-[14px]  w-[89px] h-[27px]"
+        />
+        <Button
+          text="삭제"
+          size="md"
+          onClick={() => setIsConfirmModal(true)}
+          css="text-white bg-header-red font-bold text-[14px] w-[89px] h-[27px]"
         />
         <Button
           text="취소"
@@ -165,6 +231,23 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
           css="bg-logo-green text-main-beige01 font-bold text-[14px] w-[65px] h-[27px]"
         />
       </div>
+
+      {/* 삭제 확인 모달 */}
+      {isConfirmModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+            flex justify-center items-center bg-black/70 z-50"
+          onClick={() => setIsConfirmModal(false)}
+        >
+          <ConfirmModal
+            processId={task.taskId}
+            processType="업무"
+            value="삭제"
+            setIsModal={setIsConfirmModal}
+            onClick={onDelete}
+          />
+        </div>
+      )}
     </div>
   );
 };

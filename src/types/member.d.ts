@@ -17,7 +17,7 @@ interface MemberType {
 }
 
 interface SelectMembersProps {
-  selectedData?: Task | ProjectListType;
+  selectedData?: UpdateTask | ProjectListType;
   selectedMembers?: MemberType[];
   setSelectedMembers?: React.Dispatch<React.SetStateAction<selectedMembers>>;
   value: string;

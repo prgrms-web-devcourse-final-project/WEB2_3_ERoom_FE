@@ -4,19 +4,23 @@ import Button from "../common/Button";
 import { deleteProject, leaveProject } from "../../api/project";
 
 const ConfirmModal = ({
-  projectId,
+  processId,
+  processType,
   value,
   setIsModal,
+  onClick,
 }: {
-  projectId: number;
+  processId?: number;
+  processType?: string;
   value: string;
   setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  onClick?: (processId: number) => void;
 }) => {
   const { logout } = useAuthStore();
 
   // 프로젝트 나가기
   const { mutate: leaveProjectMutation } = useMutation({
-    mutationFn: async () => await leaveProject(projectId!),
+    mutationFn: async () => await leaveProject(processId!),
     onSuccess: () => {
       console.log("프로젝트 나가기 완료");
     },
@@ -25,16 +29,16 @@ const ConfirmModal = ({
     },
   });
 
-  // 프로젝트 삭제
-  const { mutate: deleteProjectMutation } = useMutation({
-    mutationFn: async () => await deleteProject(projectId!),
-    onSuccess: () => {
-      console.log("프로젝트 삭제 완료");
-    },
-    onError: (error) => {
-      console.error("프로젝트 삭제 실패:", error);
-    },
-  });
+  // // 프로젝트 삭제
+  // const { mutate: deleteProjectMutation } = useMutation({
+  //   mutationFn: async () => await deleteProject(processId!),
+  //   onSuccess: () => {
+  //     console.log("프로젝트 삭제 완료");
+  //   },
+  //   onError: (error) => {
+  //     console.error("프로젝트 삭제 실패:", error);
+  //   },
+  // });
 
   return (
     <div
@@ -65,6 +69,14 @@ const ConfirmModal = ({
             } else if (value === "나가기") {
               console.log("나가기 버튼 클릭됨"); // 디버깅용 로그
               leaveProjectMutation();
+            } else if (
+              processId &&
+              onClick &&
+              value === "삭제" &&
+              processType === "업무"
+            ) {
+              console.log("삭제 버튼 클릭됨"); // 디버깅용 로그
+              onClick(processId);
             }
           }}
         />

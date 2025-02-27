@@ -2,6 +2,10 @@ interface UpdateTaskModalProps {
   task: Task;
   onClose: () => void;
   value: string;
+  onClick?: (taskId: number) => void;
+  onDelete?: (taskId: number) => void;
+  onUpdate?: (taskId: number, updateData: UpdateTask) => void;
+  refetch: () => void;
 }
 
 interface selectedDateType {
@@ -15,18 +19,24 @@ interface selectedDateType {
 
 interface CreateTaskProps {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId: number;
+  onClick?: (task: CreateTask) => void;
+  refetch: () => void;
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface TaskListProps {
   name: string;
   isAll?: boolean;
   taskInfo: Task[];
+  refetch: () => void;
 }
 
 interface TaskBoxProps {
   isAll?: boolean;
   onClick: () => void;
   task: Task;
+  onUpdate?: (taskId: number, updateData: UpdateTask) => void;
 }
 
 interface AllTasksType {
@@ -46,6 +56,36 @@ interface Task {
   participants: string[]; // 참가자는 문자열 배열로 처리
 }
 
+interface CreateTask {
+  projectId: number;
+  title: string;
+  startDate: string; // ISO 형식의 날짜 문자열로 취급
+  endDate: string; // ISO 형식의 날짜 문자열로 취급
+  status: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD"; // 상태값이 정해져 있을 경우 문자열 리터럴 타입을 사용
+  assignedMemberId: number;
+  participantIds: number[]; // 참가자는 문자열 배열로 처리
+  colors?: { background: string; text: string };
+}
+
+interface UpdateTask {
+  title: string;
+  startDate: string; // ISO 형식의 날짜 문자열로 취급
+  endDate: string; // ISO 형식의 날짜 문자열로 취급
+  status: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD";
+  assignedMemberId: number;
+  participantIds: number[]; // 참가자는 문자열 배열로 처리
+}
+
+interface GetUpdateTask {
+  id: number;
+  title: string;
+  startDate: string; // ISO 형식의 날짜 문자열로 취급
+  endDate: string; // ISO 형식의 날짜 문자열로 취급
+  status: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD"; // 상태값이 정해져 있을 경우 문자열 리터럴 타입을 사용
+  assignedMemberId: number;
+  participantIds: number[]; // 참가자는 문자열 배열로 처리
+  participantProfiles: string[];
+}
 interface ManageTasksType {
   name: string;
   tasks: Task[];

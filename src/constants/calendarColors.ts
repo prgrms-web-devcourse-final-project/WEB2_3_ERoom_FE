@@ -1,42 +1,42 @@
 export const CALENDAR_COLORS = [
   {
-    background: "#4cd137",
+    background: "#E4E8E4",
     text: "#000000",
   },
   {
-    background: "#ff4757",
-    text: "#ffffff",
-  },
-  {
-    background: "#1e90ff",
-    text: "#ffffff",
-  },
-  {
-    background: "#8e44ad",
-    text: "#ffffff",
-  },
-  {
-    background: "#e67e22",
-    text: "#ffffff",
-  },
-  {
-    background: "#8c7ae6",
+    background: "#FFA9B0",
     text: "#000000",
   },
   {
-    background: "#4b4b4b",
-    text: "#ffffff",
-  },
-  {
-    background: "#be2edd",
-    text: "#ffffff",
-  },
-  {
-    background: "#f6e58d",
+    background: "#A9D5FF",
     text: "#000000",
   },
   {
-    background: "#2c2c54",
-    text: "#ffffff",
+    background: "#E9B6FF",
+    text: "#000000",
+  },
+  {
+    background: "#FFCFA5",
+    text: "#000000",
+  },
+  {
+    background: "#C9BEFF",
+    text: "#000000",
+  },
+  {
+    background: "#C6C6C6",
+    text: "#000000",
+  },
+  {
+    background: "#F7D3FF",
+    text: "#000000",
+  },
+  {
+    background: "#FFF3B4",
+    text: "#000000",
+  },
+  {
+    background: "#C6C6FF",
+    text: "#000000",
   },
 ];

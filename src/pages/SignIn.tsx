@@ -12,6 +12,16 @@ const SignIn = () => {
   const user = useAuthStore((state) => state.user);
   const { handleKakaoLogin, loading } = useKakaoLogin();
 
+  /* 구글 로그인(미완성) */
+  // const CLIENT_ID = import.meta.env.VITE_GOOGLE_ID;
+  // const REDIRECT_URI = "http://localhost:5174";
+  // const SCOPE = import.meta.env.VITE_GOOGLE_SCOPE;
+
+  // const handleGoogleLogin = () => {
+  //   const googleOAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
+  //   window.location.href = googleOAuthUrl;
+  // };
+
   if (user) {
     return <Navigate to={"/"} replace />;
   }
@@ -39,7 +49,7 @@ const SignIn = () => {
           //임시 세션값 통한 로그인
           onClick={async () => {
             try {
-              const data = await postSignIn("qwerty3@gmail.com", "1234");
+              const data = await postSignIn("qwerty2@gmail.com", "1234");
               console.log(data);
               login({ username: "asd" });
             } catch (error) {
@@ -55,6 +65,13 @@ const SignIn = () => {
           logo={GoogleLogo}
           onClick={() => login({ username: "asd" })}
         />
+        {/* <Button
+          text="구글 로그인"
+          size="lg"
+          css="bg-white border-gray01 text-black gap-[10px]"
+          logo={GoogleLogo}
+          onClick={handleGoogleLogin}
+        /> */}
       </div>
     </div>
   );
