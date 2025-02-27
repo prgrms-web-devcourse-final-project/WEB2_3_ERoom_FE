@@ -4,11 +4,10 @@ import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectDetail } from "../../api/project";
-import { createTask } from "../../api/task";
 
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
@@ -29,30 +28,7 @@ const ProjectRoomDetail = () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
-  console.log(projectDetailList);
-
-  /* 업무 생성 */
-  const { mutateAsync } = useMutation({
-    mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
-  });
-
-  const handleCreateTask = async (taskData: CreateTask) => {
-    try {
-      console.log("업무 생성 요청:", taskData); // 디버깅용 로그
-      await mutateAsync(taskData);
-      console.log("업무 생성 완료");
-
-      // 프로젝트 상세 정보를 다시 불러옴
-      await refetch();
-
-      // 모달을 닫기 전에 데이터가 반영되었는지 확인
-      setTimeout(() => {
-        setIsEditTaskModal(false);
-      }, 50); // 비동기 처리 후 UI 반영을 위해 약간의 딜레이 추가
-    } catch (error) {
-      console.error("업무 생성 실패 :", error);
-    }
-  };
+  // console.log(projectDetailList);
 
   // 전체 업무 상태
   const [allTasks, setAllTasks] = useState<AllTasksType>({
@@ -250,7 +226,8 @@ const ProjectRoomDetail = () => {
               <CreateTaskModal
                 onClose={setIsEditTaskModal}
                 projectId={Number(projectId)}
-                onClick={handleCreateTask}
+                refetch={refetch}
+                setIsModal={setIsEditTaskModal}
               />
             </div>
           )}
