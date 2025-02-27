@@ -61,7 +61,7 @@ const SelectMember = ({
     if (!isSelected && setSelectedMembers) {
       // 업무박스에선 한 명만 선택되도록 함
       if (value === "업무") {
-        setSelectedMembers(member);
+        setSelectedMembers([member]);
       } else {
         setSelectedMembers((prevSelected: MemberType[]) =>
           [...prevSelected, member].sort((a, b) =>
