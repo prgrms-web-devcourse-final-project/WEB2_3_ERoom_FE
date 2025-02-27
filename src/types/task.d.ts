@@ -20,7 +20,9 @@ interface selectedDateType {
 interface CreateTaskProps {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
   projectId: number;
-  onClick: (task: CreateTask) => void;
+  onClick?: (task: CreateTask) => void;
+  refetch: () => void;
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface TaskListProps {
@@ -34,6 +36,7 @@ interface TaskBoxProps {
   isAll?: boolean;
   onClick: () => void;
   task: Task;
+  onUpdate?: (taskId: number, updateData: UpdateTask) => void;
 }
 
 interface AllTasksType {
