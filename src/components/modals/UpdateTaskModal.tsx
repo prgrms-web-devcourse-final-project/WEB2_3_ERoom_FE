@@ -5,7 +5,7 @@ import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import ConfirmModal from "./ConfirmModal";
 import { getTaskById } from "../../api/task";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const UpdateTaskModal = ({
   task,
@@ -58,14 +58,14 @@ const UpdateTaskModal = ({
   });
 
   const statusOptions = {
-    COMPLETE: "진행완료",
+    COMPLETED: "진행완료",
     IN_PROGRESS: "진행 중",
     BEFORE_START: "진행예정",
     HOLD: "보류",
   };
 
   // 업무 정보 불러오기
-  const { data: updatedData, isLoading } = useQuery<GetUpdateTask>({
+  const { data: updatedData } = useQuery<GetUpdateTask>({
     queryKey: ["UpdatedData", task.taskId],
     queryFn: async () => {
       return await getTaskById(task.taskId);
@@ -160,15 +160,18 @@ const UpdateTaskModal = ({
         </div>
       </div>
       <div className="flex flex-col gap-[5px]">
+        {/* 진행 상태 */}
         <span className="font-bold text-[16px] text-main-green">진행상태</span>
         <div className="flex flex-col gap-[5px]">
+          {/* 진행완료, 진행중 */}
           <div className="flex gap-[5px]">
             {Object.values(statusOptions)
               .slice(0, 2)
               .map((status) => (
                 <button
                   key={status}
-                  className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
+                  className={`w-full h-[27px] font-medium text-[14px] 
+                    flex justify-center items-center cursor-pointer
               ${
                 selectedStatus === status
                   ? "bg-main-green01 text-main-beige01"
@@ -180,13 +183,16 @@ const UpdateTaskModal = ({
                 </button>
               ))}
           </div>
+
+          {/* 진행예정 보류 */}
           <div className="flex gap-[5px]">
             {Object.values(statusOptions)
               .slice(2)
               .map((status) => (
                 <button
                   key={status}
-                  className={`w-full h-[27px] font-medium text-[14px] flex justify-center items-center 
+                  className={`w-full h-[27px] font-medium text-[14px] 
+                    flex justify-center items-center cursor-pointer
               ${
                 selectedStatus === status
                   ? "bg-main-green01 text-main-beige01"
