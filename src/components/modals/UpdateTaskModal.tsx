@@ -3,8 +3,15 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
+import ConfirmModal from "./ConfirmModal";
 
-const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
+const UpdateTaskModal = ({
+  task,
+  onClose,
+  value,
+  onClick,
+}: UpdateTaskModalProps) => {
+  const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   //selectedStartDate, selectedEndDate에 데이터 들어갈 수 있게 분리하는 함수
   const parseDateTime = (dateTimeString: string) => {
     const [datePart, timePart] = dateTimeString.split("T");
@@ -159,12 +166,35 @@ const UpdateTaskModal = ({ task, onClose, value }: UpdateTaskModalProps) => {
           css="border border-main-green01 text-main-green01 font-bold text-[14px]  w-[89px] h-[27px]"
         />
         <Button
+          text="삭제"
+          size="md"
+          css="text-white bg-header-red font-bold text-[14px] w-[89px] h-[27px]"
+          onClick={() => setIsConfirmModal(true)}
+        />
+        <Button
           text="취소"
           size="md"
           onClick={onClose}
           css="bg-logo-green text-main-beige01 font-bold text-[14px] w-[65px] h-[27px]"
         />
       </div>
+
+      {/* 삭제 확인 모달 */}
+      {isConfirmModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+            flex justify-center items-center bg-black/70 z-50"
+          onClick={() => setIsConfirmModal(false)}
+        >
+          <ConfirmModal
+            processId={task.taskId}
+            processType="업무"
+            value="삭제"
+            setIsModal={setIsConfirmModal}
+            onClick={onClick}
+          />
+        </div>
+      )}
     </div>
   );
 };

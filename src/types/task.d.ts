@@ -2,6 +2,7 @@ interface UpdateTaskModalProps {
   task: Task;
   onClose: () => void;
   value: string;
+  onClick: (taskId: number) => void;
 }
 
 interface selectedDateType {
@@ -23,6 +24,7 @@ interface TaskListProps {
   name: string;
   isAll?: boolean;
   taskInfo: Task[];
+  refetch: () => void;
 }
 
 interface TaskBoxProps {

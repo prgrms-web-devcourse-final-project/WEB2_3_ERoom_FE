@@ -30,7 +30,7 @@ const ProjectRoomDetail = () => {
     },
   });
 
-  // 업무 생성
+  /* 업무 생성 */
   const { mutateAsync } = useMutation({
     mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
   });
@@ -47,7 +47,7 @@ const ProjectRoomDetail = () => {
       // 모달을 닫기 전에 데이터가 반영되었는지 확인
       setTimeout(() => {
         setIsEditTaskModal(false);
-      }, 100); // 비동기 처리 후 UI 반영을 위해 약간의 딜레이 추가
+      }, 50); // 비동기 처리 후 UI 반영을 위해 약간의 딜레이 추가
     } catch (error) {
       console.error("업무 생성 실패 :", error);
     }
@@ -194,10 +194,26 @@ const ProjectRoomDetail = () => {
               className="w-full h-full overflow-scroll scrollbar
               flex justify-start gap-[30px]"
             >
-              <TaskList name="진행 중" taskInfo={allTasks.IN_PROGRESS} />
-              <TaskList name="진행 예정" taskInfo={allTasks.BEFORE_START} />
-              <TaskList name="진행 완료" taskInfo={allTasks.COMPLETED} />
-              <TaskList name="보류" taskInfo={allTasks.HOLD} />
+              <TaskList
+                name="진행 중"
+                taskInfo={allTasks.IN_PROGRESS}
+                refetch={refetch}
+              />
+              <TaskList
+                name="진행 예정"
+                taskInfo={allTasks.BEFORE_START}
+                refetch={refetch}
+              />
+              <TaskList
+                name="진행 완료"
+                taskInfo={allTasks.COMPLETED}
+                refetch={refetch}
+              />
+              <TaskList
+                name="보류"
+                taskInfo={allTasks.HOLD}
+                refetch={refetch}
+              />
             </div>
           )}
           {/* 담당자 업무 리스트 */}
@@ -213,6 +229,7 @@ const ProjectRoomDetail = () => {
                       isAll={false}
                       taskInfo={task.tasks}
                       name={task.name}
+                      refetch={refetch}
                     />
                   </div>
                 );
