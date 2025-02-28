@@ -10,7 +10,7 @@ const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
   return (
     <>
       {messages.map((message) =>
-        message.senderName === "당나라" ? (
+        message.senderName === "member3" ? (
           // 추후 senderId가 로그인한 사용자 id인지로 체크
           // 사용자가 보낸 채팅일 경우 채팅만 표시 bg-main-beige
           <div

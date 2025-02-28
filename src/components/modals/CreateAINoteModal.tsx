@@ -21,21 +21,23 @@ const CreateAINoteModal = ({
   const AIresult =
     AINote?.choices?.[AINote.choices.length - 1]?.message?.content;
   const chatContent = AIresult?.split("회의 내용:")?.[1]?.trim() || "";
-  // 참석 멤버를 배열로 추출 ex. ["member1", "member2", "member3"]
-  const chatMember = AIresult?.match(
-    /회의 참석자:\s*([\s\S]*?)\n2. 회의 내용/
-  )?.[1]
-    ?.trim()
-    ?.split(/\s+/);
+  // 참석 멤버를 추출
+  const chatMember = AIresult?.match(/참여 인원:\s*([^\n]*)/)?.[1] || "";
 
   const chatStartTime = `${selectedStartDate.year}.${selectedStartDate.month}.${selectedStartDate.day}. ${selectedStartDate.ampm} ${selectedStartDate.hour}:${selectedStartDate.minute}`;
   const chatEndTime = `${selectedEndDate.year}.${selectedEndDate.month}.${selectedEndDate.day}. ${selectedEndDate.ampm} ${selectedEndDate.hour}:${selectedEndDate.minute}`;
 
   //AI가 생성한 회의록 내용을 초기값으로 지정
-  const [isAINote, setIsAINote] = useState(chatContent);
+  const [confirmAINote, setconfirmAINote] = useState("");
+
+  useEffect(() => {
+    if (AIresult) {
+      setconfirmAINote(chatContent);
+    }
+  }, [AIresult]);
 
   const handleAINote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIsAINote(e.target.value);
+    setconfirmAINote(e.target.value);
   };
   useEffect(() => {
     console.log(AINote);
@@ -75,10 +77,7 @@ const CreateAINoteModal = ({
             <div className="flex items-center gap-[20px]">
               <span className="font-bold text-[16px] text-black">참여인원</span>
               <div className="flex items-center gap-[10px]">
-                {chatMember &&
-                  chatMember?.map((member) => (
-                    <span className="text-[14px] text-black">{member}</span>
-                  ))}
+                <span className="text-[14px] text-black">{chatMember}</span>
               </div>
             </div>
             <div className="flex flex-col gap-[10px]">
@@ -86,7 +85,7 @@ const CreateAINoteModal = ({
               <div className="w-[900px] h-[300px] pt-[10px] px-[10px] border overflow-y-auto">
                 <textarea
                   ref={textAreaRef}
-                  value={isAINote}
+                  value={confirmAINote}
                   onChange={handleAINote}
                   className="w-full h-full resize-none focus:outline-none"
                 ></textarea>

@@ -49,7 +49,7 @@ const SignIn = () => {
           //임시 세션값 통한 로그인
           onClick={async () => {
             try {
-              const data = await postSignIn("qwerty2@gmail.com", "1234");
+              const data = await postSignIn("qwerty3@gmail.com", "1234");
               console.log(data);
               login({ username: "asd" });
             } catch (error) {
