@@ -10,6 +10,7 @@ interface ProjectListType {
   members: ProjectMemberType[];
   chatRoomId: number;
   progressRate: number;
+  creatorId: number;
   colors: Colors;
 }
 
