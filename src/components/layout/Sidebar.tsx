@@ -34,7 +34,7 @@ interface SidebarProps {
   sidebarToggle: boolean;
   setSidebarToggle: React.Dispatch<React.SetStateAction<boolean>>;
   managers: {
-    id: number;
+    memberId: number;
     username: string;
     profile: string;
     email?: string;
@@ -146,9 +146,9 @@ const Sidebar = ({
                     {/* 담당자별 */}
                     {managers.map((member) => (
                       <ManagerCheckBox
-                        key={member.id}
+                        key={member.memberId}
                         checkboxName={member.username}
-                        checkboxId={`${member.id}`}
+                        checkboxId={`${member.memberId}`}
                         labelName={member.username}
                         checked={checkedManagers.includes(member.username)}
                         onChange={() => {

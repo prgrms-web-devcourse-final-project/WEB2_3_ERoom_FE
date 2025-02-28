@@ -35,6 +35,10 @@ const Calendar = () => {
           project.status === "IN_PROGRESS" || project.status === "BEFORE_START"
       );
       return filterInProgress.map((project: ProjectListType) => {
+        const subCate = project?.subCategories.map((data) => ({
+          subCategoryId: data.id,
+          tagIds: data.tags.map((tag) => tag.id),
+        }));
         return {
           id: project.id,
           title: project.name,
@@ -43,7 +47,7 @@ const Calendar = () => {
           textColor: project.colors.text,
           color: project.colors.background,
           category: project.categoryName,
-          subCategories: project.subCategories,
+          subCategories: subCate,
           status: project.status,
         };
       });
