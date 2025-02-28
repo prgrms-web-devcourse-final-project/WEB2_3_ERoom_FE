@@ -40,10 +40,6 @@ const SelectCategory = ({
     }
   }, [selectedData]);
 
-  useEffect(() => {
-    console.log(selectedData);
-  }, [selectedData]);
-
   // 분야 변경 함수
   const handleCategoryChange = (categoryId: number, categoryName: string) => {
     setSelectedData({

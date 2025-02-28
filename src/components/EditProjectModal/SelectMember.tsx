@@ -13,26 +13,26 @@ const SelectMember = ({
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    console.log(selectedMembers);
+    console.log("selectedMembers", selectedMembers);
   }, [selectedMembers]);
 
   // 검색 함수
-  const { data: searchMember, refetch } = useQuery<MemberType[]>({
+  const { data: searchMember, refetch } = useQuery<SearchMemberType[]>({
     queryKey: ["searchMember", inputValue],
     queryFn: () => searchMembers(inputValue),
     enabled: false,
   });
 
   useEffect(() => {
-    console.log("searchmember", searchMember);
+    console.log(searchMember);
   }, [searchMember]);
 
   // 선택한 팀원 관리 props로 변경
-  useEffect(() => {
-    if (selectedMembers && setSelectedMembers) {
-      setSelectedMembers(selectedMembers);
-    }
-  }, [selectedData]);
+  // useEffect(() => {
+  //   if (selectedMembers && setSelectedMembers) {
+  //     setSelectedMembers(selectedMembers);
+  //   }
+  // }, [selectedData]);
 
   /* 디바운스된 핸들러 */
   const debouncedSearch = useCallback(
@@ -55,7 +55,7 @@ const SelectMember = ({
     // 이미 선택된 팀원이 있는지 확인
 
     const isSelected = selectedMembers?.some(
-      (selected) => selected.id === member.id
+      (selected) => selected.memberId === member.memberId
     );
 
     if (!isSelected && setSelectedMembers) {
@@ -77,7 +77,7 @@ const SelectMember = ({
     if (setSelectedMembers)
       setSelectedMembers((prevSelected: MemberType[]) =>
         prevSelected
-          .filter((member) => member.id !== id)
+          .filter((member) => member.memberId !== id)
           .sort((a, b) => a.username.localeCompare(b.username))
       );
   };
@@ -112,7 +112,12 @@ const SelectMember = ({
               font-medium"
               onClick={() => {
                 setInputValue("");
-                handleMemberClick(member);
+                handleMemberClick({
+                  username: member.username,
+                  memberId: member.id,
+                  profile: member.profile,
+                  email: member.email,
+                });
               }}
             >
               {/* 이름 & 이메일 */}
@@ -129,11 +134,11 @@ const SelectMember = ({
       <div className="flex">
         {selectedMembers?.map((member) => (
           <div
-            key={member.id}
+            key={member.memberId}
             className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
               border-[1px] border-main-green cursor-pointer"
             style={{ backgroundImage: `url(${member.profile})` }}
-            onClick={() => handleCancelClick(member.id)}
+            onClick={() => handleCancelClick(member.memberId)}
           >
             <div
               className="flex justify-center items-center
