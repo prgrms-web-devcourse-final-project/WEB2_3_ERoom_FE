@@ -57,12 +57,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         </div>
 
         {/* 기간, 업무완료,시잔 버튼 */}
-        <div
-          className="flex justify-between items-center"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
+        <div className="flex justify-between items-center">
           <p className="text-[12px]">
             {updatedData.startDate.split("T")[0]} ~{" "}
             {updatedData.endDate.split("T")[0]}
@@ -71,14 +66,20 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
             <Button
               text={"시작"}
               size="md"
-              onClick={handleStateStart}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStateStart();
+              }}
               css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
             />
           ) : (
             <Button
               text={"완료"}
               size="md"
-              onClick={handleCompleteStart}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCompleteStart();
+              }}
               css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
             />
           )}

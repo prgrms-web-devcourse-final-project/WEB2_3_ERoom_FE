@@ -143,7 +143,7 @@ const MeetingRoomChatBox = ({
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
-        senderName: "당나라", // 추후 로그인한 사용자 id값으로 수정
+        senderName: "member3", // 추후 로그인한 사용자 id값으로 수정
         message: text,
         chatRoomId: messageList.groupChatRoom.chatRoomId,
         senderProfile: messageList.groupChatRoom.senderProfile, // 프로필 이미지 추가
