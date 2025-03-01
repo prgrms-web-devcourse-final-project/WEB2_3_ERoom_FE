@@ -60,11 +60,15 @@ const EditProjectModal = ({
   // 카테고리오류
   const [cateError, setCateError] = useState(false);
 
+  // 선택한 팀원 상태 api수정되면 추가 수정필요
+  const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
+
   useEffect(() => {
     if (selectedProject) {
       setNewProjectNameValue(selectedProject.name);
 
-      setEditStatus(selectedProject.status); // 멘토님 질문
+      setEditStatus(selectedProject.status);
+      setSelectedMember(selectedProject.members);
     }
 
     const startDate = selectedProject
@@ -122,8 +126,6 @@ const EditProjectModal = ({
   });
 
   // 최종 새프로젝트 정보
-  // 선택한 팀원 상태 api수정되면 추가 수정필요
-  const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
 
   // 시작날짜 포맷
   const startFormattedDate = dayjs(
@@ -145,7 +147,7 @@ const EditProjectModal = ({
     subCategories: selectedCategory.subCategories,
     startDate: startFormattedDate,
     endDate: endFormatDate,
-    invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.id),
+    invitedMemberIds: selectedMember.map((memberInfo) => memberInfo.memberId),
     colors: randomColor("calendar")!,
   };
 
@@ -164,14 +166,14 @@ const EditProjectModal = ({
     }
   };
 
-  // 수정데이터 //이슈 invitedMemberIds -> memberIds로 변경 시 오류
+  // 수정데이터
   const editProjectInfo: patchProjectRequestType = {
     name: newProjectNameValue,
     categoryId: selectedCategory.categoryId || 0,
     subCategories: selectedCategory.subCategories,
     startDate: startFormattedDate,
     endDate: endFormatDate,
-    memberIds: selectedMember.map((memberInfo) => memberInfo.id),
+    memberIds: selectedMember.map((memberInfo) => memberInfo.memberId),
     status: editStatus,
   };
 

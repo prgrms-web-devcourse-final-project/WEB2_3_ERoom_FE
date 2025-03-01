@@ -73,9 +73,9 @@ export const getProjectDetail = async (projectId: number) => {
 // 프로젝트삭제
 export const deleteProject = async (projectId: number) => {
   try {
-    const response = await api.get(`/api/projects/${projectId}/delete`);
-    console.log("프로젝트 삭제:", response.data);
-    return response.data;
+    const response = await api.delete(`/api/projects/${projectId}/delete`);
+    console.log("프로젝트 삭제:", response);
+    return response;
   } catch (error) {
     console.error("Error project delete:", error);
     throw error;
@@ -85,9 +85,9 @@ export const deleteProject = async (projectId: number) => {
 // 프로젝트 나가기
 export const leaveProject = async (projectId: number) => {
   try {
-    const response = await api.get(`/api/projects/${projectId}/leave`);
-    console.log("프로젝트 나가기:", response.data);
-    return response.data;
+    const response = await api.delete(`/api/projects/${projectId}/leave`);
+    console.log("프로젝트 나가기:", response);
+    return response;
   } catch (error) {
     console.error("Error project leave:", error);
     throw error;

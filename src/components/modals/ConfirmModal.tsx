@@ -1,13 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/authStore";
 import Button from "../common/Button";
-import { deleteProject, leaveProject } from "../../api/project";
 
 const ConfirmModal = ({
   processId,
   processType,
   value,
   setIsModal,
+  deleteOrLeave,
   onClick,
 }: {
   processId?: number;
@@ -15,30 +14,9 @@ const ConfirmModal = ({
   value: string;
   setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
   onClick?: (processId: number) => void;
+  deleteOrLeave?: () => void;
 }) => {
   const { logout } = useAuthStore();
-
-  // 프로젝트 나가기
-  const { mutate: leaveProjectMutation } = useMutation({
-    mutationFn: async () => await leaveProject(processId!),
-    onSuccess: () => {
-      console.log("프로젝트 나가기 완료");
-    },
-    onError: (error) => {
-      console.error("프로젝트 나가기 실패:", error);
-    },
-  });
-
-  // // 프로젝트 삭제
-  // const { mutate: deleteProjectMutation } = useMutation({
-  //   mutationFn: async () => await deleteProject(processId!),
-  //   onSuccess: () => {
-  //     console.log("프로젝트 삭제 완료");
-  //   },
-  //   onError: (error) => {
-  //     console.error("프로젝트 삭제 실패:", error);
-  //   },
-  // });
 
   return (
     <div
@@ -63,12 +41,16 @@ const ConfirmModal = ({
           css="w-fit h-fit px-[10px] py-[5px] text-white bg-header-red"
           onClick={(e) => {
             e.stopPropagation();
-            setIsModal(false);
             if (value === "탈퇴") {
               logout();
-            } else if (value === "나가기") {
-              console.log("나가기 버튼 클릭됨"); // 디버깅용 로그
-              leaveProjectMutation();
+              alert("탈퇴 완료");
+              setIsModal(false);
+            }
+
+            if (processType === "프로젝트" && deleteOrLeave) {
+              deleteOrLeave(); // 프로젝트 삭제 / 나가기 함수
+              alert(`${value}성공!`);
+              setIsModal(false);
             } else if (
               processId &&
               onClick &&
