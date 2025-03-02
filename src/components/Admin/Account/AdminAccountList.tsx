@@ -7,7 +7,7 @@ import CheckBox from "../../../assets/icons/checked_box.svg";
 import { useMutation } from "@tanstack/react-query";
 import { editAdminAccount } from "../../../api/admin";
 import { queryClient } from "../../../main";
-import AdminEditCancelBtn from "../AdminEditCancelBtn";
+import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 
 const AdminAccountList = ({
   user,

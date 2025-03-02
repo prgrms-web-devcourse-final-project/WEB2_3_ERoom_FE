@@ -7,20 +7,23 @@ import CheckBox from "../../../assets/icons/checked_box.svg";
 import { PROGRESS_STATUS } from "../../../constants/status";
 import { progressType } from "../../../utils/progressType";
 import ProgressStatusBox from "../ProgressStatusBox";
-import AdminEditCancelBtn from "../AdminEditCancelBtn";
+import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 
-const AdminProjectList = ({
-  project,
-  index,
-}: // onUpdateProject,
-{
+interface AdminProjectListProps {
   project: AdminProjectsListType;
   index: number;
   // onUpdateProject: (
   //   id: number,
   //   updatedProject: Partial<ProjectsListType>
   // ) => void;
-}) => {
+  setCheckedIds: React.Dispatch<React.SetStateAction<number[]>>;
+}
+
+const AdminProjectList = ({
+  project,
+  index,
+  setCheckedIds,
+}: AdminProjectListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({ ...project });
@@ -49,6 +52,14 @@ const AdminProjectList = ({
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (isChecked) {
+      setCheckedIds((prev) => [...prev, project.projectId]);
+    } else {
+      setCheckedIds((prev) => prev.filter((id) => id !== project.projectId));
+    }
+  }, [isChecked]);
 
   // 진행상태 체크
   const [status, setStatus] = useState<string>(

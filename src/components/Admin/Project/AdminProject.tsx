@@ -1,18 +1,20 @@
 import AdminButton from "../../common/AdminButton";
 import Button from "../../common/Button";
 import SearchIcon from "../../../assets/icons/search.svg";
-import DeleteIcon from "../../../assets/icons/delete.svg";
+
 import ResotreIcon from "../../../assets/icons/restore_account.svg";
 import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import AdminProjectList from "./AdminProjectList";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  adminDeleteProject,
   getAdminInActiveProjectList,
   getAdminProjectList,
 } from "../../../api/admin";
+import AdminDeleteBtn from "../Button/AdminDeleteBtn";
 
 const AdminProject = () => {
   const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
@@ -40,22 +42,27 @@ const AdminProject = () => {
   // };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-  const [projectMenu, setProjectMenu] = useState("active");
+  const [projectMenu, setProjectMenu] = useState<"active" | "inactive">(
+    "active"
+  );
 
   const handleButtonClick = (type: "active" | "inactive") => {
     setProjectMenu(type);
   };
 
+  const selectedProjects =
+    projectMenu === "active" ? adminActiveProject : adminInActiveProject;
+
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
-  const totalPages = adminActiveProject
-    ? Math.ceil(adminActiveProject.length / itemsPerPage)
+  const totalPages = selectedProjects
+    ? Math.ceil(selectedProjects.length / itemsPerPage)
     : 1;
 
   // 현재 페이지에 해당하는 데이터만 필터링
   // 활성 프로젝트
-  const paginatedProjects = adminActiveProject?.slice(
+  const paginatedProjects = selectedProjects?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -69,6 +76,26 @@ const AdminProject = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [projectMenu]);
+
+  // 프로젝트 삭제(비활성)
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    console.log(checkedIds);
+  }, [checkedIds]);
+
+  const { mutateAsync } = useMutation({
+    mutationFn: (projectId: number) => adminDeleteProject(projectId),
+  });
+
+  const deleteProjects = () => {
+    checkedIds.forEach(async (id) => {
+      const response = await mutateAsync(id);
+      console.log(response, "del");
+    });
+
+    alert("선택한 프로젝트 삭제완료!");
+  };
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -109,9 +136,7 @@ const AdminProject = () => {
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
             )}
-            <button>
-              <img src={DeleteIcon} alt="계정 삭제 버튼" />
-            </button>
+            <AdminDeleteBtn onClick={deleteProjects} />
           </div>
         </div>
         <div className="flex flex-col gap-[10px] flex-grow mb-[30px]">
@@ -144,6 +169,7 @@ const AdminProject = () => {
                 key={project.projectId}
                 project={project}
                 index={(currentPage - 1) * itemsPerPage + index}
+                setCheckedIds={setCheckedIds}
                 // onUpdateProject={handleUpdateProject}
               />
             ))}
