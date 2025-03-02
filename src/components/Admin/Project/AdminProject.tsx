@@ -1,65 +1,55 @@
 import AdminButton from "../../common/AdminButton";
 import Button from "../../common/Button";
 import SearchIcon from "../../../assets/icons/search.svg";
-import DeleteIcon from "../../../assets/icons/delete.svg";
+
 import ResotreIcon from "../../../assets/icons/restore_account.svg";
 import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import AdminProjectList from "./AdminProjectList";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  adminDeleteProject,
+  getAdminInActiveProjectList,
+  getAdminProjectList,
+} from "../../../api/admin";
+import AdminDeleteBtn from "../Button/AdminDeleteBtn";
+import { queryClient } from "../../../main";
 
 const AdminProject = () => {
-  // 더미 데이터
-  const dummyProjects: ProjectsListType[] = Array.from(
-    { length: 200 },
-    (_, i) => ({
-      id: i + 1,
-      projectName: "프로젝트 A",
-      projectStatus: "IN_PROGRESS",
-      createdAt: "2025-02-11",
-      startDate: "2025-02-11",
-      endDate: "2025-02-20",
-      tag1: "Java",
-      tag2: "Spring",
-      tag3: "MSA",
-      isActive: i % 3 !== 0,
-    })
-  );
+  const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
+    queryKey: ["AdminAcitveProject"],
+    queryFn: getAdminProjectList,
+  });
 
-  const [projects, setProjects] = useState(dummyProjects);
-
-  //추후 프로젝트 정보 업데이트 API 나오면 연동 추가
-  const handleUpdateProject = (
-    id: number,
-    updatedProject: Partial<ProjectsListType>
-  ) => {
-    setProjects((prevProjects) =>
-      prevProjects.map((project) =>
-        project.id === id ? { ...project, ...updatedProject } : project
-      )
-    );
-  };
+  const { data: adminInActiveProject } = useQuery<AdminProjectsListType[]>({
+    queryKey: ["AdminInAcitveProject"],
+    queryFn: getAdminInActiveProjectList,
+  });
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-  const [projectMenu, setProjectMenu] = useState("active");
+  const [projectMenu, setProjectMenu] = useState<"active" | "inactive">(
+    "active"
+  );
 
   const handleButtonClick = (type: "active" | "inactive") => {
     setProjectMenu(type);
   };
 
-  const filterProjects = projects.filter((project) =>
-    projectMenu === "active" ? project.isActive : !project.isActive
-  );
+  const selectedProjects =
+    projectMenu === "active" ? adminActiveProject : adminInActiveProject;
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
-  const totalPages = Math.ceil(projects.length / itemsPerPage);
+  const totalPages = selectedProjects
+    ? Math.ceil(selectedProjects.length / itemsPerPage)
+    : 1;
 
   // 현재 페이지에 해당하는 데이터만 필터링
   // 활성 프로젝트
-  const paginatedProjects = filterProjects.slice(
+  const paginatedProjects = selectedProjects?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -72,7 +62,34 @@ const AdminProject = () => {
 
   useEffect(() => {
     setCurrentPage(1);
+    setCheckedIds([]);
   }, [projectMenu]);
+
+  // 프로젝트 삭제(완전 삭제)
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    console.log(checkedIds);
+  }, [checkedIds]);
+
+  const { mutateAsync: deleteProjectFn } = useMutation({
+    mutationFn: (projectId: number) => adminDeleteProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["AdminAcitveProject"],
+      }),
+        queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+    },
+  });
+
+  const deleteProjects = () => {
+    checkedIds.forEach(async (id) => {
+      const response = await deleteProjectFn(id);
+      console.log(response, "del");
+    });
+
+    alert("선택한 프로젝트 삭제완료!");
+  };
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -113,16 +130,14 @@ const AdminProject = () => {
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
             )}
-            <button>
-              <img src={DeleteIcon} alt="계정 삭제 버튼" />
-            </button>
+            <AdminDeleteBtn onClick={deleteProjects} />
           </div>
         </div>
         <div className="flex flex-col gap-[10px] flex-grow mb-[30px]">
           {/* 제목 부분 */}
-          <div className="grid grid-cols-[5%_5%_15%_15%_45%_10%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
+          <div className="grid grid-cols-[5%_5%_15%_15%_30%_30%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
             <div className="flex justify-center items-center">
-              <button onClick={toggleCheckBox}>
+              <button onClick={toggleCheckBox} className="cursor-pointer">
                 <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
               </button>
             </div>
@@ -142,15 +157,16 @@ const AdminProject = () => {
               <span>기간</span>
             </div>
           </div>
-          {paginatedProjects.map((project, index) => (
-            <AdminProjectList
-              key={project.id}
-              project={project}
-              index={(currentPage - 1) * itemsPerPage + index}
-              onUpdateProject={handleUpdateProject}
-            />
-          ))}
-          <div className="flex justify-center items-center mt-auto mt-[30px]">
+          {paginatedProjects &&
+            paginatedProjects.map((project, index) => (
+              <AdminProjectList
+                key={project.projectId}
+                project={project}
+                index={(currentPage - 1) * itemsPerPage + index}
+                setCheckedIds={setCheckedIds}
+              />
+            ))}
+          <div className="flex justify-center items-center mt-[30px]">
             <Pagination
               totalPages={totalPages}
               onPageChange={setCurrentPage}

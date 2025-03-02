@@ -30,19 +30,14 @@ interface EditAccountType {
   profile: string | null;
 }
 
-interface ProjectsListType {
-  id: number;
+interface AdminProjectsListType {
+  projectId: number;
   projectName: string;
+  assignedEmail: string;
   projectStatus: string;
-  createdAt: string;
   startDate: string;
   endDate: string;
-  tag1: string;
-  tag2: string;
-  tag3: string;
-  isActive: boolean;
 }
-
 interface ChartProps {
   data: number[];
   labelTitle: string;

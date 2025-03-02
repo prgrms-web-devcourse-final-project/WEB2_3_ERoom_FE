@@ -7,19 +7,22 @@ import CheckBox from "../../../assets/icons/checked_box.svg";
 import { PROGRESS_STATUS } from "../../../constants/status";
 import { progressType } from "../../../utils/progressType";
 import ProgressStatusBox from "../ProgressStatusBox";
+import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
+import { useMutation } from "@tanstack/react-query";
+import { adminEditProject } from "../../../api/admin";
+import { queryClient } from "../../../main";
+
+interface AdminProjectListProps {
+  project: AdminProjectsListType;
+  index: number;
+  setCheckedIds: React.Dispatch<React.SetStateAction<number[]>>;
+}
 
 const AdminProjectList = ({
   project,
   index,
-  onUpdateProject,
-}: {
-  project: ProjectsListType;
-  index: number;
-  onUpdateProject: (
-    id: number,
-    updatedProject: Partial<ProjectsListType>
-  ) => void;
-}) => {
+  setCheckedIds,
+}: AdminProjectListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({ ...project });
@@ -29,18 +32,11 @@ const AdminProjectList = ({
     setIsOpen((prev) => !prev);
   };
 
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    onUpdateProject(project.id, editedProject);
-  };
-
   const handleEditClick = () => setIsEditing(true);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedProject({ ...editedProject, [name]: value });
-    if (name === "projectName") {
-    }
   };
 
   const [isChecked, setIsChecked] = useState(false);
@@ -48,6 +44,14 @@ const AdminProjectList = ({
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (isChecked) {
+      setCheckedIds((prev) => [...prev, project.projectId]);
+    } else {
+      setCheckedIds((prev) => prev.filter((id) => id !== project.projectId));
+    }
+  }, [isChecked]);
 
   // 진행상태 체크
   const [status, setStatus] = useState<string>(
@@ -62,6 +66,40 @@ const AdminProjectList = ({
     }));
   }, [status]);
 
+  const [isRefetching, setIsRefetching] = useState(false);
+
+  // 프로젝트 수정 요청
+  const { mutate: editProjectFn } = useMutation({
+    mutationFn: ({
+      projectId,
+      editInfo,
+    }: {
+      projectId: number;
+      editInfo: AdminProjectsListType;
+    }) => adminEditProject(projectId, editInfo),
+    onMutate: () => setIsRefetching(true),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["AdminAcitveProject"],
+      }),
+        queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+    },
+    onSettled: () => setIsRefetching(false),
+  });
+
+  const handleSaveClick = (
+    projectId: number,
+    editInfo: AdminProjectsListType
+  ) => {
+    setIsEditing(false);
+    console.log(editedProject);
+    editProjectFn({ projectId, editInfo });
+  };
+
+  if (isRefetching) {
+    return <div>로딩중</div>;
+  }
+
   return (
     <div
       className={twMerge(
@@ -70,7 +108,7 @@ const AdminProjectList = ({
       )}
     >
       <div
-        className="grid grid-cols-[5%_5%_15%_15%_45%_10%] h-[37px] w-full 
+        className="grid grid-cols-[5%_5%_15%_15%_30%_30%] h-[37px] w-full 
         text-main-green text-[14px] py-[5px] cursor-pointer"
         onClick={handleDropdown}
       >
@@ -80,6 +118,7 @@ const AdminProjectList = ({
               e.stopPropagation();
               toggleCheckBox();
             }}
+            className="cursor-pointer"
           >
             <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
           </button>
@@ -98,7 +137,7 @@ const AdminProjectList = ({
               style={{ width: `${editedProject.projectName.length + 2}ch` }}
             />
           ) : (
-            <span>{project.projectName}</span>
+            <span>{editedProject.projectName}</span>
           )}
         </div>
         <div className="flex justify-center items-center relative">
@@ -110,33 +149,43 @@ const AdminProjectList = ({
           )}
         </div>
         <div className="flex justify-center items-center">
-          {isEditing ? (
-            <span>{project.createdAt}</span>
-          ) : (
-            <span>{project.createdAt}</span>
-          )}
+          <p>2025.03.03</p>
         </div>
         <div className="flex justify-center items-center">
           <p>
-            {project.startDate} - {project.endDate}
+            {project.startDate.split("T")[0]} - {project.endDate.split("T")[0]}
           </p>
         </div>
       </div>
       {isOpen && (
-        <div className="grid grid-cols-[10%_15%_1fr_10%_5%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
+        <div className="grid grid-cols-[10%_15%_1fr_10%_10%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
           <div></div>
 
-          <ul className="flex justify-center items-center gap-2">
-            {[project.tag1, project.tag2, project.tag3].map((tag, idx) => (
-              <li key={idx}>#{tag}</li>
-            ))}
-          </ul>
+          <div className="flex items-center justify-center">
+            <p>
+              생성자 이메일:{" "}
+              <span className="font-bold">{project.assignedEmail}</span>
+            </p>
+          </div>
           <div></div>
           <div className="flex justify-center items-center">
             {isEditing ? (
-              <button onClick={handleSaveClick} className="cursor-pointer">
-                <img src={SaveIcon} alt="저장" />
-              </button>
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  onClick={() =>
+                    handleSaveClick(project.projectId, editedProject)
+                  }
+                  className="cursor-pointer"
+                >
+                  <img src={SaveIcon} alt="저장" />
+                </button>
+                <AdminEditCancelBtn
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditedProject({ ...project });
+                  }}
+                />
+              </div>
             ) : (
               <button onClick={handleEditClick} className="cursor-pointer">
                 <img src={EditIcon} alt="수정" />

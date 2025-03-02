@@ -22,7 +22,7 @@ const DashBoard = () => {
     bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
     >
       <div className="bg-white/60 px-5">
-        <h1 className="font-bold text-[27px] mb-4">회원 데이터</h1>
+        <h1 className="font-bold text-[22px] pl-[20px] mb-4">회원 데이터</h1>
         <div
           className="border border-main-green02 w-[170px] h-[50px] flex gap-2 mb-5
             items-center justify-center text-main-green01 font-bold rounded-[10px]"
