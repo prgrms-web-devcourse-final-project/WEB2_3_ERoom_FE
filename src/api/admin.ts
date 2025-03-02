@@ -100,9 +100,15 @@ export const getAdminInActiveProjectList = async () => {
 };
 
 // 관리자 프로젝트 수정(업데이트)
-export const adminEditProject = async (projectId: number) => {
+export const adminEditProject = async (
+  projectId: number,
+  editInfo: AdminProjectsListType
+) => {
   try {
-    const response = await api.put(`/admin/manage/project/${projectId}/modify`);
+    const response = await api.put(
+      `/admin/manage/project/${projectId}/modify`,
+      editInfo
+    );
     console.log("editAdminProject", response);
     return response;
   } catch (error) {
@@ -110,7 +116,7 @@ export const adminEditProject = async (projectId: number) => {
   }
 };
 
-// 관리자 프로젝트 삭제(비활성)
+// 관리자 프로젝트 삭제(완전 삭제)
 export const adminDeleteProject = async (projectId: number) => {
   try {
     const response = await api.delete(

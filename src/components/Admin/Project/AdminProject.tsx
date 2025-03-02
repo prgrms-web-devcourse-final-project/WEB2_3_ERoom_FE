@@ -15,6 +15,7 @@ import {
   getAdminProjectList,
 } from "../../../api/admin";
 import AdminDeleteBtn from "../Button/AdminDeleteBtn";
+import { queryClient } from "../../../main";
 
 const AdminProject = () => {
   const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
@@ -26,20 +27,6 @@ const AdminProject = () => {
     queryKey: ["AdminInAcitveProject"],
     queryFn: getAdminInActiveProjectList,
   });
-
-  // const [projects, setProjects] = useState(adminActiveProject);
-
-  //추후 프로젝트 정보 업데이트 API 나오면 연동 추가
-  // const handleUpdateProject = (
-  //   id: number,
-  //   updatedProject: Partial<AdminProjectsListType>
-  // ) => {
-  //   setProjects((prevProjects) =>
-  //     prevProjects.map((project) =>
-  //       project.id === id ? { ...project, ...updatedProject } : project
-  //     )
-  //   );
-  // };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
   const [projectMenu, setProjectMenu] = useState<"active" | "inactive">(
@@ -75,22 +62,29 @@ const AdminProject = () => {
 
   useEffect(() => {
     setCurrentPage(1);
+    setCheckedIds([]);
   }, [projectMenu]);
 
-  // 프로젝트 삭제(비활성)
+  // 프로젝트 삭제(완전 삭제)
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
   useEffect(() => {
     console.log(checkedIds);
   }, [checkedIds]);
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync: deleteProjectFn } = useMutation({
     mutationFn: (projectId: number) => adminDeleteProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["AdminAcitveProject"],
+      }),
+        queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+    },
   });
 
   const deleteProjects = () => {
     checkedIds.forEach(async (id) => {
-      const response = await mutateAsync(id);
+      const response = await deleteProjectFn(id);
       console.log(response, "del");
     });
 
@@ -170,7 +164,6 @@ const AdminProject = () => {
                 project={project}
                 index={(currentPage - 1) * itemsPerPage + index}
                 setCheckedIds={setCheckedIds}
-                // onUpdateProject={handleUpdateProject}
               />
             ))}
           <div className="flex justify-center items-center mt-[30px]">
