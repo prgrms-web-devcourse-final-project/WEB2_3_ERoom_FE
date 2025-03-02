@@ -7,18 +7,19 @@ import CheckBox from "../../../assets/icons/checked_box.svg";
 import { PROGRESS_STATUS } from "../../../constants/status";
 import { progressType } from "../../../utils/progressType";
 import ProgressStatusBox from "../ProgressStatusBox";
+import AdminEditCancelBtn from "../AdminEditCancelBtn";
 
 const AdminProjectList = ({
   project,
   index,
-  onUpdateProject,
-}: {
-  project: ProjectsListType;
+}: // onUpdateProject,
+{
+  project: AdminProjectsListType;
   index: number;
-  onUpdateProject: (
-    id: number,
-    updatedProject: Partial<ProjectsListType>
-  ) => void;
+  // onUpdateProject: (
+  //   id: number,
+  //   updatedProject: Partial<ProjectsListType>
+  // ) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,7 +32,7 @@ const AdminProjectList = ({
 
   const handleSaveClick = () => {
     setIsEditing(false);
-    onUpdateProject(project.id, editedProject);
+    // onUpdateProject(project.id, editedProject);
   };
 
   const handleEditClick = () => setIsEditing(true);
@@ -70,7 +71,7 @@ const AdminProjectList = ({
       )}
     >
       <div
-        className="grid grid-cols-[5%_5%_15%_15%_45%_10%] h-[37px] w-full 
+        className="grid grid-cols-[5%_5%_15%_15%_30%_30%] h-[37px] w-full 
         text-main-green text-[14px] py-[5px] cursor-pointer"
         onClick={handleDropdown}
       >
@@ -80,6 +81,7 @@ const AdminProjectList = ({
               e.stopPropagation();
               toggleCheckBox();
             }}
+            className="cursor-pointer"
           >
             <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
           </button>
@@ -110,15 +112,16 @@ const AdminProjectList = ({
           )}
         </div>
         <div className="flex justify-center items-center">
-          {isEditing ? (
+          {/* {isEditing ? (
             <span>{project.createdAt}</span>
           ) : (
             <span>{project.createdAt}</span>
-          )}
+          )} */}
+          <p>2025.03.03</p>
         </div>
         <div className="flex justify-center items-center">
           <p>
-            {project.startDate} - {project.endDate}
+            {project.startDate.split("T")[0]} - {project.endDate.split("T")[0]}
           </p>
         </div>
       </div>
@@ -126,17 +129,18 @@ const AdminProjectList = ({
         <div className="grid grid-cols-[10%_15%_1fr_10%_5%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
           <div></div>
 
-          <ul className="flex justify-center items-center gap-2">
-            {[project.tag1, project.tag2, project.tag3].map((tag, idx) => (
-              <li key={idx}>#{tag}</li>
-            ))}
-          </ul>
+          <div className="flex items-center justify-center">
+            <p>생성자 이메일: {project.assignedEmail}</p>
+          </div>
           <div></div>
           <div className="flex justify-center items-center">
             {isEditing ? (
-              <button onClick={handleSaveClick} className="cursor-pointer">
-                <img src={SaveIcon} alt="저장" />
-              </button>
+              <div className="flex items-center justify-center gap-2">
+                <button onClick={handleSaveClick} className="cursor-pointer">
+                  <img src={SaveIcon} alt="저장" />
+                </button>
+                <AdminEditCancelBtn onClick={() => setIsEditing(false)} />
+              </div>
             ) : (
               <button onClick={handleEditClick} className="cursor-pointer">
                 <img src={EditIcon} alt="수정" />
