@@ -1,20 +1,21 @@
+import dayjs from "dayjs";
+
 export const formatToAMPM = (
   isoString: string | undefined
 ): string | undefined => {
   if (!isoString) return "";
-  const date = new Date(isoString);
+  return dayjs(isoString).format("YYYY-MM-DD A hh:mm");
+};
 
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // 월 (1월 = 0이므로 +1)
-  const day = String(date.getDate()).padStart(2, "0"); // 일
-  const hours = date.getHours(); // 24시간 형식
-  const minutes = String(date.getMinutes()).padStart(2, "0"); // 분
+export const formatSelectedDate = (date: selectedDateType): string => {
+  const hour =
+    date.ampm === "PM" && date.hour !== "12"
+      ? String(Number(date.hour) + 12) // 오후이면 12 더하기
+      : date.ampm === "AM" && date.hour === "12"
+      ? "00" // 오전 12시는 00시로 변환
+      : date.hour;
 
-  const ampm = hours >= 12 ? "PM" : "AM"; // 오전/오후 판별
-  const formattedHour = hours % 12 || 12; // 12시간 형식 변환 (0시는 12로 표시)
-
-  return `${year}-${month}-${day} ${ampm} ${String(formattedHour).padStart(
-    2,
-    "0"
-  )}:${minutes}`;
+  return dayjs(
+    `${date.year}-${date.month}-${date.day}T${hour}:${date.minute}`
+  ).format("YYYY-MM-DD A hh:mm");
 };

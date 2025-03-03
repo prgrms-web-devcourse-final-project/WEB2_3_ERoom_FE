@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../common/Button";
 import DayNoteList from "../NoteList/DayNoteList";
 import CreateNotePeriodModal from "./CreateNotePeriodModal";

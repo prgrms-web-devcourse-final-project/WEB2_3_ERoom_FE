@@ -16,6 +16,7 @@ import {
 } from "../../../api/admin";
 import AdminDeleteBtn from "../Button/AdminDeleteBtn";
 import { queryClient } from "../../../main";
+import { searchProjects } from "../../../api/search";
 
 const AdminProject = () => {
   const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
@@ -40,6 +41,53 @@ const AdminProject = () => {
   const selectedProjects =
     projectMenu === "active" ? adminActiveProject : adminInActiveProject;
 
+  //관리자 프로젝트 검색
+  const [searchProjectName, setSearchProjectName] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<
+    AdminProjectsListType[] | null
+  >(null);
+
+  const [projectData, setProjectData] = useState<AdminProjectsListType[]>([]);
+
+  const handleSearch = async () => {
+    if (searchProjectName.trim() === "") {
+      setSearchResult(null);
+      return;
+    }
+    const result = await searchProjects(searchProjectName);
+    if (result) {
+      const filteredProjects = result.filter((project) =>
+        projectMenu === "active"
+          ? project.deleteStatus === "ACTIVE"
+          : project.deleteStatus !== "ACTIVE"
+      );
+
+      //타입 매핑
+      const convertedProjects = filteredProjects.map((project) => ({
+        projectId: project.projectId,
+        projectName: project.projectName,
+        assignedEmail: project.creatorEmail,
+        projectStatus: project.projectStatus,
+        startDate: project.startDate,
+        endDate: project.endDate,
+      }));
+
+      setSearchResult(convertedProjects);
+    }
+  };
+
+  useEffect(() => {
+    let filteredData: AdminProjectsListType[] = [];
+
+    if (searchResult) {
+      filteredData = searchResult;
+    } else {
+      filteredData = selectedProjects || [];
+    }
+
+    setProjectData(filteredData);
+  }, [projectMenu, selectedProjects, searchResult]);
+
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
@@ -49,7 +97,7 @@ const AdminProject = () => {
 
   // 현재 페이지에 해당하는 데이터만 필터링
   // 활성 프로젝트
-  const paginatedProjects = selectedProjects?.slice(
+  const paginatedProjects = projectData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -112,8 +160,16 @@ const AdminProject = () => {
               onClick={() => handleButtonClick("inactive")}
             />
           </div>
-          <div className="flex gap-[10px]">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+            className="flex gap-[10px]"
+          >
             <input
+              value={searchProjectName}
+              onChange={(e) => setSearchProjectName(e.target.value)}
               className="w-[250px] h-[27px] border border-header-green rounded-[5px] focus:outline-none flex px-[10px] items-center text-[14px]"
               placeholder="프로젝트명 검색"
             />
@@ -122,8 +178,9 @@ const AdminProject = () => {
               logo={SearchIcon}
               size="sm"
               css="h-[27px] text-[14px] text-main-beige01 bg-header-green"
+              onClick={handleSearch}
             />
-          </div>
+          </form>
           <div className="flex gap-[5px] w-[80px] justify-end">
             {projectMenu === "inactive" && (
               <button>
