@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import CreateAINoteModal from "./CreateAINoteModal";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { getAINote } from "../../api/meetingroom";
 
 const CreateNotePeriodModal = ({
   onClose,
   chatRoomId,
+  AINoteList,
+  refetchAINoteList,
 }: {
   onClose: () => void;
   chatRoomId: number;
+  AINoteList: AINoteListType[] | null;
+  refetchAINoteList: () => void;
 }) => {
   const now = new Date();
   const [selectedStartDate, setSelectedStartDate] = useState<selectedDateType>({
@@ -57,17 +61,18 @@ const CreateNotePeriodModal = ({
     data: AINote,
     isPending,
   } = useMutation<
-    AINoteType,
+    CreateAIMessage,
     Error,
-    { chatRoomId: number; startTime: string; endTime: string }
+    { chatRoomId: number; title: string; startTime: string; endTime: string }
   >({
-    mutationFn: async ({ chatRoomId, startTime, endTime }) =>
-      await getAINote(chatRoomId, startTime, endTime),
+    mutationFn: async ({ chatRoomId, title, startTime, endTime }) =>
+      await getAINote(chatRoomId, title, startTime, endTime),
   });
 
   const handleRunAI = () => {
     fetchAINote({
       chatRoomId,
+      title,
       startTime,
       endTime,
     });
@@ -141,6 +146,8 @@ const CreateNotePeriodModal = ({
             isLoading={isPending}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
+            AINoteList={AINoteList}
+            refetchAINoteList={refetchAINoteList}
           />
         </div>
       )}

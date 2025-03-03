@@ -96,7 +96,7 @@ const MeetingRoomChatBox = ({
       setMessages(messageList.groupChatRoom.messages);
     }
 
-    const socket = new SockJS(`${import.meta.env.VITE_API_URL}ws`);
+    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
     const client = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000, // 재연결 설정 (5초)

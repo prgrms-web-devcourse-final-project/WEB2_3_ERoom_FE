@@ -1,15 +1,18 @@
 import { useRef, useState } from "react";
 import Button from "../common/Button";
+import { formatToAMPM } from "../../utils/aiNote/dateUtils";
 
 const NoteDetailModal = ({
   onClose,
   onGoBack,
+  note,
 }: {
   onClose: () => void;
   onGoBack: () => void;
+  note: AINoteListType | undefined;
 }) => {
   //추후 기존 회의록 내용을 초기값으로 지정
-  const [isAINote, setIsAINote] = useState("기존 회의록 내용");
+  const [isAINote, setIsAINote] = useState(note?.content);
   const [isEdit, setIsEdit] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -36,24 +39,32 @@ const NoteDetailModal = ({
     });
   };
 
+  const startDateFormatted = formatToAMPM(note?.startDate);
+  const endDateFormatted = formatToAMPM(note?.endDate);
+
   return (
-    <div className="w-[1000px] h-[613px] bg-white flex flex-col py-[30px] px-[50px]">
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[613px] bg-white flex flex-col py-[30px] px-[50px]">
       <div className="flex flex-col gap-[20px]">
         <div className="flex justify-center">
-          <span className="font-bold text-[16px] text-black">회의록 제목</span>
+          <span className="font-bold text-[16px] text-black">
+            {note?.title}
+          </span>
         </div>
         <div className="flex items-center gap-[20px]">
           <span className="font-bold text-[16px] text-black">회의기간</span>
           <span className="text-[14px] text-black">
-            2025.02.13. AM 09:00 ~ 2025.02.13. AM 11:15
+            {startDateFormatted} ~ {endDateFormatted}
           </span>
         </div>
         <div className="flex items-center gap-[20px]">
           <span className="font-bold text-[16px] text-black">참여인원</span>
           <div className="flex items-center gap-[10px]">
-            <span className="text-[14px] text-black">박선형</span>
-            <span className="text-[14px] text-black">한규혁</span>
-            <span className="text-[14px] text-black">성송원</span>
+            {note?.members &&
+              note.members.map((member, index) => (
+                <span key={index} className="text-[14px] text-black">
+                  {member}
+                </span>
+              ))}
           </div>
         </div>
         <div className="flex flex-col gap-[10px]">

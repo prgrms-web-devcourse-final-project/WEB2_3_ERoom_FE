@@ -2,35 +2,52 @@ import { useState } from "react";
 import NoteListBox from "./NoteListBox";
 import NoteDetailModal from "../modals/NoteDetailModal";
 
-const DayNoteList = ({ onClose }: { onClose: () => void }) => {
+const DayNoteList = ({
+  onClose,
+  date,
+  notes,
+}: {
+  onClose: () => void;
+  date: string;
+  notes: AINoteListType[];
+}) => {
   const [openNoteDetail, setOpenNoteDetail] = useState(false);
+  const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
 
-  const handleNoteDetail = () => {
+  const handleNoteDetail = (id: number) => {
+    setSelectedNoteId(id);
     setOpenNoteDetail(true);
   };
 
   const handleGoBack = () => {
     setOpenNoteDetail(false);
+    setSelectedNoteId(null);
   };
   return (
     <>
       {!openNoteDetail ? (
         <div>
           <div className="flex justify-between mb-[15px]">
-            <span>2025-02-13</span> <span>6개</span>
+            <span>{date}</span> <span>{notes.length}개</span>
           </div>
           <div className="flex flex-col gap-[10px]">
-            <NoteListBox onClick={handleNoteDetail} />
-            <NoteListBox onClick={handleNoteDetail} />
-            <NoteListBox onClick={handleNoteDetail} />
-            <NoteListBox onClick={handleNoteDetail} />
-            <NoteListBox onClick={handleNoteDetail} />
-            <NoteListBox onClick={handleNoteDetail} />
+            {notes &&
+              notes.map((note) => (
+                <NoteListBox
+                  key={note.id}
+                  onClick={() => handleNoteDetail(note.id)}
+                  note={note}
+                />
+              ))}
           </div>
         </div>
       ) : (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <NoteDetailModal onClose={onClose} onGoBack={handleGoBack} />
+          <NoteDetailModal
+            onClose={onClose}
+            onGoBack={handleGoBack}
+            note={notes.find((note) => note.id === selectedNoteId)}
+          />
         </div>
       )}
     </>
