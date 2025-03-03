@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import Lottie from "lottie-react";
 import LoadingAnimation from "../../assets/animations/loading_note.json";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteAINote, editAINote, getAINoteList } from "../../api/meetingroom";
+import { useMutation } from "@tanstack/react-query";
+import { deleteAINote, editAINote } from "../../api/meetingroom";
+import { formatSelectedDate } from "../../utils/aiNote/dateUtils";
 
 const CreateAINoteModal = ({
   onClose,
@@ -30,8 +31,8 @@ const CreateAINoteModal = ({
   // 참석 멤버
   const chatMember = AINote?.members;
 
-  const chatStartTime = `${selectedStartDate.year}-${selectedStartDate.month}-${selectedStartDate.day} ${selectedStartDate.ampm} ${selectedStartDate.hour}:${selectedStartDate.minute}`;
-  const chatEndTime = `${selectedEndDate.year}-${selectedEndDate.month}-${selectedEndDate.day} ${selectedEndDate.ampm} ${selectedEndDate.hour}:${selectedEndDate.minute}`;
+  const chatStartTime = formatSelectedDate(selectedStartDate);
+  const chatEndTime = formatSelectedDate(selectedEndDate);
 
   //AI가 생성한 회의록 내용을 초기값으로 지정
   const [confirmAINote, setconfirmAINote] = useState<string | undefined>("");

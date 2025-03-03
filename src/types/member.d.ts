@@ -13,7 +13,9 @@ interface SearchMemberType {
   id: number;
   username: string;
   email: string;
-  profile: string;
+  profile: string | null;
+  organization: string | null;
+  createdAt: string;
   deleteStatus: string;
 }
 
