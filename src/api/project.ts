@@ -52,8 +52,9 @@ export const patchProjectById = async (
     );
     console.log("프로젝트 수정 성공", response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("프로젝트 수정 오류", error);
+    Object.values(error.response.data).forEach((value) => alert(value));
     throw new Error("프로젝트 수정하기 오류");
   }
 };

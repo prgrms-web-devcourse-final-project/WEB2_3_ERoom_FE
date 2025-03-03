@@ -13,17 +13,19 @@ export const dragChange = async (info: EventDropArg) => {
   try {
     const response = await api.patch(`/api/projects/${info.event.id}/update`, {
       name: info.event.title,
-      categoryId: projectData.categoryId,
+      // categoryId: projectData.categoryId,
       subCategories: projectData.subCategories,
       status: projectData.status,
       startDate,
       endDate,
-      membersIds: [1],
+      membersIds: projectData.memberIds,
     });
     console.log(response);
     return response;
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error(error.response.data);
+    Object.values(error.response.data).forEach((value) => alert(value));
+    // alert("에러가 발생했습니다.");
     info.revert();
   }
 };

@@ -15,13 +15,23 @@ interface SelectedDataType {
   }[];
 }
 
+interface SelectCategoryProps {
+  selectedData: SelectedDataType;
+  setSelectedData: React.Dispatch<React.SetStateAction<SelectedDataType>>;
+  cateError: boolean;
+  setCateError: React.Dispatch<React.SetStateAction<boolean>>;
+  subCateError: boolean;
+  setSubCateError: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const SelectCategory = ({
   selectedData,
   setSelectedData,
-}: {
-  selectedData: SelectedDataType;
-  setSelectedData: React.Dispatch<React.SetStateAction<SelectedDataType>>;
-}) => {
+  cateError,
+  setCateError,
+  subCateError,
+  setSubCateError,
+}: SelectCategoryProps) => {
   // API에서 카테고리 정보 가져오기
   const { data: allCategoryData } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategoryData"],
@@ -47,6 +57,7 @@ const SelectCategory = ({
       categoryName,
       subCategories: [],
     });
+    setCateError(false);
   };
 
   // 세부항목 선택 함수
@@ -82,6 +93,7 @@ const SelectCategory = ({
         };
       }
     });
+    setSubCateError(false);
   };
 
   return (
@@ -89,11 +101,18 @@ const SelectCategory = ({
       {/* 분야 */}
       <div>
         <p className="w-full font-bold">분야</p>
+        {cateError && (
+          <p className="text-[13px] text-header-red-hover">
+            분야를 필수로 선택해주세요
+          </p>
+        )}
 
         {/* 분야 선택창 */}
         <div
           className={`flex flex-col gap-[10px]
-          w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px]
+          w-full border-[1px] ${
+            cateError ? "border-header-red-hover" : "border-gray01"
+          } rounded-[2px] px-[10px] py-[5px]
           text-center ${
             selectedData.categoryName ? "text-logo-green" : "text-gray01"
           }
@@ -130,13 +149,22 @@ const SelectCategory = ({
       {selectedData.categoryId && (
         <div className="flex flex-col gap-[5px]">
           <p className="w-full font-bold">세부항목</p>
+          {subCateError && (
+            <p className="text-header-red-hover text-[13px]">
+              세부항목을 1개 이상 선택해주세요
+            </p>
+          )}
 
           {allCategoryData
             ?.find((category) => category.id === selectedData.categoryId)
             ?.subcategories.map((subcate) => (
               <div key={subcate.id}>
                 {/* 세부항목 선택창 */}
-                <div className="flex flex-col gap-[10px] w-full border-[1px] border-gray01 rounded-[2px] px-[10px] py-[5px] text-center text-gray01 text-[14px] font-bold">
+                <div
+                  className={`flex flex-col gap-[10px] w-full border-[1px] ${
+                    subCateError ? "border-header-red" : "border-gray01"
+                  } rounded-[2px] px-[10px] py-[5px] text-center text-gray01 text-[14px] font-bold`}
+                >
                   <div
                     className="flex justify-between cursor-pointer"
                     onClick={() =>

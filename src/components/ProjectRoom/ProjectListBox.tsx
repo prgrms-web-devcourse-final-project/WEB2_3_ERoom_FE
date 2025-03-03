@@ -36,6 +36,8 @@ const ProjectListBox = ({
 
   const { mutateAsync: leaveProjectFn } = useMutation({
     mutationFn: (projectId: number) => leaveProject(projectId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] }),
   });
 
   const deleteOrLeave = async (type: "DELETE" | "LEAVE", projectId: number) => {
@@ -130,15 +132,17 @@ const ProjectListBox = ({
           {/* 버튼 모음 */}
           <div className="w-[130px] flex gap-[10px] items-center">
             {/* 수정 */}
-            <Button
-              text="수정"
-              size="md"
-              css="w-full h-[40px] border-main-green02 text-main-green01"
-              onClick={(e) => {
-                e.stopPropagation(); // 이벤트 전파 방지
-                setIsEditProjectModal(true); // 모달 열기
-              }}
-            />
+            {ISCREATED_BY_LOGINUSER && (
+              <Button
+                text="수정"
+                size="md"
+                css="w-full h-[40px] border-main-green02 text-main-green01"
+                onClick={(e) => {
+                  e.stopPropagation(); // 이벤트 전파 방지
+                  setIsEditProjectModal(true); // 모달 열기
+                }}
+              />
+            )}
 
             {/* 나가기 / 삭제 */}
             <Button
