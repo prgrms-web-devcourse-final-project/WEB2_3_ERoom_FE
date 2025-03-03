@@ -41,6 +41,8 @@ const Calendar = () => {
           subCategoryId: data.id,
           tagIds: data.tags.map((tag) => tag.id),
         }));
+
+        const members = project.members.map((member) => member.memberId);
         return {
           id: project.id,
           title: project.name,
@@ -51,7 +53,7 @@ const Calendar = () => {
           category: project.categoryName,
           subCategories: subCate,
           status: project.status,
-          membersIds: project.members,
+          membersIds: members,
           creatorId: project.creatorId,
         };
       });
@@ -110,7 +112,7 @@ const Calendar = () => {
       // 일정 길이 변경 드래그
       eventResize={(info: any) => {
         console.log(info);
-        // mutate(info);
+        mutate(info);
       }}
     />
   );

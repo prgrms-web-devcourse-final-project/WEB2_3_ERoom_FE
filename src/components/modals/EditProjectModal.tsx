@@ -59,6 +59,7 @@ const EditProjectModal = ({
   const [pageError, setPageError] = useState(false);
   // 카테고리오류
   const [cateError, setCateError] = useState(false);
+  const [subCateError, setSubCateError] = useState(false);
 
   // 선택한 팀원 상태 api수정되면 추가 수정필요
   const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
@@ -127,6 +128,37 @@ const EditProjectModal = ({
 
   // 최종 새프로젝트 정보
 
+  // 프로젝트명, 분야 validate
+  const validateFn = () => {
+    console.log(newProjectInfo);
+    if (!newProjectNameValue.trim().length) {
+      setPageError(true);
+      return;
+    }
+
+    if (!newProjectInfo.categoryId) {
+      setCateError(true);
+      return;
+    }
+
+    const noTags = newProjectInfo.subCategories
+      ? newProjectInfo.subCategories.some(
+          (subCate) => subCate.tagIds.length > 0
+        )
+      : false;
+
+    if (
+      !newProjectInfo.subCategories ||
+      !newProjectInfo.subCategories.length ||
+      !noTags
+    ) {
+      setSubCateError(true);
+      return;
+    }
+
+    setPages(pages === 0 ? 1 : 0);
+  };
+
   // 시작날짜 포맷
   const startFormattedDate = dayjs(
     `${startDateInfo.year}-${startDateInfo.month}-${startDateInfo.day} ${startDateInfo.hour}:${startDateInfo.minute} ${startDateInfo.ampm}`,
@@ -192,17 +224,12 @@ const EditProjectModal = ({
     selectedProject: ProjectListType,
     editProjectInfo: patchProjectRequestType
   ) => {
-    try {
-      const response = await editProjectFn({
-        selectedProject,
-        editProjectInfo,
-      });
-      console.log(response);
-      navigate(0);
-    } catch (error) {
-      console.error(error);
-      alert("오류가 발생했습니다.");
-    }
+    const response = await editProjectFn({
+      selectedProject,
+      editProjectInfo,
+    });
+    console.log(response);
+    navigate(0);
   };
 
   return (
@@ -234,9 +261,14 @@ const EditProjectModal = ({
               setPageError={setPageError}
             />
             {/* 분야 검색 */}
+
             <SelectCategory
               selectedData={selectedCategory}
               setSelectedData={setSelectedCategory}
+              cateError={cateError}
+              setCateError={setCateError}
+              subCateError={subCateError}
+              setSubCateError={setSubCateError}
             />
           </div>
         )}
@@ -248,6 +280,8 @@ const EditProjectModal = ({
               value="프로젝트"
               selectedMembers={selectedMember}
               setSelectedMembers={setSelectedMember}
+              type="project"
+              selectedData={selectedProject}
             />
             {/* 기간 설정 */}
             <div className="flex flex-col gap-[5px]">
@@ -305,13 +339,7 @@ const EditProjectModal = ({
             text={pages === 0 ? "다음" : "이전"}
             size="md"
             css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
-            onClick={() => {
-              if (!newProjectNameValue.trim().length) {
-                setPageError(true);
-                return;
-              }
-              setPages(pages === 0 ? 1 : 0);
-            }}
+            onClick={validateFn}
           />
           {selectedProject
             ? pages === 1 && (

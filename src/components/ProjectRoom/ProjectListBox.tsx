@@ -36,6 +36,8 @@ const ProjectListBox = ({
 
   const { mutateAsync: leaveProjectFn } = useMutation({
     mutationFn: (projectId: number) => leaveProject(projectId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] }),
   });
 
   const deleteOrLeave = async (type: "DELETE" | "LEAVE", projectId: number) => {
