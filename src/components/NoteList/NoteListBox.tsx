@@ -1,4 +1,15 @@
-const NoteListBox = ({ onClick }: { onClick: () => void }) => {
+import { formatToAMPM } from "../../utils/aiNote/dateUtils";
+
+const NoteListBox = ({
+  onClick,
+  note,
+}: {
+  onClick: () => void;
+  note: AINoteListType;
+}) => {
+  const startDateFormatted = formatToAMPM(note.startDate);
+  const endDateFormatted = formatToAMPM(note.endDate);
+
   return (
     <div
       onClick={onClick}
@@ -7,7 +18,7 @@ const NoteListBox = ({ onClick }: { onClick: () => void }) => {
       <div className="flex w-full justify-between">
         <div className="flex items-center">
           <span className="text-main-green font-medium text-[12px] ">
-            회의록 제목
+            {note.title}
           </span>
         </div>
         <div className="flex items-center gap-[10px]">
@@ -16,10 +27,10 @@ const NoteListBox = ({ onClick }: { onClick: () => void }) => {
           </span>
           <div className="flex flex-col ">
             <span className="font-light text-main-green text-[10px] text-right">
-              2025-03-13 AM 09:00
+              {startDateFormatted}
             </span>
             <span className="font-light text-main-green text-[10px] text-right">
-              ~2025-03-13 AM 14:43
+              ~{endDateFormatted}
             </span>
           </div>
         </div>
