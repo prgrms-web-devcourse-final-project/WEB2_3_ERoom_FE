@@ -24,6 +24,7 @@ export const dragChange = async (info: EventDropArg) => {
     return response;
   } catch (error) {
     console.error(error);
+    alert("에러가 발생했습니다.");
     info.revert();
   }
 };
