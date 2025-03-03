@@ -1,15 +1,19 @@
 import { useRef, useState } from "react";
 import Button from "../common/Button";
 import { formatToAMPM } from "../../utils/aiNote/dateUtils";
+import { useMutation } from "@tanstack/react-query";
+import { editAINote } from "../../api/meetingroom";
 
 const NoteDetailModal = ({
   onClose,
   onGoBack,
   note,
+  refetchAINoteList,
 }: {
   onClose: () => void;
   onGoBack: () => void;
   note: AINoteListType | undefined;
+  refetchAINoteList: () => void;
 }) => {
   //추후 기존 회의록 내용을 초기값으로 지정
   const [isAINote, setIsAINote] = useState(note?.content);
@@ -19,6 +23,47 @@ const NoteDetailModal = ({
   const handleAINote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setIsAINote(e.target.value);
   };
+
+  //AI 회의록 등록(수정 반영해)
+  const { mutateAsync: fetchEditAINote } = useMutation<
+    void,
+    Error,
+    { reportId: number | undefined; content: string | undefined }
+  >({
+    mutationFn: async ({ reportId, content }) =>
+      await editAINote(reportId, content),
+    onSuccess: () => {
+      console.log("회의록이 수정되었습니다.");
+    },
+    onError: (error) => {
+      console.error("회의록 수정 실패:", error);
+    },
+  });
+
+  const reportId = note?.id;
+
+  const handleRegisterAINote = async () => {
+    if (reportId === null || isAINote === "") {
+      console.error("유효한 reportId가 없거나 회의록 내용이 비어 있습니다.");
+      return;
+    }
+
+    // 값이 변경되지 않았다면 API 요청을 하지 않음
+    if (isAINote === note?.content) {
+      console.log("변경된 내용이 없어 수정 요청을 보내지 않습니다.");
+      return;
+    }
+    console.log("등록 요청 reportId:", reportId);
+    console.log("등록 요청 content:", isAINote);
+
+    try {
+      await fetchEditAINote({ reportId, content: isAINote });
+      refetchAINoteList();
+    } catch (error) {
+      console.error("회의록 등록 실패:", error);
+    }
+  };
+
   const handleEdit = () => {
     setIsEdit((prev) => {
       const newEditState = !prev;
@@ -37,6 +82,11 @@ const NoteDetailModal = ({
       }
       return newEditState;
     });
+  };
+
+  const handleGoBack = () => {
+    refetchAINoteList();
+    onGoBack();
   };
 
   const startDateFormatted = formatToAMPM(note?.startDate);
@@ -78,7 +128,12 @@ const NoteDetailModal = ({
                   ? "bg-white border border-logo-green text-logo-green"
                   : "border border-logo-green1 bg-logo-green text-main-beige01"
               }`}
-              onClick={handleEdit}
+              onClick={() => {
+                if (!isEdit) {
+                  handleRegisterAINote();
+                }
+                handleEdit();
+              }}
             />
           </div>
           <div className="w-[900px] h-[300px] pt-[10px] px-[10px] border overflow-y-auto">
@@ -94,7 +149,7 @@ const NoteDetailModal = ({
             <Button
               text="이전"
               size="md"
-              onClick={onGoBack}
+              onClick={handleGoBack}
               css="w-[128px] h-[29px] border border-main-green01 bg-white text-main-green01 font-bold"
             />
             <Button

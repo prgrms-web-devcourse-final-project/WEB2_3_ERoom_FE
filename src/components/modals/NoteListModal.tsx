@@ -59,6 +59,7 @@ const NoteListModal = ({
                   date={date}
                   onClose={onClose}
                   notes={notes}
+                  refetchAINoteList={refetch}
                 />
               ))}
             </div>

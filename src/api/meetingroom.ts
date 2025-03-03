@@ -38,7 +38,7 @@ export const getAINote = async (
 
 // AI 회의록 수정 API
 export const editAINote = async (
-  reportId: number,
+  reportId: number | undefined,
   content: string | undefined
 ): Promise<void> => {
   try {

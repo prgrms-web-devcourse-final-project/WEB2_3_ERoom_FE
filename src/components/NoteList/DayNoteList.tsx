@@ -6,10 +6,12 @@ const DayNoteList = ({
   onClose,
   date,
   notes,
+  refetchAINoteList,
 }: {
   onClose: () => void;
   date: string;
   notes: AINoteListType[];
+  refetchAINoteList: () => void;
 }) => {
   const [openNoteDetail, setOpenNoteDetail] = useState(false);
   const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
@@ -47,6 +49,7 @@ const DayNoteList = ({
             onClose={onClose}
             onGoBack={handleGoBack}
             note={notes.find((note) => note.id === selectedNoteId)}
+            refetchAINoteList={refetchAINoteList}
           />
         </div>
       )}
