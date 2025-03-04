@@ -120,87 +120,9 @@ const ProjectRoom = () => {
             ))
           ) : (
             <p className="text-[30px] font-semibold flex items-center justify-center h-screen pb-[80px] text-main-green01">
-              {filterProject}가 없습니다
+              {filterProject}가 없습니다!
             </p>
           )}
-          {/* {filterProject === "진행 예정 프로젝트" &&
-            (projectRoomList?.beforeStart.length ? (
-              projectRoomList?.beforeStart.map((project, idx) => (
-                <ProjectListBox
-                  key={project.id}
-                  idx={idx}
-                  projectId={+project.id}
-                  filterProject={filterProject}
-                  projectInfo={project}
-                />
-              ))
-            ) : (
-              <p className="text-[30px] font-semibold flex items-center justify-center h-screen pb-[80px] text-main-green01">
-                진행 예정인 프로젝트가 없습니다
-              </p>
-            ))}
-          {filterProject === "진행 중인 프로젝트" &&
-            (projectRoomList?.inProgress.length ? (
-              projectRoomList?.inProgress.map((project, idx) => (
-                <ProjectListBox
-                  key={project.id}
-                  idx={idx}
-                  projectId={+project.id}
-                  filterProject={filterProject}
-                  projectInfo={project}
-                />
-              ))
-            ) : (
-              <p className="text-[30px] font-semibold flex items-center justify-center h-screen pb-[80px] text-main-green01">
-                진행 중인 프로젝트가 없습니다!
-              </p>
-            ))}
-          {filterProject === "진행 완료 프로젝트" &&
-            (projectRoomList?.completed.length ? (
-              projectRoomList?.completed.map((project, idx) => (
-                <ProjectListBox
-                  key={project.id}
-                  idx={idx}
-                  projectId={+project.id}
-                  filterProject={filterProject}
-                  projectInfo={project}
-                />
-              ))
-            ) : (
-              <p className="text-[30px] font-semibold flex items-center justify-center h-screen pb-[80px] text-main-green01">
-                진행 완료된 프로젝트가 없습니다
-              </p>
-            ))} */}
-          {/* {filterProject === "진행 예정 프로젝트" &&
-            projectRoomList?.beforeStart.map((project, idx) => (
-              <ProjectListBox
-                key={project.id}
-                idx={idx}
-                projectId={+project.id}
-                filterProject={filterProject}
-                projectInfo={project}
-              />
-            ))}
-          {filterProject === "진행 중인 프로젝트" &&
-            projectRoomList?.inProgress.map((project, idx) => (
-              <ProjectListBox
-                key={project.id}
-                idx={idx}
-                projectId={+project.id}
-                filterProject={filterProject}
-                projectInfo={project}
-              />
-            ))}
-          {filterProject === "진행 완료 프로젝트" &&
-            projectRoomList?.completed.map((project, idx) => (
-              <ProjectListBox
-                key={project.id}
-                idx={idx}
-                projectId={+project.id}
-                filterProject={filterProject}
-                projectInfo={project}
-              />
-            ))} */}
         </div>
       </div>
 

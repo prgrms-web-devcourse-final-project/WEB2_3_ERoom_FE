@@ -101,7 +101,7 @@ const Calendar = () => {
       editable={true}
       droppable={true}
       eventDrop={(info: EventDropArg) => {
-        if (loginUser.userId !== info.event.extendedProps.creatorId) {
+        if (loginUser.id !== info.event.extendedProps.creatorId) {
           alert("프로젝트 생성자만 수정할 수 있습니다.");
           info.revert();
           return;
