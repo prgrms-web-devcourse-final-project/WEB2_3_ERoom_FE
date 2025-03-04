@@ -2,6 +2,7 @@ import { useState } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
 import { dummy } from "../../dummyData/dummy";
+import useWebSocketStore from "../../store/useWebSocketStore";
 
 const AlarmModal = ({ onClose }: AlarmModalProps) => {
   // 임시 더미 알람 데이터
@@ -16,6 +17,9 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
       prevAlarms.filter((alarm) => alarm.id !== id)
     );
   };
+
+  // 웹소켓을 통해 가져온 알람 데이터
+  const { notifications } = useWebSocketStore();
 
   return (
     <div

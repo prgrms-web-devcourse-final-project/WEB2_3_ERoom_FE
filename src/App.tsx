@@ -12,8 +12,17 @@ import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import KakaoRedirect from "./pages/KakaoRedirect";
+import useWebSocketStore from "./store/useWebSocketStore";
+import { useEffect } from "react";
 
 const App = () => {
+  const { connectWebSocket, subscribeToNotifications } = useWebSocketStore();
+
+  useEffect(() => {
+    connectWebSocket(); // 전역 웹소켓 연결
+    const memberId = 3; // 실제 로그인한 사용자 ID 가져오기
+    subscribeToNotifications(memberId); // 알람 구독
+  }, []);
   return (
     <Routes>
       {/* 로그인, 회원가입, 소속등록 페이지 */}
