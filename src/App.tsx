@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import SignIn from "./pages/SignIn";
+import SignIn from "./pages/SignIn.tsx";
 import AuthLayout from "./components/layout/AuthLayout";
 import SignUpCompanyInfo from "./pages/SignUpCompanyInfo";
 import MainPage from "./pages/MainPage";
