@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import { useState } from "react";
 
 interface ManagersType {
-  id: number;
+  memberId: number;
   username: string;
   profile: string;
   email?: string;

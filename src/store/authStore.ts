@@ -1,17 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  organization: string;
-  profileImage?: string;
-}
+// interface User {
+//   id: number;
+//   email: string;
+//   name: string;
+//   organization: string;
+//   profileImage?: string;
+// }
 
 interface AuthState {
   isAuthenticated: boolean;
-  token: null | string;
+  idToken: null | string;
   accessToken?: null | string;
   refreshToken?: null | string;
   member: Member | null;
@@ -19,7 +19,12 @@ interface AuthState {
   // user: User | null;
   // login: (userData: User | null, token: null | string) => void;
   user: any;
-  login: (accessToken: string | null, member: Member | null) => void;
+  login: (
+    idToken: string | null,
+    accessToken: string | null,
+    refreshToken: string | null,
+    member: Member | null
+  ) => void;
   logout: () => void;
 }
 
@@ -40,19 +45,9 @@ export const useAuthStore = create(
     (set) => ({
       isAuthenticated: false,
       //카카오 로그인 주석 처리
-      token: null,
+      idToken: null,
       accessToken: null,
-      member: {
-        createdAt: "",
-        deleteStatus: "",
-        email: "",
-        id: 0,
-        memberGrade: "",
-        organization: "",
-        password: "",
-        profile: "",
-        username: "",
-      },
+      member: null,
       // user: null,
       // login: (userData, token?) =>
       //   set(() => ({ user: userData, token, isAuthenticated: true })),
@@ -61,15 +56,17 @@ export const useAuthStore = create(
       //     return { user: null, token: null, isAuthenticated: false };
       //   }),
       user: null,
-      login: (accessToken, user) =>
+      login: (idToken, accessToken, refreshToken, member) =>
         set(() => ({
+          idToken,
           accessToken,
-          user,
+          refreshToken,
+          member,
           isAuthenticated: true,
         })),
       logout: () =>
         set(() => {
-          return { user: null, isAuthenticated: false };
+          return { user: null, accessToken: null, isAuthenticated: false };
         }),
     }),
     {

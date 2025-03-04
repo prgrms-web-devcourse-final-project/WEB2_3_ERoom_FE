@@ -38,7 +38,12 @@ api.interceptors.response.use(
           const res = await axios.post("/api/auth/signup", { refreshToken });
 
           // 새 accessToken 저장
-          login(res.data.accessToken, res.data.member);
+          login(
+            res.data.idToken,
+            res.data.accessToken,
+            res.data.refreshToken,
+            res.data.member
+          );
 
           // 요청 헤더 업데이트 후 재시도
           originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;

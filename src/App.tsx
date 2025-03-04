@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import SignIn from "./pages/SignIn";
+import SignIn from "./pages/SignIn.tsx";
 import AuthLayout from "./components/layout/AuthLayout";
 import SignUpCompanyInfo from "./pages/SignUpCompanyInfo";
 import MainPage from "./pages/MainPage";
@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import KakaoRedirect from "./pages/KakaoRedirect";
+import NotFound from "./pages/NotFound";
 import useWebSocketStore from "./store/useWebSocketStore";
 import { useEffect } from "react";
 
@@ -51,6 +52,7 @@ const App = () => {
       </Route>
       <Route element={<HeaderLayout />}>
         <Route path="/" element={<MainPage />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

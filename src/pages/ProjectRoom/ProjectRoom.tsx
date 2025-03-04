@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import ProjectListBox from "../../components/ProjectRoom/ProjectListBox";
 import Button from "../../components/common/Button";
@@ -13,7 +13,7 @@ interface ProjectRoomData {
   beforeStart: ProjectListType[];
 }
 
-const FILTER_PROJECT: (
+const PROJECT_TAB: (
   | "진행 완료 프로젝트"
   | "진행 중인 프로젝트"
   | "진행 예정 프로젝트"
@@ -39,10 +39,6 @@ const ProjectRoom = () => {
       const beforeStartData = dataList.filter(
         (list) => list.status === "BEFORE_START"
       );
-      console.log(dataList);
-      console.log(dataList.filter((list) => list.status === "IN_PROGRESS"));
-      console.log(dataList.filter((list) => list.status === "COMPLETED"));
-      console.log(dataList.filter((list) => list.status === "BEFORE_START"));
       return {
         completed: completedData,
         inProgress: inProgressData,
@@ -51,12 +47,13 @@ const ProjectRoom = () => {
     },
   });
 
-  useEffect(() => {
-    console.log(projectRoomList, isLoading);
-    if (projectRoomList) {
-      console.log(projectRoomList.completed);
-    }
-  }, [projectRoomList]);
+  const FILTER_PROJECT_VALUE = {
+    "진행 예정 프로젝트": projectRoomList?.beforeStart,
+    "진행 중인 프로젝트": projectRoomList?.inProgress,
+    "진행 완료 프로젝트": projectRoomList?.completed,
+  };
+
+  const filterProjects = FILTER_PROJECT_VALUE[filterProject];
 
   // 전체 프로젝트 나가기 모달
   const [isAllProjectOutModal, setIsAllProjectOutModal] =
@@ -77,7 +74,7 @@ const ProjectRoom = () => {
             className="flex justify-start items-center gap-5 h-[70px] text-[18px]
           font-bold text-black w-full max-w-[660px]"
           >
-            {FILTER_PROJECT.map((project, idx) => {
+            {PROJECT_TAB.map((project, idx) => {
               return (
                 <li
                   key={idx}
@@ -111,8 +108,8 @@ const ProjectRoom = () => {
           className="w-full max-h-[calc(100vh-220px)] min-h-[500px] flex flex-col gap-4 overflow-y-scroll scrollbar-none
           flex-grow  py-10 rounded-[10px]"
         >
-          {filterProject === "진행 예정 프로젝트" &&
-            projectRoomList?.beforeStart.map((project, idx) => (
+          {filterProjects?.length ? (
+            filterProjects.map((project, idx) => (
               <ProjectListBox
                 key={project.id}
                 idx={idx}
@@ -120,27 +117,12 @@ const ProjectRoom = () => {
                 filterProject={filterProject}
                 projectInfo={project}
               />
-            ))}
-          {filterProject === "진행 중인 프로젝트" &&
-            projectRoomList?.inProgress.map((project, idx) => (
-              <ProjectListBox
-                key={project.id}
-                idx={idx}
-                projectId={+project.id}
-                filterProject={filterProject}
-                projectInfo={project}
-              />
-            ))}
-          {filterProject === "진행 완료 프로젝트" &&
-            projectRoomList?.completed.map((project, idx) => (
-              <ProjectListBox
-                key={project.id}
-                idx={idx}
-                projectId={+project.id}
-                filterProject={filterProject}
-                projectInfo={project}
-              />
-            ))}
+            ))
+          ) : (
+            <p className="text-[30px] font-semibold flex items-center justify-center h-screen pb-[80px] text-main-green01">
+              {filterProject}가 없습니다!
+            </p>
+          )}
         </div>
       </div>
 

@@ -4,9 +4,9 @@ import Calendar from "../components/MainPage/Calendar";
 import { useAuthStore } from "../store/authStore";
 import GuestMain from "../components/MainPage/GuestMain";
 const MainPage = () => {
-  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.accessToken);
 
-  return user ? (
+  return isAuthenticated ? (
     <div
       className={twMerge(
         `bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0

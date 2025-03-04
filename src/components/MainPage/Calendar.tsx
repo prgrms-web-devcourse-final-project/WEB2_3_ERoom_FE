@@ -25,7 +25,7 @@ const TASK_BUTTON = {
 
 const Calendar = () => {
   const navigate = useNavigate();
-  const loginUser = useAuthStore((state) => state.user);
+  const loginUser = useAuthStore((state) => state.member);
 
   // fullcalandar 타입 때문에 EventInput 타입 적용
   const { data: projectListData, isLoading } = useQuery<EventInput[]>({
@@ -101,7 +101,7 @@ const Calendar = () => {
       editable={true}
       droppable={true}
       eventDrop={(info: EventDropArg) => {
-        if (loginUser.userId !== info.event.extendedProps.creatorId) {
+        if (loginUser?.id !== info.event.extendedProps.creatorId) {
           alert("프로젝트 생성자만 수정할 수 있습니다.");
           info.revert();
           return;

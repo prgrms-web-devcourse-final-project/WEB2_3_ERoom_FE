@@ -70,6 +70,7 @@ const AdminProject = () => {
         projectStatus: project.projectStatus,
         startDate: project.startDate,
         endDate: project.endDate,
+        createAt: project.createdAt,
       }));
 
       setSearchResult(convertedProjects);

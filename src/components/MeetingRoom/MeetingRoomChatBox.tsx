@@ -6,8 +6,9 @@ import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
 import { getMeetingroom } from "../../api/meetingroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Message } from "@stomp/stompjs";
-import useWebSocketStore from "../../store/useWebSocketStore";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+import { useAuthStore } from "../../store/authStore";
 
 const MeetingRoomChatBox = ({
   css,
@@ -85,42 +86,60 @@ const MeetingRoomChatBox = ({
     }
   }, [messageList]);
 
-  const { getStompClient } = useWebSocketStore(); // 전역 웹소켓 가져오기
-  const stompClient = getStompClient(); // STOMP 클라이언트 가져오기
+  const [stompClient, setStompClient] = useState<Client | null>(null);
   const queryClient = useQueryClient();
 
   //웹소켓 연결 설정
   useEffect(() => {
     if (!messageList?.groupChatRoom?.chatRoomId) return;
-    if (!stompClient) {
-      console.log(" STOMP 클라이언트가 아직 없음. 기다리는 중...");
-      return;
-    }
-
-    console.log("채팅방 구독 시작:", messageList.groupChatRoom.chatRoomId);
 
     if (messageList?.groupChatRoom?.messages) {
       setMessages(messageList.groupChatRoom.messages);
     }
 
-    const subscription = stompClient.subscribe(
-      `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`,
-      (msg: Message) => {
-        const newMessage = JSON.parse(msg.body);
-        console.log("새로운 메시지 도착:", newMessage);
+    const { accessToken } = useAuthStore.getState();
 
-        // 새 메시지를 추가하지 않고, 서버 데이터를 다시 불러오도록 트리거
-        queryClient.invalidateQueries({
-          queryKey: ["meetingroom", projectId],
-        });
-      }
-    );
+    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
+    const client = new Client({
+      webSocketFactory: () => socket,
+      reconnectDelay: 5000, // 재연결 설정 (5초)
+      connectHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      onConnect: () => {
+        console.log("Connected to WebSocket");
+
+        // 기존 구독을 해제하고 새로 구독
+        client.unsubscribe(
+          `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`
+        );
+
+        // 채팅방 구독
+        client.subscribe(
+          `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`,
+          (msg) => {
+            const newMessage = JSON.parse(msg.body);
+            console.log("새로운 메시지 도착:", newMessage);
+
+            // 새 메시지를 추가하지 않고, 서버 데이터를 다시 불러오도록 트리거
+            queryClient.invalidateQueries({
+              queryKey: ["meetingroom", projectId],
+            });
+          }
+        );
+
+        setStompClient(client);
+      },
+      onStompError: (frame) => {
+        console.error("STOMP Error:", frame);
+      },
+    });
+    client.activate();
 
     return () => {
-      console.log("채팅방 구독 해제:", messageList.groupChatRoom.chatRoomId);
-      subscription.unsubscribe();
+      if (client) client.deactivate();
     };
-  }, [stompClient, messageList?.groupChatRoom.chatRoomId]);
+  }, [messageList?.groupChatRoom.chatRoomId]);
 
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
     if (e) e.preventDefault();
@@ -130,7 +149,7 @@ const MeetingRoomChatBox = ({
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
-        senderName: "member3", // 추후 로그인한 사용자 name으로 수정
+        senderName: "member3", // 추후 로그인한 사용자 id값으로 수정
         message: text,
         chatRoomId: messageList.groupChatRoom.chatRoomId,
         senderProfile: messageList.groupChatRoom.senderProfile, // 프로필 이미지 추가
