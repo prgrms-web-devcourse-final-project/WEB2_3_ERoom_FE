@@ -2,7 +2,6 @@ import { useState } from "react";
 import Button from "../components/common/Button";
 import defaultImg from "../assets/defaultImg.svg";
 import { useAuthStore } from "../store/authStore";
-import axios from "axios";
 import { api } from "../api/api";
 import { useNavigate } from "react-router";
 
@@ -11,14 +10,13 @@ const SignUpCompanyInfo = () => {
   const [profileImg, setProfileImg] = useState<string | null>(defaultImg);
   const [userName, setUserName] = useState<string>("");
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const { login } = useAuthStore();
-  const { token } = useAuthStore();
+  const { login, idToken } = useAuthStore();
   const navigate = useNavigate();
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
   };
-
+  // console.log(useAuthStore.getState().idToken);
   const handleUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
   };
@@ -36,7 +34,7 @@ const SignUpCompanyInfo = () => {
     // 텍스트 필드 추가
     formData.append("organization", companyInfo);
     formData.append("username", userName ?? "");
-    formData.append("idToken", token ?? "");
+    formData.append("idToken", idToken ?? "");
 
     // 이미지 파일 추가 (FileReader로 읽은 dataURL을 Blob으로 변환)
     if (profileImg) {
@@ -54,12 +52,17 @@ const SignUpCompanyInfo = () => {
       const response = await api.post("/api/auth/signup", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${idToken}`,
         },
       });
       console.log("서버 응답:", response.data);
       alert("회원가입이 완료되었습니다.");
-      login(response.data.accessToken, response.data.member);
+      login(
+        idToken,
+        response.data.accessToken,
+        response.data.refreshToken,
+        response.data.member
+      );
       navigate("/");
     } catch (error) {
       console.error("업로드 실패:", error);
