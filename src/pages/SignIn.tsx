@@ -10,8 +10,8 @@ import useGoogleLogin from "../hooks/useGoogleLogin";
 
 const SignIn = () => {
   // const login = useAuthStore((state) => state.login);
-  const access = useAuthStore((state) => state.accessToken);
   // const { handleKakaoLogin, loading } = useKakaoLogin();
+  const access = useAuthStore((state) => state.accessToken);
   const { handleGoogleLogin } = useGoogleLogin();
 
   if (access) {
