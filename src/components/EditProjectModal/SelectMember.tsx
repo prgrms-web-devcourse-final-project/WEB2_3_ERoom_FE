@@ -19,7 +19,7 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   value,
   type,
 }: SelectMembersProps<T>) => {
-  const loginUser = useAuthStore((state) => state.user);
+  const loginUser = useAuthStore((state) => state.member);
 
   console.log(selectedData);
 
@@ -64,7 +64,7 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   /* 검색 결과 클릭 시, 선택된 팀원 업데이트 */
   const handleMemberClick = (member: MemberType) => {
     if (type === "project") {
-      if (loginUser.userId === member.memberId) {
+      if (loginUser?.id === member.memberId) {
         return alert("프로젝트 생성자는 자동으로 참여인원에 포함됩니다.");
       }
     }
