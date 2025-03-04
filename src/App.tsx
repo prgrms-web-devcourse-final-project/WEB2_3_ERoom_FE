@@ -15,15 +15,22 @@ import KakaoRedirect from "./pages/KakaoRedirect";
 import NotFound from "./pages/NotFound";
 import useWebSocketStore from "./store/useWebSocketStore";
 import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore.ts";
 
 const App = () => {
-  const { connectWebSocket, subscribeToNotifications } = useWebSocketStore();
+  const { connectWebSocket } = useWebSocketStore();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const memberId = useAuthStore((state) => state.member?.id);
 
   useEffect(() => {
-    connectWebSocket(); // 전역 웹소켓 연결
-    const memberId = 3; // 실제 로그인한 사용자 ID 가져오기
-    subscribeToNotifications(memberId); // 알람 구독
-  }, []);
+    if (!accessToken || !memberId) {
+      console.warn("대기 중... accessToken 또는 memberId가 없음.");
+      return;
+    }
+
+    console.log(" 전역 웹소켓 연결 시작:", accessToken, memberId);
+    connectWebSocket(accessToken, memberId);
+  }, [accessToken, memberId]);
   return (
     <Routes>
       {/* 로그인, 회원가입, 소속등록 페이지 */}

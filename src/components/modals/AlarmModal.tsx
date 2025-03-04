@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
 import { dummy } from "../../dummyData/dummy";
@@ -20,6 +20,9 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
 
   // 웹소켓을 통해 가져온 알람 데이터
   const { notifications } = useWebSocketStore();
+  useEffect(() => {
+    console.log("알람데이터", notifications);
+  }, []);
 
   return (
     <div

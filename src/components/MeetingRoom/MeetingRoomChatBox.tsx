@@ -141,6 +141,7 @@ const MeetingRoomChatBox = ({
     };
   }, [messageList?.groupChatRoom.chatRoomId]);
 
+  const userName = useAuthStore((state) => state.member?.username);
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
     if (e) e.preventDefault();
     if (!stompClient || !text.trim() || !messageList?.groupChatRoom.chatRoomId)
@@ -149,7 +150,7 @@ const MeetingRoomChatBox = ({
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
-        senderName: "member3", // 추후 로그인한 사용자 id값으로 수정
+        senderName: userName,
         message: text,
         chatRoomId: messageList.groupChatRoom.chatRoomId,
         senderProfile: messageList.groupChatRoom.senderProfile, // 프로필 이미지 추가
