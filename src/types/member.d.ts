@@ -31,5 +31,5 @@ interface SelectMembersProps {
   selectedMembers?: MemberType[];
   setSelectedMembers?: React.Dispatch<React.SetStateAction<selectedMembers>>;
   value: string;
-  type: string;
+  type?: string;
 }
