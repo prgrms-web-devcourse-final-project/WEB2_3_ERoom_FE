@@ -8,6 +8,7 @@ import { getMeetingroom } from "../../api/meetingroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { useAuthStore } from "../../store/authStore";
 
 const MeetingRoomChatBox = ({
   css,
@@ -96,10 +97,15 @@ const MeetingRoomChatBox = ({
       setMessages(messageList.groupChatRoom.messages);
     }
 
+    const { accessToken } = useAuthStore.getState();
+
     const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
     const client = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000, // 재연결 설정 (5초)
+      connectHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       onConnect: () => {
         console.log("Connected to WebSocket");
 
