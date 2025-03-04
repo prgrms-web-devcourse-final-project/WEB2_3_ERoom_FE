@@ -149,7 +149,7 @@ const AdminProjectList = ({
           )}
         </div>
         <div className="flex justify-center items-center">
-          <p>2025.03.03</p>
+          <p>{project.createAt.split("T")[0]}</p>
         </div>
         <div className="flex justify-center items-center">
           <p>

@@ -25,6 +25,7 @@ const ProjectListBox = ({
   console.log(projectInfo);
 
   const loginUser = useAuthStore((state) => state.member);
+  console.log(loginUser);
 
   const ISCREATED_BY_LOGINUSER = loginUser?.id === projectInfo.creatorId;
 

@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import KakaoRedirect from "./pages/KakaoRedirect";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
       </Route>
       <Route element={<HeaderLayout />}>
         <Route path="/" element={<MainPage />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
