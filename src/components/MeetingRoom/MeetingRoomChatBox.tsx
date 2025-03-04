@@ -6,8 +6,7 @@ import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
 import { getMeetingroom } from "../../api/meetingroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import SockJS from "sockjs-client";
-import { Client, Message } from "@stomp/stompjs";
+import { Message } from "@stomp/stompjs";
 import useWebSocketStore from "../../store/useWebSocketStore";
 
 const MeetingRoomChatBox = ({

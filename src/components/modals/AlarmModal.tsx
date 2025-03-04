@@ -41,8 +41,9 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
           />
         </div>
         <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto scrollbar-none">
-          {dummyAlarms.length > 0 ? (
-            dummyAlarms.map((alarm, index) => (
+          {/* 알림 데이터에 맞게 props 및 AlarmBox 컴포넌트 수정 필요 */}
+          {notifications.length > 0 ? (
+            notifications.map((alarm, index) => (
               <AlarmBox
                 key={index}
                 theme={alarm.theme}
