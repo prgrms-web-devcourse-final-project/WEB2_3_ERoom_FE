@@ -74,3 +74,57 @@ export const getAllCategory = async () => {
     console.error(error);
   }
 };
+
+// 관리자 활성 프로젝트 리스트
+export const getAdminProjectList = async () => {
+  try {
+    const { data } = await api.get("/admin/manage/project/list");
+    console.log("adminProject", data);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 관리자 비활성 프로젝트 리스트
+export const getAdminInActiveProjectList = async () => {
+  try {
+    const { data } = await api.get("/admin/manage/project/list", {
+      params: { deleteStatus: "deleted" },
+    });
+    console.log("adminInActiveProject", data);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 관리자 프로젝트 수정(업데이트)
+export const adminEditProject = async (
+  projectId: number,
+  editInfo: AdminProjectsListType
+) => {
+  try {
+    const response = await api.put(
+      `/admin/manage/project/${projectId}/modify`,
+      editInfo
+    );
+    console.log("editAdminProject", response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 관리자 프로젝트 삭제(완전 삭제)
+export const adminDeleteProject = async (projectId: number) => {
+  try {
+    const response = await api.delete(
+      `/admin/manage/project/${projectId}/delete`
+    );
+    console.log("adminDeleteProject", response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};

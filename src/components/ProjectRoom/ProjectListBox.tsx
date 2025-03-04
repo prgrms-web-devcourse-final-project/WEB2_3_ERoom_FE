@@ -6,6 +6,10 @@ import { useState } from "react";
 import EditProjectModal from "../modals/EditProjectModal";
 import ConfirmModal from "../modals/ConfirmModal";
 import { twMerge } from "tailwind-merge";
+import { useAuthStore } from "../../store/authStore";
+import { useMutation } from "@tanstack/react-query";
+import { deleteProject, leaveProject } from "../../api/project";
+import { queryClient } from "../../main";
 
 const ProjectListBox = ({
   projectId,
@@ -18,6 +22,50 @@ const ProjectListBox = ({
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
   // 프로젝트 나가기 모달
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
+  console.log(projectInfo);
+
+  const loginUser = useAuthStore((state) => state.user);
+
+  const ISCREATED_BY_LOGINUSER = loginUser.userId === projectInfo.creatorId;
+
+  const { mutateAsync: deleteProjectFn } = useMutation({
+    mutationFn: (projectId: number) => deleteProject(projectId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] }),
+  });
+
+  const { mutateAsync: leaveProjectFn } = useMutation({
+    mutationFn: (projectId: number) => leaveProject(projectId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] }),
+  });
+
+  const deleteOrLeave = async (type: "DELETE" | "LEAVE", projectId: number) => {
+    if (type === "DELETE") {
+      if (projectInfo.members.length > 1) {
+        return alert("프로젝트에 다른 멤버가 없어야 삭제할 수 있습니다.");
+      }
+
+      if (!ISCREATED_BY_LOGINUSER) {
+        return alert("프로젝트에 생성자만 삭제할 수 있습니다.");
+      }
+
+      try {
+        return await deleteProjectFn(projectId);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      if (ISCREATED_BY_LOGINUSER) {
+        return alert("프로젝트에 생성자는 나갈 수 없습니다.");
+      }
+      try {
+        return await leaveProjectFn(projectId);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <div
@@ -84,21 +132,25 @@ const ProjectListBox = ({
           {/* 버튼 모음 */}
           <div className="w-[130px] flex gap-[10px] items-center">
             {/* 수정 */}
-            <Button
-              text="수정"
-              size="md"
-              css="w-full h-[40px] border-main-green02 text-main-green01"
-              onClick={(e) => {
-                e.stopPropagation(); // 이벤트 전파 방지
-                setIsEditProjectModal(true); // 모달 열기
-              }}
-            />
+            {ISCREATED_BY_LOGINUSER && (
+              <Button
+                text="수정"
+                size="md"
+                css="w-full h-[40px] border-main-green02 text-main-green01"
+                onClick={(e) => {
+                  e.stopPropagation(); // 이벤트 전파 방지
+                  setIsEditProjectModal(true); // 모달 열기
+                }}
+              />
+            )}
 
-            {/* 나가기 */}
+            {/* 나가기 / 삭제 */}
             <Button
-              text="나가기"
+              text={ISCREATED_BY_LOGINUSER ? "삭제" : "나가기"}
               size="md"
-              css="w-full h-[40px] border-[#ff6854]/70 bg-white text-[#ff6854]"
+              css={`w-full h-[40px] border-[#ff6854]/70 bg-white text-[#ff6854] ${
+                ISCREATED_BY_LOGINUSER ? "bg-header-red text-white" : ""
+              }`}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsLeaveModal(true);
@@ -183,7 +235,12 @@ const ProjectListBox = ({
           <ConfirmModal
             processId={projectId}
             processType="프로젝트"
-            value="나가기"
+            value={ISCREATED_BY_LOGINUSER ? "삭제" : "나가기"}
+            deleteOrLeave={() =>
+              ISCREATED_BY_LOGINUSER
+                ? deleteOrLeave("DELETE", projectId)
+                : deleteOrLeave("LEAVE", projectId)
+            }
             setIsModal={setIsLeaveModal}
           />
         </div>

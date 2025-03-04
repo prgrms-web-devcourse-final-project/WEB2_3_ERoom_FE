@@ -100,14 +100,53 @@ const SignIn = () => {
           //임시 세션값 통한 로그인
           onClick={async () => {
             try {
-              const data = await postSignIn("qwerty2@gmail.com", "1234");
+              const data = await postSignIn("qwerty1@gmail.com", "1234");
               console.log(data);
-              login({ username: "asd" });
+              login({ username: "member1", userId: 1 });
             } catch (error) {
               console.error(error);
             }
           }}
         />
+        <button
+          onClick={async () => {
+            try {
+              const data = await postSignIn("qwerty1@gmail.com", "1234");
+              console.log(data);
+              login({ username: "member1", userId: 1 });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        >
+          1
+        </button>
+        <button
+          onClick={async () => {
+            try {
+              const data = await postSignIn("qwerty2@gmail.com", "1234");
+              console.log(data);
+              login({ username: "member2", userId: 2 });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        >
+          2
+        </button>
+        <button
+          onClick={async () => {
+            try {
+              const data = await postSignIn("qwerty3@gmail.com", "1234");
+              console.log(data);
+              login({ username: "member3", userId: 3 });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        >
+          3
+        </button>
         {/* (임시) 회원가입 되지 않은 상태 */}
         <Button
           text="구글 로그인"

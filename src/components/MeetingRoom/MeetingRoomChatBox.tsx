@@ -96,7 +96,7 @@ const MeetingRoomChatBox = ({
       setMessages(messageList.groupChatRoom.messages);
     }
 
-    const socket = new SockJS(`${import.meta.env.VITE_API_URL}ws`);
+    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
     const client = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000, // 재연결 설정 (5초)
@@ -143,7 +143,7 @@ const MeetingRoomChatBox = ({
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
-        senderName: "당나라", // 추후 로그인한 사용자 id값으로 수정
+        senderName: "member3", // 추후 로그인한 사용자 id값으로 수정
         message: text,
         chatRoomId: messageList.groupChatRoom.chatRoomId,
         senderProfile: messageList.groupChatRoom.senderProfile, // 프로필 이미지 추가

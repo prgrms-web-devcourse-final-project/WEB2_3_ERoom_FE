@@ -10,6 +10,7 @@ import { dragChange } from "../../utils/calendar/dragChange";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";
+import { useAuthStore } from "../../store/authStore";
 
 // 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
 const PROJECT_BUTTON = {
@@ -24,6 +25,7 @@ const TASK_BUTTON = {
 
 const Calendar = () => {
   const navigate = useNavigate();
+  const loginUser = useAuthStore((state) => state.user);
 
   // fullcalandar 타입 때문에 EventInput 타입 적용
   const { data: projectListData, isLoading } = useQuery<EventInput[]>({
@@ -39,6 +41,8 @@ const Calendar = () => {
           subCategoryId: data.id,
           tagIds: data.tags.map((tag) => tag.id),
         }));
+
+        const members = project.members.map((member) => member.memberId);
         return {
           id: project.id,
           title: project.name,
@@ -49,6 +53,8 @@ const Calendar = () => {
           category: project.categoryName,
           subCategories: subCate,
           status: project.status,
+          membersIds: members,
+          creatorId: project.creatorId,
         };
       });
     },
@@ -95,11 +101,17 @@ const Calendar = () => {
       editable={true}
       droppable={true}
       eventDrop={(info: EventDropArg) => {
+        if (loginUser.userId !== info.event.extendedProps.creatorId) {
+          alert("프로젝트 생성자만 수정할 수 있습니다.");
+          info.revert();
+          return;
+        }
         mutate(info);
         console.log(info);
       }}
       // 일정 길이 변경 드래그
       eventResize={(info: any) => {
+        console.log(info);
         mutate(info);
       }}
     />

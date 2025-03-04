@@ -2,6 +2,8 @@ import { useState } from "react";
 import Button from "../common/Button";
 import DayNoteList from "../NoteList/DayNoteList";
 import CreateNotePeriodModal from "./CreateNotePeriodModal";
+import { useQuery } from "@tanstack/react-query";
+import { getAINoteList } from "../../api/meetingroom";
 
 const NoteListModal = ({
   onClose,
@@ -15,6 +17,31 @@ const NoteListModal = ({
     setIsCreateNote(true);
   };
 
+  // AI회의록 리스트 가져오기
+  const { data: AINoteList = null, refetch } = useQuery<AINoteListType[]>({
+    queryKey: ["AINoteList", chatRoomId],
+    queryFn: () => {
+      console.log("chatroomId 값:", chatRoomId);
+      return getAINoteList(chatRoomId);
+    },
+  });
+
+  // createdAt 날짜별로 그룹화하는 함수
+  const groupNotesByDate = (notes: AINoteListType[]) => {
+    return notes.reduce((acc, note) => {
+      const date = note.createdAt.split("T")[0];
+
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(note);
+
+      return acc;
+    }, {} as Record<string, AINoteListType[]>);
+  };
+
+  const groupedNotes = groupNotesByDate(AINoteList || []);
+
   return (
     <>
       {!isCreateNote ? (
@@ -26,8 +53,15 @@ const NoteListModal = ({
               </span>
             </div>
             <div className="max-h-[500px] flex-grow flex flex-col overflow-y-auto scrollbar-none mb-[20px] gap-[20px]">
-              <DayNoteList onClose={onClose} />
-              <DayNoteList onClose={onClose} />
+              {Object.entries(groupedNotes).map(([date, notes]) => (
+                <DayNoteList
+                  key={date}
+                  date={date}
+                  onClose={onClose}
+                  notes={notes}
+                  refetchAINoteList={refetch}
+                />
+              ))}
             </div>
             <div className="flex justify-between mb-0 mt-auto">
               <Button
@@ -47,7 +81,12 @@ const NoteListModal = ({
         </div>
       ) : (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <CreateNotePeriodModal onClose={onClose} chatRoomId={chatRoomId} />
+          <CreateNotePeriodModal
+            onClose={onClose}
+            refetchAINoteList={refetch}
+            AINoteList={AINoteList}
+            chatRoomId={chatRoomId}
+          />
         </div>
       )}
     </>

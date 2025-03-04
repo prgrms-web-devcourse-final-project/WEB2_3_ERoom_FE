@@ -15,6 +15,7 @@ import {
   getMemberList,
 } from "../../../api/admin";
 import { queryClient } from "../../../main";
+import { searchMembers } from "../../../api/search";
 
 const AdminAccount = () => {
   // 활성 멤버 데이터
@@ -41,15 +42,63 @@ const AdminAccount = () => {
     setUserMenu(type);
   };
 
-  useEffect(() => {
-    if (AllMemberData && inActiveMemberData) {
-      if (userMenu === "active") {
-        setMemberData(AllMemberData);
-      } else {
-        setMemberData(inActiveMemberData);
-      }
+  //관리자 계정 검색
+  const [searchName, setSearchName] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<AccountListProps[] | null>(
+    null
+  );
+
+  const { data: searchedMembers, refetch } = useQuery<SearchMemberType[]>({
+    queryKey: ["searchedMembers", searchName],
+    queryFn: () => searchMembers(searchName),
+    enabled: false,
+  });
+
+  const handleSearch = async () => {
+    if (searchName.trim() === "") {
+      setSearchResult(null);
+      return;
     }
-  }, [userMenu, AllMemberData, inActiveMemberData]);
+
+    setSearchResult(null);
+    const result = await refetch();
+    if (result.data) {
+      const filteredMembers = result.data.filter((member) =>
+        userMenu === "active"
+          ? member.deleteStatus === "ACTIVE"
+          : member.deleteStatus !== "ACTIVE"
+      );
+
+      //타입 매핑
+      const convertedMembers = filteredMembers.map((member) => ({
+        memberId: member.id,
+        email: member.email,
+        username: member.username,
+        createdAt: member.createdAt,
+        profile: member.profile,
+        organization: member.organization,
+      }));
+
+      setSearchResult(convertedMembers);
+    }
+  };
+
+  // 검색어 비어있을 때 전체 리스트로 초기화
+  useEffect(() => {
+    if (searchName.trim() === "") {
+      setSearchResult(null);
+      setMemberData(
+        userMenu === "active" ? AllMemberData || [] : inActiveMemberData || []
+      );
+    }
+  }, [searchName, userMenu, AllMemberData, inActiveMemberData]);
+
+  //검색 결과가 업데이트되면 `memberData`에 반영
+  useEffect(() => {
+    if (searchResult !== null) {
+      setMemberData(searchResult);
+    }
+  }, [searchResult]);
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,8 +153,16 @@ const AdminAccount = () => {
               onClick={() => handleButtonClick("inactive")}
             />
           </div>
-          <div className="flex gap-[10px]">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+            className="flex gap-[10px]"
+          >
             <input
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
               className="w-[250px] h-[27px] border border-header-green rounded-[5px] focus:outline-none flex px-[10px] items-center text-[14px]"
               placeholder="계정 이름 검색"
             />
@@ -114,8 +171,9 @@ const AdminAccount = () => {
               logo={SearchIcon}
               size="sm"
               css="h-[27px] text-[14px] text-main-beige01 bg-header-green"
+              onClick={handleSearch}
             />
-          </div>
+          </form>
           <div className="flex gap-[5px] w-[80px] justify-end">
             {userMenu === "inactive" && (
               <button className="cursor-pointer">

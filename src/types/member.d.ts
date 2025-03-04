@@ -9,11 +9,21 @@ interface MembersType {
   delete: string;
 }
 
+interface SearchMemberType {
+  id: number;
+  username: string;
+  email: string;
+  profile: string | null;
+  organization: string | null;
+  createdAt: string;
+  deleteStatus: string;
+}
+
 interface MemberType {
   username: string;
-  profile: string;
+  profile: string | null;
   email?: string;
-  id: number;
+  memberId: number;
 }
 
 interface SelectMembersProps {
@@ -21,4 +31,5 @@ interface SelectMembersProps {
   selectedMembers?: MemberType[];
   setSelectedMembers?: React.Dispatch<React.SetStateAction<selectedMembers>>;
   value: string;
+  type: string;
 }

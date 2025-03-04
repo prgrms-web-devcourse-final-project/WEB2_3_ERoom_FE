@@ -7,6 +7,7 @@ import CheckBox from "../../../assets/icons/checked_box.svg";
 import { useMutation } from "@tanstack/react-query";
 import { editAdminAccount } from "../../../api/admin";
 import { queryClient } from "../../../main";
+import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 
 const AdminAccountList = ({
   user,
@@ -76,7 +77,7 @@ const AdminAccountList = ({
     setProfileImageWidth(getTextWidth(editedUser.profile || ""));
   }, [editedUser.organization, editedUser.profile]);
 
-  // 계정 관리 수정데이터
+  // 계정 관리 수정요청 데이터
   const editAccountData: EditAccountType = {
     username: editedUser.username,
     createdAt: editedUser.createdAt,
@@ -159,7 +160,7 @@ const AdminAccountList = ({
               >
                 <img src={SaveIcon} alt="저장" />
               </button>
-              <p
+              {/* <p
                 onClick={() => {
                   setEditedUser({ ...user });
                   setIsEditing(false);
@@ -168,7 +169,13 @@ const AdminAccountList = ({
                 text-header-green border-header-green cursor-pointer"
               >
                 취소
-              </p>
+              </p> */}
+              <AdminEditCancelBtn
+                onClick={() => {
+                  setEditedUser({ ...user });
+                  setIsEditing(false);
+                }}
+              />
             </div>
           ) : (
             <button

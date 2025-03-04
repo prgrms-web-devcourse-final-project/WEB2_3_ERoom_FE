@@ -52,8 +52,9 @@ export const patchProjectById = async (
     );
     console.log("프로젝트 수정 성공", response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("프로젝트 수정 오류", error);
+    Object.values(error.response.data).forEach((value) => alert(value));
     throw new Error("프로젝트 수정하기 오류");
   }
 };
@@ -73,9 +74,9 @@ export const getProjectDetail = async (projectId: number) => {
 // 프로젝트삭제
 export const deleteProject = async (projectId: number) => {
   try {
-    const response = await api.get(`/api/projects/${projectId}/delete`);
-    console.log("프로젝트 삭제:", response.data);
-    return response.data;
+    const response = await api.delete(`/api/projects/${projectId}/delete`);
+    console.log("프로젝트 삭제:", response);
+    return response;
   } catch (error) {
     console.error("Error project delete:", error);
     throw error;
@@ -85,9 +86,9 @@ export const deleteProject = async (projectId: number) => {
 // 프로젝트 나가기
 export const leaveProject = async (projectId: number) => {
   try {
-    const response = await api.get(`/api/projects/${projectId}/leave`);
-    console.log("프로젝트 나가기:", response.data);
-    return response.data;
+    const response = await api.delete(`/api/projects/${projectId}/leave`);
+    console.log("프로젝트 나가기:", response);
+    return response;
   } catch (error) {
     console.error("Error project leave:", error);
     throw error;
