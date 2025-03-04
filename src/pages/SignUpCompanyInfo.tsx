@@ -2,15 +2,98 @@ import { useState } from "react";
 import Button from "../components/common/Button";
 import defaultImg from "../assets/defaultImg.svg";
 import { useAuthStore } from "../store/authStore";
+import axios from "axios";
+import { api } from "../api/api";
+import { useNavigate } from "react-router";
 
 const SignUpCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
-  const [progileImg, setProfileImg] = useState<string | null>(null);
+  const [profileImg, setProfileImg] = useState<string | null>(defaultImg);
+  const [userName, setUserName] = useState<string>("");
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const { login } = useAuthStore();
+  const { token } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
+  };
+
+  const handleUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!companyInfo || !userName) {
+      alert("이름과 소속을 입력해 주세요.");
+      return;
+    }
+    // console.log(profileImg);
+
+    // FormData 객체 생성
+    const formData = new FormData();
+
+    // 텍스트 필드 추가
+    formData.append("organization", companyInfo);
+    formData.append("username", userName ?? "");
+    formData.append("idToken", token ?? "");
+
+    // 이미지 파일 추가 (FileReader로 읽은 dataURL을 Blob으로 변환)
+    if (profileImg) {
+      const blob = dataURItoBlob(profileImg);
+      formData.append("profileImage", blob, "profile.jpg"); // Blob 객체를 추가
+    }
+
+    // formdata 콘솔 확인
+    formData.forEach((value, key) => {
+      console.log(key, value); // 각 키-값 쌍을 출력
+    });
+
+    try {
+      // 서버로 데이터 전송
+      const response = await api.post("/api/auth/signup", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("서버 응답:", response.data);
+      alert("회원가입이 완료되었습니다.");
+      login(response.data.accessToken, response.data.member);
+      navigate("/");
+    } catch (error) {
+      console.error("업로드 실패:", error);
+    }
+  };
+
+  // dataURL을 Blob으로 변환하는 유틸 함수
+  const dataURItoBlob = (dataURI: string) => {
+    const base64Index = dataURI.indexOf("base64,");
+    if (base64Index === -1) {
+      // base64가 없으면 SVG와 같은 경우일 수 있음
+      const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+      const byteString = decodeURIComponent(dataURI.split(",")[1]);
+
+      // Blob 객체로 변환 (SVG 등 Base64가 아닌 경우 처리)
+      return new Blob([byteString], { type: mimeString });
+    }
+
+    // base64 부분을 추출하여 디코딩
+    const byteString = atob(dataURI.split(",")[1]);
+
+    // MIME 타입 추출
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+
+    // ArrayBuffer로 변환
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uintArray = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      uintArray[i] = byteString.charCodeAt(i);
+    }
+
+    // Blob 객체로 변환
+    return new Blob([uintArray], { type: mimeString });
   };
 
   //프로필 이미지 수정 함수
@@ -19,7 +102,9 @@ const SignUpCompanyInfo = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setProfileImg(reader.result as string);
+        const result = reader.result as string;
+        console.log(result); // reader.result가 정확한 dataURI로 반환되는지 확인
+        setProfileImg(result);
       };
 
       reader.readAsDataURL(file);
@@ -51,7 +136,7 @@ const SignUpCompanyInfo = () => {
             onMouseLeave={() => setIsHovered(false)}
           >
             <img
-              src={progileImg || defaultImg}
+              src={profileImg || defaultImg}
               alt="프로필 이미지"
               className="w-full h-full object-cover object-center rounded-[5px]
                   border border-main-green"
@@ -83,7 +168,7 @@ const SignUpCompanyInfo = () => {
                 </div>
 
                 {/* 기본 이미지 버튼 */}
-                {progileImg && (
+                {profileImg !== defaultImg && (
                   <div
                     className="w-fit text-center px-[10px] py-[5px] cursor-pointer
                       text-[14px] font-bold text-white hover:text-main-green01
@@ -102,9 +187,13 @@ const SignUpCompanyInfo = () => {
         <div className="flex flex-col justify-between gap-[10px]">
           <div className="flex flex-col gap-[5px]">
             <p className="font-bold">이름</p>
-            <div className="pl-[10px]">
-              <p className="text-black01">홍길동</p>
-            </div>
+            <input
+              type="text"
+              value={userName ?? ""}
+              onChange={handleUserName}
+              placeholder="이름을 입력해주세요"
+              className="w-[250px] h-[33px] pl-[10px] bg-transparent focus:outline-none border-b-[1px] border-b-gray01"
+            />
           </div>
           <div className="flex flex-col gap-[5px]">
             <p className="font-bold">이메일</p>
@@ -129,9 +218,8 @@ const SignUpCompanyInfo = () => {
         <Button
           text="등록하기"
           size="md"
-          to="/"
           css="border-logo-green text-logo-green"
-          onClick={() => login({ username: "asd" })}
+          onClick={handleSubmit}
         />
         <Button
           text="취소"

@@ -11,12 +11,28 @@ interface User {
 
 interface AuthState {
   isAuthenticated: boolean;
-  // token: null | string;
+  token: null | string;
+  accessToken?: null | string;
+  refreshToken?: null | string;
+  member: Member | null;
+  registered?: boolean;
   // user: User | null;
   // login: (userData: User | null, token: null | string) => void;
   user: any;
-  login: (userData: any) => void;
+  login: (accessToken: string | null, member: Member | null) => void;
   logout: () => void;
+}
+
+interface Member {
+  createdAt: string;
+  deleteStatus: string;
+  email: string;
+  id: number;
+  memberGrade: string;
+  organization: string;
+  password: string | null;
+  profile: string;
+  username: string;
 }
 
 export const useAuthStore = create(
@@ -24,7 +40,19 @@ export const useAuthStore = create(
     (set) => ({
       isAuthenticated: false,
       //카카오 로그인 주석 처리
-      // token: null,
+      token: null,
+      accessToken: null,
+      member: {
+        createdAt: "",
+        deleteStatus: "",
+        email: "",
+        id: 0,
+        memberGrade: "",
+        organization: "",
+        password: "",
+        profile: "",
+        username: "",
+      },
       // user: null,
       // login: (userData, token?) =>
       //   set(() => ({ user: userData, token, isAuthenticated: true })),
@@ -33,8 +61,12 @@ export const useAuthStore = create(
       //     return { user: null, token: null, isAuthenticated: false };
       //   }),
       user: null,
-      login: (userData) =>
-        set(() => ({ user: userData, isAuthenticated: true })),
+      login: (accessToken, user) =>
+        set(() => ({
+          accessToken,
+          user,
+          isAuthenticated: true,
+        })),
       logout: () =>
         set(() => {
           return { user: null, isAuthenticated: false };
