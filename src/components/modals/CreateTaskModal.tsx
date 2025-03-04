@@ -89,8 +89,8 @@ const CreateTaskModal = ({
       startDate: formatDateTime(selectedStartDate),
       endDate: formatDateTime(selectedEndDate),
       status: "BEFORE_START",
-      assignedMemberId: selectedMember[0].id,
-      participantIds: [selectedMember[0].id],
+      assignedMemberId: selectedMember[0].memberId,
+      participantIds: [selectedMember[0].memberId],
       colors: { background: "#ff5733", text: "#ffffff" },
     };
 
