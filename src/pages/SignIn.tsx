@@ -3,17 +3,20 @@ import "../styles/AuthLayout.css";
 import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
-import { Navigate } from "react-router";
-import { postSignIn } from "../api/auth";
+import { Navigate, useNavigate } from "react-router";
+import { googleSignIn, postSignIn } from "../api/auth";
 import useKakaoLogin from "../hooks/useKakaoLogin";
 import getAccessToken from "../utils/signInGoogle/getAccessToken";
 import getUserInfo from "../utils/signInGoogle/getUserInfo";
 import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const SignIn = () => {
   const login = useAuthStore((state) => state.login);
   const user = useAuthStore((state) => state.user);
   // const { handleKakaoLogin, loading } = useKakaoLogin();
+  const [idToken, setIdToken] = useState<string>("");
+  const navigate = useNavigate();
 
   /* 구글 로그인(미완성) */
   const CLIENT_ID = import.meta.env.VITE_GOOGLE_ID;
@@ -53,12 +56,14 @@ const SignIn = () => {
       try {
         // 인증 코드로 액세스 토큰 및 ID 토큰 받기
         const tokenResponse = await getAccessToken(code);
-        console.log("액세스 토큰:", tokenResponse.access_token);
+        // console.log("액세스 토큰:", tokenResponse.access_token);
         console.log("ID 토큰:", tokenResponse.id_token);
+        const idToken = tokenResponse.id_token;
+        setIdToken(idToken);
 
         // 액세스 토큰으로 사용자 정보 가져오기
-        const userInfo = await getUserInfo(tokenResponse.access_token);
-        console.log("구글 사용자 정보:", userInfo);
+        // const userInfo = await getUserInfo(tokenResponse.access_token);
+        // console.log("구글 사용자 정보:", userInfo);
 
         // 사용자 정보를 상태에 저장하거나 로그인 처리
         // login({ username: userInfo.name });
@@ -72,6 +77,45 @@ const SignIn = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (idToken) {
+      console.log("현재 ID 토큰:", idToken);
+      handleLogin(idToken);
+    }
+  }, [idToken]);
+
+  // 로그인 요청 실행 (id 토큰 발행 시)
+  const handleLogin = (idToken: string) => {
+    if (!idToken) return alert("ID 토큰이 없습니다!");
+    googleLoginMutation.mutate(idToken);
+  };
+
+  // 구글 로그인 요청 함수
+  const googleLoginMutation = useMutation({
+    mutationFn: async (idToken: string) => {
+      console.log("Google Sign-In 요청 데이터:", {
+        idToken,
+        provider: "google",
+      });
+      return await googleSignIn(idToken, "google");
+    },
+    onSuccess: (data: signInData) => {
+      if (data.registered === false) {
+        console.log("비회원입니다.");
+        navigate(`/signup-company-info`);
+      } else {
+        console.log("로그인 성공!", data);
+        console.log(data.accessToken);
+        console.log(data.member);
+        login(data.accessToken, data.member);
+        navigate("/");
+      }
+    },
+    onError: (error) => {
+      console.error("로그인 실패!:", error);
+    },
+  });
 
   if (user) {
     return <Navigate to={"/"} replace />;
@@ -102,7 +146,7 @@ const SignIn = () => {
             try {
               const data = await postSignIn("qwerty1@gmail.com", "1234");
               console.log(data);
-              login({ username: "member1", userId: 1 });
+              // login({ username: "member1", userId: 1 });
             } catch (error) {
               console.error(error);
             }
@@ -113,7 +157,7 @@ const SignIn = () => {
             try {
               const data = await postSignIn("qwerty1@gmail.com", "1234");
               console.log(data);
-              login({ username: "member1", userId: 1 });
+              // login({ username: "member1", userId: 1 });
             } catch (error) {
               console.error(error);
             }
@@ -126,7 +170,7 @@ const SignIn = () => {
             try {
               const data = await postSignIn("qwerty2@gmail.com", "1234");
               console.log(data);
-              login({ username: "member2", userId: 2 });
+              // login({ username: "member2", userId: 2 });
             } catch (error) {
               console.error(error);
             }
@@ -139,7 +183,7 @@ const SignIn = () => {
             try {
               const data = await postSignIn("qwerty3@gmail.com", "1234");
               console.log(data);
-              login({ username: "member3", userId: 3 });
+              // login({ username: "member3", userId: 3 });
             } catch (error) {
               console.error(error);
             }
