@@ -3,126 +3,18 @@ import "../styles/AuthLayout.css";
 import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
-import { Navigate, useNavigate } from "react-router";
-import { googleSignIn, postSignIn } from "../api/auth";
+import { Navigate } from "react-router";
+import { postSignIn } from "../api/auth";
 // import useKakaoLogin from "../hooks/useKakaoLogin";
-import getAccessToken from "../utils/signInGoogle/getAccessToken";
-// import getUserInfo from "../utils/signInGoogle/getUserInfo";
-import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import useGoogleLogin from "../hooks/useGoogleLogin";
 
 const SignIn = () => {
-  const login = useAuthStore((state) => state.login);
-  const user = useAuthStore((state) => state.user);
+  // const login = useAuthStore((state) => state.login);
+  const access = useAuthStore((state) => state.accessToken);
   // const { handleKakaoLogin, loading } = useKakaoLogin();
-  const [idTokenData, setIdTokenData] = useState<string>("");
-  const navigate = useNavigate();
+  const { handleGoogleLogin } = useGoogleLogin();
 
-  /* 구글 로그인(미완성) */
-  const CLIENT_ID = import.meta.env.VITE_GOOGLE_ID;
-  const REDIRECT_URI = "http://localhost:5173/signin";
-  const SCOPE = import.meta.env.VITE_GOOGLE_SCOPE;
-
-  const handleGoogleLogin = () => {
-    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}&access_type=offline&prompt=consent`;
-
-    window.location.href = googleOAuthUrl;
-  };
-
-  /* 구글 로그인(미완성) */
-  const [searchParams, setSearchParams] = useState(window.location.search);
-
-  /* URL이 변경되었을 때 searchParams 업데이트 */
-  useEffect(() => {
-    // 페이지가 리디렉션되면서 쿼리 파라미터가 변경되므로 이를 감지하여 업데이트
-    setSearchParams(window.location.search);
-  }, [window.location.search]); // URL 변경 시마다 실행
-
-  /* 쿼리 파라미터에서 "code"가 있는지 확인하고, 있으면 처리 */
-  useEffect(() => {
-    const queryParams = new URLSearchParams(searchParams);
-    console.log("queryParams:", queryParams.toString());
-    if (queryParams.has("code")) {
-      handleGoogleCallback(queryParams); // "code"가 있다면 구글 로그인 처리
-    }
-  }, [searchParams]); // searchParams가 변경될 때마다 실행
-
-  /* 구글 로그인 후 액세스 토큰을 사용하여 사용자 정보 가져오기 */
-  const handleGoogleCallback = async (queryParams: URLSearchParams) => {
-    const code = queryParams.get("code");
-    console.log("인증 코드:", code);
-
-    if (code) {
-      try {
-        // 인증 코드로 액세스 토큰 및 ID 토큰 받기
-        const tokenResponse = await getAccessToken(code);
-        // console.log("액세스 토큰:", tokenResponse.access_token);
-        console.log("ID 토큰:", tokenResponse.id_token);
-        const idTokenData = tokenResponse.id_token;
-        setIdTokenData(idTokenData);
-
-        // 액세스 토큰으로 사용자 정보 가져오기
-        // const userInfo = await getUserInfo(tokenResponse.access_token);
-        // console.log("구글 사용자 정보:", userInfo);
-
-        // 사용자 정보를 상태에 저장하거나 로그인 처리
-        // login({ username: userInfo.name });
-      } catch (error: any) {
-        console.error("구글 로그인 실패:", error);
-        if (error.response) {
-          console.error("Error Response:", error.response);
-        } else {
-          console.error("Error Message:", error.message);
-        }
-      }
-    }
-  };
-
-  /* id토큰값 변경되면 로그인 실행 */
-  useEffect(() => {
-    if (idTokenData) {
-      console.log("현재 ID 토큰:", idTokenData);
-      handleLogin(idTokenData);
-    }
-  }, [idTokenData]);
-
-  // 로그인 요청 실행 (id 토큰 발행 시)
-  const handleLogin = (idToken: string) => {
-    if (!idToken) return alert("ID 토큰이 없습니다!");
-
-    // 상태 업데이트
-    useAuthStore.getState().login(idToken, null, null, null);
-
-    googleLoginMutation.mutate(idToken);
-  };
-
-  // 구글 로그인 요청 함수
-  const googleLoginMutation = useMutation({
-    mutationFn: async (idToken: string) => {
-      console.log("Google Sign-In 요청 데이터:", {
-        idToken,
-        provider: "google",
-      });
-      return await googleSignIn(idToken, "google");
-    },
-    onSuccess: (data: signInData) => {
-      if (data.registered === false) {
-        console.log("비회원입니다.");
-        navigate(`/signup-company-info`);
-      } else {
-        console.log("로그인 성공!", data);
-        // console.log(data.accessToken);
-        // console.log(data.member);
-        login(data.idToken, data.accessToken, data.refreshToken, data.member);
-        navigate("/");
-      }
-    },
-    onError: (error) => {
-      console.error("로그인 실패!:", error);
-    },
-  });
-
-  if (user) {
+  if (access) {
     return <Navigate to={"/"} replace />;
   }
 
