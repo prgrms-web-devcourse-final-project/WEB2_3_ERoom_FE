@@ -9,6 +9,7 @@ const Header = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const isAuthenticated = useAuthStore((state) => state.user);
+  console.log(isAuthenticated);
 
   // console.log(isLogin);
 

@@ -4,14 +4,24 @@ import { searchMembers } from "../../api/search";
 import { debounce } from "lodash";
 import { useAuthStore } from "../../store/authStore";
 
-const SelectMember = ({
+type SelectMembersProps<T extends "업무" | "프로젝트"> = {
+  selectedData?: T extends "프로젝트" ? ProjectDataType : UpdateTask;
+  selectedMembers?: MemberType[];
+  setSelectedMembers?: React.Dispatch<React.SetStateAction<MemberType[]>>;
+  value: T;
+  type?: string;
+};
+
+const SelectMember = <T extends "업무" | "프로젝트">({
   selectedData,
   selectedMembers,
   setSelectedMembers,
   value,
   type,
-}: SelectMembersProps) => {
+}: SelectMembersProps<T>) => {
   const loginUser = useAuthStore((state) => state.user);
+
+  console.log(selectedData);
 
   useEffect(() => {
     console.log(selectedData);
@@ -81,7 +91,12 @@ const SelectMember = ({
 
   /* 취소 버튼 클릭 시 선택된 팀원에서 제거 */
   const handleCancelClick = (id: number) => {
-    if (type === "project" && selectedData && selectedData.creatorId === id) {
+    if (
+      type === "project" &&
+      selectedData &&
+      "creatorId" in selectedData &&
+      selectedData.creatorId === id
+    ) {
       return alert("프로젝트 생성자는 참여인원에서 제거할 수 없습니다.");
     }
 
