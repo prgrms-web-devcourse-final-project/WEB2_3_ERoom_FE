@@ -94,7 +94,7 @@ const MeetingRoomChatBox = ({
   useEffect(() => {
     if (!messageList?.groupChatRoom?.chatRoomId) return;
     if (!stompClient) {
-      console.log("🔄 STOMP 클라이언트가 아직 없음. 기다리는 중...");
+      console.log(" STOMP 클라이언트가 아직 없음. 기다리는 중...");
       return;
     }
 
@@ -118,7 +118,7 @@ const MeetingRoomChatBox = ({
     );
 
     return () => {
-      console.log("🛑 채팅방 구독 해제:", messageList.groupChatRoom.chatRoomId);
+      console.log("채팅방 구독 해제:", messageList.groupChatRoom.chatRoomId);
       subscription.unsubscribe();
     };
   }, [stompClient, messageList?.groupChatRoom.chatRoomId]);

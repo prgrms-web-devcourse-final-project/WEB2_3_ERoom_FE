@@ -7,7 +7,7 @@ interface WebSocketStore {
   stompClient: Client | null;
   connectWebSocket: () => void;
   subscribeToNotifications: (memberId: number) => void;
-  getWebSocket: () => WebSocket | null;
+  getStompClient: () => Client | null;
 }
 
 const useWebSocketStore = create<WebSocketStore>((set) => {
@@ -69,7 +69,7 @@ const useWebSocketStore = create<WebSocketStore>((set) => {
       }
     },
 
-    getWebSocket: () => webSocket,
+    getStompClient: () => stompClient,
   };
 });
 
