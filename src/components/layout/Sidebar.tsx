@@ -69,12 +69,12 @@ const Sidebar = ({
   );
 
   useEffect(() => {
-    if (managers.length > 0) {
+    if (managers.length > 0 && projectRoomMenu === "manager") {
       // 초기 체크박스 전체선택
       const allManagerName = managers.map((manager) => manager.username);
       handleAllClick(allManagerName);
     }
-  }, []);
+  }, [projectRoomMenu]);
 
   const handleAllCheck = (isChecked: boolean) => {
     if (isChecked) {
