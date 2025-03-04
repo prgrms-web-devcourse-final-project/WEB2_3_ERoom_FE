@@ -24,9 +24,9 @@ const ProjectListBox = ({
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
   console.log(projectInfo);
 
-  const loginUser = useAuthStore((state) => state.user);
+  const loginUser = useAuthStore((state) => state.member);
 
-  const ISCREATED_BY_LOGINUSER = loginUser.userId === projectInfo.creatorId;
+  const ISCREATED_BY_LOGINUSER = loginUser?.id === projectInfo.creatorId;
 
   const { mutateAsync: deleteProjectFn } = useMutation({
     mutationFn: (projectId: number) => deleteProject(projectId),

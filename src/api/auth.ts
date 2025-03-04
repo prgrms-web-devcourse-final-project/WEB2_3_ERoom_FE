@@ -15,9 +15,8 @@ export const googleSignIn = async (
 ): Promise<signInData> => {
   try {
     const response = await api.post(`/api/auth/login`, { token, provider });
-    const { accessToken, member } = response.data;
-
-    useAuthStore.getState().login(accessToken, member);
+    const { idToken, accessToken, refreshToken, member } = response.data;
+    useAuthStore.getState().login(idToken, accessToken, refreshToken, member);
 
     console.log(response.data);
     return response.data;

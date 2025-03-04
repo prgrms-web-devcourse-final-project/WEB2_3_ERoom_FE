@@ -8,8 +8,8 @@ import { useAuthStore } from "../../store/authStore";
 const Header = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const isAuthenticated = useAuthStore((state) => state.user);
-  console.log(isAuthenticated);
+  const isAuthenticated = useAuthStore((state) => state.accessToken);
+  // console.log(isAuthenticated);
 
   // console.log(isLogin);
 

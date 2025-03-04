@@ -38,11 +38,17 @@ const ProjectRoomDetail = () => {
     HOLD: [],
   });
 
+  interface ManageTasksType {
+    name: string;
+    tasks: Task[];
+  }
+
   const [manageTasks, setManageTasks] = useState<ManageTasksType[]>([]);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
     if (projectDetailList) {
+      console.log(projectDetailList);
       // 사이드메 담당자 탭 멤버 설정
       setManagers(projectDetailList.members);
 
