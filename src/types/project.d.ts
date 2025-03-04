@@ -31,6 +31,7 @@ interface ProjectDataType {
   name?: string;
   startDate?: string;
   endDate?: string;
+  creatorId?: number;
 }
 
 interface SelectProjectProps {
