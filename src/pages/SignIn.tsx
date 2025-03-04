@@ -5,17 +5,17 @@ import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
 import { Navigate, useNavigate } from "react-router";
 import { googleSignIn, postSignIn } from "../api/auth";
-import useKakaoLogin from "../hooks/useKakaoLogin";
+// import useKakaoLogin from "../hooks/useKakaoLogin";
 import getAccessToken from "../utils/signInGoogle/getAccessToken";
-import getUserInfo from "../utils/signInGoogle/getUserInfo";
+// import getUserInfo from "../utils/signInGoogle/getUserInfo";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const SignIn = () => {
   const login = useAuthStore((state) => state.login);
   const user = useAuthStore((state) => state.user);
   // const { handleKakaoLogin, loading } = useKakaoLogin();
-  const [idToken, setIdToken] = useState<string>("");
+  const [idTokenData, setIdTokenData] = useState<string>("");
   const navigate = useNavigate();
 
   /* 구글 로그인(미완성) */
@@ -32,13 +32,13 @@ const SignIn = () => {
   /* 구글 로그인(미완성) */
   const [searchParams, setSearchParams] = useState(window.location.search);
 
-  // URL이 변경되었을 때 searchParams 업데이트
+  /* URL이 변경되었을 때 searchParams 업데이트 */
   useEffect(() => {
     // 페이지가 리디렉션되면서 쿼리 파라미터가 변경되므로 이를 감지하여 업데이트
     setSearchParams(window.location.search);
   }, [window.location.search]); // URL 변경 시마다 실행
 
-  // 쿼리 파라미터에서 "code"가 있는지 확인하고, 있으면 처리
+  /* 쿼리 파라미터에서 "code"가 있는지 확인하고, 있으면 처리 */
   useEffect(() => {
     const queryParams = new URLSearchParams(searchParams);
     console.log("queryParams:", queryParams.toString());
@@ -47,7 +47,7 @@ const SignIn = () => {
     }
   }, [searchParams]); // searchParams가 변경될 때마다 실행
 
-  // 구글 로그인 후 액세스 토큰을 사용하여 사용자 정보 가져오기
+  /* 구글 로그인 후 액세스 토큰을 사용하여 사용자 정보 가져오기 */
   const handleGoogleCallback = async (queryParams: URLSearchParams) => {
     const code = queryParams.get("code");
     console.log("인증 코드:", code);
@@ -58,8 +58,8 @@ const SignIn = () => {
         const tokenResponse = await getAccessToken(code);
         // console.log("액세스 토큰:", tokenResponse.access_token);
         console.log("ID 토큰:", tokenResponse.id_token);
-        const idToken = tokenResponse.id_token;
-        setIdToken(idToken);
+        const idTokenData = tokenResponse.id_token;
+        setIdTokenData(idTokenData);
 
         // 액세스 토큰으로 사용자 정보 가져오기
         // const userInfo = await getUserInfo(tokenResponse.access_token);
@@ -78,16 +78,21 @@ const SignIn = () => {
     }
   };
 
+  /* id토큰값 변경되면 로그인 실행 */
   useEffect(() => {
-    if (idToken) {
-      console.log("현재 ID 토큰:", idToken);
-      handleLogin(idToken);
+    if (idTokenData) {
+      console.log("현재 ID 토큰:", idTokenData);
+      handleLogin(idTokenData);
     }
-  }, [idToken]);
+  }, [idTokenData]);
 
   // 로그인 요청 실행 (id 토큰 발행 시)
   const handleLogin = (idToken: string) => {
     if (!idToken) return alert("ID 토큰이 없습니다!");
+
+    // 상태 업데이트
+    useAuthStore.getState().login(idToken, null, null, null);
+
     googleLoginMutation.mutate(idToken);
   };
 
@@ -106,9 +111,9 @@ const SignIn = () => {
         navigate(`/signup-company-info`);
       } else {
         console.log("로그인 성공!", data);
-        console.log(data.accessToken);
-        console.log(data.member);
-        login(data.accessToken, data.member);
+        // console.log(data.accessToken);
+        // console.log(data.member);
+        login(data.idToken, data.accessToken, data.refreshToken, data.member);
         navigate("/");
       }
     },
