@@ -128,3 +128,41 @@ export const adminDeleteProject = async (projectId: number) => {
     console.error(error);
   }
 };
+
+// 관리자 활성 업무 리스트
+export const getAdminTaskList = async () => {
+  try {
+    const { data } = await api.get("/admin/manage/task/list");
+    console.log("adminTask", data);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 관리자 비활성 업무 리스트
+export const getAdminDeleteTaskList = async () => {
+  try {
+    const { data } = await api.get(
+      "/admin/manage/task/list?deleteStatus=deleted"
+    );
+    console.log("adminDeleteTask", data);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 관리자 업무 수정
+export const updateTask = async (taskId: number, editTaskInfo: UpdatedTask) => {
+  try {
+    const { data } = await api.put(
+      `/admin/manage/task/${taskId}/modify`,
+      editTaskInfo
+    );
+    console.log("업무 수정 성공", data);
+    return data;
+  } catch (error) {
+    console.error("업무 수정 실패", error);
+  }
+};

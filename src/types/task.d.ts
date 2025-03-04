@@ -90,3 +90,8 @@ interface ManageTasksType {
   name: string;
   tasks: Task[];
 }
+
+interface UpdatedTask {
+  taskName: string;
+  taskStatus: string;
+}

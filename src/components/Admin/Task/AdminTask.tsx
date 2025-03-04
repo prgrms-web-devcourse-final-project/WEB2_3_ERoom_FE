@@ -8,6 +8,12 @@ import Pagination from "../Pagination";
 import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import AdminTaskList from "./AdminTaskList";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  getAdminDeleteTaskList,
+  getAdminTaskList,
+  updateTask,
+} from "../../../api/admin";
 
 export interface TasksListType {
   id: number;
@@ -21,59 +27,131 @@ export interface TasksListType {
   isActive: boolean;
 }
 
+interface TaskList {
+  taskId: number;
+  taskName: string;
+  projectName: string;
+  assignedMember: string;
+  assignedEmail: string;
+  taskStatus: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface updatedTaskInfo {
+  taskName: string;
+  taskStatus: string;
+}
+
 const AdminTask = () => {
-  // 더미 데이터
-  const dummyTasks: TasksListType[] = Array.from({ length: 200 }, (_, i) => ({
-    id: i + 1,
-    taskName: "1차 퍼블리싱",
-    manager: "성송원",
-    projectName: "프로젝트 A",
-    taskStatus: "IN_PROGRESS",
-    createdAt: "2025-02-11",
-    startDate: "2025-02-11",
-    endDate: "2025-02-20",
-    isActive: i % 3 !== 0,
-  }));
+  // 활성 업무리스트 데이터
+  const { data: taskList, refetch: refetchActive } = useQuery<TaskList[]>({
+    queryKey: ["TaskList"],
+    queryFn: async () => {
+      const taskListData = await getAdminTaskList();
+      return taskListData;
+    },
+    // staleTime: 0,
+  });
 
-  const [tasks, setTasks] = useState(dummyTasks);
+  // 비활성 업무리스트 데이터
+  const { data: deleteTaskList, refetch: refetchInactive } = useQuery<
+    TaskList[]
+  >({
+    queryKey: ["DeleteTaskList"],
+    queryFn: async () => {
+      const deleteTaskListData = await getAdminDeleteTaskList();
+      return deleteTaskListData;
+    },
+    // staleTime: 0,
+  });
 
-  //추후 프로젝트 정보 업데이트 API 나오면 연동 추가
-  const handleUpdateTask = (
-    id: number,
-    updatedTask: Partial<TasksListType>
+  // 활성 업무리스트 상태
+  const [tasks, setTasks] = useState(taskList);
+  // 비활성 업무리스트 상태
+  const [deleteTasks, setDeleteTasks] = useState(deleteTaskList);
+  // 활성비활성 상태
+  const [taskMenu, setTaskMenu] = useState("active");
+  // 체크박스 체크 상태
+  const [isChecked, setIsChecked] = useState(false);
+
+  // 업무 수정
+  const { mutateAsync: updateTaskFn } = useMutation({
+    mutationFn: ({
+      taskId,
+      updatedTaskInfo,
+    }: {
+      taskId: number;
+      updatedTaskInfo: updatedTaskInfo;
+    }) => updateTask(taskId, updatedTaskInfo),
+  });
+
+  // 업무 수정 호출 함수
+  const editProject = async (
+    taskId: number,
+    updatedTaskInfo: updatedTaskInfo
   ) => {
+    const response = await updateTaskFn({
+      taskId: taskId,
+      updatedTaskInfo,
+    });
+    console.log(response);
+  };
+
+  // set함수에 업무 넣기
+  useEffect(() => {
+    setTasks(taskList);
+    setDeleteTasks(deleteTaskList);
+  }, [taskList, deleteTaskList]);
+
+  console.log(tasks, deleteTasks);
+
+  // 업무 정보 수정 내용 반영 및 호출 함수
+  const handleUpdateTask = async (id: number, updatedTask: TaskList) => {
+    console.log("수정 id :", id, "수정 정보 :", {
+      taskName: updatedTask.taskName,
+      taskStatus: updatedTask.taskStatus,
+    });
+
     setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, ...updatedTask } : task
+      prevTasks?.map((task) =>
+        task.taskId === id ? { ...task, ...updatedTask } : task
       )
     );
+
+    await editProject(id, {
+      taskName: updatedTask.taskName,
+      taskStatus: updatedTask.taskStatus,
+    });
+
+    await refetchActive();
+    await refetchInactive();
   };
 
   //활성계정, 비활성계정 페이지 이동과 버튼 UI변경
-
-  const [taskMenu, setTaskMenu] = useState("active");
-
   const handleButtonClick = (type: "active" | "inactive") => {
     setTaskMenu(type);
   };
-
-  const filterTasks = tasks.filter((task) =>
-    taskMenu === "active" ? task.isActive : !task.isActive
-  );
+  // console.log(taskMenu);
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
-  const totalPages = Math.ceil(tasks.length / itemsPerPage);
-
-  // 현재 페이지에 해당하는 데이터만 필터링
-  // 활성 프로젝트
-  const paginatedTasks = filterTasks.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const totalPages = Math.ceil(
+    (tasks?.length ? tasks?.length : 0) / itemsPerPage
   );
 
-  const [isChecked, setIsChecked] = useState(false);
+  // 활성 비활성 버튼 클릭에 따른 데이터 분기처리
+  const paginatedTasks =
+    taskMenu === "active"
+      ? tasks?.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )
+      : deleteTasks?.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        );
 
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);
@@ -129,13 +207,16 @@ const AdminTask = () => {
         </div>
         <div className="flex flex-col gap-[10px] flex-grow mb-[30px]">
           {/* 제목 부분 */}
-          <div className="grid grid-cols-[5%_5%_15%_20%_10%_10%_10%_20%_5%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
+          <div
+            className="grid grid-cols-[5%_5%_10%_10%_10%_25%_10%_20%_5%] h-full w-full 
+          text-main-green text-[14px] border-b border-b-header-green"
+          >
             <div className="flex justify-center items-center">
               <button onClick={toggleCheckBox}>
                 <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
               </button>
             </div>
-            <div className="flex justify-center items-center">
+            <div className="h-full flex justify-center items-center">
               <span>No.</span>
             </div>
             <div className="flex justify-center items-center">
@@ -148,10 +229,10 @@ const AdminTask = () => {
               <span>담당자</span>
             </div>
             <div className="flex justify-center items-center">
-              <span>진행상태</span>
+              <span>담당자 이메일</span>
             </div>
             <div className="flex justify-center items-center">
-              <span>생성일</span>
+              <span>진행상태</span>
             </div>
             <div className="flex justify-center items-center">
               <span>기간</span>
@@ -160,9 +241,11 @@ const AdminTask = () => {
               <span>수정</span>
             </div>
           </div>
-          {paginatedTasks.map((task, index) => (
+
+          {/* 업무목록 */}
+          {paginatedTasks?.map((task, index) => (
             <AdminTaskList
-              key={task.id}
+              key={task.taskId}
               task={task}
               index={(currentPage - 1) * itemsPerPage + index}
               onUpdateTask={handleUpdateTask}
