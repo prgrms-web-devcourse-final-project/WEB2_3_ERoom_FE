@@ -71,13 +71,23 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
         return;
       }
 
-      stompClient.subscribe(`/topic/notifications/${memberId}`, (message) => {
-        const data = JSON.parse(message.body);
-        console.log("새로운 알람 수신:", data);
-        set((state) => ({
-          notifications: [...state.notifications, data],
-        }));
-      });
+      console.log(" 알람 구독 시도: /topic/notifications/" + memberId);
+
+      const subscription = stompClient.subscribe(
+        `/topic/notifications/${memberId}`,
+        (message) => {
+          const data = JSON.parse(message.body);
+          console.log("새로운 알람 수신:", data);
+          set((state) => {
+            const updatedNotifications = [...state.notifications, data];
+            console.log(" 현재 알람 리스트:", updatedNotifications);
+            return { notifications: updatedNotifications };
+          });
+        }
+      );
+      if (subscription) {
+        console.log("알람 구독 성공:", subscription.id);
+      }
     },
 
     getStompClient: () => get().stompClient,

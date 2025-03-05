@@ -22,7 +22,7 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
   const { notifications } = useWebSocketStore();
   useEffect(() => {
     console.log("알람데이터", notifications);
-  }, []);
+  }, [notifications]);
 
   return (
     <div
