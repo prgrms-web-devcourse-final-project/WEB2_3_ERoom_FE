@@ -5,7 +5,7 @@ interface AdminDeleteBtnProps {
 const AdminDeleteBtn = ({ onClick }: AdminDeleteBtnProps) => {
   return (
     <button onClick={onClick} className="cursor-pointer">
-      <img src={DeleteIcon} alt="계정 삭제 버튼" />
+      <img src={DeleteIcon} alt="삭제 버튼" />
     </button>
   );
 };

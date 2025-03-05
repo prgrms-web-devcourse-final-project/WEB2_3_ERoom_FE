@@ -64,17 +64,6 @@ export const deleteAdminAccount = async (member_id: number) => {
   }
 };
 
-// 관리자 카테고리 전체 조회
-export const getAllCategory = async () => {
-  try {
-    const { data } = await api.get("/admin/manage/category/list");
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 // 관리자 활성 프로젝트 리스트
 export const getAdminProjectList = async () => {
   try {

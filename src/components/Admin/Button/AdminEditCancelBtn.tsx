@@ -1,12 +1,18 @@
+import { twMerge } from "tailwind-merge";
+
 interface AdminEditCancelBtnProps {
-  onClick: () => void;
+  onClick: (e?: any) => void;
+  css?: string;
 }
 
-const AdminEditCancelBtn = ({ onClick }: AdminEditCancelBtnProps) => {
+const AdminEditCancelBtn = ({ onClick, css }: AdminEditCancelBtnProps) => {
   return (
     <button
-      className="w-[37px] h-[24px] border rounded-[5px] outline-none
-  text-header-green border-header-green cursor-pointer"
+      className={twMerge(
+        `w-[37px] h-[24px] border rounded-[5px] outline-none
+  text-header-green border-header-green cursor-pointer`,
+        css
+      )}
       onClick={onClick}
     >
       취소
