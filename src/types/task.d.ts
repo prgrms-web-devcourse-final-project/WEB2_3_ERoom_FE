@@ -82,3 +82,17 @@ interface UpdatedTask {
   taskName: string;
   taskStatus: string;
 }
+
+interface GetAssignedTask {
+  id: number;
+  title: string;
+  startDate: string; // ISO 형식의 날짜 문자열로 취급
+  endDate: string; // ISO 형식의 날짜 문자열로 취급
+  status: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD"; // 상태값이 정해져 있을 경우 문자열 리터럴 타입을 사용
+  assignedMemberId: number;
+  assignedMemberName: string;
+  assignedMemberProfile: string | null;
+  participantIds: number[]; // 참가자는 문자열 배열로 처리
+  participantProfiles: string[];
+  projectId: number;
+}

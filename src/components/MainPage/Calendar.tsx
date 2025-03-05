@@ -4,7 +4,6 @@ import koLocale from "@fullcalendar/core/locales/ko";
 import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
-
 import { useEffect, useState } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
@@ -12,19 +11,29 @@ import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";
 import { useAuthStore } from "../../store/authStore";
 import AlertModal from "../common/AlertModal";
-
-// 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
-const PROJECT_BUTTON = {
-  text: "프로젝트",
-  click: (info: any) => console.log(info),
-};
-
-const TASK_BUTTON = {
-  text: "개인업무",
-  click: (info: any) => console.log(info),
-};
+import { getAssignedTaskList } from "../../api/task";
+import { CALENDAR_COLORS } from "../../constants/calendarColors";
+import { dragChangeTask } from "../../utils/calendar/dragChangeTask";
 
 const Calendar = () => {
+  // 프로젝트 및 업무 토글 상태
+  const [showTasks, setShowTasks] = useState(false);
+
+  useEffect(() => {
+    const projectButton = document.querySelector(".fc-project-button");
+    const taskButton = document.querySelector(".fc-task-button");
+
+    if (projectButton && taskButton) {
+      if (showTasks) {
+        projectButton.classList.remove("fc-active");
+        taskButton.classList.add("fc-active");
+      } else {
+        projectButton.classList.add("fc-active");
+        taskButton.classList.remove("fc-active");
+      }
+    }
+  }, [showTasks]);
+
   const navigate = useNavigate();
   const loginUser = useAuthStore((state) => state.member);
 
@@ -40,6 +49,12 @@ const Calendar = () => {
   const closeModal = () => {
     setModalText("");
     setIsModalOpen(false);
+  };
+
+  // 랜덤 색상 함수
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * CALENDAR_COLORS.length);
+    return CALENDAR_COLORS[randomIndex];
   };
 
   // fullcalandar 타입 때문에 EventInput 타입 적용
@@ -75,13 +90,51 @@ const Calendar = () => {
     },
   });
 
+  // fullcalandar에 맞게 업무 데이터 타입 조정
+  const { data: taskListData } = useQuery<EventInput[]>({
+    queryKey: ["TaskList"],
+    queryFn: async () => {
+      if (!loginUser?.id) return [];
+
+      const response = await getAssignedTaskList(loginUser.id);
+      console.log(response);
+      const filterInProgress = response.filter(
+        (task: GetAssignedTask) =>
+          task.status === "IN_PROGRESS" || task.status === "BEFORE_START"
+      );
+
+      return filterInProgress.map((task: GetAssignedTask) => {
+        const { background, text } = getRandomColor();
+
+        return {
+          id: task.id,
+          title: task.title,
+          start: task.startDate,
+          end: task.endDate,
+          color: background,
+          textColor: text,
+          extendedProps: {
+            assignedMemberName: task.assignedMemberName,
+            assignedMemberId: task.assignedMemberId,
+            status: task.status,
+            profileImage: task.assignedMemberProfile,
+          },
+        };
+      });
+    },
+  });
+
   useEffect(() => {
-    console.log(projectListData, isLoading);
-  }, [projectListData]);
+    console.log(projectListData, taskListData, isLoading);
+  }, [projectListData, taskListData]);
 
   // 데이터 수정
   const { mutate } = useMutation({
     mutationFn: (info: EventDropArg) => dragChange(info),
+  });
+
+  const { mutate: mutateTask } = useMutation({
+    mutationFn: (info: EventDropArg) => dragChangeTask(info),
   });
 
   if (isLoading) {
@@ -92,7 +145,16 @@ const Calendar = () => {
     <>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
-        customButtons={{ project: PROJECT_BUTTON, task: TASK_BUTTON }}
+        customButtons={{
+          project: {
+            text: "프로젝트",
+            click: () => setShowTasks(false),
+          },
+          task: {
+            text: "개인업무",
+            click: () => setShowTasks(true),
+          },
+        }}
         initialView="dayGridMonth"
         height="100%"
         viewHeight="100%"
@@ -106,10 +168,14 @@ const Calendar = () => {
         timeZone="local"
         displayEventTime={false}
         // 데이터
-        events={projectListData}
+        events={showTasks ? taskListData : projectListData}
         // 데이터 클릭이벤트
         eventClick={(info) => {
-          navigate(`project-room/${info.event.id}`);
+          if (!showTasks) {
+            navigate(`project-room/${info.event.id}`);
+          } else if (showTasks) {
+            navigate(`project-room/${info.event.id}`);
+          }
         }}
         dayMaxEvents={3}
         dayMaxEventRows={true}
@@ -117,18 +183,24 @@ const Calendar = () => {
         editable={true}
         droppable={true}
         eventDrop={(info: EventDropArg) => {
-          if (loginUser?.id !== info.event.extendedProps.creatorId) {
-            openModal("프로젝트 생성자만 수정할 수 있습니다");
-            info.revert();
-            return;
+          if (!showTasks) {
+            if (loginUser?.id !== info.event.extendedProps.creatorId) {
+              openModal("프로젝트 생성자만 수정할 수 있습니다");
+              info.revert();
+              return;
+            }
           }
-          mutate(info);
+          {
+            showTasks ? mutateTask(info) : mutate(info);
+          }
           console.log(info);
         }}
         // 일정 길이 변경 드래그
         eventResize={(info: any) => {
           console.log(info);
-          mutate(info);
+          {
+            showTasks ? mutateTask(info) : mutate(info);
+          }
         }}
       />
       {isModalOpen && (

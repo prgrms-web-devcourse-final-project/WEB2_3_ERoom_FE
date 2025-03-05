@@ -4,11 +4,12 @@ import Button from "../common/Button";
 import ParticipantIcon from "../common/ParticipantIcon";
 import { getTaskById } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
+import defaultImg from "../../assets/defaultImg.svg";
 
 const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
   const { member } = useAuthStore();
 
-  // 업무 수정
+  // 업무 수정 상세보기
   const { data: updatedData } = useQuery<GetUpdateTask>({
     queryKey: ["UpdatedData", task.taskId],
     queryFn: async () => {
@@ -18,6 +19,8 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
 
   // console.log(updatedData);
   // console.log(task);
+  console.log(updatedData);
+  console.log(task);
 
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
@@ -101,7 +104,11 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         >
           <ParticipantIcon
             css="w-[30px] h-[30px]"
-            imgSrc={updatedData?.participantProfiles[0]}
+            imgSrc={
+              updatedData?.participantProfiles
+                ? updatedData?.participantProfiles[0]
+                : defaultImg
+            }
           />
           <p className="font-medium text-main-green">
             {task.assignedMemberName}
@@ -135,7 +142,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         {/* 기간, 업무 완료/시작 버튼 */}
         <div className="flex justify-between items-center">
           <p className="text-[12px]">
-            {task.startDate.split("T")[0]} ~ {task.endDate.split("T")[0]}
+            {task.startDate.split("T")} ~ {task.endDate.split("T")}
           </p>
           {task.assignedMemberName === member?.username &&
             (task.status !== "IN_PROGRESS" ? (
