@@ -41,14 +41,28 @@ const ProjectListBox = ({
       queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] }),
   });
 
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
+
   const deleteOrLeave = async (type: "DELETE" | "LEAVE", projectId: number) => {
     if (type === "DELETE") {
       if (projectInfo.members.length > 1) {
-        return alert("프로젝트에 다른 멤버가 없어야 삭제할 수 있습니다.");
+        return openModal("프로젝트에 다른 멤버가 없어야 삭제할 수 있습니다");
       }
 
       if (!ISCREATED_BY_LOGINUSER) {
-        return alert("프로젝트에 생성자만 삭제할 수 있습니다.");
+        return openModal("프로젝트에 생성자만 삭제할 수 있습니다");
       }
 
       try {
@@ -244,6 +258,11 @@ const ProjectListBox = ({
             }
             setIsModal={setIsLeaveModal}
           />
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
         </div>
       )}
     </div>
