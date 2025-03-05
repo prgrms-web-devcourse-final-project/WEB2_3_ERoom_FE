@@ -15,7 +15,8 @@ import {
   getMemberList,
 } from "../../../api/admin";
 import { queryClient } from "../../../main";
-import { searchMembers } from "../../../api/search";
+import { searchAllMembers } from "../../../api/search";
+import AlertModal from "../../common/AlertModal";
 
 const AdminAccount = () => {
   // 활성 멤버 데이터
@@ -48,9 +49,9 @@ const AdminAccount = () => {
     null
   );
 
-  const { data: searchedMembers, refetch } = useQuery<SearchMemberType[]>({
+  const { data: searchedAllMembers, refetch } = useQuery<SearchMemberType[]>({
     queryKey: ["searchedMembers", searchName],
-    queryFn: () => searchMembers(searchName),
+    queryFn: () => searchAllMembers(searchName),
     enabled: false,
   });
 
@@ -93,6 +94,15 @@ const AdminAccount = () => {
     }
   }, [searchName, userMenu, AllMemberData, inActiveMemberData]);
 
+  // 탭 변경 시 검색 결과 초기화
+  useEffect(() => {
+    setSearchName(""); // 검색어 초기화
+    setSearchResult(null); // 검색 결과 초기화
+    setMemberData(
+      userMenu === "active" ? AllMemberData || [] : inActiveMemberData || []
+    );
+  }, [userMenu, AllMemberData, inActiveMemberData]);
+
   //검색 결과가 업데이트되면 `memberData`에 반영
   useEffect(() => {
     if (searchResult !== null) {
@@ -123,14 +133,44 @@ const AdminAccount = () => {
     setCurrentPage(1);
   }, [userMenu]);
 
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
+
+  const openModal = (text: string, confirmAction?: () => void) => {
+    setModalText(text);
+    setIsModalOpen(true);
+    setConfirmAction(() => confirmAction || null);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setConfirmAction(null);
+  };
+
   // 관리자 계정 비활성(삭제)
   const [deleteAccountId, setDeleteAccountId] = useState<number | null>(null);
 
   const { mutate } = useMutation({
     mutationFn: (memberId: number) => deleteAdminAccount(memberId),
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] }),
+        openModal("유저가 삭제되었습니다");
+    },
   });
+
+  // 삭제 버튼 클릭 시 실행
+  const handleDeleteClick = () => {
+    if (!deleteAccountId) {
+      return openModal("유저를 선택해주세요");
+    }
+
+    // 삭제 확인 모달 띄우기
+    openModal("정말 삭제하시겠습니까?", () => {
+      mutate(deleteAccountId);
+      closeModal();
+    });
+  };
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -181,18 +221,18 @@ const AdminAccount = () => {
               </button>
             )}
             {userMenu === "active" && (
-              <button
-                className="cursor-pointer"
-                onClick={() => {
-                  if (!deleteAccountId) {
-                    return alert("유저를 선택해주세요");
-                  }
-                  mutate(deleteAccountId);
-                  alert("유저가 삭제되었습니다");
-                }}
-              >
+              <button className="cursor-pointer" onClick={handleDeleteClick}>
                 <img src={DeleteIcon} alt="계정 삭제 버튼" />
               </button>
+            )}
+            {isModalOpen && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+                <AlertModal
+                  text={modalText}
+                  onClose={closeModal}
+                  onConfirm={confirmAction}
+                />
+              </div>
             )}
           </div>
         </div>

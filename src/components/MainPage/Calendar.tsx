@@ -5,12 +5,13 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";
 import { useAuthStore } from "../../store/authStore";
+import AlertModal from "../common/AlertModal";
 
 // 캘린더 상단 커스텀 버튼(프로젝트, 개인업무)
 const PROJECT_BUTTON = {
@@ -26,6 +27,20 @@ const TASK_BUTTON = {
 const Calendar = () => {
   const navigate = useNavigate();
   const loginUser = useAuthStore((state) => state.member);
+
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
 
   // fullcalandar 타입 때문에 EventInput 타입 적용
   const { data: projectListData, isLoading } = useQuery<EventInput[]>({
@@ -74,47 +89,54 @@ const Calendar = () => {
   }
 
   return (
-    <FullCalendar
-      plugins={[dayGridPlugin, interactionPlugin]}
-      customButtons={{ project: PROJECT_BUTTON, task: TASK_BUTTON }}
-      initialView="dayGridMonth"
-      height="100%"
-      viewHeight="100%"
-      headerToolbar={{
-        left: "prev title next",
-        center: "",
-        right: "project task",
-      }}
-      // 한국어
-      locale={koLocale}
-      timeZone="local"
-      displayEventTime={false}
-      // 데이터
-      events={projectListData}
-      // 데이터 클릭이벤트
-      eventClick={(info) => {
-        navigate(`project-room/${info.event.id}`);
-      }}
-      dayMaxEvents={3}
-      dayMaxEventRows={true}
-      // 드래그
-      editable={true}
-      droppable={true}
-      eventDrop={(info: EventDropArg) => {
-        if (loginUser?.id !== info.event.extendedProps.creatorId) {
-          alert("프로젝트 생성자만 수정할 수 있습니다.");
-          info.revert();
-          return;
-        }
-        mutate(info);
-        console.log(info);
-      }}
-      // 일정 길이 변경 드래그
-      eventResize={(info: any) => {
-        console.log(info);
-        mutate(info);
-      }}
-    />
+    <>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        customButtons={{ project: PROJECT_BUTTON, task: TASK_BUTTON }}
+        initialView="dayGridMonth"
+        height="100%"
+        viewHeight="100%"
+        headerToolbar={{
+          left: "prev title next",
+          center: "",
+          right: "project task",
+        }}
+        // 한국어
+        locale={koLocale}
+        timeZone="local"
+        displayEventTime={false}
+        // 데이터
+        events={projectListData}
+        // 데이터 클릭이벤트
+        eventClick={(info) => {
+          navigate(`project-room/${info.event.id}`);
+        }}
+        dayMaxEvents={3}
+        dayMaxEventRows={true}
+        // 드래그
+        editable={true}
+        droppable={true}
+        eventDrop={(info: EventDropArg) => {
+          if (loginUser?.id !== info.event.extendedProps.creatorId) {
+            openModal("프로젝트 생성자만 수정할 수 있습니다");
+            info.revert();
+            return;
+          }
+          mutate(info);
+          console.log(info);
+        }}
+        // 일정 길이 변경 드래그
+        eventResize={(info: any) => {
+          console.log(info);
+          mutate(info);
+        }}
+      />
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
+        </div>
+      )}
+    </>
   );
 };
 

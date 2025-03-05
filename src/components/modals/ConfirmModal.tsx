@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import Button from "../common/Button";
+import AlertModal from "../common/AlertModal";
 
 const ConfirmModal = ({
   processId,
@@ -17,6 +19,20 @@ const ConfirmModal = ({
   deleteOrLeave?: () => void;
 }) => {
   const { logout } = useAuthStore();
+
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
 
   return (
     <div
@@ -43,14 +59,14 @@ const ConfirmModal = ({
             e.stopPropagation();
             if (value === "탈퇴") {
               logout();
-              alert("탈퇴 완료");
-              setIsModal(false);
+              openModal("탈퇴 완료");
+              // setIsModal(false);
             }
 
             if (processType === "프로젝트" && deleteOrLeave) {
               deleteOrLeave(); // 프로젝트 삭제 / 나가기 함수
-              alert(`${value}성공!`);
-              setIsModal(false);
+              // openModal(`${value}성공!`);
+              // setIsModal(false);
             } else if (
               processId &&
               onClick &&
@@ -73,6 +89,11 @@ const ConfirmModal = ({
             setIsModal(false);
           }}
         />
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+            <AlertModal text={modalText} onClose={closeModal} />
+          </div>
+        )}
       </div>
     </div>
   );

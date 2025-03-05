@@ -88,7 +88,7 @@ const UpdateTaskModal = ({
       username: task.assignedMemberName,
       profile: updatedData?.participantProfiles[0] || "",
       email: "",
-      id: updatedData?.participantIds[0] || 0,
+      memberId: updatedData?.participantIds[0] || 0,
     },
   ]);
 
@@ -109,8 +109,8 @@ const UpdateTaskModal = ({
     startDate: formatDateTime(selectedStartDate),
     endDate: formatDateTime(selectedEndDate),
     status: reversedStatusOptions[selectedStatus],
-    assignedMemberId: memberData[0].id,
-    participantIds: [memberData[0].id],
+    assignedMemberId: memberData[0].memberId,
+    participantIds: [memberData[0].memberId],
   };
 
   // console.log(task);
