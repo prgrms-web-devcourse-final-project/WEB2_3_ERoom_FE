@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { searchMembers } from "../../api/search";
 import { debounce } from "lodash";
 import { useAuthStore } from "../../store/authStore";
+import AlertModal from "../modals/AlertModal";
 
 type SelectMembersProps<T extends "업무" | "프로젝트"> = {
   selectedData?: T extends "프로젝트" ? ProjectDataType : UpdateTask;
@@ -10,6 +11,7 @@ type SelectMembersProps<T extends "업무" | "프로젝트"> = {
   setSelectedMembers?: React.Dispatch<React.SetStateAction<MemberType[]>>;
   value: T;
   type?: string;
+  memberData?: members[];
 };
 
 const SelectMember = <T extends "업무" | "프로젝트">({
@@ -18,10 +20,12 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   setSelectedMembers,
   value,
   type,
+  memberData,
 }: SelectMembersProps<T>) => {
   const loginUser = useAuthStore((state) => state.member);
+  const [isModal, setIsModal] = useState<boolean>(false);
 
-  console.log(selectedData);
+  console.log(memberData);
 
   useEffect(() => {
     console.log(selectedData);
@@ -70,7 +74,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
     }
 
     // 이미 선택된 팀원이 있는지 확인
-
     const isSelected = selectedMembers?.some(
       (selected) => selected.memberId === member.memberId
     );
@@ -78,7 +81,10 @@ const SelectMember = <T extends "업무" | "프로젝트">({
     if (!isSelected && setSelectedMembers) {
       // 업무박스에선 한 명만 선택되도록 함
       if (value === "업무") {
-        setSelectedMembers([member]);
+        // 선택인원이 프로젝트 참여인원이 아닐 때 모달 오픈
+        if (memberData?.some((m) => m.memberId !== member.memberId)) {
+          setIsModal(true);
+        } else setSelectedMembers([member]);
       } else {
         setSelectedMembers((prevSelected: MemberType[]) =>
           [...prevSelected, member].sort((a, b) =>
@@ -177,6 +183,20 @@ const SelectMember = <T extends "업무" | "프로젝트">({
           </div>
         ))}
       </div>
+
+      {/* 참여인원 확인 모달 */}
+      {isModal && (
+        <div
+          className="absolute inset-0 w-screen h-fit min-h-screen
+            flex justify-center items-center bg-black/70 z-50"
+          onClick={() => setIsModal(false)}
+        >
+          <AlertModal
+            text="프로젝트 참여인원이 아닙니다."
+            setIsModal={setIsModal}
+          />
+        </div>
+      )}
     </div>
   );
 };
