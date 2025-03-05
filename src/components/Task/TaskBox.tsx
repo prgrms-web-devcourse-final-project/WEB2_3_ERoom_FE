@@ -3,6 +3,7 @@ import { PROGRESS_STATUS } from "../../constants/status";
 import Button from "../common/Button";
 import ParticipantIcon from "../common/ParticipantIcon";
 import { getTaskById } from "../../api/task";
+import defaultImg from "../../assets/defaultImg.svg";
 
 const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
   const { data: updatedData } = useQuery<GetUpdateTask>({
@@ -92,8 +93,13 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         >
           <ParticipantIcon
             css="w-[30px] h-[30px]"
-            imgSrc={updatedData?.participantProfiles[0]}
+            imgSrc={
+              updatedData?.participantProfiles
+                ? updatedData?.participantProfiles[0]
+                : defaultImg
+            }
           />
+
           <p className="font-medium text-main-green">
             {task.assignedMemberName}
           </p>

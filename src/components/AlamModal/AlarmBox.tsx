@@ -1,44 +1,67 @@
 import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
+import useReadAlarm from "../../hooks/useReadAlarm";
 
-const AlarmBox = ({ project, task, theme, css, onRemove }: AlarmBoxProps) => {
+const AlarmBox = ({ id, project, projectId, theme, css }: AlarmBoxProps) => {
   const navigate = useNavigate();
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
 
   const THEME_STYLE = {
-    message: "border border-main-green01 bg-main-beige01 text-main-green",
-    newTask: "border border-main-green01 bg-main-green02 text-main-green",
-    newProject: "border border-main-green01 bg-main-green02 text-main-green",
-    endProject: "border border-header-red-hover bg-red text-header-red",
+    MESSAGE_SEND: "border border-main-green01 bg-main-beige01 text-main-green",
+    TASK_ASSIGN: "border border-main-green01 bg-main-green02 text-main-green",
+    PROJECT_INVITE:
+      "border border-main-green01 bg-main-green02 text-main-green",
+    PROJECT_EXIT: "border border-header-red-hover bg-red text-header-red",
   }[theme];
 
   const THEME_TEXT = {
-    message: "새로운 메시지가 있습니다",
-    newTask: "회원님에게 업무가 배정되었습니다",
-    newProject: "새로운 프로젝트에 초대되었습니다",
-    endProject: "프로젝트 마감이 1일 남았습니다",
+    MESSAGE_SEND: "새로운 메시지가 있습니다",
+    TASK_ASSIGN: "회원님에게 업무가 배정되었습니다",
+    PROJECT_INVITE: "새로운 프로젝트에 초대되었습니다",
+    PROJECT_EXIT: "프로젝트 마감이 1일 남았습니다",
   }[theme];
+
+  const projectParts = project.split(",");
+  const part1 = projectParts[0]?.trim() || "";
+  const part2 = projectParts[1]?.trim() || "";
 
   const THEME_FROM = {
-    message: `${project}`,
-    newTask: `${task}-${project}`,
-    newProject: `${project}`,
-    endProject: `${project}`,
+    MESSAGE_SEND: part2,
+    TASK_ASSIGN: `${part1}-${part2}`,
+    PROJECT_INVITE: project,
+    PROJECT_EXIT: project,
   }[theme];
 
-  //임시 projectId
-  const projectId = ":projectIc";
+  const projectIdParts = projectId ? projectId.split(",") : [""];
+  const partId2 = projectIdParts[1]?.trim() || "";
+
+  const THEME_ID = {
+    MESSAGE_SEND: partId2,
+    TASK_ASSIGN: partId2,
+    PROJECT_INVITE: projectId,
+    PROJECT_EXIT: projectId,
+  }[theme];
 
   const THEME_NAVIGATE = {
-    message: `/project-room/${projectId}/meeting-room`,
-    newTask: `/project-room/${projectId}`,
-    newProject: `/project-room/${projectId}`,
-    endProject: `/project-room/${projectId}`,
+    MESSAGE_SEND: `/project-room/${THEME_ID}?category=meeting`,
+    TASK_ASSIGN: `/project-room/${THEME_ID}`,
+    PROJECT_INVITE: `/project-room/${THEME_ID}`,
+    PROJECT_EXIT: `/project-room/${THEME_ID}`,
   }[theme];
 
+  const { mutate: readAlarm } = useReadAlarm();
+
   const handleClick = () => {
+    console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
+    readAlarm(id, {
+      onSuccess: () => {
+        console.log("readAlarm 성공:", id);
+      },
+      onError: (error) => {
+        console.error("readAlarm 실패:", error);
+      },
+    });
     navigate(THEME_NAVIGATE);
-    if (onRemove) onRemove();
   };
 
   return (

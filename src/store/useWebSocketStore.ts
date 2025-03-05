@@ -1,4 +1,5 @@
 import { Client } from "@stomp/stompjs";
+import { useQueryClient } from "@tanstack/react-query";
 import SockJS from "sockjs-client";
 import { create } from "zustand";
 
@@ -71,10 +72,10 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
         return;
       }
 
-      console.log(" 알람 구독 시도: /topic/notifications/" + memberId);
+      console.log(" 알람 구독 시도: /notifications/" + memberId);
 
       const subscription = stompClient.subscribe(
-        `/topic/notifications/${memberId}`,
+        `/notifications/${memberId}`,
         (message) => {
           const data = JSON.parse(message.body);
           console.log("새로운 알람 수신:", data);
@@ -83,6 +84,15 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
             console.log(" 현재 알람 리스트:", updatedNotifications);
             return { notifications: updatedNotifications };
           });
+
+          //Tanstack query 캐시 업데이트
+          const queryClient = useQueryClient();
+          queryClient.setQueryData(
+            ["unreadAlarms", memberId],
+            (oldAlarms: any = []) => {
+              return [...oldAlarms, data];
+            }
+          );
         }
       );
       if (subscription) {

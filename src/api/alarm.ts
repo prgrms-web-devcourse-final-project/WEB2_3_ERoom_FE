@@ -13,7 +13,7 @@ export const patchReadAlarm = async (notificationId: number) => {
 };
 
 // 안 읽음 알림 리스트 가져오기 (응답 데이터 타입 처리해주기)
-export const getUnreadAlarm = async (memberId: number) => {
+export const getUnreadAlarm = async (memberId: number | undefined) => {
   try {
     const response = await api.get(`/notifications/unread/${memberId}`);
     console.log("안 읽은 알람 리스트 가져옴");

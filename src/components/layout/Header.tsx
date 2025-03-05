@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import alarmIcon from "../../assets/icons/alarm.svg";
 import AlarmModal from "../modals/AlarmModal";
 import headerIcon from "../../assets/icons/headerLogo.svg";
 import { useAuthStore } from "../../store/authStore";
+import useWebSocketStore from "../../store/useWebSocketStore";
+import useUnreadAlarms from "../../hooks/useUnreadAlarm";
+import useReadAlarm from "../../hooks/useReadAlarm";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -26,11 +29,32 @@ const Header = () => {
     }
   }, [pathname]);
 
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const memberId = useAuthStore((state) => state.member?.id);
+  const { unreadAlarms, refetch } = useUnreadAlarms(memberId);
+  const { notifications, connectWebSocket } = useWebSocketStore();
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
+  //웹소켓 연결
+  useEffect(() => {
+    if (accessToken && memberId) {
+      connectWebSocket(accessToken, memberId);
+    }
+  }, [accessToken, memberId, connectWebSocket]);
+
   //알람 모달 열기, 닫기
   const handleAlarmModal = () => {
     setIsAlarmOpen((prev) => !prev);
+    if (!isAlarmOpen) refetch();
   };
+
+  //웹소켓과 API 알람 합친 알람 리스트(중복 제거)
+  const allAlarms = useMemo(() => {
+    const uniqueAlarms = new Map();
+    [...unreadAlarms, ...notifications].forEach((alarm) => {
+      uniqueAlarms.set(alarm.id, alarm);
+    });
+    return Array.from(uniqueAlarms.values());
+  }, [unreadAlarms, notifications]);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const alarmRef = useRef<HTMLLIElement>(null);
@@ -54,6 +78,44 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isAlarmOpen]);
+
+  // 미팅룸에 있을 땐 해당 미팅룸 알람은 읽음처리
+  const { search } = useLocation();
+  const { id } = useParams();
+  const queryParams = new URLSearchParams(search);
+  const category = queryParams.get("category");
+  const { mutate: readAlarm } = useReadAlarm();
+
+  useEffect(() => {
+    if (category === "meeting" && id) {
+      console.log(`현재 프로젝트 ID: ${id}, 카테고리: ${category}`);
+
+      const matchingAlarms = allAlarms.filter((alarm) => {
+        const referenceIdParts = alarm.referenceId
+          .split(",")
+          .map((part: string) => part.trim());
+        const extractedReferenceId = referenceIdParts[1] || "";
+        return extractedReferenceId === id && !alarm.read;
+      });
+
+      console.log("읽음 처리할 알람", matchingAlarms);
+
+      //해당 알람들 읽음 처리
+      matchingAlarms.forEach((alarm) => {
+        readAlarm(alarm.id, {
+          onSuccess: () => {
+            refetch();
+          },
+        });
+      });
+    }
+  }, [category, id, unreadAlarms, notifications, readAlarm]);
+
+  //알람 핑 표시
+  const [pingAlarm, setPingAlarm] = useState(false);
+  useEffect(() => {
+    setPingAlarm([...unreadAlarms, ...notifications].length > 0);
+  }, [unreadAlarms, notifications]);
 
   return (
     <>
@@ -79,10 +141,18 @@ const Header = () => {
               {/* 알람버튼 */}
               <li
                 ref={alarmRef}
-                className="cursor-pointer flex justify-center items-center"
+                className=" cursor-pointer flex justify-center items-center "
                 onClick={handleAlarmModal}
               >
-                <img src={alarmIcon} alt="알람 아이콘" />
+                <div className="relative">
+                  <img src={alarmIcon} alt="알람 아이콘" />
+                  {pingAlarm && (
+                    <span className="absolute top-[-1.3px] right-[-1.5px] flex size-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-main-green02 opacity-75"></span>
+                      <span className="relative inline-flex size-2 rounded-full bg-main-green02"></span>
+                    </span>
+                  )}
+                </div>
               </li>
 
               {/* 마이프로젝트 버튼 */}
@@ -97,7 +167,10 @@ const Header = () => {
                   ref={modalRef}
                   className="absolute top-[50px] transform -translate-x-1/2 z-50"
                 >
-                  <AlarmModal onClose={handleAlarmModal} />
+                  <AlarmModal
+                    onClose={handleAlarmModal}
+                    allAlarms={allAlarms}
+                  />
                 </div>
               )}
 
