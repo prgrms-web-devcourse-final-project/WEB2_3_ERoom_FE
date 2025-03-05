@@ -9,6 +9,45 @@ import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectDetail } from "../../api/project";
 
+interface ProjectDetailType {
+  projectId: number;
+  projectName: string;
+  categoryName: string;
+  subCategories: subCategories[];
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"; // 프로젝트 상태 Enum
+  tasks: Task[];
+  members: members[];
+}
+
+interface subCategories {
+  id: number;
+  name: string;
+  tags: tags[];
+}
+
+interface tags {
+  id: number;
+  name: string;
+}
+
+interface members {
+  memberId: number;
+  username: string;
+  profile: string;
+}
+
+interface ManageTasksType {
+  name: string;
+  tasks: Task[];
+}
+
+interface AllTasksType {
+  IN_PROGRESS: Task[];
+  COMPLETED: Task[];
+  BEFORE_START: Task[];
+  HOLD: Task[];
+}
+
 const ProjectRoomDetail = () => {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();
@@ -17,7 +56,7 @@ const ProjectRoomDetail = () => {
 
   const { setManagers } = useOutletContext<OutletContextType>();
 
-  // 프로젝트 상세 정보 불러오기
+  /* 프로젝트 상세 정보 불러오기 */
   const {
     data: projectDetailList,
     isLoading,
@@ -28,7 +67,7 @@ const ProjectRoomDetail = () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
-  // console.log(projectDetailList);
+  console.log(projectDetailList?.members);
 
   // 전체 업무 상태
   const [allTasks, setAllTasks] = useState<AllTasksType>({
@@ -38,12 +77,20 @@ const ProjectRoomDetail = () => {
     HOLD: [],
   });
 
-  interface ManageTasksType {
-    name: string;
-    tasks: Task[];
-  }
-
+  // 담당자 업무 상태
   const [manageTasks, setManageTasks] = useState<ManageTasksType[]>([]);
+  // 프로젝트 참여자 상태
+  const [member, setMember] = useState<members[]>(
+    projectDetailList?.members || []
+  );
+
+  useEffect(() => {
+    if (projectDetailList) {
+      setMember(projectDetailList.members);
+    }
+  }, [projectDetailList]);
+
+  console.log(member);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
@@ -141,20 +188,20 @@ const ProjectRoomDetail = () => {
               {/* 태그 목록 */}
               <div className="flex justify-start gap-[10px]">
                 {/* 분야 */}
-                {projectDetailList?.category && (
-                  <p># {projectDetailList?.category}</p>
+                {projectDetailList?.categoryName && (
+                  <p># {projectDetailList?.categoryName}</p>
                 )}
 
                 {/* 세부분야 1 */}
-                {projectDetailList?.subCategories1 &&
-                  projectDetailList?.subCategories1.map((item) => (
-                    <p key={item}># {item}</p>
+                {projectDetailList?.subCategories[0] &&
+                  projectDetailList?.subCategories[0].tags.map((item) => (
+                    <p key={item.name}># {item.name}</p>
                   ))}
 
                 {/* 세부분야2 */}
-                {projectDetailList?.subCategories2 &&
-                  projectDetailList?.subCategories2.map((item) => (
-                    <p key={item}># {item}</p>
+                {projectDetailList?.subCategories[1] &&
+                  projectDetailList?.subCategories[1].tags.map((item) => (
+                    <p key={item.name}># {item.name}</p>
                   ))}
               </div>
             </div>
@@ -234,6 +281,7 @@ const ProjectRoomDetail = () => {
                 projectId={Number(projectId)}
                 refetch={refetch}
                 setIsModal={setIsEditTaskModal}
+                memberData={member}
               />
             </div>
           )}

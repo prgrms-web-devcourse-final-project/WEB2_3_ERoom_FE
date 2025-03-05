@@ -68,6 +68,23 @@ const Sidebar = ({
     (state) => state.handleManagerClick
   );
 
+  // 담당자 정렬 상태
+  const [sortedManagers, setSortedManagers] = useState<members[]>([]);
+
+  useEffect(() => {
+    // managers 배열을 정렬하여 상태에 저장
+    const sorted = [...managers].sort((a, b) => {
+      if (a.username < b.username) {
+        return -1;
+      }
+      if (a.username > b.username) {
+        return 1;
+      }
+      return 0;
+    });
+    setSortedManagers(sorted);
+  }, [managers]);
+
   useEffect(() => {
     if (managers.length > 0 && projectRoomMenu === "manager") {
       // 초기 체크박스 전체선택
@@ -144,7 +161,7 @@ const Sidebar = ({
                     />
 
                     {/* 담당자별 */}
-                    {managers.map((member) => (
+                    {sortedManagers.map((member) => (
                       <ManagerCheckBox
                         key={member.memberId}
                         checkboxName={member.username}

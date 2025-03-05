@@ -17,14 +17,6 @@ interface selectedDateType {
   ampm: string;
 }
 
-interface CreateTaskProps {
-  onClose: React.Dispatch<React.SetStateAction<boolean>>;
-  projectId: number;
-  onClick?: (task: CreateTask) => void;
-  refetch: () => void;
-  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 interface TaskListProps {
   name: string;
   isAll?: boolean;
@@ -39,12 +31,6 @@ interface TaskBoxProps {
   onUpdate?: (taskId: number, updateData: UpdateTask) => void;
 }
 
-interface AllTasksType {
-  IN_PROGRESS: Task[];
-  COMPLETED: Task[];
-  BEFORE_START: Task[];
-  HOLD: Task[];
-}
 interface Task {
   taskId: number;
   title: string;
@@ -54,6 +40,7 @@ interface Task {
   assignedMemberName: string;
   assignedMemberProfile: string; // URL 형식으로 처리
   participants: string[]; // 참가자는 문자열 배열로 처리
+  colors: { background: string; text: string };
 }
 
 interface CreateTask {
