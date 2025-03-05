@@ -34,6 +34,9 @@ export const adminEditDetailTag = async (
       }
     );
     console.log("adminEditDetailTag", response);
+    if (response.status === 200) {
+      alert("태그가 수정되었습니다");
+    }
     return response;
   } catch (error) {
     console.error(error);

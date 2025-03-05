@@ -24,8 +24,9 @@ const AdminTag = () => {
   const [subCategoryId, setSubCategoryId] = useState<number>();
 
   useEffect(() => {
-    if (allCategories) {
-      // setSubCategories2(allCategories[0].subcategories);
+    if (allCategories && isCategoryClicked) {
+      console.log("allCategories");
+      setSubCategories2(allCategories[isCategoryClicked].subcategories);
     }
   }, [allCategories]);
 
@@ -52,8 +53,6 @@ const AdminTag = () => {
 
     setIsAddDetailTag(false);
   };
-
-  // ---------------------------------------------------------------------------------
 
   const [isTagList, setIsTagList] = useState("tagList");
 
@@ -96,7 +95,7 @@ const AdminTag = () => {
     }) => adminAddNewSubCategory(categoryId, newSubCategoryName),
     onSuccess: () => {
       setIsAddSubCategory(false);
-      refetch();
+      // refetch();
     },
   });
 
@@ -211,11 +210,11 @@ const AdminTag = () => {
                   index={index}
                   id={subcategory.id}
                   name={subcategory.name}
-                  // onChange={handleSubcategoryChange}
                   onClick={subCategoryClick}
                   type="subCategory"
                   isClicked={isSubCateClicked}
                   setIsClicked={setIsSubCateClicked}
+                  setDetails2={setDetails2}
                 />
               ))}
               {isAddSubCategory && subCategories2 && (
@@ -267,11 +266,9 @@ const AdminTag = () => {
                   id={detail.id}
                   name={detail.name}
                   subcategoryId={subCategoryId}
-                  // onChange={handleDetailChange}
                   onClick={() => {}}
                   type="detailTags"
-                  // isClicked={isDetailTagClicked}
-                  // setIsClicked={setIsDetailTagClicked}
+                  setDetails2={setDetails2}
                 />
               ))}
               {isAddDetailTag && subCategoryId && (

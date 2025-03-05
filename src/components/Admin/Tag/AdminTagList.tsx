@@ -30,6 +30,7 @@ interface AdminTagListProps {
   setIsClicked?: React.Dispatch<
     React.SetStateAction<number | null | undefined>
   >;
+  setDetails2?: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const AdminTagList = ({
@@ -41,6 +42,7 @@ const AdminTagList = ({
   type,
   isClicked,
   setIsClicked,
+  setDetails2,
 }: AdminTagListProps) => {
   const [isEditable, setIsEditable] = useState(false);
   const [value, setValue] = useState(name);
@@ -69,39 +71,64 @@ const AdminTagList = ({
   const { mutate: deleteSubCategoryFn } = useMutation({
     mutationFn: (subcategoryId: number) =>
       adminDeleteSubCategory(subcategoryId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
+    onSuccess: () => {
+      if (setDetails2) {
+        setDetails2([]);
+      }
+      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+    },
   });
 
   // 서브카테고리 수정함수
-  const { mutate: editSubCategoryFn } = useMutation({
-    mutationFn: ({
+  const { mutateAsync: editSubCategoryFn } = useMutation({
+    mutationFn: async ({
       subcategoryId,
       editSubCateName,
     }: {
       subcategoryId: number;
       editSubCateName: string;
-    }) => adminEditSubCategory(subcategoryId, editSubCateName),
+    }) => {
+      await adminEditSubCategory(subcategoryId, editSubCateName);
+
+      setIsEditable(false);
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
   });
 
   // 상세항목 태그 삭제함수
-  const { mutate: deleteDetailTagFn } = useMutation({
-    mutationFn: ({
+  const { mutateAsync: deleteDetailTagFn } = useMutation({
+    mutationFn: async ({
       subcategoryId,
       tagId,
     }: {
       subcategoryId: number;
       tagId: number;
-    }) => adminDeleteDetailTag(subcategoryId, tagId),
+    }) => {
+      if (setDetails2) {
+        setDetails2((prev) =>
+          prev.filter((detailTag) => detailTag.id !== tagId)
+        );
+      }
+      try {
+        // 실제 삭제 API 요청
+        const response = await adminDeleteDetailTag(subcategoryId, tagId);
+        console.log("삭제 응답:", response);
+
+        return response; // 반환값 추가
+      } catch (error) {
+        console.error("삭제 요청 실패:", error);
+        // setDetails2(previousDetails); // 실패 시 롤백 (Undo)
+        throw error;
+      }
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
   });
 
   // 상세항목 태그 수정함수
-  const { mutate: editDetailTagFn } = useMutation({
-    mutationFn: ({
+  const { mutateAsync: editDetailTagFn } = useMutation({
+    mutationFn: async ({
       subcategoryId,
       tagId,
       editDetailTagName,
@@ -109,7 +136,25 @@ const AdminTagList = ({
       subcategoryId: number;
       tagId: number;
       editDetailTagName: string;
-    }) => adminEditDetailTag(subcategoryId, tagId, editDetailTagName),
+    }) => {
+      const response = await adminEditDetailTag(
+        subcategoryId,
+        tagId,
+        editDetailTagName
+      );
+      if (response?.status !== 200) {
+        return alert("오류가 발생했습니다");
+      }
+      if (setDetails2) {
+        setDetails2((prev) =>
+          prev.map((item, i) =>
+            i === index ? { id: tagId, name: editDetailTagName } : item
+          )
+        );
+      }
+
+      setIsEditable(false);
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
   });
