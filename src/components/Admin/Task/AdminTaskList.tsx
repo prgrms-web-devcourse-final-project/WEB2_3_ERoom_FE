@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditIcon from "../../../assets/icons/edit.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
 import { twMerge } from "tailwind-merge";
@@ -23,10 +23,16 @@ const AdminTaskList = ({
   task,
   index,
   onUpdateTask,
+  page,
+  isAllCheck,
+  setIsCheckedId,
 }: {
   task: TaskList;
   index: number;
   onUpdateTask: (id: number, updatedTask: TaskList) => void;
+  page: number;
+  isAllCheck: boolean;
+  setIsCheckedId: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState({ ...task });
@@ -36,6 +42,24 @@ const AdminTaskList = ({
   const [status, setStatus] = useState<string>(
     PROGRESS_STATUS[task.taskStatus]!
   );
+
+  // 전체 체크 시 선택 함수
+  useEffect(() => {
+    isAllCheck && page - 1 <= index && page - 1 + 14 >= index
+      ? setIsChecked(true)
+      : setIsChecked(false);
+  }, [isAllCheck, page]);
+
+  // 체크 시 체크된 항목 배열에 id 추가
+  useEffect(() => {
+    setIsCheckedId((prev) =>
+      isChecked
+        ? prev.includes(task.taskId)
+          ? prev
+          : [...prev, task.taskId]
+        : prev.filter((prevIds) => prevIds !== task.taskId)
+    );
+  }, [isChecked]);
 
   // 저장 함수
   const handleSaveClick = () => {
