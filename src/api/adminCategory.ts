@@ -36,6 +36,9 @@ export const adminEditCategory = async (
       }
     );
     console.log(response);
+    if (response.status === 204) {
+      alert("카테고리 수정이 완료되었습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -45,7 +48,13 @@ export const adminEditCategory = async (
 // 관리자 카테고리 삭제
 export const adminDeleteCategory = async (categoryId: number) => {
   try {
-    const response = await api(`/admin/manage/category/${categoryId}/delete`);
+    const response = await api.delete(
+      `/admin/manage/category/${categoryId}/delete`
+    );
+    console.log("adminDeleteCategory", response);
+    if (response.status === 204) {
+      alert("카테고리가 삭제되었습니다");
+    }
     return response;
   } catch (error) {
     console.error(error);

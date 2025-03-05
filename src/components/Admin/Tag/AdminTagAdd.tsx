@@ -6,17 +6,21 @@ interface AdminTagAddProps {
   index: number;
   onClick?: (newCategoryName: string) => void;
   categoryId?: number;
+  subcategoryId?: number;
   addSubCategory?: (categoryId: number, newSubCategoryName: string) => void;
   setIsAdd: React.Dispatch<React.SetStateAction<boolean>>;
   addType: string;
+  addDetailTag?: (subcategoryId: number, newDetailTagName: string) => void;
 }
 
 const AdminTagAdd = ({
   index,
   setIsAdd,
   categoryId,
+  subcategoryId,
   onClick,
   addSubCategory,
+  addDetailTag,
   addType,
 }: AdminTagAddProps) => {
   const [newValue, setNewValue] = useState("");
@@ -40,19 +44,32 @@ const AdminTagAdd = ({
         className="flex justify-center items-center cursor-pointer"
         onClick={() => {
           if (addType === "category" && onClick) {
+            if (!newValue.trim().length) {
+              return alert("최소 한글자 이상 입력해주세요");
+            }
             onClick(newValue);
           } else if (
             addType === "subCategory" &&
             addSubCategory &&
             categoryId
           ) {
+            if (!newValue.trim().length) {
+              return alert("최소 한글자 이상 입력해주세요");
+            }
             addSubCategory(categoryId, newValue);
+          } else if (addType === "detailTag" && addDetailTag && subcategoryId) {
+            if (!newValue.trim().length) {
+              return alert("최소 한글자 이상 입력해주세요");
+            }
+            addDetailTag(subcategoryId, newValue);
           }
         }}
       >
         <img src={SaveButton} alt="저장 버튼" className="w-[35px] h-[35px]" />
       </button>
-      <AdminEditCancelBtn onClick={() => setIsAdd(false)} />
+      <div className="flex justify-center items-center">
+        <AdminEditCancelBtn onClick={() => setIsAdd(false)} />
+      </div>
     </div>
   );
 };

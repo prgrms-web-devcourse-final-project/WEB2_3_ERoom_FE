@@ -3,17 +3,14 @@ import AdminButton from "../../common/AdminButton";
 import AddButton from "../../../assets/button/add_tag.svg";
 import AdminTagList from "./AdminTagList";
 import AdminTagAdd from "./AdminTagAdd";
-import { useMutation, useMutationState, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { adminNewCategory, getAllCategory } from "../../../api/adminCategory";
 import AdminTagBox from "./AdminTagBox";
 import { adminAddNewSubCategory } from "../../../api/adminSubCategory";
+import { adminAddnewDetailTag } from "../../../api/adminDetailTag";
 
 const AdminTag = () => {
-  const {
-    data: allCategories,
-    isLoading,
-    refetch,
-  } = useQuery<AllCategoryType[]>({
+  const { data: allCategories, refetch } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategory"],
     queryFn: getAllCategory,
   });
@@ -23,23 +20,31 @@ const AdminTag = () => {
   const [details2, setDetails2] = useState<any[]>([]);
 
   const [categoryId, setCategoryId] = useState<number>();
+  const [subCategoryId, setSubCategoryId] = useState<number>();
 
   useEffect(() => {
     if (allCategories) {
-      setSubCategories2(allCategories[0].subcategories);
+      // setSubCategories2(allCategories[0].subcategories);
     }
   }, [allCategories]);
 
   const categoryClick = (categoryIndex: number, categoryId: number) => {
-    if (allCategories)
+    if (allCategories) {
       setSubCategories2(allCategories[categoryIndex].subcategories);
-    setDetails2([]);
-    setCategoryId(categoryId);
+      setDetails2([]);
+      setCategoryId(categoryId);
+    }
+    setIsAddCategory(false);
+    setIsAddSubCategory(false);
+    setIsAddDetailTag(false);
+
+    setIsSubCateClicked(null);
   };
 
-  const subCategoryClick = (subCateIndex: number) => {
+  const subCategoryClick = (subCateIndex: number, subcategoryId: number) => {
     if (subCategories2) {
       setDetails2(subCategories2[subCateIndex].tags);
+      setSubCategoryId(subcategoryId);
     }
   };
 
@@ -50,25 +55,6 @@ const AdminTag = () => {
   const handleButtonClick = (type: "tagList" | "tagData") => {
     setIsTagList(type);
   };
-
-  // const [categories, setCategories] = useState(initialCategories);
-  // const [subcategories, setSubcategories] = useState(
-  //   initialCategories[0].subcategories
-  // );
-  // const [details, setDetails] = useState(
-  //   initialCategories[0].subcategories[0].data
-  // );
-
-  const [addCategories, setAddCategories] = useState<
-    | {
-        id: string;
-        name: string;
-        value: number;
-        subcategories: never[];
-        isEditable: boolean;
-      }[]
-    | null
-  >(null);
 
   //  분야 추가
   const [isAddCategory, setIsAddCategory] = useState(false);
@@ -109,32 +95,27 @@ const AdminTag = () => {
     },
   });
 
-  // 세부항목 수정
-  const handleSubcategoryChange = (id: string, newName: string) => {
-    // setSubcategories(
-    //   subcategories.map((sub) =>
-    //     sub.id === id ? { ...sub, subname: newName } : sub
-    //   )
-    // );
-  };
-
   // 상세항목 추가
 
+  const [isAddDetailTag, setIsAddDetailTag] = useState(false);
+
   const handleAddDetail = () => {
-    // setDetails([
-    //   ...details,
-    //   { id: generateId(), text: "", value: 10, isEditable: true },
-    // ]);
+    setIsAddDetailTag(true);
   };
 
-  // 상세항목 수정
-  const handleDetailChange = (id: string, newText: string) => {
-    // setDetails(
-    //   details.map((detail) =>
-    //     detail.id === id ? { ...detail, text: newText } : detail
-    //   )
-    // );
-  };
+  const { mutate: addNewDetailTag } = useMutation({
+    mutationFn: ({
+      subcategoryId,
+      newDetailTagName,
+    }: {
+      subcategoryId: number;
+      newDetailTagName: string;
+    }) => adminAddnewDetailTag(subcategoryId, newDetailTagName),
+  });
+
+  const [isCategoryClicked, setIsCategoryClicked] = useState<number | null>();
+  const [isSubCateClicked, setIsSubCateClicked] = useState<number | null>();
+  const [isDetailTagClicked, setIsDetailTagClicked] = useState<number>();
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -174,20 +155,12 @@ const AdminTag = () => {
                   index={index}
                   id={category.id}
                   name={category.name}
-                  // onChange={handleCategoryChange}
+                  isClicked={isCategoryClicked}
+                  setIsClicked={setIsCategoryClicked}
                   onClick={categoryClick}
                   type="category"
                 />
               ))}
-              {/* {addCategories?.map((category, index) => (
-                <AdminTagAdd
-                  key={category.id}
-                  index={index + categories.length}
-                  id={category.id}
-                  name={category.name}
-                  onChange={handleCategoryChange}
-                />
-              ))} */}
               {isAddCategory && allCategories && (
                 <AdminTagAdd
                   index={allCategories.length}
@@ -222,6 +195,8 @@ const AdminTag = () => {
                   // onChange={handleSubcategoryChange}
                   onClick={subCategoryClick}
                   type="subCategory"
+                  isClicked={isSubCateClicked}
+                  setIsClicked={setIsSubCateClicked}
                 />
               ))}
               {isAddSubCategory && subCategories2 && (
@@ -232,7 +207,7 @@ const AdminTag = () => {
                     categoryId: number,
                     newSubCategoryName: string
                   ) => addNewSubCategory({ categoryId, newSubCategoryName })}
-                  setIsAdd={setIsAddCategory}
+                  setIsAdd={setIsAddSubCategory}
                   addType="subCategory"
                 />
               )}
@@ -243,12 +218,13 @@ const AdminTag = () => {
               상세항목
             </span>
 
-            <button
-              onClick={handleAddDetail}
-              className="flex w-full justify-end cursor-pointer"
-            >
-              <img src={AddButton} alt="상세항목 생성 버튼" />
-            </button>
+            <div className="flex w-full justify-end h-[27px]">
+              {subCategoryId && (
+                <button onClick={handleAddDetail} className="cursor-pointer">
+                  <img src={AddButton} alt="상세항목 생성 버튼" />
+                </button>
+              )}
+            </div>
 
             <div className="grid grid-cols-[9.4%_1fr_12.5%_12.5%] w-full h-[33px] text-main-green border-b border-b-main-green">
               <div className="flex justify-center">
@@ -271,11 +247,26 @@ const AdminTag = () => {
                   index={index}
                   id={detail.id}
                   name={detail.name}
+                  subcategoryId={subCategoryId}
                   // onChange={handleDetailChange}
                   onClick={() => {}}
                   type="detailTags"
+                  // isClicked={isDetailTagClicked}
+                  // setIsClicked={setIsDetailTagClicked}
                 />
               ))}
+              {isAddDetailTag && subCategoryId && (
+                <AdminTagAdd
+                  index={details2.length}
+                  subcategoryId={subCategoryId}
+                  setIsAdd={setIsAddDetailTag}
+                  addType="detailTag"
+                  addDetailTag={(
+                    subcategoryId: number,
+                    newDetailTagName: string
+                  ) => addNewDetailTag({ subcategoryId, newDetailTagName })}
+                />
+              )}
             </div>
           </div>
         </div>
