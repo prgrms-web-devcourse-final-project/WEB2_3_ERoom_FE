@@ -82,7 +82,7 @@ const SelectMember = <T extends "업무" | "프로젝트">({
       // 업무박스에선 한 명만 선택되도록 함
       if (value === "업무") {
         // 선택인원이 프로젝트 참여인원이 아닐 때 모달 오픈
-        if (memberData?.some((m) => m.memberId !== member.memberId)) {
+        if (!memberData?.some((m) => m.memberId === member.memberId)) {
           setIsModal(true);
         } else setSelectedMembers([member]);
       } else {
