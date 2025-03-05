@@ -52,7 +52,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         className={`w-[320px] h-[120px] bg-white border border-main-green02
         px-3 py-2 flex flex-col justify-center gap-2 ${
           task.assignedMemberName === member?.username &&
-          "cursor-pointer transition-all duration-500 transform hover:scale-105 hover:border-[3px] hover:border-main-green01 hover:rounded-[10px]"
+          "cursor-pointer transition-transform duration-500  hover:scale-105 hover:border-[3px] hover:border-main-green01 hover:rounded-[10px]"
         } 
         `}
         onClick={onClick}
@@ -117,7 +117,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         className={`w-[300px] h-[80px] bg-white border border-main-green02
         px-3 py-2 flex flex-col justify-center gap-2 ${
           task.assignedMemberName === member?.username &&
-          "cursor-pointer transition-all duration-500 transform hover:scale-105 hover:border-[3px] hover:border-main-green01 hover:rounded-[10px]"
+          "cursor-pointer transition-transform duration-500 hover:scale-105 hover:border-[3px] hover:border-main-green01 hover:rounded-[10px]"
         } 
         `}
         onClick={onClick}
