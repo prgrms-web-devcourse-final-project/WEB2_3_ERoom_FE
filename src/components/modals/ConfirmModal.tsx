@@ -65,7 +65,7 @@ const ConfirmModal = ({
 
             if (processType === "프로젝트" && deleteOrLeave) {
               deleteOrLeave(); // 프로젝트 삭제 / 나가기 함수
-              openModal(`${value}성공!`);
+              // openModal(`${value}성공!`);
               // setIsModal(false);
             } else if (
               processId &&

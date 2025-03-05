@@ -15,7 +15,7 @@ import {
   getMemberList,
 } from "../../../api/admin";
 import { queryClient } from "../../../main";
-import { searchMembers } from "../../../api/search";
+import { searchAllMembers } from "../../../api/search";
 import AlertModal from "../../common/AlertModal";
 
 const AdminAccount = () => {
@@ -49,9 +49,9 @@ const AdminAccount = () => {
     null
   );
 
-  const { data: searchedMembers, refetch } = useQuery<SearchMemberType[]>({
+  const { data: searchedAllMembers, refetch } = useQuery<SearchMemberType[]>({
     queryKey: ["searchedMembers", searchName],
-    queryFn: () => searchMembers(searchName),
+    queryFn: () => searchAllMembers(searchName),
     enabled: false,
   });
 
@@ -93,6 +93,15 @@ const AdminAccount = () => {
       );
     }
   }, [searchName, userMenu, AllMemberData, inActiveMemberData]);
+
+  // 탭 변경 시 검색 결과 초기화
+  useEffect(() => {
+    setSearchName(""); // 검색어 초기화
+    setSearchResult(null); // 검색 결과 초기화
+    setMemberData(
+      userMenu === "active" ? AllMemberData || [] : inActiveMemberData || []
+    );
+  }, [userMenu, AllMemberData, inActiveMemberData]);
 
   //검색 결과가 업데이트되면 `memberData`에 반영
   useEffect(() => {
