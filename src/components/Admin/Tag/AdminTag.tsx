@@ -8,6 +8,7 @@ import { adminNewCategory, getAllCategory } from "../../../api/adminCategory";
 import AdminTagBox from "./AdminTagBox";
 import { adminAddNewSubCategory } from "../../../api/adminSubCategory";
 import { adminAddnewDetailTag } from "../../../api/adminDetailTag";
+import { queryClient } from "../../../main";
 
 const AdminTag = () => {
   const { data: allCategories, refetch } = useQuery<AllCategoryType[]>({
@@ -42,10 +43,14 @@ const AdminTag = () => {
   };
 
   const subCategoryClick = (subCateIndex: number, subcategoryId: number) => {
-    if (subCategories2) {
-      setDetails2(subCategories2[subCateIndex].tags);
+    if (allCategories) {
       setSubCategoryId(subcategoryId);
+      setDetails2(
+        allCategories[isCategoryClicked!].subcategories[subCateIndex].tags
+      );
     }
+
+    setIsAddDetailTag(false);
   };
 
   // ---------------------------------------------------------------------------------
@@ -103,19 +108,28 @@ const AdminTag = () => {
     setIsAddDetailTag(true);
   };
 
-  const { mutate: addNewDetailTag } = useMutation({
-    mutationFn: ({
+  const { mutateAsync: addNewDetailTag } = useMutation({
+    mutationFn: async ({
       subcategoryId,
       newDetailTagName,
     }: {
       subcategoryId: number;
       newDetailTagName: string;
-    }) => adminAddnewDetailTag(subcategoryId, newDetailTagName),
+    }) => {
+      const response = await adminAddnewDetailTag(
+        subcategoryId,
+        newDetailTagName
+      );
+      setDetails2((prev) => [...prev, response?.data]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+      setIsAddDetailTag(false);
+    },
   });
 
   const [isCategoryClicked, setIsCategoryClicked] = useState<number | null>();
   const [isSubCateClicked, setIsSubCateClicked] = useState<number | null>();
-  const [isDetailTagClicked, setIsDetailTagClicked] = useState<number>();
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -178,10 +192,15 @@ const AdminTag = () => {
               세부항목
             </span>
 
-            <div className="flex w-full justify-end">
-              <button onClick={handleAddSubcategory} className="cursor-pointer">
-                <img src={AddButton} alt="세부항목 생성 버튼" />
-              </button>
+            <div className="h-[27px] flex w-full justify-end">
+              {categoryId && (
+                <button
+                  onClick={handleAddSubcategory}
+                  className="cursor-pointer"
+                >
+                  <img src={AddButton} alt="세부항목 생성 버튼" />
+                </button>
+              )}
             </div>
 
             <AdminTagBox name="세부항목" />

@@ -24,7 +24,6 @@ interface AdminTagListProps {
   name: string;
   id: number;
   subcategoryId?: number;
-  // onChange: (id: number, newName: string) => void;
   onClick: (categoryIndex: number, categoryId: number) => void;
   type: "category" | "subCategory" | "detailTags";
   isClicked?: number | null;
@@ -38,7 +37,6 @@ const AdminTagList = ({
   name,
   id,
   subcategoryId,
-  // onChange,
   onClick,
   type,
   isClicked,
@@ -86,7 +84,6 @@ const AdminTagList = ({
     }) => adminEditSubCategory(subcategoryId, editSubCateName),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
-    onSettled: () => setIsEditable(false),
   });
 
   // 상세항목 태그 삭제함수
