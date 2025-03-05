@@ -38,7 +38,7 @@ const ManagerCheckBox = ({
         <img
           src={sideCheckIcon}
           alt="checked"
-          className="w-[11px] h-[11px] hidden peer-checked:block absolute left-[1px]"
+          className="w-[11px] h-[11px] hidden peer-checked:block absolute left-[1px] cursor-pointer"
         />
 
         <span className="peer-checked:text-header-green-hover cursor-pointer">

@@ -10,12 +10,14 @@ const ConfirmModal = ({
   setIsModal,
   deleteOrLeave,
   onClick,
+  onDeleteTask,
 }: {
   processId?: number;
   processType?: string;
   value: string;
   setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
   onClick?: (processId: number) => void;
+  onDeleteTask?: () => void;
   deleteOrLeave?: () => void;
 }) => {
   const { logout } = useAuthStore();
@@ -75,6 +77,12 @@ const ConfirmModal = ({
             ) {
               console.log("삭제 버튼 클릭됨"); // 디버깅용 로그
               onClick(processId);
+            }
+
+            if (processType === "업무" && value === "삭제" && onDeleteTask) {
+              console.log("삭제 버튼 클릭됨");
+              onDeleteTask();
+              setIsModal(false);
             }
           }}
         />

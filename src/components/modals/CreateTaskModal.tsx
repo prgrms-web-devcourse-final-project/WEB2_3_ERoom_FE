@@ -7,11 +7,21 @@ import { useMutation } from "@tanstack/react-query";
 import { createTask } from "../../api/task";
 import AlertModal from "../common/AlertModal";
 
+interface CreateTaskProps {
+  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId: number;
+  onClick?: (task: CreateTask) => void;
+  refetch: () => void;
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  memberData: members[];
+}
+
 const CreateTaskModal = ({
   onClose,
   projectId,
   refetch,
   setIsModal,
+  memberData,
 }: CreateTaskProps) => {
   /* 업무 생성 */
   const { mutateAsync } = useMutation({
@@ -132,6 +142,7 @@ const CreateTaskModal = ({
         value="업무"
         selectedMembers={selectedMember}
         setSelectedMembers={setSelectedMember}
+        memberData={memberData}
       />
       <div>
         <span className="text-[16px] font-bold">일정</span>
