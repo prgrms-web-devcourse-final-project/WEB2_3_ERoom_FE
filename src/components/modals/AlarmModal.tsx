@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
 import { dummy } from "../../dummyData/dummy";
+import useWebSocketStore from "../../store/useWebSocketStore";
 
 const AlarmModal = ({ onClose }: AlarmModalProps) => {
   // 임시 더미 알람 데이터
@@ -16,6 +17,12 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
       prevAlarms.filter((alarm) => alarm.id !== id)
     );
   };
+
+  // 웹소켓을 통해 가져온 알람 데이터
+  const { notifications } = useWebSocketStore();
+  useEffect(() => {
+    console.log("알람데이터", notifications);
+  }, [notifications]);
 
   return (
     <div
@@ -37,8 +44,9 @@ const AlarmModal = ({ onClose }: AlarmModalProps) => {
           />
         </div>
         <div className="flex flex-col w-full h-[300px] gap-[10px] overflow-y-auto scrollbar-none">
-          {dummyAlarms.length > 0 ? (
-            dummyAlarms.map((alarm, index) => (
+          {/* 알림 데이터에 맞게 props 및 AlarmBox 컴포넌트 수정 필요 */}
+          {notifications.length > 0 ? (
+            notifications.map((alarm, index) => (
               <AlarmBox
                 key={index}
                 theme={alarm.theme}

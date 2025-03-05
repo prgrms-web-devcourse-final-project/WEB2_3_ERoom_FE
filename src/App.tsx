@@ -13,8 +13,25 @@ import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import KakaoRedirect from "./pages/KakaoRedirect";
 import NotFound from "./pages/NotFound";
+import useWebSocketStore from "./store/useWebSocketStore";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore.ts";
 
 const App = () => {
+  const { connectWebSocket } = useWebSocketStore();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const memberId = useAuthStore((state) => state.member?.id);
+
+  useEffect(() => {
+    console.log(" useEffect 실행 - WebSocket 연결 확인");
+    console.log(" 현재 로그인한 사용자 ID:", memberId);
+    console.log(" 현재 Access Token:", accessToken);
+
+    if (accessToken && memberId) {
+      console.log(" WebSocket 연결 시작...");
+      connectWebSocket(accessToken, memberId);
+    }
+  }, [accessToken, memberId]);
   return (
     <Routes>
       {/* 로그인, 회원가입, 소속등록 페이지 */}
