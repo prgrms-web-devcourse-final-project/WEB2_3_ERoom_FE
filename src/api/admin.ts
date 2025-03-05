@@ -166,3 +166,14 @@ export const updateTask = async (taskId: number, editTaskInfo: UpdatedTask) => {
     console.error("업무 수정 실패", error);
   }
 };
+
+// 관리자 업무 삭제
+export const deleteTask = async (taskId: number) => {
+  try {
+    const { data } = await api.put(`/admin/manage/task/${taskId}/delete`);
+    console.log("업무 삭제 성공", data);
+    return data;
+  } catch (error) {
+    console.error("업무 삭제 실패", error);
+  }
+};
