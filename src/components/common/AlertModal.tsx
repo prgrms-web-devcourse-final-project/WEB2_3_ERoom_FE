@@ -22,13 +22,13 @@ const AlertModal = ({
             <Button
               text="확인"
               size="md"
-              css="text-white w-full text-[14px] bg-[#ff6854] border-none"
+              css="text-white w-full text-[14px] bg-[#2B3E34] border-none"
               onClick={onConfirm}
             />
             <Button
               text="취소"
               size="md"
-              css="text-main-beige01 w-full text-[14px] bg-[#2B3E34] border-none"
+              css="text-main-beige01 w-full text-[14px] bg-[#ff6854]  border-none"
               onClick={onClose}
             />
           </>

@@ -10,6 +10,7 @@ import { useAuthStore } from "../../store/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { deleteProject, leaveProject } from "../../api/project";
 import { queryClient } from "../../main";
+import AlertModal from "../common/AlertModal";
 
 const ProjectListBox = ({
   projectId,
