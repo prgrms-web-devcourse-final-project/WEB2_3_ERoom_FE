@@ -90,6 +90,17 @@ const AdminProject = () => {
     setProjectData(filteredData);
   }, [projectMenu, selectedProjects, searchResult]);
 
+  // 탭 변경 시 검색 결과 초기화
+  useEffect(() => {
+    setSearchProjectName(""); // 검색어 초기화
+    setSearchResult(null); // 검색 결과 초기화
+    setProjectData(
+      projectMenu === "active"
+        ? adminActiveProject || []
+        : adminInActiveProject || []
+    );
+  }, [projectMenu, adminActiveProject, adminInActiveProject]);
+
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // 한 페이지에 보여줄 항목 개수
