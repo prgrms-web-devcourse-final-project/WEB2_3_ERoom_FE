@@ -143,12 +143,20 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
                 text={"시작"}
                 size="md"
                 css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStateStart();
+                }}
               />
             ) : (
               <Button
                 text={"완료"}
                 size="md"
                 css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCompleteStart();
+                }}
               />
             ))}
         </div>
