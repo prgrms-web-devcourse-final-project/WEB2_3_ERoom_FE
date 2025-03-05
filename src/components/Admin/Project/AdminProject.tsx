@@ -17,6 +17,7 @@ import {
 import AdminDeleteBtn from "../Button/AdminDeleteBtn";
 import { queryClient } from "../../../main";
 import { searchProjects } from "../../../api/search";
+import AlertModal from "../../common/AlertModal";
 
 const AdminProject = () => {
   const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
@@ -114,6 +115,35 @@ const AdminProject = () => {
     setCheckedIds([]);
   }, [projectMenu]);
 
+  // 삭제 버튼 모달 추가
+  const [modalText, setModalText] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
+
+  const openModal = (text: string, confirmAction?: () => void) => {
+    setModalText(text);
+    setConfirmAction(() => confirmAction || null);
+  };
+
+  const closeModal = () => {
+    setModalText(null);
+    setConfirmAction(null);
+  };
+
+  const deleteProjects = () => {
+    if (checkedIds.length === 0) {
+      return openModal("프로젝트를 선택해주세요");
+    }
+
+    // 삭제 확인 모달 띄우기
+    openModal("정말 삭제하시겠습니까?", () => {
+      checkedIds.forEach(async (id) => {
+        const response = await deleteProjectFn(id);
+        console.log(response, "del");
+      });
+      closeModal();
+    });
+  };
+
   // 프로젝트 삭제(완전 삭제)
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
@@ -128,17 +158,9 @@ const AdminProject = () => {
         queryKey: ["AdminAcitveProject"],
       }),
         queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      openModal("프로젝트가 삭제되었습니다");
     },
   });
-
-  const deleteProjects = () => {
-    checkedIds.forEach(async (id) => {
-      const response = await deleteProjectFn(id);
-      console.log(response, "del");
-    });
-
-    alert("선택한 프로젝트 삭제완료!");
-  };
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -189,6 +211,15 @@ const AdminProject = () => {
               </button>
             )}
             <AdminDeleteBtn onClick={deleteProjects} />
+            {modalText && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+                <AlertModal
+                  text={modalText}
+                  onClose={closeModal}
+                  onConfirm={confirmAction}
+                />
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-[10px] flex-grow mb-[30px]">

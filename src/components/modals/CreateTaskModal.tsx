@@ -5,6 +5,7 @@ import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import SelectMember from "../EditProjectModal/SelectMember";
 import { useMutation } from "@tanstack/react-query";
 import { createTask } from "../../api/task";
+import AlertModal from "../common/AlertModal";
 
 const CreateTaskModal = ({
   onClose,
@@ -75,11 +76,25 @@ const CreateTaskModal = ({
   const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
   // console.log("담당자 :", selectedMember);
 
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
+
   // 업무 생성 함수
   const handleSubmit = () => {
     // (임시) 알림창
     if (!newTaskName || !selectedMember.length) {
-      alert("업무명과 담당자를 입력해주세요.");
+      openModal("업무명과 담당자를 입력해주세요");
       return;
     }
 
@@ -154,6 +169,11 @@ const CreateTaskModal = ({
           css="bg-logo-green text-main-beige01 font-bold text-[14px] w-[65px] h-[27px]"
         />
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
+        </div>
+      )}
     </div>
   );
 };
