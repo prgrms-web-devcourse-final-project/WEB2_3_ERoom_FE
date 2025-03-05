@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useAuthStore } from "../../store/authStore";
 
 const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
   //메시지 id 중복되는지 확인용
@@ -21,6 +22,8 @@ const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
     return `${year}년 ${month}월 ${day}일`;
   };
 
+  const userName = useAuthStore((state) => state.member?.username);
+
   return (
     <div>
       {messages.map((message, index) => {
@@ -41,7 +44,7 @@ const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
                 </span>
               </div>
             )}
-            {message.senderName === "member3" ? (
+            {message.senderName === userName ? (
               // 추후 senderId가 로그인한 사용자 id인지로 체크
               // 사용자가 보낸 채팅일 경우 채팅만 표시 bg-main-beige
               <div

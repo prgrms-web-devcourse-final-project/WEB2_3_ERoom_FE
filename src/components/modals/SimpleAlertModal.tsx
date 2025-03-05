@@ -1,6 +1,6 @@
 import Button from "../common/Button";
 
-const AlertModal = ({
+const SimpleAlertModal = ({
   text,
   setIsModal,
 }: {
@@ -27,4 +27,4 @@ const AlertModal = ({
   );
 };
 
-export default AlertModal;
+export default SimpleAlertModal;

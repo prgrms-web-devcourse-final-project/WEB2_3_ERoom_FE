@@ -4,6 +4,7 @@ import defaultImg from "../assets/defaultImg.svg";
 import { useAuthStore } from "../store/authStore";
 import { api } from "../api/api";
 import { useNavigate } from "react-router";
+import AlertModal from "../components/common/AlertModal";
 
 const SignUpCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
@@ -21,9 +22,23 @@ const SignUpCompanyInfo = () => {
     setUserName(e.target.value);
   };
 
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
+
   const handleSubmit = async () => {
     if (!companyInfo || !userName) {
-      alert("이름과 소속을 입력해 주세요.");
+      openModal("이름과 소속을 입력해 주세요");
       return;
     }
     // console.log(profileImg);
@@ -56,7 +71,7 @@ const SignUpCompanyInfo = () => {
         },
       });
       console.log("서버 응답:", response.data);
-      alert("회원가입이 완료되었습니다.");
+      openModal("회원가입이 완료되었습니다");
       login(
         idToken,
         response.data.accessToken,
@@ -231,6 +246,11 @@ const SignUpCompanyInfo = () => {
           css="bg-main-green01 border-main-green text-main-beige01"
         />
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
+        </div>
+      )}
     </div>
   );
 };

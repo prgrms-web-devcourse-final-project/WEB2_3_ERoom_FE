@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { searchMembers } from "../../api/search";
 import { debounce } from "lodash";
 import { useAuthStore } from "../../store/authStore";
-import AlertModal from "../modals/AlertModal";
+import AlertModal from "../common/AlertModal";
+import SimpleAlertModal from "../modals/SimpleAlertModal";
 
 type SelectMembersProps<T extends "업무" | "프로젝트"> = {
   selectedData?: T extends "프로젝트" ? ProjectDataType : UpdateTask;
@@ -65,11 +66,23 @@ const SelectMember = <T extends "업무" | "프로젝트">({
     return () => debouncedSearch.cancel();
   }, [inputValue]);
 
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   /* 검색 결과 클릭 시, 선택된 팀원 업데이트 */
   const handleMemberClick = (member: MemberType) => {
     if (type === "project") {
       if (loginUser?.id === member.memberId) {
-        return alert("프로젝트 생성자는 자동으로 참여인원에 포함됩니다.");
+        return openModal("프로젝트 생성자는 자동으로 참여인원에 포함됩니다");
       }
     }
 
@@ -103,7 +116,7 @@ const SelectMember = <T extends "업무" | "프로젝트">({
       "creatorId" in selectedData &&
       selectedData.creatorId === id
     ) {
-      return alert("프로젝트 생성자는 참여인원에서 제거할 수 없습니다.");
+      return openModal("프로젝트 생성자는 참여인원에서 제거할 수 없습니다");
     }
 
     if (setSelectedMembers)
@@ -182,6 +195,11 @@ const SelectMember = <T extends "업무" | "프로젝트">({
             </div>
           </div>
         ))}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+            <AlertModal text={modalText} onClose={closeModal} />
+          </div>
+        )}
       </div>
 
       {/* 참여인원 확인 모달 */}
@@ -191,7 +209,7 @@ const SelectMember = <T extends "업무" | "프로젝트">({
             flex justify-center items-center bg-black/70 z-50"
           onClick={() => setIsModal(false)}
         >
-          <AlertModal
+          <SimpleAlertModal
             text="프로젝트 참여인원이 아닙니다."
             setIsModal={setIsModal}
           />
