@@ -24,8 +24,8 @@
 }
 
 /* 커스텀 프로젝트 버튼 */
-.fc-project-button.fc-active,
-.fc-task-button.fc-active {
+.fc-projectclick-button,
+.fc-taskclick-button {
   width: 70px !important;
   height: 30px !important;
   font-size: 14px !important;
