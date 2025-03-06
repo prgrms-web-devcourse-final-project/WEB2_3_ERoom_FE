@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import Calendar from "../components/MainPage/Calendar";
 import { useAuthStore } from "../store/authStore";
 import GuestMain from "../components/MainPage/GuestMain";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { getAssignedTaskList } from "../api/task";
@@ -41,24 +41,6 @@ const MainPage = () => {
     },
   });
 
-  const [taskData, setTaskData] = useState<GetAssignedTask[]>([]);
-
-  const handleRefetch = async () => {
-    const { data } = await refetch(); // refetch()의 결과를 받아옴
-    if (data) {
-      setTaskData(data); // 상태 업데이트로 강제 리렌더링
-    }
-  };
-  console.log("확인", taskData);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      handleRefetch(); // 컴포넌트 마운트 시 refetch 실행
-    }
-  }, [isAuthenticated]);
-
-  console.log("실제 업무", userTask);
-
   return isAuthenticated ? (
     <div
       className={twMerge(
@@ -69,7 +51,7 @@ const MainPage = () => {
       {/* 캘린더 */}
       <div className="flex-1 pl-[50px] pr-[40px]">
         <div className="h-[calc(100vh-90px)] border rounded-[10px] border-main-green02 px-5 py-5 bg-white">
-          <Calendar refetch={handleRefetch} />
+          <Calendar refetch={refetch} />
         </div>
       </div>
 
