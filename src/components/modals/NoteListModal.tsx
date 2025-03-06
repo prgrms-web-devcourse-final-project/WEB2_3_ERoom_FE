@@ -53,15 +53,21 @@ const NoteListModal = ({
               </span>
             </div>
             <div className="max-h-[500px] flex-grow flex flex-col overflow-y-auto scrollbar-none mb-[20px] gap-[20px]">
-              {Object.entries(groupedNotes).map(([date, notes]) => (
-                <DayNoteList
-                  key={date}
-                  date={date}
-                  onClose={onClose}
-                  notes={notes}
-                  refetchAINoteList={refetch}
-                />
-              ))}
+              {groupedNotes && Object.keys(groupedNotes).length > 0 ? (
+                Object.entries(groupedNotes).map(([date, notes]) => (
+                  <DayNoteList
+                    key={date}
+                    date={date}
+                    onClose={onClose}
+                    notes={notes}
+                    refetchAINoteList={refetch}
+                  />
+                ))
+              ) : (
+                <span className="text-[14px] text-center text-main-green">
+                  아직 생성된 AI 회의록이 없습니다
+                </span>
+              )}
             </div>
             <div className="flex justify-between mb-0 mt-auto">
               <Button
