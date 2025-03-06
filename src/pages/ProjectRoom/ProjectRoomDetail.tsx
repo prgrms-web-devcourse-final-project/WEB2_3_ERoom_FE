@@ -221,7 +221,7 @@ const ProjectRoomDetail = () => {
           {/* 전체 업무 리스트 */}
           {(category === "all" || !category) && (
             <div
-              className="w-full h-full overflow-scroll scrollbar
+              className="w-full h-full overflow-scroll scrollbar px-[20px]
               flex justify-start gap-[30px]"
             >
               <TaskList
