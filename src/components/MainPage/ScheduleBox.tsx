@@ -44,13 +44,13 @@ const ScheduleBox = ({ task, currentTime }: ScheduleBoxProps) => {
 
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
       if (hours > 0) {
         setRemainingTime(`${hours}시간 ${minutes}분 남음`);
-      } else if (minutes > 0) {
+      } else if (hours === 0 && minutes > 0) {
         setRemainingTime(`${minutes}분 남음`);
-      } else {
+      } else if (hours === 0 && minutes === 0) {
         setRemainingTime(`${seconds}초 남음`);
       }
     };
