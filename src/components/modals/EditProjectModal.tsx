@@ -13,6 +13,7 @@ import { patchProjectById, postProject } from "../../api/project";
 import { useNavigate } from "react-router";
 import { progressType } from "../../utils/progressType";
 import { PROGRESS_STATUS } from "../../constants/status";
+import SimpleAlertModal from "./SimpleAlertModal";
 
 const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
@@ -22,6 +23,8 @@ const EditProjectModal = ({
   title,
 }: EditProjectModalProps) => {
   const navigate = useNavigate();
+  const [startDateAlertMadalOpen, setStartDateAlertMadalOpen] = useState(false);
+  const [endDateAlertModalOpen, setEndDateAlertModalOpen] = useState(false);
 
   // 프로젝트 생성 페이지 상태
   const [pages, setPages] = useState<number>(0);
@@ -69,7 +72,11 @@ const EditProjectModal = ({
       setNewProjectNameValue(selectedProject.name);
 
       setEditStatus(selectedProject.status);
-      setSelectedMember(selectedProject.members);
+      setSelectedMember(
+        selectedProject.members.filter(
+          (member) => member.memberId !== selectedProject.creatorId
+        )
+      );
     }
 
     const startDate = selectedProject
@@ -361,7 +368,15 @@ const EditProjectModal = ({
                   css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
                   onClick={() => {
                     setPages(1);
-                    console.log(newProjectInfo);
+                    if (
+                      newProjectInfo.startDate <
+                      dayjs().subtract(1, "day").format("YYYY-MM-DDTHH:mm:ss")
+                    ) {
+                      return setStartDateAlertMadalOpen(true);
+                    }
+                    if (newProjectInfo.startDate > newProjectInfo.endDate) {
+                      return setEndDateAlertModalOpen(true);
+                    }
                     newProjectPost(newProjectInfo);
                   }}
                 />
@@ -375,6 +390,7 @@ const EditProjectModal = ({
           />
         </div>
       </div>
+
       {/* 워드 클라우드 */}
       {/* {pages === 0 && selectedCategory.subCategories1 && (
         <div
@@ -415,6 +431,22 @@ const EditProjectModal = ({
           </div>
         </div>
       )} */}
+      {endDateAlertModalOpen && (
+        <div className="absolute top-[50px] z-20 bg-black/50 h-[calc(100vh-50px)] w-full flex items-center justify-center">
+          <SimpleAlertModal
+            text="종료 날짜는 시작 날짜보다 뒤로 설정해야합니다"
+            setIsModal={setEndDateAlertModalOpen}
+          />
+        </div>
+      )}
+      {startDateAlertMadalOpen && (
+        <div className="absolute top-[50px] z-20 bg-black/50 h-[calc(100vh-50px)] w-full flex items-center justify-center">
+          <SimpleAlertModal
+            text="시작 날짜는 1일 전부터 설정이 가능합니다."
+            setIsModal={setStartDateAlertMadalOpen}
+          />
+        </div>
+      )}
     </div>
   );
 };
