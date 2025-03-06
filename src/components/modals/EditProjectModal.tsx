@@ -370,7 +370,7 @@ const EditProjectModal = ({
                     setPages(1);
                     if (
                       newProjectInfo.startDate <
-                      dayjs().format("YYYY-MM-DDTHH:mm:ss")
+                      dayjs().subtract(1, "day").format("YYYY-MM-DDTHH:mm:ss")
                     ) {
                       return setStartDateAlertMadalOpen(true);
                     }
@@ -442,7 +442,7 @@ const EditProjectModal = ({
       {startDateAlertMadalOpen && (
         <div className="absolute top-[50px] z-20 bg-black/50 h-[calc(100vh-50px)] w-full flex items-center justify-center">
           <SimpleAlertModal
-            text="시작 날짜는 현재 또는 미래여야 합니다"
+            text="시작 날짜는 1일 전부터 설정이 가능합니다."
             setIsModal={setStartDateAlertMadalOpen}
           />
         </div>
