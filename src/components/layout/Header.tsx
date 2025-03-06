@@ -75,38 +75,6 @@ const Header = () => {
     };
   }, [isAlarmOpen]);
 
-  // // 미팅룸에 있을 땐 해당 미팅룸 알람은 읽음처리
-  // const { search } = useLocation();
-  // const { id } = useParams();
-  // const queryParams = new URLSearchParams(search);
-  // const category = queryParams.get("category");
-  // const { mutate: readAlarm } = useReadAlarm();
-
-  // useEffect(() => {
-  //   if (category === "meeting" && id) {
-  //     console.log(`현재 프로젝트 ID: ${id}, 카테고리: ${category}`);
-
-  //     const matchingAlarms = allAlarms.filter((alarm) => {
-  //       const referenceIdParts = alarm.referenceId
-  //         .split(",")
-  //         .map((part: string) => part.trim());
-  //       const extractedReferenceId = referenceIdParts[1] || "";
-  //       return extractedReferenceId === id && !alarm.read;
-  //     });
-
-  //     console.log("읽음 처리할 알람", matchingAlarms);
-
-  //     //해당 알람들 읽음 처리
-  //     matchingAlarms.forEach((alarm) => {
-  //       readAlarm(alarm.id, {
-  //         onSuccess: () => {
-  //           refetch();
-  //         },
-  //       });
-  //     });
-  //   }
-  // }, [category, id, unreadAlarms, notifications, readAlarm]);
-
   //알람 핑 표시
   const hasUnreadAlarms = visibleAlarms.length > 0;
 

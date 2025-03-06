@@ -32,6 +32,7 @@ const App = () => {
       connectWebSocket(accessToken, memberId);
     }
   }, [accessToken, memberId]);
+
   return (
     <Routes>
       {/* 로그인, 회원가입, 소속등록 페이지 */}

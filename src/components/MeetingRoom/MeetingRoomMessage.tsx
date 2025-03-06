@@ -60,7 +60,7 @@ const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
                       : formatTime(message.sentAt)}
                   </span>
                   <div className="w-fit h-auto min-h-[33px] bg-main-beige rounded-[5px] px-[10px] py-[8px] max-w-[60vw] ">
-                    <span className="text-[14px] whitespace-pre-wrap break-keep overflow-hidden ">
+                    <span className="text-[14px] whitespace-pre-wrap break-words overflow-hidden ">
                       {message.message}
                     </span>
                   </div>
@@ -79,7 +79,7 @@ const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
                       "https://cdn.pixabay.com/photo/2024/08/26/23/38/maranhao-sheets-9000410_1280.jpg"
                     }
                     alt="샘플프로필이미지"
-                    className="w-[30px] h-[30px] rounded-full"
+                    className="w-[30px] h-[30px] rounded-full border border-main-green"
                   />
                   <span className="text-[14px]">
                     {/* {message.senderName} */}
@@ -89,7 +89,7 @@ const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
                 {/* 팀원이 보낸 채팅 내용 bg-main-green02 */}
                 <div className="flex justify-start items-end gap-[5px]">
                   <div className="w-auto h-auto min-h-[33px] bg-main-green02 rounded-[5px] px-[10px] py-[8px] max-w-[60vw] self-start">
-                    <span className="text-[14px] whitespace-pre-wrap">
+                    <span className="text-[14px] whitespace-pre-wrap break-words">
                       {/* {message.message} */}
                       {message.message}
                     </span>
