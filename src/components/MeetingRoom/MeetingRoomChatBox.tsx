@@ -10,13 +10,7 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
 
-const MeetingRoomChatBox = ({
-  css,
-  projectId,
-}: {
-  css?: string;
-  projectId: number;
-}) => {
+const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<MessageType[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -61,10 +55,33 @@ const MeetingRoomChatBox = ({
     }
   };
 
+  //현재 url에서 projectId 가져오기
+  const getProjectIdFromURL = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get("category");
+    const pathname = window.location.pathname;
+    const pathSegments = pathname.split("/");
+
+    if (pathSegments[1] === "project-room" && category === "meeting") {
+      return pathSegments[2]; // project-room/:id?category=meeting
+    }
+
+    if (pathSegments[1] === "meeting-room") {
+      return pathSegments[2]; // meeting-room/:id
+    }
+
+    return null;
+  };
+
+  const projectId = getProjectIdFromURL();
+  const parsedProjectId = projectId ? Number(projectId) : null;
+
   //채팅 내역 API 요청하는 useQuery
-  const { data: messageList = null } = useQuery<MeetingroomType>({
-    queryKey: ["meetingroom", projectId],
-    queryFn: () => getMeetingroom(projectId),
+  const { data: messageList = null, isLoading } = useQuery<MeetingroomType>({
+    queryKey: parsedProjectId ? ["meetingroom", parsedProjectId] : [],
+    queryFn: () =>
+      parsedProjectId ? getMeetingroom(parsedProjectId) : Promise.reject(),
+    enabled: !!parsedProjectId, // projectId가 존재할 때만 실행
     select: (data) => data || ({} as MeetingroomType),
   });
 
@@ -91,6 +108,7 @@ const MeetingRoomChatBox = ({
 
   //웹소켓 연결 설정
   useEffect(() => {
+    if (!projectId) return;
     if (!messageList?.groupChatRoom?.chatRoomId) return;
 
     if (messageList?.groupChatRoom?.messages) {
@@ -123,7 +141,7 @@ const MeetingRoomChatBox = ({
 
             // 새 메시지를 추가하지 않고, 서버 데이터를 다시 불러오도록 트리거
             queryClient.invalidateQueries({
-              queryKey: ["meetingroom", projectId],
+              queryKey: ["meetingroom", parsedProjectId],
             });
           }
         );
@@ -137,9 +155,16 @@ const MeetingRoomChatBox = ({
     client.activate();
 
     return () => {
-      if (client) client.deactivate();
+      if (client) {
+        console.log(" WebSocket Disconnected");
+        client.deactivate();
+      }
     };
-  }, [messageList?.groupChatRoom.chatRoomId]);
+  }, [
+    messageList?.groupChatRoom.chatRoomId,
+    projectId,
+    window.location.pathname,
+  ]);
 
   const userName = useAuthStore((state) => state.member?.username);
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
@@ -184,6 +209,33 @@ const MeetingRoomChatBox = ({
   const handleOpenNoteList = () => {
     setIsOpenNoteList((prev) => !prev);
   };
+
+  if (!stompClient || isLoading) {
+    return (
+      <div
+        className={twMerge(
+          "flex flex-col flex-grow px-[30px] pt-[30px] gap-[10px] relative min-h-full",
+          css
+        )}
+      >
+        <div className="flex justify-between w-[calc(100%-60px)]">
+          <div className="bg-gray-200 h-full w-[120px] h-[20px] rounded-md animate-pulse"></div>
+          <div className="bg-gray-200 h-full w-[80px] h-[30px] rounded-md animate-pulse"></div>
+        </div>
+
+        <div className="flex flex-col flex-grow w-[calc(100%-60px)] gap-[10px]">
+          <div className="flex-grow border bg-gray-100 animate-pulse border-main-green01 rounded-[10px] overflow-hidden">
+            <div className="w-full h-[250px] bg-gray-100 animate-pulse"></div>
+          </div>
+
+          <div className="w-full h-auto flex bg-main-green01 rounded-[10px] pr-[15px] items-center p-2">
+            <div className="bg-gray-200 w-[93%] h-[32px] rounded-md animate-pulse"></div>
+            {/* <div className="bg-gray-200 w-[25px] h-[25px] rounded-full ml-3 animate-pulse"></div> */}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
