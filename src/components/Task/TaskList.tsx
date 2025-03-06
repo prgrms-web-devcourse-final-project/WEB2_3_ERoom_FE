@@ -32,6 +32,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   });
 
   const handleUpdateTask = async (taskId: number, updateData: UpdateTask) => {
+    console.log("업데이트 데이터:", taskId, updateData);
     try {
       await updateMutation.mutateAsync({ taskId, updateData });
       console.log("업무 수정 완료:", taskId, updateData);

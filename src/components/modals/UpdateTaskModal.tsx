@@ -6,6 +6,8 @@ import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import ConfirmModal from "./ConfirmModal";
 import { getTaskById } from "../../api/task";
 import { useQuery } from "@tanstack/react-query";
+import defaultImg from "../../assets/defaultImg.svg";
+import { useAuthStore } from "../../store/authStore";
 
 const UpdateTaskModal = ({
   task,
@@ -16,6 +18,7 @@ const UpdateTaskModal = ({
   refetch,
 }: UpdateTaskModalProps) => {
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
+  const loginUser = useAuthStore((state) => state.member);
 
   //selectedStartDate, selectedEndDate에 데이터 들어갈 수 있게 분리하는 함수
   const parseDateTime = (dateTimeString: string) => {
@@ -64,7 +67,7 @@ const UpdateTaskModal = ({
     HOLD: "보류",
   };
 
-  // 업무 정보 불러오기
+  /* 업무 정보 불러오기 */
   const { data: updatedData } = useQuery<GetUpdateTask>({
     queryKey: ["UpdatedData", task.taskId],
     queryFn: async () => {
@@ -86,9 +89,9 @@ const UpdateTaskModal = ({
   const [memberData, setMemberData] = useState<MemberType[]>([
     {
       username: task.assignedMemberName,
-      profile: updatedData?.participantProfiles[0] || "",
+      profile: updatedData?.participantProfiles?.[0] ?? defaultImg,
       email: "",
-      memberId: updatedData?.participantIds[0] || 0,
+      memberId: updatedData?.participantIds?.[0] ?? 0,
     },
   ]);
 
@@ -109,12 +112,20 @@ const UpdateTaskModal = ({
     startDate: formatDateTime(selectedStartDate),
     endDate: formatDateTime(selectedEndDate),
     status: reversedStatusOptions[selectedStatus],
-    assignedMemberId: memberData[0].memberId,
-    participantIds: [memberData[0].memberId],
+    assignedMemberId:
+      memberData && memberData[0]?.memberId
+        ? memberData[0]?.memberId
+        : updatedData?.assignedMemberId || loginUser?.id || 0,
+    participantIds:
+      memberData && memberData[0]?.memberId
+        ? [memberData[0]?.memberId]
+        : updatedData?.assignedMemberId
+        ? [updatedData?.assignedMemberId]
+        : [loginUser?.id || 0], // 참여자 배열이 비어있으면 빈 배열을 할당
   };
 
   // console.log(task);
-  // console.log(updatedData, isLoading);
+  // console.log(updatedData);
   // console.log(taskInfo);
 
   return (

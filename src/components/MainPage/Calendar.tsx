@@ -19,20 +19,25 @@ const Calendar = () => {
   // 프로젝트 및 업무 토글 상태
   const [showTasks, setShowTasks] = useState(false);
 
-  useEffect(() => {
-    const projectButton = document.querySelector(".fc-project-button");
-    const taskButton = document.querySelector(".fc-task-button");
+  const PROJECT_BUTTON = {
+    text: "프로젝트",
+    click: () => setShowTasks(false), // 프로젝트 데이터 표시
+  };
 
-    if (projectButton && taskButton) {
-      if (showTasks) {
-        projectButton.classList.remove("fc-active");
-        taskButton.classList.add("fc-active");
-      } else {
-        projectButton.classList.add("fc-active");
-        taskButton.classList.remove("fc-active");
-      }
-    }
-  }, [showTasks]);
+  const PROJECT_CLICK_BUTTON = {
+    text: "프로젝트",
+    click: () => setShowTasks(false), // 프로젝트 데이터 표시
+  };
+
+  const TASK_BUTTON = {
+    text: "개인업무",
+    click: () => setShowTasks(true), // 개인업무 데이터 표시
+  };
+
+  const TASK_CLICK_BUTTON = {
+    text: "개인업무",
+    click: () => setShowTasks(true), // 개인업무 데이터 표시
+  };
 
   const navigate = useNavigate();
   const loginUser = useAuthStore((state) => state.member);
@@ -146,14 +151,10 @@ const Calendar = () => {
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         customButtons={{
-          project: {
-            text: "프로젝트",
-            click: () => setShowTasks(false),
-          },
-          task: {
-            text: "개인업무",
-            click: () => setShowTasks(true),
-          },
+          project: PROJECT_BUTTON,
+          projectclick: PROJECT_CLICK_BUTTON,
+          task: TASK_BUTTON,
+          taskclick: TASK_CLICK_BUTTON,
         }}
         initialView="dayGridMonth"
         height="100%"
@@ -161,7 +162,9 @@ const Calendar = () => {
         headerToolbar={{
           left: "prev title next",
           center: "",
-          right: "project task",
+          right: `${showTasks ? "project" : "projectclick"} ${
+            showTasks ? "taskclick" : "task"
+          }`,
         }}
         // 한국어
         locale={koLocale}
