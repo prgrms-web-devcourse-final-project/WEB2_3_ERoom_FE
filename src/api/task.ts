@@ -47,3 +47,15 @@ export const deleteTask = async (taskId: number) => {
     throw error;
   }
 };
+
+// 담당 업무 리스트
+export const getAssignedTaskList = async (memberId: number) => {
+  try {
+    const response = await api.get(`/api/tasks/member/${memberId}`);
+    console.log("담당 업무:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("담당 업무 불러오기 실패:", error);
+    throw error;
+  }
+};

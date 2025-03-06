@@ -1,36 +1,93 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import defaultImg from "../assets/defaultImg.svg";
 import ConfirmModal from "../components/modals/ConfirmModal";
+import { useQuery } from "@tanstack/react-query";
+import { getMyPageInfo } from "../api/myPage";
+
+interface MyPageInfoType {
+  email: string;
+  username: string;
+  organization: string;
+  profile: string;
+}
 
 const MyPage = () => {
-  const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
-  const [progileImg, setProfileImg] = useState<string | null>(null);
-  const [name, setName] = useState<string | undefined>("");
+  const { data: myPageInfo, isLoading } = useQuery<MyPageInfoType>({
+    queryKey: ["myPageInfo"],
+    queryFn: getMyPageInfo,
+  });
+
+  const [companyInfo, setCompanyInfo] = useState<string>("");
+  const [name, setName] = useState<string>("");
+
+  useEffect(() => {
+    if (myPageInfo) {
+      setName(myPageInfo.username);
+      setCompanyInfo(myPageInfo.organization);
+    }
+  }, [myPageInfo]);
+
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  const [profileImgUrl, setProfileImgUrl] = useState<string | null>(null);
+
+  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
   };
 
+  useEffect(() => {
+    if (!isFileDialogOpen) {
+      setTimeout(() => {
+        setIsHovered(false);
+      }, 300);
+    }
+  }, [isFileDialogOpen]);
+
   //프로필 이미지 수정 함수
-  const handleProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfileImg(reader.result as string);
-      };
-
-      reader.readAsDataURL(file);
+      const tempImgUrl = URL.createObjectURL(file);
+      setProfileImgUrl(tempImgUrl);
     }
+    setIsFileDialogOpen(false); // 파일 선택창이 닫혔음을 감지
   };
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
+
+  const handleFileInputClick = (e: React.MouseEvent) => {
+    setIsHovered(true);
+    setIsFileDialogOpen(true);
+  };
+
+  if (isLoading) {
+    return (
+      <section className="mypage-background flex justify-center items-center relative min-h-screen">
+        <div className="absolute inset-0 blur bg-white/20"></div>
+        <div className="relative z-10 w-[680px] bg-[#ffffff94] px-[100px] py-[50px] rounded-[10px]">
+          <div className="animate-pulse flex flex-col gap-[50px]">
+            <div className="h-6 bg-gray-300 rounded w-1/4"></div>
+            <div className="flex gap-[30px]">
+              <div className="w-[200px] h-[200px] bg-gray-300 rounded"></div>
+              <div className="flex flex-col gap-[10px] w-[250px]">
+                <div className="h-6 bg-gray-300 rounded"></div>
+                <div className="h-6 bg-gray-300 rounded"></div>
+                <div className="h-6 bg-gray-300 rounded"></div>
+              </div>
+            </div>
+            <div className="h-10 bg-gray-300 rounded w-1/2"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -61,11 +118,11 @@ const MyPage = () => {
               {/* 프로필 기본 이미지 샘플로 넣어둠. 추후 기본이미지 나오면 수정 필요 */}
               <div
                 className="relative w-full h-full rounded-[5px]"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseOver={() => setIsHovered(true)}
+                onMouseLeave={() => !isFileDialogOpen && setIsHovered(false)}
               >
                 <img
-                  src={progileImg || defaultImg}
+                  src={profileImgUrl || defaultImg}
                   alt="프로필 이미지"
                   className="w-full h-full object-cover object-center rounded-[5px]
                   border border-main-green"
@@ -79,32 +136,35 @@ const MyPage = () => {
                   >
                     {/* 이미지 변경 버튼 */}
                     <div
-                      className="text-gray02 hover:text-white cursor-pointer
-                      bg-main-green/30 hover:bg-main-green px-[10px] py-[5px] 
-                      rounded-[5px]"
-                      onClick={() =>
-                        document.getElementById("fileInput")?.click()
-                      }
+                      className="text-gray02 hover:text-white bg-main-green/30 hover:bg-main-green 
+                      px-[10px] py-[5px] rounded-[5px] cursor-pointer"
                     >
-                      <p>이미지 변경</p>
-
+                      {/* <p>이미지 변경</p> */}
+                      <label
+                        className="w-full h-full cursor-pointer"
+                        htmlFor="fileInput"
+                        // onClick={handleFileInputClick}
+                      >
+                        이미지 변경
+                      </label>
                       {/* 파일 업로드 입력 (숨김) */}
                       <input
                         id="fileInput"
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={handleProfileImg}
+                        onClick={handleFileInputClick}
+                        onChange={handleFileChange}
                       />
                     </div>
 
                     {/* 기본 이미지 버튼 */}
-                    {progileImg && (
+                    {profileImgUrl && (
                       <div
                         className="w-fit text-center px-[10px] py-[5px] cursor-pointer
                       text-[14px] font-bold text-white hover:text-main-green01
                       rounded-[5px] bg-white/30 hover:bg-white/70"
-                        onClick={() => setProfileImg(null)}
+                        onClick={() => setProfileImgUrl(null)}
                       >
                         기본 이미지 적용
                       </div>
@@ -121,7 +181,7 @@ const MyPage = () => {
                 <span className="font-bold">이름</span>
                 <input
                   type="text"
-                  value={name ?? ""}
+                  value={name}
                   onChange={handleName}
                   placeholder="홍길동"
                   className="w-[250px] h-[33px] pl-[10px] bg-transparent focus:outline-none border-b-[1px] border-b-gray01"
@@ -132,7 +192,7 @@ const MyPage = () => {
               <div className="flex flex-col gap-[5px]">
                 <span className="font-bold">이메일</span>
                 <div className="pl-[10px]">
-                  <span className="text-black01">hong@gmail.com</span>
+                  <span className="text-black01">{myPageInfo?.email}</span>
                 </div>
               </div>
 
@@ -141,7 +201,7 @@ const MyPage = () => {
                 <span className="font-bold">소속</span>
                 <input
                   type="text"
-                  value={companyInfo ?? ""}
+                  value={companyInfo}
                   onChange={handleCompanyInfo}
                   placeholder="소속을 입력해주세요"
                   className="w-[250px] h-[33px] pl-[10px] bg-transparent focus:outline-none border-b-[1px] border-b-gray01"

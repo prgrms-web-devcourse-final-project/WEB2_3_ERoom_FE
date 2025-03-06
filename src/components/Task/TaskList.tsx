@@ -3,9 +3,12 @@ import TaskBox from "./TaskBox";
 import UpdateTaskModal from "../modals/UpdateTaskModal";
 import { useMutation } from "@tanstack/react-query";
 import { deleteTask, updateTask } from "../../api/task";
+import { useAuthStore } from "../../store/authStore";
 
 const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const { member } = useAuthStore();
+  // console.log(member);
 
   const openModal = (task: Task) => {
     setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
@@ -29,6 +32,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   });
 
   const handleUpdateTask = async (taskId: number, updateData: UpdateTask) => {
+    console.log("업데이트 데이터:", taskId, updateData);
     try {
       await updateMutation.mutateAsync({ taskId, updateData });
       console.log("업무 수정 완료:", taskId, updateData);
@@ -73,15 +77,16 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
 
   return (
     <div
-      className={`flex flex-col gap-4 items-center px-2 py-1 min-w-[320px] min-h-[450px] bg-white/60`}
+      className={`flex flex-col relative gap-4 items-center px-2 py-1 
+        min-w-[320px] min-h-[450px] h-full bg-white/60`}
     >
-      <h1 className="font-bold text-main-green text-[22px] sticky">{name}</h1>
+      <h1 className="font-bold text-main-green text-[22px]">{name}</h1>
       {taskInfo.map((task) => {
         return (
           <TaskBox
             key={task.taskId}
             onClick={() => {
-              openModal(task);
+              task.assignedMemberName === member?.username && openModal(task);
             }}
             isAll={isAll}
             task={task}

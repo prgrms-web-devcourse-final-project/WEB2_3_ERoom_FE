@@ -35,7 +35,7 @@ api.interceptors.response.use(
       if (refreshToken) {
         try {
           // 새 accessToken 요청
-          const res = await axios.post("/api/auth/signup", { refreshToken });
+          const res = await axios.post("/api/auth/refresh", { refreshToken });
 
           // 새 accessToken 저장
           login(

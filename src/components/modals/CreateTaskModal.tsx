@@ -7,11 +7,21 @@ import { useMutation } from "@tanstack/react-query";
 import { createTask } from "../../api/task";
 import AlertModal from "../common/AlertModal";
 
+interface CreateTaskProps {
+  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId: number;
+  onClick?: (task: CreateTask) => void;
+  refetch: () => void;
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  memberData: members[];
+}
+
 const CreateTaskModal = ({
   onClose,
   projectId,
   refetch,
   setIsModal,
+  memberData,
 }: CreateTaskProps) => {
   /* 업무 생성 */
   const { mutateAsync } = useMutation({
@@ -25,7 +35,7 @@ const CreateTaskModal = ({
       console.log("업무 생성 완료");
 
       // 프로젝트 상세 정보를 다시 불러옴
-      await refetch();
+      refetch();
 
       // 모달을 닫기 전에 데이터가 반영되었는지 확인
       setTimeout(() => {
@@ -65,17 +75,11 @@ const CreateTaskModal = ({
         : dateObj.hour
     }:${dateObj.minute}:00`;
   };
-  // console.log(formattedStartDateTime);
-  // console.log(formattedEndDateTime);
 
   // 작성한 업무명 상태
   const [newTaskName, setNewTaskName] = useState<string>("");
-  // console.log("업무명 :", newTaskName);
-
   // 선택한 담당자 상태
   const [selectedMember, setSelectedMember] = useState<MemberType[]>([]);
-  // console.log("담당자 :", selectedMember);
-
   // 모달 적용
   const [modalText, setModalText] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,6 +136,7 @@ const CreateTaskModal = ({
         value="업무"
         selectedMembers={selectedMember}
         setSelectedMembers={setSelectedMember}
+        memberData={memberData}
       />
       <div>
         <span className="text-[16px] font-bold">일정</span>

@@ -3,7 +3,7 @@ import cancelButton from "../../assets/button/cancelButton.svg";
 import triangleUp from "../../assets/button/triangle/triangleUp.svg";
 import triangleDown from "../../assets/button/triangle/triangleDown.svg";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCategory } from "../../api/admin";
+import { getAllCategory } from "../../api/adminCategory";
 
 // 선택된 데이터 타입
 interface SelectedDataType {
