@@ -169,7 +169,7 @@ const AdminProject = () => {
         queryKey: ["AdminAcitveProject"],
       });
       queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
-      // openModal("프로젝트가 삭제되었습니다");
+      openModal("프로젝트가 삭제되었습니다");
     },
   });
 

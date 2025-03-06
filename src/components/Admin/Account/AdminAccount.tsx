@@ -149,7 +149,7 @@ const AdminAccount = () => {
   };
 
   // 관리자 계정 비활성(삭제)
-  const [deleteAccountId, setDeleteAccountId] = useState<number | null>(null);
+  const [deleteAccountIds, setDeleteAccountIds] = useState<number[]>([]);
 
   const { mutate } = useMutation({
     mutationFn: (memberId: number) => deleteAdminAccount(memberId),
@@ -161,15 +161,20 @@ const AdminAccount = () => {
 
   // 삭제 버튼 클릭 시 실행
   const handleDeleteClick = () => {
-    if (!deleteAccountId) {
+    if (deleteAccountIds.length === 0) {
       return openModal("유저를 선택해주세요");
     }
 
     // 삭제 확인 모달 띄우기
-    openModal("정말 삭제하시겠습니까?", () => {
-      mutate(deleteAccountId);
-      closeModal();
-    });
+    openModal(
+      `정말 ${deleteAccountIds.length}명의 유저를 삭제하시겠습니까?`,
+      () => {
+        deleteAccountIds.forEach((id) => {
+          mutate(id);
+        });
+        closeModal();
+      }
+    );
   };
 
   return (
@@ -265,7 +270,8 @@ const AdminAccount = () => {
               key={user.memberId}
               user={user}
               index={(currentPage - 1) * itemsPerPage + index}
-              setDeleteAccountId={setDeleteAccountId}
+              deleteAccountIds={deleteAccountIds}
+              setDeleteAccountIds={setDeleteAccountIds}
             />
           ))}
         </div>
