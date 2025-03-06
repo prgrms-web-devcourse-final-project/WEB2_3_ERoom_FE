@@ -7,6 +7,7 @@ import { useAuthStore } from "../store/authStore";
 
 const useGoogleLogin = () => {
   const [idTokenData, setIdTokenData] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태 추가
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
@@ -30,11 +31,14 @@ const useGoogleLogin = () => {
     const code = queryParams.get("code");
 
     if (code) {
+      setIsLoading(true); // 로딩 시작
       try {
         const tokenResponse = await getAccessToken(code);
         setIdTokenData(tokenResponse.id_token);
       } catch (error: any) {
         console.error("구글 로그인 실패:", error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     }
   };
@@ -48,10 +52,10 @@ const useGoogleLogin = () => {
   const handleLogin = (idToken: string) => {
     if (!idToken) return alert("ID 토큰이 없습니다!");
     useAuthStore.getState().login(idToken, null, null, null);
-    googleLoginMutation.mutate(idToken);
+    googleLoginMutation(idToken);
   };
 
-  const googleLoginMutation = useMutation({
+  const { mutateAsync: googleLoginMutation, status } = useMutation({
     mutationFn: async (idToken: string) => {
       return await googleSignIn(idToken, "google");
     },
@@ -68,7 +72,10 @@ const useGoogleLogin = () => {
     },
   });
 
-  return { handleGoogleLogin };
+  // 로그인 중 로딩 상태도 관리 (status === 'loading')
+  const isLoginLoading = status === "pending" || isLoading;
+
+  return { handleGoogleLogin, isLoginLoading };
 };
 
 export default useGoogleLogin;
