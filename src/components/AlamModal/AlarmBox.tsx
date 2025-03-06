@@ -1,8 +1,14 @@
 import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
-import useReadAlarm from "../../hooks/useReadAlarm";
 
-const AlarmBox = ({ id, project, projectId, theme, css }: AlarmBoxProps) => {
+const AlarmBox = ({
+  id,
+  project,
+  projectId,
+  theme,
+  css,
+  onRemove,
+}: AlarmBoxProps) => {
   const navigate = useNavigate();
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
 
@@ -49,25 +55,18 @@ const AlarmBox = ({ id, project, projectId, theme, css }: AlarmBoxProps) => {
     PROJECT_EXIT: `/project-room/${THEME_ID}`,
   }[theme];
 
-  const { mutate: readAlarm } = useReadAlarm();
-
   const handleClick = () => {
     console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
-    readAlarm(id, {
-      onSuccess: () => {
-        console.log("readAlarm 성공:", id);
-      },
-      onError: (error) => {
-        console.error("readAlarm 실패:", error);
-      },
-    });
     navigate(THEME_NAVIGATE);
   };
 
   return (
     <div
       className={twMerge(BASE_STYLE, THEME_STYLE, css)}
-      onClick={handleClick}
+      onClick={() => {
+        handleClick();
+        onRemove(id);
+      }}
     >
       <div className="flex flex-col gap-[5px]">
         <span className="text-[12px] font-bold">{THEME_TEXT}</span>

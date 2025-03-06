@@ -1,9 +1,21 @@
 import { api } from "./api";
 
-// 알람 읽음 처리 API
+// 개별 알람 읽음 처리 API
 export const patchReadAlarm = async (notificationId: number) => {
   try {
     const response = await api.patch(`/notifications/read/${notificationId}`);
+    console.log("알람 읽음 처리 완료");
+    return response.data;
+  } catch (error) {
+    console.error("알람 읽음 처리되지 않음", error);
+    throw new Error();
+  }
+};
+
+//전체 알람 읽음 처리 API
+export const patchAllReadAlarm = async (memberId: number) => {
+  try {
+    const response = await api.patch(`/notifications/read/all/${memberId}`);
     console.log("알람 읽음 처리 완료");
     return response.data;
   } catch (error) {

@@ -20,6 +20,8 @@ interface notificationsType {
 interface AlarmModalProps {
   onClose: () => void;
   allAlarms: notificationsType[];
+  readAllAlarms: () => void;
+  onRemove: (id: number) => void;
 }
 
 interface AlarmBoxProps {
@@ -28,4 +30,5 @@ interface AlarmBoxProps {
   projectId: string;
   theme: "PROJECT_INVITE" | "PROJECT_EXIT" | "TASK_ASSIGN" | "MESSAGE_SEND";
   css?: string;
+  onRemove: (id: number) => void;
 }
