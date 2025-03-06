@@ -167,9 +167,9 @@ const AdminProject = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["AdminAcitveProject"],
-      }),
-        queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
-      openModal("프로젝트가 삭제되었습니다");
+      });
+      queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      // openModal("프로젝트가 삭제되었습니다");
     },
   });
 
@@ -217,11 +217,13 @@ const AdminProject = () => {
           </form>
           <div className="flex gap-[5px] w-[80px] justify-end">
             {projectMenu === "inactive" && (
-              <button>
-                <img src={ResotreIcon} alt="계정 복구 버튼" />
-              </button>
+              <>
+                <button>
+                  <img src={ResotreIcon} alt="계정 복구 버튼" />
+                </button>
+                <AdminDeleteBtn onClick={deleteProjects} />
+              </>
             )}
-            <AdminDeleteBtn onClick={deleteProjects} />
             {modalText && (
               <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
                 <AlertModal

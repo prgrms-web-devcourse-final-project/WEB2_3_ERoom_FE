@@ -12,10 +12,21 @@ const SignIn = () => {
   // const login = useAuthStore((state) => state.login);
   // const { handleKakaoLogin, loading } = useKakaoLogin();
   const access = useAuthStore((state) => state.accessToken);
-  const { handleGoogleLogin } = useGoogleLogin();
+  const { handleGoogleLogin, isLoginLoading } = useGoogleLogin();
 
   if (access) {
     return <Navigate to={"/"} replace />;
+  }
+
+  if (isLoginLoading) {
+    return (
+      <div
+        className="w-[554px] min-h-[250px]  px-[100px] py-[50px] 
+    flex items-center justify-center rounded-[10px]"
+      >
+        <div className="w-[60px] h-[60px] border-[6px] border-t-transparent border-main-green01 rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (
@@ -49,45 +60,6 @@ const SignIn = () => {
             }
           }}
         />
-        <button
-          onClick={async () => {
-            try {
-              const data = await postSignIn("qwerty1@gmail.com", "1234");
-              console.log(data);
-              // login({ username: "member1", userId: 1 });
-            } catch (error) {
-              console.error(error);
-            }
-          }}
-        >
-          1
-        </button>
-        <button
-          onClick={async () => {
-            try {
-              const data = await postSignIn("qwerty2@gmail.com", "1234");
-              console.log(data);
-              // login({ username: "member2", userId: 2 });
-            } catch (error) {
-              console.error(error);
-            }
-          }}
-        >
-          2
-        </button>
-        <button
-          onClick={async () => {
-            try {
-              const data = await postSignIn("qwerty3@gmail.com", "1234");
-              console.log(data);
-              // login({ username: "member3", userId: 3 });
-            } catch (error) {
-              console.error(error);
-            }
-          }}
-        >
-          3
-        </button>
         {/* (임시) 회원가입 되지 않은 상태 */}
         <Button
           text="구글 로그인"
