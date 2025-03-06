@@ -9,6 +9,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
+import { useLocation } from "react-router";
 
 const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [text, setText] = useState("");
@@ -57,10 +58,10 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
 
   //현재 url에서 projectId 가져오기
   const getProjectIdFromURL = () => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const location = useLocation();
+    const urlParams = new URLSearchParams(location.search);
     const category = urlParams.get("category");
-    const pathname = window.location.pathname;
-    const pathSegments = pathname.split("/");
+    const pathSegments = location.pathname.split("/");
 
     if (pathSegments[1] === "project-room" && category === "meeting") {
       return pathSegments[2]; // project-room/:id?category=meeting
@@ -186,8 +187,18 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
     }
   };
 
+  const pathname = location.pathname;
+
   // 웹소켓 연결 실행
   useEffect(() => {
+    if (!parsedProjectId) return;
+    if (!messageList?.groupChatRoom?.chatRoomId) return;
+
+    if (stompClient) {
+      console.log("기존 웹소켓을 닫습니다...");
+      stompClient.deactivate();
+    }
+
     connectWebSocket();
 
     return () => {
@@ -196,11 +207,7 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
         stompClient.deactivate();
       }
     };
-  }, [
-    messageList?.groupChatRoom.chatRoomId,
-    projectId,
-    window.location.pathname,
-  ]);
+  }, [messageList?.groupChatRoom.chatRoomId, projectId, pathname]);
 
   const userName = useAuthStore((state) => state.member?.username);
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
