@@ -19,8 +19,8 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
 
   // console.log(updatedData);
   // console.log(task);
-  console.log(updatedData);
-  console.log(task);
+  // console.log(updatedData);
+  // console.log(task);
 
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
@@ -70,8 +70,10 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         {/* 기간, 업무완료,시잔 버튼 */}
         <div className="flex justify-between items-center">
           <p className="text-[12px]">
-            {updatedData.startDate.split("T")[0]} ~{" "}
-            {updatedData.endDate.split("T")[0]}
+            {updatedData &&
+              `${updatedData.startDate.split("T")[0]} ~ ${
+                updatedData.endDate.split("T")[0]
+              }`}
           </p>
           {task.assignedMemberName === member?.username &&
             (task.status !== "IN_PROGRESS" ? (
@@ -142,7 +144,8 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         {/* 기간, 업무 완료/시작 버튼 */}
         <div className="flex justify-between items-center">
           <p className="text-[12px]">
-            {task.startDate.split("T")} ~ {task.endDate.split("T")}
+            {task.startDate.split("T").slice(0, 1)} ~{" "}
+            {task.endDate.split("T").slice(0, 1)}
           </p>
           {task.assignedMemberName === member?.username &&
             (task.status !== "IN_PROGRESS" ? (
