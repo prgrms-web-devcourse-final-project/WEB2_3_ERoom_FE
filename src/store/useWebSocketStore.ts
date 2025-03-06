@@ -1,20 +1,31 @@
 import { Client } from "@stomp/stompjs";
+import { useQueryClient } from "@tanstack/react-query";
 import SockJS from "sockjs-client";
 import { create } from "zustand";
+import {
+  getUnreadAlarm,
+  patchAllReadAlarm,
+  patchReadAlarm,
+} from "../api/alarm";
 
 interface WebSocketStore {
   isConnected: boolean;
-  notifications: any[]; // 알람 타입 추후 지정
+  notifications: notificationsType[];
+  visibleAlarms: notificationsType[]; // 현재 표시되는 알람 리스트
   stompClient: Client | null;
   connectWebSocket: (accessToken: string, memberId: number) => void;
   subscribeToNotifications: (memberId: number) => void;
   getStompClient: () => Client | null;
+  removeAlarm: (id: number) => void;
+  clearAlarms: (memberId: number) => void;
+  syncAlarmsWithAPI: (memberId: number) => Promise<void>;
 }
 
 const useWebSocketStore = create<WebSocketStore>((set, get) => {
   return {
     isConnected: false,
     notifications: [],
+    visibleAlarms: [],
     stompClient: null,
 
     // 로그인 상태 확인 후 웹소켓 연결
@@ -71,25 +82,114 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
         return;
       }
 
-      console.log(" 알람 구독 시도: /topic/notifications/" + memberId);
+      console.log(" 알람 구독 시도: /notifications/" + memberId);
 
-      const subscription = stompClient.subscribe(
-        `/topic/notifications/${memberId}`,
-        (message) => {
-          const data = JSON.parse(message.body);
-          console.log("새로운 알람 수신:", data);
-          set((state) => {
-            const updatedNotifications = [...state.notifications, data];
-            console.log(" 현재 알람 리스트:", updatedNotifications);
-            return { notifications: updatedNotifications };
-          });
-        }
+      stompClient.subscribe(`/notifications/${memberId}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log("새로운 알람 수신:", data);
+
+        set((state) => {
+          // 중복 확인: 기존 notifications에 같은 ID가 있는지 체크
+          const isDuplicate = state.notifications.some(
+            (alarm) => alarm.id === data.id
+          );
+
+          if (isDuplicate) {
+            console.warn("중복된 알람 수신 - 추가하지 않음", data);
+            return state; // 기존 상태 유지
+          }
+
+          return {
+            notifications: [...state.notifications, data],
+            visibleAlarms: [...state.visibleAlarms, data], // UI에 반영
+          };
+        });
+
+        //Tanstack query 캐시 업데이트
+        const queryClient = useQueryClient();
+        queryClient.setQueryData(
+          ["unreadAlarms", memberId],
+          (oldAlarms: any = []) => {
+            const isDuplicate = oldAlarms.some(
+              (alarm: notificationsType) => alarm.id === data.id
+            );
+            return isDuplicate ? oldAlarms : [...oldAlarms, data];
+          }
+        );
+      });
+    },
+
+    //알람 1개 삭제 (UI 반영)
+    removeAlarm: async (id: number) => {
+      //  삭제할 알람 찾기
+      const alarmToRemove = get().notifications.find(
+        (alarm) => alarm.id === id
       );
-      if (subscription) {
-        console.log("알람 구독 성공:", subscription.id);
+
+      // UI에서 먼저 제거 (사용자 경험 최적화)
+      set((state) => ({
+        notifications: state.notifications.filter((alarm) => alarm.id !== id),
+        visibleAlarms: state.visibleAlarms.filter((alarm) => alarm.id !== id),
+      }));
+
+      try {
+        await patchReadAlarm(id); // 백엔드 요청
+        console.log(` 알람 ${id} 읽음 처리 완료`);
+      } catch (error) {
+        console.error(" 알람 읽음 처리 실패:", error);
+
+        if (!alarmToRemove) {
+          console.warn("alarmToRemove가 undefined입니다.");
+          return; // undefined면 추가하지 않도록 방지
+        }
+
+        // 실패하면 롤백 (UI 복구)
+        set((state) => ({
+          notifications: [...state.notifications, alarmToRemove], // 원래 데이터 복구
+          visibleAlarms: [...state.visibleAlarms, alarmToRemove],
+        }));
       }
     },
 
+    //모든 알람 삭제 (백엔드 반영 + UI 업데이트)
+    clearAlarms: async (memberId: number) => {
+      try {
+        await patchAllReadAlarm(memberId);
+        console.log("모든 알람 읽음 처리 완료 (백엔드 + 프론트)");
+
+        set(() => ({
+          notifications: [],
+          visibleAlarms: [],
+        }));
+      } catch (error) {
+        console.error(" 모든 알람 읽음 처리 실패:", error);
+      }
+    },
+
+    //API에서 최신 알람 동기화
+    syncAlarmsWithAPI: async (memberId: number) => {
+      try {
+        const apiAlarms = await getUnreadAlarm(memberId);
+        console.log("API에서 알람 동기화 완료", apiAlarms);
+
+        set((state) => {
+          // 🔹 중복 제거: 기존 알람 목록에 없는 새로운 알람만 추가
+          const uniqueAlarms = apiAlarms.filter(
+            (apiAlarm: notificationsType) =>
+              !state.notifications.some((alarm) => alarm.id === apiAlarm.id)
+          );
+
+          return {
+            notifications: [...state.notifications, ...uniqueAlarms],
+            visibleAlarms: [...state.visibleAlarms, ...uniqueAlarms],
+          };
+        });
+      } catch (error) {
+        console.error(" 알람 동기화 실패:", error);
+      }
+    },
+
+    //STOMP 클라이언트 반환
     getStompClient: () => get().stompClient,
   };
 });

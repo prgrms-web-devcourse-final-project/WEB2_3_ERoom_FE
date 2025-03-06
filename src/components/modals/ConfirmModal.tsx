@@ -20,7 +20,7 @@ const ConfirmModal = ({
   onDeleteTask?: () => void;
   deleteOrLeave?: () => void;
 }) => {
-  const { logout } = useAuthStore();
+  const logout = useAuthStore((state) => state.logout);
 
   // 모달 적용
   const [modalText, setModalText] = useState<string>("");
