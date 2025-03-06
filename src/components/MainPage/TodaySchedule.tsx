@@ -2,14 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ScheduleBox from "./ScheduleBox";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { useAuthStore } from "../../store/authStore";
-import { useQuery } from "@tanstack/react-query";
-import { getAssignedTaskList } from "../../api/task";
 
-const TodaySchedule = () => {
-  const loginUser = useAuthStore((state) => state.member);
-  // console.log(loginUser);
+interface TodayScheduleProps {
+  taskData: GetAssignedTask[];
+}
 
+const TodaySchedule = ({ taskData }: TodayScheduleProps) => {
   dayjs.locale("ko");
   // 현재 날짜
   const now = useMemo(() => dayjs(), []);
@@ -36,24 +34,6 @@ const TodaySchedule = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const { data: userTask, isLoading } = useQuery<GetAssignedTask[]>({
-    queryKey: ["UserTask"],
-    queryFn: async () => {
-      if (!loginUser) return [];
-      const response = await getAssignedTaskList(loginUser?.id);
-
-      const sortedResponse = response.sort(
-        (a: GetAssignedTask, b: GetAssignedTask) => {
-          const dateA = new Date(a.endDate);
-          const dateB = new Date(b.endDate);
-
-          return dateA.getTime() - dateB.getTime();
-        }
-      );
-      return sortedResponse;
-    },
-  });
-
   return (
     <div
       className="w-[400px] px-5 py-10 border border-main-green02 rounded-[10px]
@@ -71,7 +51,7 @@ const TodaySchedule = () => {
 
       <div className="w-full flex-1 min-h-0">
         <div className="overflow-y-auto scrollbar-none w-full h-full flex flex-col gap-2 min-h-0">
-          {userTask
+          {taskData
             ?.filter((task) => {
               const end = new Date(task.endDate);
               return end.getTime() > new Date().getTime(); // 현재 시간보다 이후인 것만 표시

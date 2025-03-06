@@ -15,7 +15,11 @@ import { getAssignedTaskList } from "../../api/task";
 import { CALENDAR_COLORS } from "../../constants/calendarColors";
 import { dragChangeTask } from "../../utils/calendar/dragChangeTask";
 
-const Calendar = () => {
+interface CalendarProps {
+  refetch: () => void;
+}
+
+const Calendar = ({ refetch }: CalendarProps) => {
   // 프로젝트 및 업무 토글 상태
   const [showTasks, setShowTasks] = useState(false);
 
@@ -123,6 +127,7 @@ const Calendar = () => {
             assignedMemberId: task.assignedMemberId,
             status: task.status,
             profileImage: task.assignedMemberProfile,
+            projectId: task.projectId,
           },
         };
       });
@@ -140,6 +145,9 @@ const Calendar = () => {
 
   const { mutate: mutateTask } = useMutation({
     mutationFn: (info: EventDropArg) => dragChangeTask(info),
+    onSuccess: () => {
+      refetch();
+    },
   });
 
   if (isLoading) {
@@ -176,9 +184,15 @@ const Calendar = () => {
         eventClick={(info) => {
           if (!showTasks) {
             navigate(`project-room/${info.event.id}`);
-          } else if (showTasks) {
-            navigate(`project-room/${info.event.id}`);
+          } else {
+            const projectId = info.event.extendedProps?.projectId;
+            if (projectId) {
+              navigate(`project-room/${projectId}`);
+            } else {
+              console.error("Project ID not found for this task.");
+            }
           }
+          refetch();
         }}
         dayMaxEvents={3}
         dayMaxEventRows={true}
@@ -193,17 +207,24 @@ const Calendar = () => {
               return;
             }
           }
-          {
-            showTasks ? mutateTask(info) : mutate(info);
+          if (showTasks) {
+            mutateTask(info);
+            refetch();
+          } else {
+            mutate(info);
+            refetch();
           }
-          console.log(info);
+          // console.log(info);
         }}
         // 일정 길이 변경 드래그
         eventResize={(info: any) => {
-          console.log(info);
-          {
-            showTasks ? mutateTask(info) : mutate(info);
+          // console.log(info);
+          if (showTasks) {
+            mutateTask(info);
+          } else {
+            mutate(info);
           }
+          refetch();
         }}
       />
       {isModalOpen && (
