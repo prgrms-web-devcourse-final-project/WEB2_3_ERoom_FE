@@ -3,6 +3,7 @@ interface EditProjectModalProps {
   selectedProject?: ProjectListType;
   setIsEditProjectModal: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
+  setIsAlertModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface selectedProjectData {

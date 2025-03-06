@@ -121,7 +121,6 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("year")}
             >
-              {/* {selectedDate?.year || now.getFullYear()} */}
               {selectedDate?.year}
             </div>
 
@@ -144,8 +143,6 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("month")}
             >
-              {/* {selectedDate?.month ||
-                String(now.getMonth() + 1).padStart(2, "0")} */}
               {selectedDate?.month}
             </div>
             {openDropdown === "month" && (
@@ -234,9 +231,6 @@ const DateTimeSelect = ({
               text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
               onClick={() => toggleDropdown("hour")}
             >
-              {/* {selectedDate?.hour || title === "시작"
-                ? String(nowHours12).padStart(2, "0")
-                : String(nowHours12 + 1).padStart(2, "0")} */}
               {selectedDate?.hour}
             </div>
             {openDropdown === "hour" && (
