@@ -106,8 +106,12 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const queryClient = useQueryClient();
 
+  //웹소켓 연결 실패 시 자동 재요청
+  const [reconnectAttempts, setReconnectAttempts] = useState(0); // 재연결 횟수 추적
+  const MAX_RECONNECT_ATTEMPTS = 5; // 최대 재연결 횟수
+
   //웹소켓 연결 설정
-  useEffect(() => {
+  const connectWebSocket = () => {
     if (!projectId) return;
     if (!messageList?.groupChatRoom?.chatRoomId) return;
 
@@ -126,6 +130,8 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
       },
       onConnect: () => {
         console.log("Connected to WebSocket");
+        setStompClient(client);
+        setReconnectAttempts(0); // 연결 성공 시 재연결 횟수 초기화
 
         // 기존 구독을 해제하고 새로 구독
         client.unsubscribe(
@@ -151,13 +157,43 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
       onStompError: (frame) => {
         console.error("STOMP Error:", frame);
       },
+      onWebSocketError: (event) => {
+        console.error(" WebSocket 연결 실패:", event);
+        handleReconnect();
+      },
+      onWebSocketClose: () => {
+        console.warn("⚠️ WebSocket 연결이 닫혔습니다.");
+        handleReconnect();
+      },
     });
     client.activate();
+  };
+
+  // 재연결 핸들러
+  const handleReconnect = () => {
+    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+      setTimeout(() => {
+        console.log(
+          ` WebSocket 재연결 시도 중... (${
+            reconnectAttempts + 1
+          }/${MAX_RECONNECT_ATTEMPTS})`
+        );
+        setReconnectAttempts((prev) => prev + 1);
+        connectWebSocket();
+      }, 3000); // 3초 후 재연결 시도
+    } else {
+      console.error(" WebSocket 최대 재연결 횟수 초과! 연결을 중단합니다.");
+    }
+  };
+
+  // 웹소켓 연결 실행
+  useEffect(() => {
+    connectWebSocket();
 
     return () => {
-      if (client) {
-        console.log(" WebSocket Disconnected");
-        client.deactivate();
+      if (stompClient) {
+        console.log(" WebSocket 연결 해제");
+        stompClient.deactivate();
       }
     };
   }, [
