@@ -377,7 +377,7 @@ const EditProjectModal = ({
                     if (newProjectInfo.startDate > newProjectInfo.endDate) {
                       return setEndDateAlertModalOpen(true);
                     }
-                    // newProjectPost(newProjectInfo);
+                    newProjectPost(newProjectInfo);
                   }}
                 />
               )}
