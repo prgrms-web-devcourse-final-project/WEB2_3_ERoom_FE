@@ -39,4 +39,20 @@ export const CALENDAR_COLORS = [
     background: "#C6C6FF",
     text: "#000000",
   },
+  {
+    background: "#CAFFCA",
+    text: "#000000",
+  },
+  {
+    background: "#C1EAFF",
+    text: "#000000",
+  },
+  {
+    background: "#FFDF76",
+    text: "#000000",
+  },
+  {
+    background: "#FFBAA5",
+    text: "#000000",
+  },
 ];

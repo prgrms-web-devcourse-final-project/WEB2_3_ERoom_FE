@@ -24,7 +24,8 @@
 }
 
 /* 커스텀 프로젝트 버튼 */
-.fc-project-button {
+.fc-project-button.fc-active,
+.fc-task-button.fc-active {
   width: 70px !important;
   height: 30px !important;
   font-size: 14px !important;
@@ -36,7 +37,8 @@
   border-radius: 5px !important;
 }
 
-/* 커스텀 개인업무 버튼 */
+/* 클릭 시 활성화된 프로젝트 버튼 스타일 */
+.fc-project-button,
 .fc-task-button {
   width: 70px !important;
   height: 30px !important;
@@ -47,4 +49,43 @@
   padding: 0 !important;
   border: 1px solid #cad2cb !important;
   border-radius: 5px !important;
+}
+
+/* 커스텀 개인업무 버튼 */
+/* .fc-task-button {
+  width: 70px !important;
+  height: 30px !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  background-color: #fff !important;
+  color: #cad2cb !important;
+  padding: 0 !important;
+  border: 1px solid #cad2cb !important;
+  border-radius: 5px !important;
+} */
+
+/* 클릭 시 활성화된 업무 버튼 스타일 */
+/* .fc-task-button.fc-active {
+  width: 70px !important;
+  height: 30px !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  background-color: #465448 !important;
+  color: #fff6e9 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 5px !important;
+} */
+
+/* 일요일 날짜 빨간색 */
+.fc-day-sun a {
+  color: #ff6f6f;
+  text-decoration: none;
+}
+
+/* 토요일 날짜 파란색 */
+.fc-day-sat a {
+  color: #5375ff;
+  text-decoration: none;
+  text-align: left;
 }
