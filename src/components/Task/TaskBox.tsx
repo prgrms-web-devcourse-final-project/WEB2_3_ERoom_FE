@@ -112,6 +112,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
                 : defaultImg
             }
           />
+
           <p className="font-medium text-main-green">
             {task.assignedMemberName}
           </p>
