@@ -6,6 +6,7 @@ interface UpdateTaskModalProps {
   onDelete?: (taskId: number) => void;
   onUpdate?: (taskId: number, updateData: UpdateTask) => void;
   refetch: () => void;
+  projectData?: ProjectDetailType;
 }
 
 interface selectedDateType {
@@ -22,6 +23,7 @@ interface TaskListProps {
   isAll?: boolean;
   taskInfo: Task[];
   refetch: () => void;
+  projectData?: ProjectDetailType;
 }
 
 interface TaskBoxProps {

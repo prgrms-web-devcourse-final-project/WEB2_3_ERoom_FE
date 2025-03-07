@@ -107,6 +107,7 @@ const SelectMember = <T extends "업무" | "프로젝트">({
       }
     }
   };
+  console.log(memberData);
 
   /* 취소 버튼 클릭 시 선택된 팀원에서 제거 */
   const handleCancelClick = (id: number) => {

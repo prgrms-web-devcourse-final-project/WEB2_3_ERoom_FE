@@ -5,10 +5,16 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteTask, updateTask } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 
-const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
+const TaskList = ({
+  name,
+  isAll = true,
+  taskInfo,
+  refetch,
+  projectData,
+}: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { member } = useAuthStore();
-  console.log(member);
+  // console.log(projectData?.members);
 
   const openModal = (task: Task) => {
     setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
@@ -110,6 +116,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
             onDelete={handleDeleteTask}
             onUpdate={handleUpdateTask}
             refetch={refetch}
+            projectData={projectData}
           />
         </div>
       )}
