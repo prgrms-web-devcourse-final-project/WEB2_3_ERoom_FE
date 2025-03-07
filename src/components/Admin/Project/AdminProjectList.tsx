@@ -15,6 +15,7 @@ import { queryClient } from "../../../main";
 interface AdminProjectListProps {
   project: AdminProjectsListType;
   index: number;
+  checkedIds: number[];
   setCheckedIds: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
@@ -22,6 +23,7 @@ const AdminProjectList = ({
   project,
   index,
   setCheckedIds,
+  checkedIds,
 }: AdminProjectListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,17 +43,23 @@ const AdminProjectList = ({
 
   const [isChecked, setIsChecked] = useState(false);
 
-  const toggleCheckBox = () => {
-    setIsChecked((prev) => !prev);
-  };
-
   useEffect(() => {
-    if (isChecked) {
-      setCheckedIds((prev) => [...prev, project.projectId]);
+    if (checkedIds.includes(project.projectId)) {
+      setIsChecked(true);
     } else {
-      setCheckedIds((prev) => prev.filter((id) => id !== project.projectId));
+      setIsChecked(false);
     }
-  }, [isChecked]);
+  }, [checkedIds]);
+
+  const handleCheckBoxClick = () => {
+    if (checkedIds.includes(project.projectId)) {
+      setCheckedIds((prev) => prev.filter((id) => id !== project.projectId));
+      setIsChecked(false);
+    } else {
+      setCheckedIds((prev) => [...prev, project.projectId]);
+      setIsChecked(true);
+    }
+  };
 
   // 진행상태 체크
   const [status, setStatus] = useState<string>(
@@ -116,7 +124,7 @@ const AdminProjectList = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              toggleCheckBox();
+              handleCheckBoxClick();
             }}
             className="cursor-pointer"
           >
