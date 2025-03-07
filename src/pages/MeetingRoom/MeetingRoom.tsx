@@ -4,7 +4,6 @@ import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox"
 import MeetingRoomProjectBox from "../../components/MeetingRoom/MeetingRoomProjectBox";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectList } from "../../api/project";
-import Loading from "../../components/common/Loading";
 
 const MeetingRoom = () => {
   const navigate = useNavigate(); // 네비게이션 함수 생성
@@ -15,14 +14,10 @@ const MeetingRoom = () => {
     navigate("/project-room"); // 홈 페이지 또는 원하는 경로로 이동
   };
 
-  const { data: projectList = [], isLoading } = useQuery<ProjectType[]>({
+  const { data: projectList = [] } = useQuery<ProjectType[]>({
     queryKey: ["projectList"],
     queryFn: getProjectList,
   });
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   return (
     <div className="flex w-full h-[calc(100vh-50px)] p-[50px] gap-[20px] bg-white bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">

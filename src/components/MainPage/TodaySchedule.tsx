@@ -5,9 +5,10 @@ import "dayjs/locale/ko";
 
 interface TodayScheduleProps {
   taskData: GetAssignedTask[];
+  isLoading: boolean;
 }
 
-const TodaySchedule = ({ taskData }: TodayScheduleProps) => {
+const TodaySchedule = ({ taskData, isLoading }: TodayScheduleProps) => {
   dayjs.locale("ko");
   // 현재 날짜
   const now = useMemo(() => dayjs(), []);
@@ -33,6 +34,34 @@ const TodaySchedule = ({ taskData }: TodayScheduleProps) => {
 
     return () => clearInterval(timer);
   }, []);
+
+  if (isLoading) {
+    return (
+      <div
+        className="w-[400px] px-5 py-10 border border-main-green02 rounded-[10px]
+      flex flex-col gap-10 items-center bg-white animate-pulse"
+        style={{ maxHeight: "calc(100vh - 50px)" }}
+      >
+        {/* 날짜 & 시간 스켈레톤 */}
+        <div className="flex flex-col items-center">
+          <div className="w-[180px] h-[20px] bg-gray-200 rounded-md animate-pulse mb-2"></div>
+          <div className="w-[100px] h-[30px] bg-gray-200 rounded-md animate-pulse"></div>
+        </div>
+
+        {/* 일정 리스트 스켈레톤 */}
+        <div className="w-full flex-1 min-h-0">
+          <div className="overflow-y-auto scrollbar-none w-full h-full flex flex-col gap-2 min-h-0">
+            {[...Array(2)].map((_, i) => (
+              <div
+                key={i}
+                className="w-full h-[110px] bg-gray-200 rounded-md animate-pulse"
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

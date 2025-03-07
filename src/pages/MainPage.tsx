@@ -17,7 +17,11 @@ const MainPage = () => {
   const nowDate = now.format("DD"); // '16' 형식
 
   // 유저 개인 업무 불러오기
-  const { data: userTask, refetch } = useQuery<GetAssignedTask[]>({
+  const {
+    data: userTask,
+    refetch,
+    isLoading,
+  } = useQuery<GetAssignedTask[]>({
     queryKey: ["UserTask"],
     queryFn: async () => {
       if (!loginUser) return [];
@@ -56,7 +60,7 @@ const MainPage = () => {
       </div>
 
       {/* 오늘의 일정 */}
-      <TodaySchedule taskData={userTask || []} />
+      <TodaySchedule taskData={userTask || []} isLoading={isLoading} />
     </div>
   ) : (
     <GuestMain />

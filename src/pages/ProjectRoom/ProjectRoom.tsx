@@ -62,6 +62,49 @@ const ProjectRoom = () => {
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
 
+  if (isLoading) {
+    return (
+      <div
+        className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
+        style={{ maxHeight: "calc(100vh - 50px)" }}
+      >
+        <div className="bg-white/80 w-full h-full flex flex-col items-center gap-4 px-10 animate-pulse">
+          {/* 필터 버튼 스켈레톤 */}
+          <div className="flex items-center gap-2 justify-between w-full">
+            <ul
+              className="flex justify-start items-center gap-5 h-[70px] text-[18px]
+          font-bold text-black w-full max-w-[660px]"
+            >
+              {[...Array(3)].map((_, idx) => (
+                <li
+                  key={idx}
+                  className="w-full h-[30px] bg-gray-200 rounded-[5px]"
+                ></li>
+              ))}
+            </ul>
+
+            <div className="flex w-fit gap-[10px]">
+              <div className="w-[130px] h-[35px] bg-gray-200 rounded-md"></div>
+            </div>
+          </div>
+
+          {/* 프로젝트 목록 스켈레톤 */}
+          <div
+            className="w-full max-h-[calc(100vh-220px)] min-h-[500px] flex flex-col gap-4 overflow-y-scroll scrollbar-none
+          flex-grow py-10 rounded-[10px]"
+          >
+            {[...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="w-full h-[100px] bg-gray-200 rounded-[10px] animate-pulse"
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
