@@ -90,9 +90,7 @@ const UpdateTaskModal = ({
     {
       username: task.assignedMemberName,
       profile: updatedData?.participantProfiles?.[0] ?? defaultImg,
-      profile: updatedData?.participantProfiles?.[0] ?? defaultImg,
       email: "",
-      memberId: updatedData?.participantIds?.[0] ?? 0,
       memberId: updatedData?.participantIds?.[0] ?? 0,
     },
   ]);

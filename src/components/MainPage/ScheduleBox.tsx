@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
 import { twMerge } from "tailwind-merge";
 import { getProjectById } from "../../api/project";
 import { useEffect, useState } from "react";
