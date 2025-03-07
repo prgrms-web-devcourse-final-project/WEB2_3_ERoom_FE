@@ -77,8 +77,8 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
 
   return (
     <div
-      className={`flex flex-col relative gap-4 items-center px-2 py-1 
-        min-w-[320px] min-h-[450px] h-full bg-white/60`}
+      className={`flex flex-col relative gap-4 items-center px-2 py-5 
+        min-w-[320px] min-h-[450px] h-fit bg-white/60`}
     >
       <h1 className="font-bold text-main-green text-[22px]">{name}</h1>
       {taskInfo.map((task) => {

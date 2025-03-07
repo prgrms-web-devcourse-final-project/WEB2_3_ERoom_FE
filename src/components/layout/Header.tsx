@@ -109,8 +109,8 @@ const Header = () => {
                   <img src={alarmIcon} alt="알람 아이콘" />
                   {hasUnreadAlarms && (
                     <span className="absolute top-[-1.3px] right-[-1.5px] flex size-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-main-green02 opacity-75"></span>
-                      <span className="relative inline-flex size-2 rounded-full bg-main-green02"></span>
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-header-red opacity-75"></span>
+                      <span className="relative inline-flex size-2 rounded-full bg-header-red"></span>
                     </span>
                   )}
                 </div>
