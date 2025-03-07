@@ -192,3 +192,14 @@ export const deleteTask = async (taskId: number) => {
     console.error("업무 삭제 실패", error);
   }
 };
+
+// 관리자 업무 활성 전환 (복구)
+export const adminRestoreTask = async (taskId: number) => {
+  try {
+    const response = await api.patch(`/admin/manage/task/${taskId}/activate`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
