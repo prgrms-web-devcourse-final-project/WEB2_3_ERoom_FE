@@ -67,19 +67,18 @@ const AdminTask = () => {
     // staleTime: 0,
   });
 
+  // 활성비활성 상태
+  const [taskMenu, setTaskMenu] = useState("active");
   // 활성 업무리스트 상태
   const [tasks, setTasks] = useState(taskList);
   // 비활성 업무리스트 상태
   const [deleteTasks, setDeleteTasks] = useState(deleteTaskList);
-  // 활성비활성 상태
-  const [taskMenu, setTaskMenu] = useState("active");
   // 전체 체크박스 체크 상태
   const [isChecked, setIsChecked] = useState(false);
   // 체크된 비활성 업무 상태
   const [isCheckedTask, setIsCheckedTask] = useState<number[]>([]);
   // 모달 상태
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
-  console.log("체크된 비활성 업무 :", isCheckedTask);
 
   // 업무 수정
   const { mutateAsync: updateTaskFn } = useMutation({
@@ -182,18 +181,6 @@ const AdminTask = () => {
     (tasks?.length ? tasks?.length : 0) / itemsPerPage
   );
 
-  // 활성 비활성 버튼 클릭에 따른 데이터 분기처리
-  const paginatedTasks =
-    taskMenu === "active"
-      ? tasks?.slice(
-          (currentPage - 1) * itemsPerPage,
-          currentPage * itemsPerPage
-        )
-      : deleteTasks?.slice(
-          (currentPage - 1) * itemsPerPage,
-          currentPage * itemsPerPage
-        );
-
   // 체크박스 상태 변경 함수
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);
@@ -203,6 +190,40 @@ const AdminTask = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [taskMenu]);
+
+  // 업무 검색 입력 상태
+  const [searchTaskName, setSearchTaskName] = useState<string>("");
+
+  // 검색 함수
+  const handleSearchTask = () => {
+    taskMenu === "active"
+      ? setTasks(
+          tasks?.filter((task) => task.taskName.includes(searchTaskName))
+        )
+      : setDeleteTasks(
+          deleteTasks?.filter((task) => task.taskName.includes(searchTaskName))
+        );
+  };
+
+  // 검색어가 없을 경우 원래 데이터로 초기화
+  useEffect(() => {
+    if (searchTaskName.trim() === "") {
+      setTasks(taskList);
+      setDeleteTasks(deleteTaskList);
+    }
+  }, [searchTaskName]);
+
+  // 페이지 구분
+  const filterTasks =
+    taskMenu === "active"
+      ? tasks?.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )
+      : deleteTasks?.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        );
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -230,10 +251,18 @@ const AdminTask = () => {
           </div>
 
           {/* 검색 창 */}
-          <div className="flex gap-[10px]">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearchTask();
+            }}
+            className="flex gap-[10px]"
+          >
             <input
               className="w-[250px] h-[27px] border border-header-green rounded-[5px] focus:outline-none flex px-[10px] items-center text-[14px]"
               placeholder="업무명 또는 프로젝트명 검색"
+              value={searchTaskName}
+              onChange={(e) => setSearchTaskName(e.target.value)}
             />
             <Button
               text="검색"
@@ -241,7 +270,7 @@ const AdminTask = () => {
               size="sm"
               css="h-[27px] text-[14px] text-main-beige01 bg-header-green"
             />
-          </div>
+          </form>
 
           {/* 삭제 버튼 */}
           <div className="flex gap-[5px] w-[80px] justify-end">
@@ -298,7 +327,7 @@ const AdminTask = () => {
           </div>
 
           {/* 업무목록 */}
-          {paginatedTasks?.map((task, index) => (
+          {filterTasks?.map((task, index) => (
             <AdminTaskList
               key={task.taskId}
               task={task}

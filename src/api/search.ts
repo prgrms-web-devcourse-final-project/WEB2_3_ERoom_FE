@@ -46,3 +46,19 @@ export const searchProjects = async (
     throw error;
   }
 };
+
+// 업무 검색 API
+export const searchTasks = async (
+  title: string
+): Promise<TaskSearchResult[]> => {
+  try {
+    const response = await api.get(`/api/search/tasks`, {
+      params: { title },
+    });
+    console.log("업무 검색 성공", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("업무 검색 실패", error);
+    throw error;
+  }
+};
