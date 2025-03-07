@@ -29,14 +29,6 @@ const MeetingRoomChatBox = ({
     }
   }, []);
 
-  useEffect(() => {
-    // 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
-
   const handleHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
     setText(newText);
@@ -184,6 +176,51 @@ const MeetingRoomChatBox = ({
   const handleOpenNoteList = () => {
     setIsOpenNoteList((prev) => !prev);
   };
+
+  const [isClientReady, setIsClientReady] = useState(false);
+  // WebSocket 연결 후 실제 UI가 렌더링될 때 트리거
+  useEffect(() => {
+    if (stompClient) {
+      console.log(" WebSocket 연결 완료, UI 전환됨");
+      setIsClientReady(true); //  WebSocket 연결 후 UI 렌더링 트리거
+    }
+  }, [stompClient]);
+
+  useEffect(() => {
+    if (isClientReady && chatContainerRef.current) {
+      setTimeout(() => {
+        console.log("🛠 스크롤 이동 실행!");
+        chatContainerRef.current!.scrollTop =
+          chatContainerRef.current?.scrollHeight ?? 0;
+      }, 100); // UI가 렌더링된 후 실행 보장
+    }
+  }, [isClientReady, messages]); //
+
+  if (!stompClient) {
+    return (
+      <div
+        className={twMerge(
+          "flex flex-col flex-grow px-[30px] pt-[30px] gap-[10px] relative min-h-full",
+          css
+        )}
+      >
+        <div className="flex justify-between w-[calc(100%-60px)]">
+          <div className="bg-gray-200 h-full w-[120px] h-[20px] rounded-md animate-pulse"></div>
+          <div className="bg-gray-200 h-full w-[80px] h-[30px] rounded-md animate-pulse"></div>
+        </div>
+
+        <div className="flex flex-col flex-grow w-[calc(100%-60px)] gap-[10px]">
+          <div className="flex-grow border bg-gray-100 animate-pulse border-main-green01 rounded-[10px] overflow-hidden">
+            <div className="w-full h-[250px] bg-gray-100 animate-pulse"></div>
+          </div>
+
+          <div className="w-full h-auto flex bg-main-green01 rounded-[10px] pr-[15px] items-center p-2">
+            <div className="bg-gray-200 w-[93%] h-[32px] rounded-md animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
