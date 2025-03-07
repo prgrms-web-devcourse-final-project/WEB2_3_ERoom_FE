@@ -16,6 +16,7 @@ const UpdateTaskModal = ({
   onDelete,
   onUpdate,
   refetch,
+  projectData,
 }: UpdateTaskModalProps) => {
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const loginUser = useAuthStore((state) => state.member);
@@ -94,6 +95,7 @@ const UpdateTaskModal = ({
       memberId: updatedData?.participantIds?.[0] ?? 0,
     },
   ]);
+  console.log(memberData);
 
   const [taskName, setTaskName] = useState<string>(task.title);
 
@@ -148,6 +150,7 @@ const UpdateTaskModal = ({
         selectedData={updatedData}
         selectedMembers={memberData}
         setSelectedMembers={setMemberData}
+        memberData={projectData?.members}
         value="업무"
       />
       <div>
@@ -224,8 +227,8 @@ const UpdateTaskModal = ({
           onClick={() => {
             if (onUpdate) {
               onUpdate(task.taskId, taskInfo);
-              refetch();
             }
+            refetch();
           }}
           css="border border-main-green01 text-main-green01 font-bold text-[14px]  w-[89px] h-[27px]"
         />
