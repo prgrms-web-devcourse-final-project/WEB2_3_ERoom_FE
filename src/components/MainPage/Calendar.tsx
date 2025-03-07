@@ -151,7 +151,18 @@ const Calendar = ({ refetch }: CalendarProps) => {
   });
 
   if (isLoading) {
-    return <div>로딩</div>;
+    return (
+      <div className="h-full border rounded-[10px] border-main-green02 px-5 py-5 bg-white animate-pulse flex flex-col gap-5">
+        {/* 캘린더 헤더 스켈레톤 */}
+        <div className="flex justify-between items-center">
+          <div className="w-[150px] h-[20px] bg-gray-200 rounded-md animate-pulse"></div>
+          <div className="w-[120px] h-[20px] bg-gray-200 rounded-md animate-pulse"></div>
+        </div>
+
+        {/* 캘린더 본문 (전체를 하나의 큰 박스로 표시) */}
+        <div className="w-full h-full bg-gray-200 rounded-md animate-pulse"></div>
+      </div>
+    );
   }
 
   return (
