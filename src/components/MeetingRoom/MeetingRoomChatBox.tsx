@@ -9,9 +9,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
-import { useLocation } from "react-router";
 
-const MeetingRoomChatBox = ({ css }: { css?: string }) => {
+const MeetingRoomChatBox = ({
+  css,
+  projectId,
+}: {
+  css?: string;
+  projectId: number;
+}) => {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<MessageType[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -23,14 +28,6 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
       textAreaRef.current.style.height = "27px";
     }
   }, []);
-
-  useEffect(() => {
-    // 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   const handleHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
@@ -56,33 +53,10 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
     }
   };
 
-  //현재 url에서 projectId 가져오기
-  const getProjectIdFromURL = () => {
-    const location = useLocation();
-    const urlParams = new URLSearchParams(location.search);
-    const category = urlParams.get("category");
-    const pathSegments = location.pathname.split("/");
-
-    if (pathSegments[1] === "project-room" && category === "meeting") {
-      return pathSegments[2]; // project-room/:id?category=meeting
-    }
-
-    if (pathSegments[1] === "meeting-room") {
-      return pathSegments[2]; // meeting-room/:id
-    }
-
-    return null;
-  };
-
-  const projectId = getProjectIdFromURL();
-  const parsedProjectId = projectId ? Number(projectId) : null;
-
   //채팅 내역 API 요청하는 useQuery
-  const { data: messageList = null, isLoading } = useQuery<MeetingroomType>({
-    queryKey: parsedProjectId ? ["meetingroom", parsedProjectId] : [],
-    queryFn: () =>
-      parsedProjectId ? getMeetingroom(parsedProjectId) : Promise.reject(),
-    enabled: !!parsedProjectId, // projectId가 존재할 때만 실행
+  const { data: messageList = null } = useQuery<MeetingroomType>({
+    queryKey: ["meetingroom", projectId],
+    queryFn: () => getMeetingroom(projectId),
     select: (data) => data || ({} as MeetingroomType),
   });
 
@@ -107,13 +81,8 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const queryClient = useQueryClient();
 
-  //웹소켓 연결 실패 시 자동 재요청
-  const [reconnectAttempts, setReconnectAttempts] = useState(0); // 재연결 횟수 추적
-  const MAX_RECONNECT_ATTEMPTS = 5; // 최대 재연결 횟수
-
   //웹소켓 연결 설정
-  const connectWebSocket = () => {
-    if (!projectId) return;
+  useEffect(() => {
     if (!messageList?.groupChatRoom?.chatRoomId) return;
 
     if (messageList?.groupChatRoom?.messages) {
@@ -131,8 +100,6 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
       },
       onConnect: () => {
         console.log("Connected to WebSocket");
-        setStompClient(client);
-        setReconnectAttempts(0); // 연결 성공 시 재연결 횟수 초기화
 
         // 기존 구독을 해제하고 새로 구독
         client.unsubscribe(
@@ -148,7 +115,7 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
 
             // 새 메시지를 추가하지 않고, 서버 데이터를 다시 불러오도록 트리거
             queryClient.invalidateQueries({
-              queryKey: ["meetingroom", parsedProjectId],
+              queryKey: ["meetingroom", projectId],
             });
           }
         );
@@ -158,56 +125,13 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
       onStompError: (frame) => {
         console.error("STOMP Error:", frame);
       },
-      onWebSocketError: (event) => {
-        console.error(" WebSocket 연결 실패:", event);
-        handleReconnect();
-      },
-      onWebSocketClose: () => {
-        console.warn("⚠️ WebSocket 연결이 닫혔습니다.");
-        handleReconnect();
-      },
     });
     client.activate();
-  };
-
-  // 재연결 핸들러
-  const handleReconnect = () => {
-    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-      setTimeout(() => {
-        console.log(
-          ` WebSocket 재연결 시도 중... (${
-            reconnectAttempts + 1
-          }/${MAX_RECONNECT_ATTEMPTS})`
-        );
-        setReconnectAttempts((prev) => prev + 1);
-        connectWebSocket();
-      }, 3000); // 3초 후 재연결 시도
-    } else {
-      console.error(" WebSocket 최대 재연결 횟수 초과! 연결을 중단합니다.");
-    }
-  };
-
-  const pathname = location.pathname;
-
-  // 웹소켓 연결 실행
-  useEffect(() => {
-    if (!parsedProjectId) return;
-    if (!messageList?.groupChatRoom?.chatRoomId) return;
-
-    if (stompClient) {
-      console.log("기존 웹소켓을 닫습니다...");
-      stompClient.deactivate();
-    }
-
-    connectWebSocket();
 
     return () => {
-      if (stompClient) {
-        console.log(" WebSocket 연결 해제");
-        stompClient.deactivate();
-      }
+      if (client) client.deactivate();
     };
-  }, [messageList?.groupChatRoom.chatRoomId, projectId, pathname]);
+  }, [messageList?.groupChatRoom.chatRoomId]);
 
   const userName = useAuthStore((state) => state.member?.username);
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
@@ -253,7 +177,26 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
     setIsOpenNoteList((prev) => !prev);
   };
 
-  if (!stompClient || isLoading) {
+  const [isClientReady, setIsClientReady] = useState(false);
+  // WebSocket 연결 후 실제 UI가 렌더링될 때 트리거
+  useEffect(() => {
+    if (stompClient) {
+      console.log(" WebSocket 연결 완료, UI 전환됨");
+      setIsClientReady(true); //  WebSocket 연결 후 UI 렌더링 트리거
+    }
+  }, [stompClient]);
+
+  useEffect(() => {
+    if (isClientReady && chatContainerRef.current) {
+      setTimeout(() => {
+        console.log("🛠 스크롤 이동 실행!");
+        chatContainerRef.current!.scrollTop =
+          chatContainerRef.current?.scrollHeight ?? 0;
+      }, 100); // UI가 렌더링된 후 실행 보장
+    }
+  }, [isClientReady, messages]); //
+
+  if (!stompClient) {
     return (
       <div
         className={twMerge(
@@ -273,7 +216,6 @@ const MeetingRoomChatBox = ({ css }: { css?: string }) => {
 
           <div className="w-full h-auto flex bg-main-green01 rounded-[10px] pr-[15px] items-center p-2">
             <div className="bg-gray-200 w-[93%] h-[32px] rounded-md animate-pulse"></div>
-            {/* <div className="bg-gray-200 w-[25px] h-[25px] rounded-full ml-3 animate-pulse"></div> */}
           </div>
         </div>
       </div>

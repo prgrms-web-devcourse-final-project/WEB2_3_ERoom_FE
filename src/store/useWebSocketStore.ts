@@ -7,7 +7,6 @@ import {
   patchAllReadAlarm,
   patchReadAlarm,
 } from "../api/alarm";
-import { useLocation } from "react-router";
 
 interface WebSocketStore {
   isConnected: boolean;
@@ -92,10 +91,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
         (async () => {
           // 현재 URL에서 projectId 가져오기
-
-          const location = useLocation();
-          const urlParams = new URLSearchParams(location.search);
-
+          const urlParams = new URLSearchParams(window.location.search);
           let category = urlParams.get("category");
           const pathname = window.location.pathname;
           let projectId = null;
@@ -115,7 +111,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
           }
 
           console.log(
-            "현재 미팅룸 category:",
+            "🌐 현재 미팅룸 category:",
             category,
             "projectId:",
             projectId
