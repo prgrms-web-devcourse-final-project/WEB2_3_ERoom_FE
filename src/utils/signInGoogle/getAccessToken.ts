@@ -2,7 +2,10 @@ import axios from "axios";
 
 const getAccessToken = async (code: string) => {
   const CLIENT_ID = import.meta.env.VITE_GOOGLE_ID;
-  const REDIRECT_URI = "http://localhost:5173/signin";
+  const REDIRECT_URI =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5173/signin"
+      : "https://errom.netlify.app/signin";
   const CLIENT_SECRET = import.meta.env.VITE_GOOGLE_SECRET;
 
   const response = await axios.post(
