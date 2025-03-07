@@ -3,8 +3,10 @@ import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import defaultImg from "../assets/defaultImg.svg";
 import ConfirmModal from "../components/modals/ConfirmModal";
-import { useQuery } from "@tanstack/react-query";
-import { getMyPageInfo } from "../api/myPage";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { editMyPageInfo, getMyPageInfo } from "../api/myPage";
+import { queryClient } from "../main";
+import SimpleAlertModal from "../components/modals/SimpleAlertModal";
 
 interface MyPageInfoType {
   email: string;
@@ -21,11 +23,13 @@ const MyPage = () => {
 
   const [companyInfo, setCompanyInfo] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [profileImgFile, setProfileImgFile] = useState<File>();
 
   useEffect(() => {
     if (myPageInfo) {
       setName(myPageInfo.username);
       setCompanyInfo(myPageInfo.organization);
+      setProfileImgUrl(myPageInfo.profile);
     }
   }, [myPageInfo]);
 
@@ -52,6 +56,7 @@ const MyPage = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setProfileImgFile(file);
       const tempImgUrl = URL.createObjectURL(file);
       setProfileImgUrl(tempImgUrl);
     }
@@ -62,14 +67,35 @@ const MyPage = () => {
     setName(e.target.value);
   };
 
-  const handleFileInputClick = (e: React.MouseEvent) => {
+  const handleFileInputClick = () => {
     setIsHovered(true);
     setIsFileDialogOpen(true);
   };
 
+  // 정보 수정 성공 시 모달 오픈
+  const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
+
+  // 내 정보 수정 폼데이터
+  const formData = new FormData();
+  formData.append("username", name);
+  formData.append("organization", companyInfo);
+
+  if (profileImgFile) {
+    formData.append("profileImage", profileImgFile);
+  }
+
+  // 정보 수정 함수
+  const { mutate: editMyInfo } = useMutation({
+    mutationFn: () => editMyPageInfo(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myPageInfo"] });
+      setEditSuccessModalOpen(true);
+    },
+  });
+
   if (isLoading) {
     return (
-      <section className="mypage-background flex justify-center items-center relative min-h-screen">
+      <section className="mypage-background flex justify-center items-center relative min-h-[calc(100vh-50px)]">
         <div className="absolute inset-0 blur bg-white/20"></div>
         <div className="relative z-10 w-[680px] bg-[#ffffff94] px-[100px] py-[50px] rounded-[10px]">
           <div className="animate-pulse flex flex-col gap-[50px]">
@@ -92,7 +118,7 @@ const MyPage = () => {
   return (
     <section
       className="mypage-background flex justify-center items-center 
-    relative min-h-screen"
+    relative min-h-[calc(100vh-50px)]"
     >
       {/* 투명 오버레이 */}
       <div className="absolute inset-0 blur bg-white/20"></div>
@@ -164,7 +190,9 @@ const MyPage = () => {
                         className="w-fit text-center px-[10px] py-[5px] cursor-pointer
                       text-[14px] font-bold text-white hover:text-main-green01
                       rounded-[5px] bg-white/30 hover:bg-white/70"
-                        onClick={() => setProfileImgUrl(null)}
+                        onClick={() => {
+                          setProfileImgUrl(null);
+                        }}
                       >
                         기본 이미지 적용
                       </div>
@@ -215,8 +243,8 @@ const MyPage = () => {
             <Button
               text="수정하기"
               size="md"
-              to="/"
               css="bg-main-green01 border border-main-green text-main-beige01"
+              onClick={() => editMyInfo()}
             />
             <Button
               text="탈퇴하기"
@@ -235,6 +263,16 @@ const MyPage = () => {
           onClick={() => setIsConfirmModal(false)}
         >
           <ConfirmModal value="탈퇴" setIsModal={setIsConfirmModal} />
+        </div>
+      )}
+      {/* 수정 완료 모달 */}
+      {editSuccessModalOpen && (
+        <div className="absolute bg-black/50 z-30 w-full h-full flex items-center justify-center">
+          <SimpleAlertModal
+            text="수정이 완료되었습니다!"
+            setIsModal={setEditSuccessModalOpen}
+            css="animate-fadeUp"
+          />
         </div>
       )}
     </section>

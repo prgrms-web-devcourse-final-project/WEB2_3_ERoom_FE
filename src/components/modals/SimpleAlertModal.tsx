@@ -1,16 +1,22 @@
+import { twMerge } from "tailwind-merge";
 import Button from "../common/Button";
 
 const SimpleAlertModal = ({
   text,
   setIsModal,
+  css,
 }: {
   text: string;
+  css?: string;
   setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <div
-      className="bg-white text-main-green px-[100px] py-[50px] gap-[30px]
-  flex flex-col justify-center items-center z-10"
+      className={twMerge(
+        `bg-white text-main-green px-[100px] py-[50px] gap-[30px]
+  flex flex-col justify-center items-center z-10`,
+        css
+      )}
       onClick={(e) => e.stopPropagation()}
     >
       <p>{text}</p>
