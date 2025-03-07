@@ -38,7 +38,8 @@ api.interceptors.response.use(
 
     console.log("originalRequest._retry 값:", originalRequest._retry);
 
-    const { refreshToken, login, logout } = useAuthStore.getState();
+    const { idToken, member, refreshToken, login, logout } =
+      useAuthStore.getState();
 
     // 401 (Unauthorized) 또는 403 (Forbidden) 에러가 발생한 경우 처리
     if (
@@ -47,23 +48,19 @@ api.interceptors.response.use(
     ) {
       console.log("401 또는 403 에러 감지, 리프레시 토큰 실행");
       originalRequest._retry = true; // 이제 안전하게 true로 변경 가능
+      console.log(refreshToken);
 
       if (refreshToken) {
         try {
           console.log("리프레시 요청 보냄", refreshToken);
 
           // 기존 accessToken을 제거한 후 새로 요청
-          useAuthStore.getState().login(null, null, refreshToken, null);
+          useAuthStore.getState().login(idToken, null, refreshToken, member);
 
           const res = await api.post("/api/auth/refresh", { refreshToken });
 
           // 새 accessToken 저장
-          login(
-            res.data.idToken,
-            res.data.accessToken,
-            res.data.refreshToken,
-            res.data.member
-          );
+          login(idToken, res.data.accessToken, res.data.refreshToken, member);
 
           // 요청 헤더 업데이트 후 재시도
           originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;

@@ -8,7 +8,7 @@ import { useAuthStore } from "../../store/authStore";
 const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { member } = useAuthStore();
-  // console.log(member);
+  console.log(member);
 
   const openModal = (task: Task) => {
     setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
@@ -29,6 +29,10 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
       taskId: number;
       updateData: UpdateTask;
     }) => updateTask(taskId, updateData),
+    onSuccess: () => {
+      refetch();
+      console.log("성공");
+    },
   });
 
   const handleUpdateTask = async (taskId: number, updateData: UpdateTask) => {
@@ -50,8 +54,10 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   const deleteMutation = useMutation({
     mutationFn: async (taskId: number) => {
       await deleteTask(taskId);
-
-      refetch(); // 삭제 후 refetch 호출
+    },
+    onSuccess: () => {
+      refetch();
+      console.log("성공");
     },
   });
 
