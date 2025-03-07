@@ -74,7 +74,7 @@ const TodaySchedule = ({ taskData, isLoading }: TodayScheduleProps) => {
           {year}년 {month}월 {nowDate}일 ({day})
         </p>
         <p className="font-bold text-[26px]" ref={timeRef}>
-          00:00:00
+          현재 시간
         </p>
       </div>
 
