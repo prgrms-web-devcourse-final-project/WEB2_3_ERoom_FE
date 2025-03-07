@@ -91,7 +91,7 @@ const Sidebar = ({
       const allManagerName = managers.map((manager) => manager.username);
       handleAllClick(allManagerName);
     }
-  }, [projectRoomMenu]);
+  }, [projectRoomMenu, managers]);
 
   const handleAllCheck = (isChecked: boolean) => {
     if (isChecked) {
