@@ -27,15 +27,35 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log("리프레쉬 토큰 시작");
+
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const { refreshToken, login, logout } = useAuthStore.getState();
+
+    // `_retry` 속성이 없으면 false로 초기화
+    if (originalRequest._retry === undefined) {
+      originalRequest._retry = false;
+    }
+
+    console.log("originalRequest._retry 값:", originalRequest._retry);
+
+    const { refreshToken, login, logout } = useAuthStore.getState();
+
+    // 401 (Unauthorized) 또는 403 (Forbidden) 에러가 발생한 경우 처리
+    if (
+      (error.response?.status === 401 || error.response?.status === 403) &&
+      !originalRequest._retry
+    ) {
+      console.log("401 또는 403 에러 감지, 리프레시 토큰 실행");
+      originalRequest._retry = true; // 이제 안전하게 true로 변경 가능
 
       if (refreshToken) {
         try {
-          // 새 accessToken 요청
-          const res = await axios.post("/api/auth/refresh", { refreshToken });
+          console.log("리프레시 요청 보냄", refreshToken);
+
+          // 기존 accessToken을 제거한 후 새로 요청
+          useAuthStore.getState().login(null, null, refreshToken, null);
+
+          const res = await api.post("/api/auth/refresh", { refreshToken });
 
           // 새 accessToken 저장
           login(
@@ -49,12 +69,13 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
-          console.error("리프레시 토큰 만료. 로그아웃 처리됨.");
+          console.error("리프레시 토큰 만료됨, 로그아웃");
           logout();
           return Promise.reject(refreshError);
         }
       }
     }
+
     return Promise.reject(error);
   }
 );
