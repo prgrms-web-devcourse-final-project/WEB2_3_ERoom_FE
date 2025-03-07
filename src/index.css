@@ -1,1 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lacquer&family=Noto+Sans+TC:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @import "tailwindcss";
+@plugin 'tailwind-scrollbar';
+
+@theme {
+  --color-main-beige: #ffead9;
+  --color-main-beige01: #fff6e9;
+  --color-main-beige02: #ebe9e2;
+  --color-main-green: #1f281e;
+  --color-main-green01: #465448;
+  --color-main-green02: #cad2cb;
+  --color-main-green03: #ebe9e2;
+  --color-logo-green: #2b3e34;
+  --color-header-green: #657166;
+  --color-header-green-hover: #2b3e34;
+  --color-red: #ffe3df;
+  --color-header-red: #ff6854;
+  --color-header-red-hover: #ff1d00;
+  --color-kakao: #fee500;
+  --color-black01: #212121;
+  --color-gray01: #afafaf;
+  --color-gray02: #e8e8e8;
+  --font-notoTC: "Noto Sans TC", "sans-serif";
+
+  --animate-fadeUp: fadeUp 1s ease-in-out;
+}
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.font-notoTC {
+  font-family: var(--font-notoTC);
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  font-style: normal;
+}
+
+* {
+  font-family: "Pretendard";
+}
+
+/* 스크롤바 커스텀 */
+.scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #465448;
+  border-radius: 10px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #e8e8e800;
+}

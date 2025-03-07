@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 package-lock.json
+db/*
+db.json
+.env
