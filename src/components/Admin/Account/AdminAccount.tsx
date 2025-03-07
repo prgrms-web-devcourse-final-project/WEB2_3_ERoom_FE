@@ -124,16 +124,32 @@ const AdminAccount = () => {
     currentPage * itemsPerPage
   );
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [isCheckedAll, setIsCheckedAll] = useState(false);
 
   const toggleCheckBox = () => {
-    setIsChecked((prev) => !prev);
+    setIsCheckedAll((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (isCheckedAll) {
+      setCheckedAccountIds(paginatedUsers.map((user) => user.memberId));
+    } else {
+      setCheckedAccountIds([]);
+    }
+  }, [isCheckedAll]);
 
   useEffect(() => {
     setCurrentPage(1);
     setCheckedAccountIds([]);
+    setIsCheckedAll(false);
   }, [userMenu]);
+
+  useEffect(() => {
+    setIsCheckedAll(false);
+    setCheckedAccountIds([]);
+
+    console.log(currentPage);
+  }, [currentPage]);
 
   // 모달 적용
   const [modalText, setModalText] = useState<string>("");
@@ -153,13 +169,15 @@ const AdminAccount = () => {
   // 관리자 계정 비활성(삭제)
   const [checkedAccountIds, setCheckedAccountIds] = useState<number[]>([]);
 
+  useEffect(() => {
+    console.log(checkedAccountIds);
+  }, [checkedAccountIds]);
+
   const { mutate } = useMutation({
     mutationFn: (memberId: number) => deleteAdminAccount(memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] });
       queryClient.invalidateQueries({ queryKey: ["AdminInactiveMemberData"] });
-      openModal("유저가 삭제되었습니다");
-      setCheckedAccountIds([]);
     },
   });
 
@@ -172,11 +190,17 @@ const AdminAccount = () => {
     // 삭제 확인 모달 띄우기
     openModal(
       `정말 ${checkedAccountIds.length}명의 유저를 삭제하시겠습니까?`,
-      () => {
-        checkedAccountIds.forEach((id) => {
-          mutate(id);
-        });
+      async () => {
+        await Promise.all(
+          checkedAccountIds.map((id) => {
+            mutate(id);
+          })
+        );
         closeModal();
+        setIsCheckedAll(false);
+        setCheckedAccountIds([]);
+
+        alert("유저가 삭제되었습니다");
       }
     );
   };
@@ -187,9 +211,6 @@ const AdminAccount = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] });
       queryClient.invalidateQueries({ queryKey: ["AdminInactiveMemberData"] });
-
-      setCheckedAccountIds([]);
-      alert("복구 완료되었습니다");
     },
   });
 
@@ -200,11 +221,17 @@ const AdminAccount = () => {
 
     openModal(
       `${checkedAccountIds.length}명의 유저를 복구하시겠습니까?`,
-      () => {
-        checkedAccountIds.forEach((id) => {
-          restoreAccount(id);
-        });
+      async () => {
+        await Promise.all(
+          checkedAccountIds.map((id) => {
+            restoreAccount(id);
+          })
+        );
         closeModal();
+        setCheckedAccountIds([]);
+        setIsCheckedAll(false);
+
+        alert("유저를 복구했습니다.");
       }
     );
   };
@@ -278,7 +305,10 @@ const AdminAccount = () => {
           <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
             <div className="flex justify-center items-center">
               <button onClick={toggleCheckBox} className="cursor-pointer">
-                <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
+                <img
+                  src={isCheckedAll ? CheckBox : UnCheckBox}
+                  alt="체크박스"
+                />
               </button>
             </div>
             <div className="flex justify-center items-center">
@@ -302,6 +332,7 @@ const AdminAccount = () => {
               key={user.memberId}
               user={user}
               index={(currentPage - 1) * itemsPerPage + index}
+              checkedAccountIds={checkedAccountIds}
               setCheckedAccountIds={setCheckedAccountIds}
             />
           ))}

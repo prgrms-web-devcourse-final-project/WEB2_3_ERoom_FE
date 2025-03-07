@@ -13,9 +13,11 @@ const AdminAccountList = ({
   user,
   index,
   setCheckedAccountIds,
+  checkedAccountIds,
 }: {
   user: AccountListProps;
   index: number;
+  checkedAccountIds: number[];
   setCheckedAccountIds: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -30,17 +32,31 @@ const AdminAccountList = ({
 
   const [isChecked, setIsChecked] = useState(false);
 
+  useEffect(() => {
+    if (checkedAccountIds.includes(user.memberId)) {
+      setIsChecked(true);
+    } else {
+      setIsChecked(false);
+    }
+  }, [checkedAccountIds]);
+
   const toggleCheckBox = () => {
-    setIsChecked((prev) => !prev);
+    if (checkedAccountIds.includes(user.memberId)) {
+      setCheckedAccountIds((prev) => prev.filter((id) => id !== user.memberId));
+      setIsChecked(false);
+    } else {
+      setCheckedAccountIds((prev) => [...prev, user.memberId]);
+      setIsChecked(true);
+    }
   };
 
-  useEffect(() => {
-    if (isChecked) {
-      setCheckedAccountIds((prev) => [...prev, user.memberId]);
-    } else {
-      setCheckedAccountIds((prev) => prev.filter((id) => id !== user.memberId));
-    }
-  }, [isChecked]);
+  // useEffect(() => {
+  //   if (isChecked) {
+  //     setCheckedAccountIds((prev) => [...prev, user.memberId]);
+  //   } else {
+  //     setCheckedAccountIds((prev) => prev.filter((id) => id !== user.memberId));
+  //   }
+  // }, [isChecked]);
 
   // 계정 관리 수정요청 데이터
   const editAccountData: EditAccountType = {
