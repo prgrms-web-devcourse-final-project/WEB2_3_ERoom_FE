@@ -2,9 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ScheduleBox from "./ScheduleBox";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { useAuthStore } from "../../store/authStore";
-import { useQuery } from "@tanstack/react-query";
-import { getAssignedTaskList } from "../../api/task";
 
 interface TodayScheduleProps {
   taskData: GetAssignedTask[];
