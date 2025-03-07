@@ -13,7 +13,7 @@ export const getAllCategory = async () => {
 
 export const adminNewCategory = async (newCategoryName: string) => {
   try {
-    const response = api.post("/admin/manage/category/create", {
+    const response = await api.post("/admin/manage/category/create", {
       name: newCategoryName,
     });
     console.log(response);

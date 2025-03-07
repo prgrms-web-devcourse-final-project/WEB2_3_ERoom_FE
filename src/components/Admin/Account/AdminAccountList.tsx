@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import EditIcon from "../../../assets/icons/edit.svg";
 import SaveIcon from "../../../assets/icons/save.svg";
 import { twMerge } from "tailwind-merge";
@@ -12,78 +12,45 @@ import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 const AdminAccountList = ({
   user,
   index,
-  setDeleteAccountId,
+  deleteAccountIds,
+  setDeleteAccountIds,
 }: {
   user: AccountListProps;
   index: number;
-  setDeleteAccountId: React.Dispatch<React.SetStateAction<number | null>>;
+  deleteAccountIds: number[];
+  setDeleteAccountIds: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
-  const [isComposing, setIsComposing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const [organizationWidth, setOrganizationWidth] = useState(10);
-  const [profileImageWidth, setProfileImageWidth] = useState(10);
 
   const handleEditClick = () => setIsEditing(true);
-
-  // 텍스트의 정확한 픽셀 길이를 계산하는 함수
-  const getTextWidth = (text: string, font = "14px Pretendard") => {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    if (!context) return text.length * 10;
-    context.font = font;
-    let textWidth = context.measureText(text).width;
-
-    // 영어와 한글 너비 차이를 보정
-    const koreanCharCount = (text.match(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g) || []).length;
-    const englishCharCount = text.length - koreanCharCount;
-
-    // 영어일 경우 너비 보정 (Pretendard 기준)
-    textWidth += englishCharCount * 0.3;
-
-    return textWidth + 10; // 여유 공간 추가
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedUser({ ...editedUser, [name]: value });
-    if (!isComposing) {
-      if (name === "organization") {
-        setOrganizationWidth(getTextWidth(value, "14px Pretendard"));
-      } else if (name === "profileImage") {
-        setProfileImageWidth(getTextWidth(value, "14px Pretendard"));
-      }
-    }
   };
 
   const [isChecked, setIsChecked] = useState(false);
-
-  useEffect(() => {
-    if (isChecked) {
-      setDeleteAccountId(user.memberId);
-    } else {
-      setDeleteAccountId(null);
-    }
-  }, [isChecked]);
 
   const toggleCheckBox = () => {
     setIsChecked((prev) => !prev);
   };
 
   useEffect(() => {
-    setOrganizationWidth(getTextWidth(editedUser.organization || ""));
-    setProfileImageWidth(getTextWidth(editedUser.profile || ""));
-  }, [editedUser.organization, editedUser.profile]);
+    if (isChecked) {
+      setDeleteAccountIds((prev) => [...prev, user.memberId]);
+    } else {
+      setDeleteAccountIds((prev) => prev.filter((id) => id !== user.memberId));
+    }
+  }, [isChecked]);
+
+  useEffect(() => {
+    console.log(deleteAccountIds);
+  }, [deleteAccountIds]);
 
   // 계정 관리 수정요청 데이터
   const editAccountData: EditAccountType = {
-    username: editedUser.username,
-    createdAt: editedUser.createdAt,
-    memberGrade: null,
-    organization: editedUser.organization,
-    profile: editedUser.profile,
+    newName: editedUser.username,
   };
 
   // 계정관리 수정 함수
@@ -107,8 +74,8 @@ const AdminAccountList = ({
       )}
     >
       <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[37px] w-full text-main-green text-[14px] py-[5px] ">
-        <div className="flex justify-center items-center">
-          <button onClick={toggleCheckBox}>
+        <div className="flex justify-center items-center ">
+          <button onClick={toggleCheckBox} className="cursor-pointer">
             <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
           </button>
         </div>
@@ -133,18 +100,7 @@ const AdminAccountList = ({
           )}
         </div>
         <div className="flex justify-center items-center">
-          {isEditing ? (
-            <input
-              type="text"
-              name="registeredDate"
-              value={editedUser.createdAt}
-              onChange={handleInputChange}
-              className="h-full w-auto text-center focus:outline-none border-b border-b-header-green"
-              style={{ width: `${editedUser.createdAt.length + 1}ch` }}
-            />
-          ) : (
-            <span>{user.createdAt}</span>
-          )}
+          <span>{user.createdAt}</span>
         </div>
         <div className="flex justify-center items-center">
           {isEditing ? (
@@ -160,16 +116,6 @@ const AdminAccountList = ({
               >
                 <img src={SaveIcon} alt="저장" />
               </button>
-              {/* <p
-                onClick={() => {
-                  setEditedUser({ ...user });
-                  setIsEditing(false);
-                }}
-                className="w-[37px] h-[24px] border flex items-center justify-center rounded-[5px]
-                text-header-green border-header-green cursor-pointer"
-              >
-                취소
-              </p> */}
               <AdminEditCancelBtn
                 onClick={() => {
                   setEditedUser({ ...user });
@@ -194,33 +140,7 @@ const AdminAccountList = ({
             <div></div>
             <div className="flex w-full items-center overflow-hidden">
               <span className="mr-1">소속: </span>
-              {isEditing ? (
-                <input
-                  ref={inputRef}
-                  type="text"
-                  name="organization"
-                  value={editedUser.organization || ""}
-                  onChange={handleInputChange}
-                  onCompositionStart={() => setIsComposing(true)}
-                  onCompositionEnd={() => {
-                    setIsComposing(false);
-                    setOrganizationWidth(
-                      getTextWidth(editedUser.organization || "")
-                    );
-                  }}
-                  className="h-full focus:outline-none border-b border-b-header-green"
-                  style={{
-                    width: `${organizationWidth}px`,
-                    minWidth: "fit-content",
-                    maxWidth: "60%",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                />
-              ) : (
-                <span className="flex items-center">{user.organization}</span>
-              )}
+              <span className="flex items-center">{user.organization}</span>
             </div>
             <div></div>
           </div>
@@ -229,33 +149,7 @@ const AdminAccountList = ({
             <div></div>
             <div className="flex w-full items-center overflow-hidden">
               <span className="mr-1">프로필 이미지:</span>
-              {isEditing ? (
-                <input
-                  ref={inputRef}
-                  type="text"
-                  name="profile"
-                  value={editedUser.profile || ""}
-                  onChange={handleInputChange}
-                  onCompositionStart={() => setIsComposing(true)}
-                  onCompositionEnd={() => {
-                    setIsComposing(false);
-                    setProfileImageWidth(
-                      getTextWidth(editedUser.profile || "")
-                    );
-                  }}
-                  className="h-full focus:outline-none border-b border-b-header-green"
-                  style={{
-                    width: `${profileImageWidth}px`,
-                    minWidth: "fit-content",
-                    maxWidth: "80%",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                />
-              ) : (
-                <span className="flex items-center">{user.profile}</span>
-              )}
+              <span className="flex items-center">{user.profile}</span>
             </div>
           </div>
         </div>

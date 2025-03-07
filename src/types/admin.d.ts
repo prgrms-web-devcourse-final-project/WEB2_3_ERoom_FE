@@ -23,11 +23,7 @@ interface AccountListProps {
 }
 
 interface EditAccountType {
-  username: string;
-  createdAt: string;
-  memberGrade: string | null;
-  organization: string | null;
-  profile: string | null;
+  newName: string;
 }
 
 interface AdminProjectsListType {

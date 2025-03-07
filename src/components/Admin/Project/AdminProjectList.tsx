@@ -81,8 +81,8 @@ const AdminProjectList = ({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["AdminAcitveProject"],
-      }),
-        queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      });
+      queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
     },
     onSettled: () => setIsRefetching(false),
   });
@@ -158,16 +158,16 @@ const AdminProjectList = ({
         </div>
       </div>
       {isOpen && (
-        <div className="grid grid-cols-[10%_15%_1fr_10%_10%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
+        <div className="grid grid-cols-[10%_1fr_10%_10%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
           <div></div>
 
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-start">
             <p>
               생성자 이메일:{" "}
               <span className="font-bold">{project.assignedEmail}</span>
             </p>
           </div>
-          <div></div>
+
           <div className="flex justify-center items-center">
             {isEditing ? (
               <div className="flex items-center justify-center gap-2">

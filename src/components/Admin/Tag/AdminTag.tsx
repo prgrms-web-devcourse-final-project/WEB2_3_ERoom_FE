@@ -11,14 +11,14 @@ import { adminAddnewDetailTag } from "../../../api/adminDetailTag";
 import { queryClient } from "../../../main";
 
 const AdminTag = () => {
-  const { data: allCategories, refetch } = useQuery<AllCategoryType[]>({
+  const { data: allCategories } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategory"],
     queryFn: getAllCategory,
   });
 
   const [subCategories2, setSubCategories2] = useState<SubCategoryType[]>([]);
 
-  const [details2, setDetails2] = useState<any[]>([]);
+  const [details2, setDetails2] = useState<{ id: number; name: string }[]>([]);
 
   const [categoryId, setCategoryId] = useState<number>();
   const [subCategoryId, setSubCategoryId] = useState<number>();
@@ -66,8 +66,8 @@ const AdminTag = () => {
   const { mutate: addNewCategoryFn } = useMutation({
     mutationFn: (newCategoryName: string) => adminNewCategory(newCategoryName),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
       setIsAddCategory(false);
-      refetch();
     },
   });
 
@@ -85,17 +85,17 @@ const AdminTag = () => {
     setIsAddSubCategory(true);
   };
 
-  const { mutate: addNewSubCategory } = useMutation({
-    mutationFn: ({
+  const { mutateAsync: addNewSubCategory } = useMutation({
+    mutationFn: async ({
       categoryId,
       newSubCategoryName,
     }: {
       categoryId: number;
       newSubCategoryName: string;
-    }) => adminAddNewSubCategory(categoryId, newSubCategoryName),
+    }) => await adminAddNewSubCategory(categoryId, newSubCategoryName),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
       setIsAddSubCategory(false);
-      // refetch();
     },
   });
 
