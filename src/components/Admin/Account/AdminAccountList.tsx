@@ -12,13 +12,13 @@ import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 const AdminAccountList = ({
   user,
   index,
-  deleteAccountIds,
-  setDeleteAccountIds,
+  checkedAccountIds,
+  setCheckedAccountIds,
 }: {
   user: AccountListProps;
   index: number;
-  deleteAccountIds: number[];
-  setDeleteAccountIds: React.Dispatch<React.SetStateAction<number[]>>;
+  checkedAccountIds: number[];
+  setCheckedAccountIds: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
@@ -38,15 +38,15 @@ const AdminAccountList = ({
 
   useEffect(() => {
     if (isChecked) {
-      setDeleteAccountIds((prev) => [...prev, user.memberId]);
+      setCheckedAccountIds((prev) => [...prev, user.memberId]);
     } else {
-      setDeleteAccountIds((prev) => prev.filter((id) => id !== user.memberId));
+      setCheckedAccountIds((prev) => prev.filter((id) => id !== user.memberId));
     }
   }, [isChecked]);
 
   useEffect(() => {
-    console.log(deleteAccountIds);
-  }, [deleteAccountIds]);
+    console.log(checkedAccountIds);
+  }, [checkedAccountIds]);
 
   // 계정 관리 수정요청 데이터
   const editAccountData: EditAccountType = {

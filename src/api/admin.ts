@@ -64,6 +64,19 @@ export const deleteAdminAccount = async (member_id: number) => {
   }
 };
 
+// 관리자 계정 활성 전환(복구)
+export const adminRestoreAccount = async (memberId: number) => {
+  try {
+    const response = await api.patch(
+      `/admin/manage/member/${memberId}/activate`
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // 관리자 활성 프로젝트 리스트
 export const getAdminProjectList = async () => {
   try {
