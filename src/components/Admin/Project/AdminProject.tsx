@@ -11,6 +11,7 @@ import AdminProjectList from "./AdminProjectList";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   adminDeleteProject,
+  adminRestoreProject,
   getAdminInActiveProjectList,
   getAdminProjectList,
 } from "../../../api/admin";
@@ -174,6 +175,34 @@ const AdminProject = () => {
     },
   });
 
+  // 프로젝트 활성 전환(복구)
+  const { mutateAsync: restoreProject } = useMutation({
+    mutationFn: (projectId: number) => adminRestoreProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["AdminAcitveProject"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      setCheckedIds([]);
+    },
+  });
+
+  const handleRestoreProject = () => {
+    if (checkedIds.length === 0) {
+      return openModal("프로젝트를 선택해주세요");
+    }
+
+    // 삭제 확인 모달 띄우기
+    openModal(`${checkedIds.length}개의 프로젝트를 복구하시겠습니까?`, () => {
+      checkedIds.forEach(async (id) => {
+        const response = await restoreProject(id);
+        console.log(response, "del");
+      });
+      closeModal();
+      alert("프로젝트를 복구했습니다.");
+    });
+  };
+
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
       <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] flex flex-col bg-white/60">
@@ -219,8 +248,11 @@ const AdminProject = () => {
           <div className="flex gap-[5px] w-[80px] justify-end">
             {projectMenu === "inactive" && (
               <>
-                <button>
-                  <img src={ResotreIcon} alt="계정 복구 버튼" />
+                <button
+                  onClick={handleRestoreProject}
+                  className="cursor-pointer"
+                >
+                  <img src={ResotreIcon} alt="복구 버튼" />
                 </button>
                 <AdminDeleteBtn onClick={deleteProjects} />
               </>

@@ -131,6 +131,19 @@ export const adminDeleteProject = async (projectId: number) => {
   }
 };
 
+// 관리자 프로젝트 활성 전환 (복구)
+export const adminRestoreProject = async (projectId: number) => {
+  try {
+    const response = await api.patch(
+      `/admin/manage/project/${projectId}/activate`
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // 관리자 활성 업무 리스트
 export const getAdminTaskList = async () => {
   try {

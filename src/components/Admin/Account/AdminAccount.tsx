@@ -132,6 +132,7 @@ const AdminAccount = () => {
 
   useEffect(() => {
     setCurrentPage(1);
+    setCheckedAccountIds([]);
   }, [userMenu]);
 
   // 모달 적용
@@ -301,7 +302,6 @@ const AdminAccount = () => {
               key={user.memberId}
               user={user}
               index={(currentPage - 1) * itemsPerPage + index}
-              checkedAccountIds={checkedAccountIds}
               setCheckedAccountIds={setCheckedAccountIds}
             />
           ))}
