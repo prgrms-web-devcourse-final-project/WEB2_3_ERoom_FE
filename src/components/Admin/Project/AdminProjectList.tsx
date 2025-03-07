@@ -81,8 +81,8 @@ const AdminProjectList = ({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["AdminAcitveProject"],
-      }),
-        queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      });
+      queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
     },
     onSettled: () => setIsRefetching(false),
   });
@@ -158,7 +158,7 @@ const AdminProjectList = ({
         </div>
       </div>
       {isOpen && (
-        <div className="grid grid-cols-[10%_1fr_10%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
+        <div className="grid grid-cols-[10%_1fr_10%_10%] h-[40px] w-full text-main-green text-[14px] py-[5px]">
           <div></div>
 
           <div className="flex items-center justify-start">

@@ -154,8 +154,9 @@ const AdminAccount = () => {
   const { mutate } = useMutation({
     mutationFn: (memberId: number) => deleteAdminAccount(memberId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] }),
-        openModal("유저가 삭제되었습니다");
+      queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] });
+      openModal("유저가 삭제되었습니다");
+      setDeleteAccountIds([]);
     },
   });
 

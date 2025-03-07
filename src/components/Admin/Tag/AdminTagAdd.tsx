@@ -45,7 +45,8 @@ const AdminTagAdd = ({
         onClick={() => {
           if (addType === "category" && onClick) {
             if (!newValue.trim().length) {
-              return alert("최소 한글자 이상 입력해주세요");
+              alert("최소 한글자 이상 입력해주세요");
+              return;
             }
             onClick(newValue);
           } else if (
@@ -54,12 +55,14 @@ const AdminTagAdd = ({
             categoryId
           ) {
             if (!newValue.trim().length) {
-              return alert("최소 한글자 이상 입력해주세요");
+              alert("최소 한글자 이상 입력해주세요");
+              return;
             }
             addSubCategory(categoryId, newValue);
           } else if (addType === "detailTag" && addDetailTag && subcategoryId) {
             if (!newValue.trim().length) {
-              return alert("최소 한글자 이상 입력해주세요");
+              alert("최소 한글자 이상 입력해주세요");
+              return;
             }
             addDetailTag(subcategoryId, newValue);
           }

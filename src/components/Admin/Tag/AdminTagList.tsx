@@ -50,7 +50,8 @@ const AdminTagList = ({
   // 카테고리 삭제함수
   const { mutate: deleteCategoryFn } = useMutation({
     mutationFn: (categoryId: number) => adminDeleteCategory(categoryId),
-    // onSuccess:
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
   });
 
   // 카테고리 수정함수
@@ -115,10 +116,9 @@ const AdminTagList = ({
         const response = await adminDeleteDetailTag(subcategoryId, tagId);
         console.log("삭제 응답:", response);
 
-        return response; // 반환값 추가
+        return response;
       } catch (error) {
         console.error("삭제 요청 실패:", error);
-        // setDetails2(previousDetails); // 실패 시 롤백 (Undo)
         throw error;
       }
     },

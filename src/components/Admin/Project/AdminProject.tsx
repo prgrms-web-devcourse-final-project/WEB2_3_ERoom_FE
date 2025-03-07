@@ -146,7 +146,7 @@ const AdminProject = () => {
     }
 
     // 삭제 확인 모달 띄우기
-    openModal("정말 삭제하시겠습니까?", () => {
+    openModal(`${checkedIds.length}개의 프로젝트를 삭제하시겠습니까?`, () => {
       checkedIds.forEach(async (id) => {
         const response = await deleteProjectFn(id);
         console.log(response, "del");
@@ -169,6 +169,7 @@ const AdminProject = () => {
         queryKey: ["AdminAcitveProject"],
       });
       queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      setCheckedIds([]);
       openModal("프로젝트가 삭제되었습니다");
     },
   });
