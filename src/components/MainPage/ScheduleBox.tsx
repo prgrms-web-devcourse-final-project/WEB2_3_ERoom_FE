@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { twMerge } from "tailwind-merge";
 import { getProjectById } from "../../api/project";
 import { useEffect, useState } from "react";
@@ -83,13 +84,17 @@ const ScheduleBox = ({ task, currentTime }: ScheduleBoxProps) => {
       <div>
         <div className="flex items-center gap-4 text-[30px] ">
           <p className="w-[100px] text-center">{endTime}</p>
+          <p className="w-[100px] text-center">{endTime}</p>
 
+          <p className="w-[120px] text-[14px]">{remainingTime}</p>
           <p className="w-[120px] text-[14px]">{remainingTime}</p>
         </div>
       </div>
 
       {/* 업무명, 프로젝트 명 */}
       <div className="w-full py-1 px-2 shadow-2xl bg-white/25 rounded-[5px]">
+        <p className="font-bold">{task.title}</p>
+        <p className="font-extralight">{projectName}</p>
         <p className="font-bold">{task.title}</p>
         <p className="font-extralight">{projectName}</p>
       </div>
