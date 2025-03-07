@@ -2,7 +2,6 @@ import { Outlet } from "react-router";
 import Header from "./Header";
 import "../../styles/AuthLayout.css";
 import BackgroundImg from "../../assets/auth_background.svg";
-import { useState } from "react";
 
 const AuthLayout = () => {
   return (

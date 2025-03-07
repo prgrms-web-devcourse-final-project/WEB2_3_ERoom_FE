@@ -25,7 +25,7 @@ const ProjectRoom = () => {
   >("진행 중인 프로젝트");
 
   // 프로젝트리스트 데이터
-  const { data: projectRoomList, isLoading } = useQuery<ProjectRoomData>({
+  const { data: projectRoomList } = useQuery<ProjectRoomData>({
     queryKey: ["ProjectRoomList"],
     queryFn: async () => {
       const dataList: ProjectListType[] = await getProjectList();
