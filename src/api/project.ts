@@ -27,7 +27,7 @@ export const postProject = async (projectData: postProjectType) => {
 //프로젝트 수정 전 기존 프로젝트 정보 불러오기
 export const getProjectById = async (
   projectId: string
-): Promise<ProjectDetailType> => {
+): Promise<GetProjectById> => {
   try {
     const response = await api.get(`/api/projects/${projectId}/edit`, {
       params: { projectId },

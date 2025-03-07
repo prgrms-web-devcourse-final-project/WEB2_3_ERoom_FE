@@ -17,11 +17,6 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
     },
   });
 
-  // console.log(updatedData);
-  // console.log(task);
-  // console.log(updatedData);
-  // console.log(task);
-
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
     if (!updatedData) return; // undefined 체크
@@ -49,7 +44,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
   };
 
   // 전체 업무 박스
-  if (isAll && updatedData) {
+  if (isAll && task) {
     return (
       <div
         className={`w-[320px] h-[120px] bg-white border border-main-green02
@@ -63,17 +58,15 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         <div className="flex justify-between items-center">
           <p className="font-bold">{task?.title}</p>
           <p className="text-[12px] font-medium">
-            {PROGRESS_STATUS[updatedData.status]}
+            {PROGRESS_STATUS[task.status]}
           </p>
         </div>
 
         {/* 기간, 업무완료,시잔 버튼 */}
         <div className="flex justify-between items-center">
           <p className="text-[12px]">
-            {updatedData &&
-              `${updatedData.startDate.split("T")[0]} ~ ${
-                updatedData.endDate.split("T")[0]
-              }`}
+            {task &&
+              `${task.startDate.split("T")[0]} ~ ${task.endDate.split("T")[0]}`}
           </p>
           {task.assignedMemberName === member?.username &&
             (task.status !== "IN_PROGRESS" ? (
