@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TaskBox from "./TaskBox";
 import UpdateTaskModal from "../modals/UpdateTaskModal";
 import { useMutation } from "@tanstack/react-query";
