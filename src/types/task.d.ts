@@ -96,3 +96,14 @@ interface GetAssignedTask {
   participantProfiles: string[];
   projectId: number;
 }
+
+interface TaskSearchResult {
+  taskId: number;
+  taskName: string;
+  projectName: string;
+  assignedMemberName: string;
+  assignedMemberEmail: string;
+  taskStatus: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD";
+  startDate: string;
+  endDate: string;
+}
