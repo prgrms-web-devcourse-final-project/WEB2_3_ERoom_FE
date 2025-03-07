@@ -266,7 +266,7 @@ const AdminAccount = () => {
               <span>수정</span>
             </div>
           </div>
-          {paginatedUsers?.map((user, index) => (
+          {(paginatedUsers || []).map((user, index) => (
             <AccountList
               key={user.memberId}
               user={user}
