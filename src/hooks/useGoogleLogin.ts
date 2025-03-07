@@ -12,7 +12,10 @@ const useGoogleLogin = () => {
   const login = useAuthStore((state) => state.login);
 
   const CLIENT_ID = import.meta.env.VITE_GOOGLE_ID;
-  const REDIRECT_URI = "http://localhost:5173/signin";
+  const REDIRECT_URI =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5173/signin"
+      : "https://errom.netlify.app/signin";
   const SCOPE = import.meta.env.VITE_GOOGLE_SCOPE;
 
   const handleGoogleLogin = () => {
