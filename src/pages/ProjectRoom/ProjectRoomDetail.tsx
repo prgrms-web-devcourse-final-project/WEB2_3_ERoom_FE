@@ -141,6 +141,7 @@ const ProjectRoomDetail = () => {
       setManageTasks(manageGroupTasks);
     }
   }, [projectDetailList]);
+  console.log(allTasks);
 
   // 사이드바에서 체크된 담당자
   const checkedManagers = useSideManagerStore((state) => state.checkedManagers);
