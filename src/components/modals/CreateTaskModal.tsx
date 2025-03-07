@@ -62,7 +62,7 @@ const CreateTaskModal = ({
     year: String(now.getFullYear()),
     month: String(now.getMonth() + 1).padStart(2, "0"),
     day: String(now.getDate()).padStart(2, "0"),
-    hour: String(now.getHours() % 12 || 12).padStart(2, "0"),
+    hour: String((now.getHours() + 1) % 12 || 12).padStart(2, "0"), // 시작보다 1시간 뒤
     minute: String(now.getMinutes()).padStart(2, "0"),
     ampm: now.getHours() >= 12 ? "PM" : "AM",
   });
