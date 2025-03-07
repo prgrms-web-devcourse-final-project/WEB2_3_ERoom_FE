@@ -12,14 +12,6 @@ const DateTimeSelect = ({
   const now = new Date();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  // 24시간제 시간 (0~23)
-  const hours24 = now.getHours();
-  // 12시간제 변환 (0시는 12로 변환)
-  const nowHours12 = hours24 % 12 || 12;
-  // AM/PM 판별
-  const nowAmPm = hours24 >= 12 ? "PM" : "AM";
-  const nowMinute = now.getMinutes();
-
   // 각 드롭다운별 ref 생성
   const dropdownRefs = {
     year: useRef<HTMLUListElement | null>(null),

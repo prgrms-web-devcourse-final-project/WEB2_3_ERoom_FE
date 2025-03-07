@@ -49,7 +49,7 @@ const AdminAccount = () => {
     null
   );
 
-  const { data: searchedAllMembers, refetch } = useQuery<SearchMemberType[]>({
+  const { data: _, refetch } = useQuery<SearchMemberType[]>({
     queryKey: ["searchedMembers", searchName],
     queryFn: () => searchAllMembers(searchName),
     enabled: false,

@@ -1,20 +1,17 @@
-import { useState } from "react";
-import cancelButton from "../../assets/button/cancelButton.svg";
-import save2 from "../../assets/icons/save2.svg";
 import { twMerge } from "tailwind-merge";
 
 const WriteProjectName = ({
   value,
-  name,
+  // name,
   newProjectNameValue,
   setNewProjectNameValue,
   pageError,
   setPageError,
 }: WriteProjectNameType) => {
   // 엔터 후 값 저장
-  const [submittedValue, setSubmittedValue] = useState<string | null>(
-    name || null
-  );
+  // const [submittedValue, setSubmittedValue] = useState<string | null>(
+  //   name || null
+  // );
 
   // 인풋 값 상태 업데이트
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

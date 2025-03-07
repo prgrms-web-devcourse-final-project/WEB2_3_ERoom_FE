@@ -4,7 +4,6 @@ import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
 import { Navigate } from "react-router";
-import { postSignIn } from "../api/auth";
 // import useKakaoLogin from "../hooks/useKakaoLogin";
 import useGoogleLogin from "../hooks/useGoogleLogin";
 
@@ -52,8 +51,6 @@ const SignIn = () => {
           //임시 세션값 통한 로그인
           onClick={async () => {
             try {
-              const data = await postSignIn("qwerty1@gmail.com", "1234");
-              console.log(data);
               // login({ username: "member1", userId: 1 });
             } catch (error) {
               console.error(error);

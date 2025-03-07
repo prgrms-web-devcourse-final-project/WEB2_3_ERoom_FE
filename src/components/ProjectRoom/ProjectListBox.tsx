@@ -83,6 +83,20 @@ const ProjectListBox = ({
     }
   };
 
+  //참여인원 호버
+  const [hoverStates, setHoverStates] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+
+  // 호버 상태 업데이트 함수
+  const handleMouseEnter = (idx: number) => {
+    setHoverStates((prev) => ({ ...prev, [idx]: true }));
+  };
+
+  const handleMouseLeave = (idx: number) => {
+    setHoverStates((prev) => ({ ...prev, [idx]: false }));
+  };
+
   return (
     <div
       className="w-full flex gap-[10px] bg-white 
@@ -126,21 +140,43 @@ const ProjectListBox = ({
             {/* 프로필이미지 모음 */}
             <div className="w-[130px] flex">
               {projectInfo.members.length > 5
-                ? projectInfo.members
-                    .slice(0, 6)
-                    .map((member, idx) => (
+                ? projectInfo.members.slice(0, 6).map((member, idx) => (
+                    <div
+                      key={idx}
+                      className="relative"
+                      onMouseEnter={() => handleMouseEnter(idx)}
+                      onMouseLeave={() => handleMouseLeave(idx)}
+                    >
                       <ParticipantIcon
                         key={idx}
                         css={idx > 0 ? "ml-[-5px]" : ""}
                         imgSrc={member.profile || ""}
                       />
-                    ))
+                      {hoverStates[idx] && (
+                        <div className="absolute top-[40px] left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded-md shadow-md whitespace-nowrap">
+                          {member.username}
+                        </div>
+                      )}
+                    </div>
+                  ))
                 : projectInfo.members.map((member, idx) => (
-                    <ParticipantIcon
+                    <div
                       key={idx}
-                      css={idx > 0 ? "ml-[-7px]" : ""}
-                      imgSrc={member.profile || ""}
-                    />
+                      className="relative"
+                      onMouseEnter={() => handleMouseEnter(idx)}
+                      onMouseLeave={() => handleMouseLeave(idx)}
+                    >
+                      <ParticipantIcon
+                        key={idx}
+                        css={idx > 0 ? "ml-[-7px]" : ""}
+                        imgSrc={member.profile || ""}
+                      />
+                      {hoverStates[idx] && (
+                        <div className="absolute w-auto top-[40px] left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded-md shadow-md whitespace-nowrap">
+                          {member.username}
+                        </div>
+                      )}
+                    </div>
                   ))}
             </div>
           </div>
