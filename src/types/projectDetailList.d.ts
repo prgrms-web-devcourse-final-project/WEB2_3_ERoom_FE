@@ -4,7 +4,7 @@ interface ProjectDetailType {
   categoryName: string;
   subCategories: subCategories[];
   status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"; // 프로젝트 상태 Enum
-  tasks: tasks[];
+  tasks: Task[];
   members: members[];
 }
 

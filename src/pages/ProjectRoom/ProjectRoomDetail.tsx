@@ -7,7 +7,7 @@ import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
-import { getProjectDetail } from "../../api/project";
+import { getProjectById, getProjectDetail } from "../../api/project";
 
 interface ProjectDetailType {
   projectId: number;
@@ -60,14 +60,22 @@ const ProjectRoomDetail = () => {
   const {
     data: projectDetailList,
     isLoading,
-    refetch,
+    refetch: getProjectDetailRefetch,
   } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
     queryFn: async () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
-  console.log(projectDetailList?.members);
+
+  console.log(projectDetailList);
+
+  const { data: projectEditInfo } = useQuery<GetProjectById>({
+    queryKey: ["ProjectEditInfo", projectId],
+    queryFn: async () => {
+      return await getProjectById(projectId as string);
+    },
+  });
 
   // 전체 업무 상태
   const [allTasks, setAllTasks] = useState<AllTasksType>({
@@ -89,8 +97,6 @@ const ProjectRoomDetail = () => {
       setMember(projectDetailList.members);
     }
   }, [projectDetailList]);
-
-  console.log(member);
 
   useEffect(() => {
     console.log(projectDetailList, isLoading);
@@ -114,7 +120,6 @@ const ProjectRoomDetail = () => {
           HOLD: [],
         }
       );
-
       setAllTasks(tasksGroup);
 
       // 담당자별 업무
@@ -227,22 +232,26 @@ const ProjectRoomDetail = () => {
               <TaskList
                 name="진행 중"
                 taskInfo={allTasks.IN_PROGRESS}
-                refetch={refetch}
+                refetch={getProjectDetailRefetch}
+                projectData={projectDetailList}
               />
               <TaskList
                 name="진행 예정"
                 taskInfo={allTasks.BEFORE_START}
-                refetch={refetch}
+                refetch={getProjectDetailRefetch}
+                projectData={projectDetailList}
               />
               <TaskList
                 name="진행 완료"
                 taskInfo={allTasks.COMPLETED}
-                refetch={refetch}
+                refetch={getProjectDetailRefetch}
+                projectData={projectDetailList}
               />
               <TaskList
                 name="보류"
                 taskInfo={allTasks.HOLD}
-                refetch={refetch}
+                refetch={getProjectDetailRefetch}
+                projectData={projectDetailList}
               />
             </div>
           )}
@@ -259,7 +268,7 @@ const ProjectRoomDetail = () => {
                       isAll={false}
                       taskInfo={task.tasks}
                       name={task.name}
-                      refetch={refetch}
+                      refetch={getProjectDetailRefetch}
                     />
                   </div>
                 );
@@ -279,9 +288,10 @@ const ProjectRoomDetail = () => {
               <CreateTaskModal
                 onClose={setIsEditTaskModal}
                 projectId={Number(projectId)}
-                refetch={refetch}
+                refetch={getProjectDetailRefetch}
                 setIsModal={setIsEditTaskModal}
                 memberData={member}
+                projectData={projectEditInfo}
               />
             </div>
           )}
