@@ -101,6 +101,7 @@ const TaskList = ({
             isAll={isAll}
             task={task}
             onUpdate={handleUpdateTask}
+            refetch={refetch}
           />
         );
       })}

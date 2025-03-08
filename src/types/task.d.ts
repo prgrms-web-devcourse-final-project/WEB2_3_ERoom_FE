@@ -31,6 +31,7 @@ interface TaskBoxProps {
   onClick: () => void;
   task: Task;
   onUpdate?: (taskId: number, updateData: UpdateTask) => void;
+  refetch: () => void;
 }
 
 interface Task {

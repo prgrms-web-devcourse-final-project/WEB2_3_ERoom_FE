@@ -6,7 +6,13 @@ import { getTaskById } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 import defaultImg from "../../assets/defaultImg.svg";
 
-const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
+const TaskBox = ({
+  isAll = true,
+  onClick,
+  task,
+  onUpdate,
+  refetch,
+}: TaskBoxProps) => {
   const { member } = useAuthStore();
 
   // 업무 수정 상세보기
@@ -28,6 +34,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
     }; // as const 추가
 
     if (onUpdate) onUpdate(task.taskId, dataChange);
+    refetch();
   };
 
   /* 완료버튼 클릭 -> 진행 완료 상태 변경 함수 */
@@ -41,6 +48,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
     }; // as const 추가
 
     if (onUpdate) onUpdate(task.taskId, dataChange);
+    refetch();
   };
 
   // 전체 업무 박스
@@ -76,6 +84,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleStateStart();
+                  refetch();
                 }}
                 css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
               />
@@ -86,6 +95,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleCompleteStart();
+                  refetch();
                 }}
                 css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
               />
