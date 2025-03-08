@@ -5,8 +5,8 @@ import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 interface AdminTagAddProps {
   index: number;
   onClick?: (newCategoryName: string) => void;
-  categoryId?: number;
-  subcategoryId?: number;
+  categoryId?: number | null;
+  subcategoryId?: number | null;
   addSubCategory?: (categoryId: number, newSubCategoryName: string) => void;
   setIsAdd: React.Dispatch<React.SetStateAction<boolean>>;
   addType: string;

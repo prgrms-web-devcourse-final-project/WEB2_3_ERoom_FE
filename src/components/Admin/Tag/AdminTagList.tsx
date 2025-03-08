@@ -23,14 +23,13 @@ interface AdminTagListProps {
   index: number;
   name: string;
   id: number;
-  subcategoryId?: number;
+  subcategoryId?: number | null;
   onClick: (categoryIndex: number, categoryId: number) => void;
   type: "category" | "subCategory" | "detailTags";
   isClicked?: number | null;
-  setIsClicked?: React.Dispatch<
-    React.SetStateAction<number | null | undefined>
-  >;
+  setIsClicked?: React.Dispatch<React.SetStateAction<number | null>>;
   setDetails2?: React.Dispatch<React.SetStateAction<any[]>>;
+  setSubCategories2?: React.Dispatch<React.SetStateAction<SubCategoryType[]>>;
 }
 
 const AdminTagList = ({
@@ -50,8 +49,12 @@ const AdminTagList = ({
   // 카테고리 삭제함수
   const { mutate: deleteCategoryFn } = useMutation({
     mutationFn: (categoryId: number) => adminDeleteCategory(categoryId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
+    onSuccess: () => {
+      if (setIsClicked) {
+        setIsClicked(null);
+      }
+      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+    },
   });
 
   // 카테고리 수정함수
@@ -90,7 +93,6 @@ const AdminTagList = ({
       editSubCateName: string;
     }) => {
       await adminEditSubCategory(subcategoryId, editSubCateName);
-
       setIsEditable(false);
     },
     onSuccess: () =>
@@ -162,6 +164,7 @@ const AdminTagList = ({
   return (
     <div
       onClick={() => {
+        if (isClicked === index) return;
         onClick(index, id);
         if (setIsClicked) {
           setIsClicked(index);

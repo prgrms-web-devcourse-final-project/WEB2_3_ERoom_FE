@@ -1,3 +1,4 @@
+import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
 // 관리자 카테고리 전체 조회
@@ -36,8 +37,10 @@ export const adminEditCategory = async (
       }
     );
     console.log(response);
-    if (response.status === 204) {
-      alert("카테고리 수정이 완료되었습니다.");
+    if (response.status === 200) {
+      showToast("success", "카테고리 수정이 완료되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
     }
     return response;
   } catch (error) {
@@ -53,7 +56,9 @@ export const adminDeleteCategory = async (categoryId: number) => {
     );
     console.log("adminDeleteCategory", response);
     if (response.status === 204) {
-      alert("카테고리가 삭제되었습니다");
+      showToast("success", "카테고리가 삭제되었습니다");
+    } else {
+      showToast("error", "에러가 발생했습니다");
     }
     return response;
   } catch (error) {
