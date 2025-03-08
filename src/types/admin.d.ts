@@ -23,7 +23,7 @@ interface AccountListProps {
 }
 
 interface EditAccountType {
-  newName: string;
+  name: string;
 }
 
 interface AdminProjectsListType {

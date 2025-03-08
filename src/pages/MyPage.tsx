@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { editMyPageInfo, getMyPageInfo } from "../api/myPage";
 import { queryClient } from "../main";
 import SimpleAlertModal from "../components/modals/SimpleAlertModal";
+import AlertModal from "../components/common/AlertModal";
 
 interface MyPageInfoType {
   email: string;
@@ -21,6 +22,19 @@ const MyPage = () => {
     queryFn: getMyPageInfo,
   });
 
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
+
   const [companyInfo, setCompanyInfo] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [profileImgFile, setProfileImgFile] = useState<File>();
@@ -31,7 +45,6 @@ const MyPage = () => {
       setCompanyInfo(myPageInfo.organization);
       setProfileImgUrl(myPageInfo.profile);
     }
-    console.log("first");
   }, [myPageInfo]);
 
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
@@ -218,7 +231,7 @@ const MyPage = () => {
             <div className="flex flex-col gap-[10px]">
               {/* 이름 */}
               <div className="flex flex-col gap-[5px]">
-                <span className="font-bold">이름</span>
+                <span className="font-bold text-[14px]">이름</span>
                 <input
                   type="text"
                   value={name}
@@ -230,7 +243,7 @@ const MyPage = () => {
 
               {/* 이메일 */}
               <div className="flex flex-col gap-[5px]">
-                <span className="font-bold">이메일</span>
+                <span className="font-bold text-[14px]">이메일</span>
                 <div className="pl-[10px]">
                   <span className="text-black01">{myPageInfo?.email}</span>
                 </div>
@@ -238,7 +251,7 @@ const MyPage = () => {
 
               {/* 소속 */}
               <div className="flex flex-col gap-[5px]">
-                <span className="font-bold">소속</span>
+                <span className="font-bold text-[14px]">소속</span>
                 <input
                   type="text"
                   value={companyInfo}
@@ -256,14 +269,20 @@ const MyPage = () => {
               text="수정하기"
               size="md"
               css="bg-main-green01 border border-main-green text-main-beige01"
-              onClick={() => editMyInfo()}
+              onClick={() => {
+                if (!name.trim().length || !companyInfo.trim().length) {
+                  openModal("이름과 소속은 필수로 입력해야 됩니다!");
+                  return;
+                }
+                editMyInfo();
+              }}
             />
-            <Button
+            {/* <Button
               text="탈퇴하기"
               size="md"
               css="border-none text-[12px] text-main-green01"
               onClick={() => setIsConfirmModal(true)}
-            />
+            /> */}
           </div>
         </div>
       </div>
@@ -285,6 +304,11 @@ const MyPage = () => {
             setIsModal={setEditSuccessModalOpen}
             css="animate-fadeUp"
           />
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
         </div>
       )}
     </section>
