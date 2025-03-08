@@ -31,6 +31,7 @@ const MyPage = () => {
       setCompanyInfo(myPageInfo.organization);
       setProfileImgUrl(myPageInfo.profile);
     }
+    console.log("first");
   }, [myPageInfo]);
 
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
@@ -72,17 +73,25 @@ const MyPage = () => {
     setIsFileDialogOpen(true);
   };
 
-  // 정보 수정 성공 시 모달 오픈
-  const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
-
   // 내 정보 수정 폼데이터
   const formData = new FormData();
   formData.append("username", name);
   formData.append("organization", companyInfo);
 
   if (profileImgFile) {
+    // 프로필 이미지를 변경한 경우
     formData.append("profileImage", profileImgFile);
   }
+
+  if (profileImgUrl === null) {
+    const emptyFile = new File([""], "empty.jpg", { type: "image/jpeg" });
+    formData.append("profileImage", emptyFile);
+  }
+
+  useEffect(() => {
+    console.log("profileImgUrl", profileImgUrl);
+    console.log("profileImgFile", profileImgFile);
+  }, [profileImgUrl, profileImgFile]);
 
   // 정보 수정 함수
   const { mutate: editMyInfo } = useMutation({
@@ -92,6 +101,9 @@ const MyPage = () => {
       setEditSuccessModalOpen(true);
     },
   });
+
+  // 정보 수정 성공 시 모달 오픈
+  const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
 
   if (isLoading) {
     return (
