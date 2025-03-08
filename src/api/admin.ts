@@ -64,6 +64,19 @@ export const deleteAdminAccount = async (member_id: number) => {
   }
 };
 
+// 관리자 계정 활성 전환(복구)
+export const adminRestoreAccount = async (memberId: number) => {
+  try {
+    const response = await api.patch(
+      `/admin/manage/member/${memberId}/activate`
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // 관리자 활성 프로젝트 리스트
 export const getAdminProjectList = async () => {
   try {
@@ -118,6 +131,19 @@ export const adminDeleteProject = async (projectId: number) => {
   }
 };
 
+// 관리자 프로젝트 활성 전환 (복구)
+export const adminRestoreProject = async (projectId: number) => {
+  try {
+    const response = await api.patch(
+      `/admin/manage/project/${projectId}/activate`
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // 관리자 활성 업무 리스트
 export const getAdminTaskList = async () => {
   try {
@@ -164,5 +190,16 @@ export const deleteTask = async (taskId: number) => {
     return data;
   } catch (error) {
     console.error("업무 삭제 실패", error);
+  }
+};
+
+// 관리자 업무 활성 전환 (복구)
+export const adminRestoreTask = async (taskId: number) => {
+  try {
+    const response = await api.patch(`/admin/manage/task/${taskId}/activate`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
   }
 };

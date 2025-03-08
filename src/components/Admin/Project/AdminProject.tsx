@@ -11,6 +11,7 @@ import AdminProjectList from "./AdminProjectList";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   adminDeleteProject,
+  adminRestoreProject,
   getAdminInActiveProjectList,
   getAdminProjectList,
 } from "../../../api/admin";
@@ -115,11 +116,19 @@ const AdminProject = () => {
     currentPage * itemsPerPage
   );
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [isAllChecked, setIsAllChecked] = useState(false);
 
   const toggleCheckBox = () => {
-    setIsChecked((prev) => !prev);
+    setIsAllChecked((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (isAllChecked) {
+      setCheckedIds(paginatedProjects.map((project) => project.projectId));
+    } else {
+      setCheckedIds([]);
+    }
+  }, [isAllChecked]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -140,19 +149,18 @@ const AdminProject = () => {
     setConfirmAction(null);
   };
 
-  const deleteProjects = () => {
+  const deleteProjects = async () => {
     if (checkedIds.length === 0) {
       return openModal("프로젝트를 선택해주세요");
     }
 
-    // 삭제 확인 모달 띄우기
-    openModal(`${checkedIds.length}개의 프로젝트를 삭제하시겠습니까?`, () => {
-      checkedIds.forEach(async (id) => {
-        const response = await deleteProjectFn(id);
-        console.log(response, "del");
-      });
-      closeModal();
-    });
+    openModal(
+      `${checkedIds.length}개의 프로젝트를 삭제하시겠습니까?`,
+      async () => {
+        await Promise.all(checkedIds.map((id) => deleteProjectFn(id))); // 병렬 실행
+        closeModal();
+      }
+    );
   };
 
   // 프로젝트 삭제(완전 삭제)
@@ -169,10 +177,39 @@ const AdminProject = () => {
         queryKey: ["AdminAcitveProject"],
       });
       queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      setIsAllChecked(false);
       setCheckedIds([]);
       openModal("프로젝트가 삭제되었습니다");
     },
   });
+
+  // 프로젝트 활성 전환(복구)
+  const { mutateAsync: restoreProject } = useMutation({
+    mutationFn: (projectId: number) => adminRestoreProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["AdminAcitveProject"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
+      setIsAllChecked(false);
+      setCheckedIds([]);
+    },
+  });
+
+  const handleRestoreProject = async () => {
+    if (checkedIds.length === 0) {
+      return openModal("프로젝트를 선택해주세요");
+    }
+
+    openModal(
+      `${checkedIds.length}개의 프로젝트를 복구하시겠습니까?`,
+      async () => {
+        await Promise.all(checkedIds.map((id) => restoreProject(id)));
+        closeModal();
+        alert("프로젝트를 복구했습니다.");
+      }
+    );
+  };
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -219,8 +256,11 @@ const AdminProject = () => {
           <div className="flex gap-[5px] w-[80px] justify-end">
             {projectMenu === "inactive" && (
               <>
-                <button>
-                  <img src={ResotreIcon} alt="계정 복구 버튼" />
+                <button
+                  onClick={handleRestoreProject}
+                  className="cursor-pointer"
+                >
+                  <img src={ResotreIcon} alt="복구 버튼" />
                 </button>
                 <AdminDeleteBtn onClick={deleteProjects} />
               </>
@@ -241,7 +281,10 @@ const AdminProject = () => {
           <div className="grid grid-cols-[5%_5%_15%_15%_30%_30%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
             <div className="flex justify-center items-center">
               <button onClick={toggleCheckBox} className="cursor-pointer">
-                <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
+                <img
+                  src={isAllChecked ? CheckBox : UnCheckBox}
+                  alt="체크박스"
+                />
               </button>
             </div>
             <div className="flex justify-center items-center">
@@ -266,6 +309,7 @@ const AdminProject = () => {
                 key={project.projectId}
                 project={project}
                 index={(currentPage - 1) * itemsPerPage + index}
+                checkedIds={checkedIds}
                 setCheckedIds={setCheckedIds}
               />
             ))}

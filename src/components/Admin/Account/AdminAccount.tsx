@@ -10,6 +10,7 @@ import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  adminRestoreAccount,
   deleteAdminAccount,
   getInActiveMemberList,
   getMemberList,
@@ -123,15 +124,32 @@ const AdminAccount = () => {
     currentPage * itemsPerPage
   );
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [isCheckedAll, setIsCheckedAll] = useState(false);
 
   const toggleCheckBox = () => {
-    setIsChecked((prev) => !prev);
+    setIsCheckedAll((prev) => !prev);
   };
 
   useEffect(() => {
+    if (isCheckedAll) {
+      setCheckedAccountIds(paginatedUsers.map((user) => user.memberId));
+    } else {
+      setCheckedAccountIds([]);
+    }
+  }, [isCheckedAll]);
+
+  useEffect(() => {
     setCurrentPage(1);
+    setCheckedAccountIds([]);
+    setIsCheckedAll(false);
   }, [userMenu]);
+
+  useEffect(() => {
+    setIsCheckedAll(false);
+    setCheckedAccountIds([]);
+
+    console.log(currentPage);
+  }, [currentPage]);
 
   // 모달 적용
   const [modalText, setModalText] = useState<string>("");
@@ -149,31 +167,71 @@ const AdminAccount = () => {
   };
 
   // 관리자 계정 비활성(삭제)
-  const [deleteAccountIds, setDeleteAccountIds] = useState<number[]>([]);
+  const [checkedAccountIds, setCheckedAccountIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    console.log(checkedAccountIds);
+  }, [checkedAccountIds]);
 
   const { mutate } = useMutation({
     mutationFn: (memberId: number) => deleteAdminAccount(memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] });
-      openModal("유저가 삭제되었습니다");
-      setDeleteAccountIds([]);
+      queryClient.invalidateQueries({ queryKey: ["AdminInactiveMemberData"] });
     },
   });
 
   // 삭제 버튼 클릭 시 실행
   const handleDeleteClick = () => {
-    if (deleteAccountIds.length === 0) {
+    if (checkedAccountIds.length === 0) {
       return openModal("유저를 선택해주세요");
     }
 
     // 삭제 확인 모달 띄우기
     openModal(
-      `정말 ${deleteAccountIds.length}명의 유저를 삭제하시겠습니까?`,
-      () => {
-        deleteAccountIds.forEach((id) => {
-          mutate(id);
-        });
+      `정말 ${checkedAccountIds.length}명의 유저를 삭제하시겠습니까?`,
+      async () => {
+        await Promise.all(
+          checkedAccountIds.map((id) => {
+            mutate(id);
+          })
+        );
         closeModal();
+        setIsCheckedAll(false);
+        setCheckedAccountIds([]);
+
+        alert("유저가 삭제되었습니다");
+      }
+    );
+  };
+
+  // 관리자 계정 활성 전환(복구)
+  const { mutate: restoreAccount } = useMutation({
+    mutationFn: (id: number) => adminRestoreAccount(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["AdminAllMemberData"] });
+      queryClient.invalidateQueries({ queryKey: ["AdminInactiveMemberData"] });
+    },
+  });
+
+  const handleRestoreAccount = () => {
+    if (checkedAccountIds.length === 0) {
+      return openModal("유저를 선택해주세요");
+    }
+
+    openModal(
+      `${checkedAccountIds.length}명의 유저를 복구하시겠습니까?`,
+      async () => {
+        await Promise.all(
+          checkedAccountIds.map((id) => {
+            restoreAccount(id);
+          })
+        );
+        closeModal();
+        setCheckedAccountIds([]);
+        setIsCheckedAll(false);
+
+        alert("유저를 복구했습니다.");
       }
     );
   };
@@ -222,7 +280,7 @@ const AdminAccount = () => {
           </form>
           <div className="flex gap-[5px] w-[80px] justify-end">
             {userMenu === "inactive" && (
-              <button className="cursor-pointer">
+              <button className="cursor-pointer" onClick={handleRestoreAccount}>
                 <img src={ResotreIcon} alt="계정 복구 버튼" />
               </button>
             )}
@@ -247,7 +305,10 @@ const AdminAccount = () => {
           <div className="grid grid-cols-[5%_5%_30%_25%_25%_10%] h-[36px] w-full text-main-green text-[14px] border-b border-b-header-green">
             <div className="flex justify-center items-center">
               <button onClick={toggleCheckBox} className="cursor-pointer">
-                <img src={isChecked ? CheckBox : UnCheckBox} alt="체크박스" />
+                <img
+                  src={isCheckedAll ? CheckBox : UnCheckBox}
+                  alt="체크박스"
+                />
               </button>
             </div>
             <div className="flex justify-center items-center">
@@ -271,8 +332,8 @@ const AdminAccount = () => {
               key={user.memberId}
               user={user}
               index={(currentPage - 1) * itemsPerPage + index}
-              deleteAccountIds={deleteAccountIds}
-              setDeleteAccountIds={setDeleteAccountIds}
+              checkedAccountIds={checkedAccountIds}
+              setCheckedAccountIds={setCheckedAccountIds}
             />
           ))}
         </div>
