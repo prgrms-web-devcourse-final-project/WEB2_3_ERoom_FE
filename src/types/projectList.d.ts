@@ -14,6 +14,12 @@ interface ProjectListType {
   colors: Colors;
 }
 
+interface ProjectRoomData {
+  completed: ProjectListType[];
+  inProgress: ProjectListType[];
+  beforeStart: ProjectListType[];
+}
+
 // interface ProjectDetailType {
 //   id: number;
 //   name: string;

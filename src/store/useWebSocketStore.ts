@@ -111,7 +111,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
           }
 
           console.log(
-            "🌐 현재 미팅룸 category:",
+            " 현재 미팅룸 category:",
             category,
             "projectId:",
             projectId
