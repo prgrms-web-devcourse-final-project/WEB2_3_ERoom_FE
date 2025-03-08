@@ -175,7 +175,7 @@ const ProjectRoomDetail = () => {
     <>
       {/* 미팅룸 */}
       {category === "meeting" ? (
-        <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-white/60 ">
+        <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 ">
           <MeetingRoomChatBox css="pb-[30px]" projectId={Number(projectId)} />
         </div>
       ) : (

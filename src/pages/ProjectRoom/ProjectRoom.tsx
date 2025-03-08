@@ -7,12 +7,6 @@ import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectList } from "../../api/project";
 
-interface ProjectRoomData {
-  completed: ProjectListType[];
-  inProgress: ProjectListType[];
-  beforeStart: ProjectListType[];
-}
-
 const PROJECT_TAB: (
   | "진행 완료 프로젝트"
   | "진행 중인 프로젝트"
