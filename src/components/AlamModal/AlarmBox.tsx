@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
-import { getProjectList } from "../../api/project";
-import { useQuery } from "@tanstack/react-query";
 
 const AlarmBox = ({
   id,
@@ -15,11 +13,14 @@ const AlarmBox = ({
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
 
   const THEME_STYLE = {
-    MESSAGE_SEND: "border border-main-green01 bg-main-beige01 text-main-green",
-    TASK_ASSIGN: "border border-main-green01 bg-main-green02 text-main-green",
+    MESSAGE_SEND:
+      "border border-main-green01 bg-main-beige01 text-main-green hover:border-[2px]",
+    TASK_ASSIGN:
+      "border border-main-green01 bg-main-green02 text-main-green hover:border-[2px]",
     PROJECT_INVITE:
-      "border border-main-green01 bg-main-green02 text-main-green",
-    PROJECT_EXIT: "border border-header-red-hover bg-red text-header-red",
+      "border border-main-green01 bg-main-green02 text-main-green hover:border-[2px]",
+    PROJECT_EXIT:
+      "border border-header-red-hover bg-red text-header-red hover:border-[2px]",
   }[theme];
 
   const THEME_TEXT = {
@@ -50,28 +51,13 @@ const AlarmBox = ({
     PROJECT_EXIT: projectId,
   }[theme];
 
-  // 프로젝트리스트 데이터
-  const { data: projectRoomList = [] } = useQuery<ProjectListType[]>({
-    queryKey: ["ProjectRoomList"],
-    queryFn: async () => {
-      return await getProjectList();
-    },
-  });
-
+  const THEME_NAVIGATE = {
+    MESSAGE_SEND: `/project-room/${THEME_ID}?category=meeting`,
+    TASK_ASSIGN: `/project-room/${THEME_ID}`,
+    PROJECT_INVITE: `/project-room/${THEME_ID}`,
+    PROJECT_EXIT: `/project-room/${THEME_ID}`,
+  }[theme];
   const handleClick = () => {
-    const validProjectIds = projectRoomList.map((project) =>
-      String(project.id)
-    );
-
-    const THEME_NAVIGATE = validProjectIds.includes(THEME_ID)
-      ? {
-          MESSAGE_SEND: `/project-room/${THEME_ID}?category=meeting`,
-          TASK_ASSIGN: `/project-room/${THEME_ID}`,
-          PROJECT_INVITE: `/project-room/${THEME_ID}`,
-          PROJECT_EXIT: `/project-room/${THEME_ID}`,
-        }[theme]
-      : "/not-found";
-
     console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
     navigate(THEME_NAVIGATE);
   };

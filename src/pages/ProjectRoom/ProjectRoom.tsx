@@ -39,6 +39,7 @@ const ProjectRoom = () => {
         beforeStart: beforeStartData,
       };
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const FILTER_PROJECT_VALUE = {
