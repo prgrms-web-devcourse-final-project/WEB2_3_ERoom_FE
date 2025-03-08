@@ -13,11 +13,14 @@ const AlarmBox = ({
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
 
   const THEME_STYLE = {
-    MESSAGE_SEND: "border border-main-green01 bg-main-beige01 text-main-green",
-    TASK_ASSIGN: "border border-main-green01 bg-main-green02 text-main-green",
+    MESSAGE_SEND:
+      "border border-main-green01 bg-main-beige01 text-main-green hover:border-[2px]",
+    TASK_ASSIGN:
+      "border border-main-green01 bg-main-green02 text-main-green hover:border-[2px]",
     PROJECT_INVITE:
-      "border border-main-green01 bg-main-green02 text-main-green",
-    PROJECT_EXIT: "border border-header-red-hover bg-red text-header-red",
+      "border border-main-green01 bg-main-green02 text-main-green hover:border-[2px]",
+    PROJECT_EXIT:
+      "border border-header-red-hover bg-red text-header-red hover:border-[2px]",
   }[theme];
 
   const THEME_TEXT = {
