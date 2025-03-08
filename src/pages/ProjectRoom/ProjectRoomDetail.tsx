@@ -141,7 +141,6 @@ const ProjectRoomDetail = () => {
       setManageTasks(manageGroupTasks);
     }
   }, [projectDetailList]);
-  console.log(allTasks);
 
   // 사이드바에서 체크된 담당자
   const checkedManagers = useSideManagerStore((state) => state.checkedManagers);
@@ -151,9 +150,6 @@ const ProjectRoomDetail = () => {
   );
 
   useEffect(() => {
-    console.log(checkedManagers);
-    console.log(manageTasks);
-
     const filterTasks = manageTasks
       .map((task) => {
         if (checkedManagers.includes(task.name)) {
@@ -161,10 +157,14 @@ const ProjectRoomDetail = () => {
         }
       })
       .filter((value) => value !== undefined);
-    console.log(filterTasks);
 
     setFilterManageTasks(filterTasks);
-  }, [checkedManagers]);
+  }, [manageTasks, checkedManagers]);
+
+  // useEffect(() => {
+  //   console.log(filterManageTasks);
+  //   console.log(projectDetailList);
+  // }, [projectDetailList]);
 
   useEffect(() => {
     console.log(searchParams.get("category"));
@@ -175,7 +175,7 @@ const ProjectRoomDetail = () => {
     <>
       {/* 미팅룸 */}
       {category === "meeting" ? (
-        <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-white/60 ">
+        <div className="flex flex-col gap-10 w-full min-h-[calc(100vh-60px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 ">
           <MeetingRoomChatBox css="pb-[30px]" projectId={Number(projectId)} />
         </div>
       ) : (

@@ -4,6 +4,7 @@ import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import CreateAINoteModal from "./CreateAINoteModal";
 import { useMutation } from "@tanstack/react-query";
 import { getAINote } from "../../api/meetingroom";
+import AlertModal from "../common/AlertModal";
 
 const CreateNotePeriodModal = ({
   onClose,
@@ -37,6 +38,7 @@ const CreateNotePeriodModal = ({
 
   const [isRunAI, setIsRunAI] = useState(false);
   const [title, setTitle] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -69,19 +71,36 @@ const CreateNotePeriodModal = ({
       await getAINote(chatRoomId, title, startTime, endTime),
   });
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleRunAI = () => {
-    fetchAINote({
-      chatRoomId,
-      title,
-      startTime,
-      endTime,
-    });
-    setIsRunAI(true);
+    if (title.trim() === "") {
+      setErrorMessage("제목을 입력해주세요");
+      setIsModalOpen(true);
+      return;
+    }
+    fetchAINote(
+      {
+        chatRoomId,
+        title,
+        startTime,
+        endTime,
+      },
+      {
+        onSuccess: () => {
+          setIsRunAI(true);
+        },
+        onError: () => {
+          setErrorMessage("해당 시간에 기록된 채팅이 없습니다.");
+          setIsModalOpen(true);
+        },
+      }
+    );
   };
 
-  useEffect(() => {
-    console.log(" AI 회의록 데이터:", AINote);
-  }, [AINote]);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -136,6 +155,11 @@ const CreateNotePeriodModal = ({
               onClick={onClose}
             />
           </div>
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+              <AlertModal text={errorMessage} onClose={closeModal} />
+            </div>
+          )}
         </div>
       ) : (
         <div className="fixed inset-0 flex items-center justify-center  z-50">
