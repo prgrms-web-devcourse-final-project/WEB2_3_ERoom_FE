@@ -60,7 +60,7 @@ const AdminAccountList = ({
 
   // 계정 관리 수정요청 데이터
   const editAccountData: EditAccountType = {
-    newName: editedUser.username,
+    name: editedUser.username,
   };
 
   // 계정관리 수정 함수
