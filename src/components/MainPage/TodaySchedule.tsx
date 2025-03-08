@@ -80,14 +80,40 @@ const TodaySchedule = ({ taskData, isLoading }: TodayScheduleProps) => {
 
       <div className="w-full flex-1 min-h-0">
         <div className="overflow-y-auto scrollbar-none w-full h-full flex flex-col gap-2 min-h-0">
-          {taskData
-            ?.filter((task) => {
-              const end = new Date(task.endDate);
-              return end.getTime() > new Date().getTime(); // 현재 시간보다 이후인 것만 표시
-            })
-            .map((task, i) => (
-              <ScheduleBox key={i} task={task} currentTime={currentTime} />
-            ))}
+          {taskData?.filter((task) => {
+            const end = new Date(task.endDate);
+            const currentStatus = task.status;
+            const currentDate = new Date().getTime();
+            return (
+              end.getTime() > currentDate &&
+              (currentStatus === "BEFORE_START" ||
+                currentStatus === "IN_PROGRESS")
+            );
+          }).length > 0 ? (
+            taskData
+              .filter((task) => {
+                const end = new Date(task.endDate);
+                const currentStatus = task.status;
+                const currentDate = new Date().getTime();
+                return (
+                  end.getTime() > currentDate &&
+                  (currentStatus === "BEFORE_START" ||
+                    currentStatus === "IN_PROGRESS")
+                );
+              })
+              .map((task, i) => (
+                <ScheduleBox key={i} task={task} currentTime={currentTime} />
+              ))
+          ) : (
+            <div
+              className="flex flex-col justify-center h-full text-center 
+            text-main-green"
+            >
+              <p className="text-[18px] font-semibold">
+                오늘 예정된 업무가 없습니다.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
