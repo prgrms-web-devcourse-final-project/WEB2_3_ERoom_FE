@@ -5,6 +5,7 @@ import AlarmModal from "../modals/AlarmModal";
 import headerIcon from "../../assets/icons/headerLogo.svg";
 import { useAuthStore } from "../../store/authStore";
 import useWebSocketStore from "../../store/useWebSocketStore";
+import DefaultImg from "../../assets/defaultImg.svg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -13,6 +14,8 @@ const Header = () => {
   // console.log(isAuthenticated);
 
   // console.log(isLogin);
+  const profile = useAuthStore((state) => state.member?.profile);
+  const userName = useAuthStore((state) => state.member?.username);
 
   const [_, setIsOn] = useState<"Project" | "Meeting" | "">("");
 
@@ -95,7 +98,7 @@ const Header = () => {
         </div>
 
         {/* 버튼모음 */}
-        <ul className="flex font-bold gap-3 text-[#657166]">
+        <ul className="flex items-center font-bold gap-5 text-[#657166]">
           {isAuthenticated ? (
             /* 로그인 상태 */
             <>
@@ -139,7 +142,16 @@ const Header = () => {
 
               {/* 마이페이지 버튼 */}
               <li>
-                <Link to={"/mypage"}>마이페이지</Link>
+                <Link to={"/mypage"}>
+                  <div className="flex items-center gap-[5px]">
+                    <img
+                      src={profile || DefaultImg}
+                      alt="프로필이미지"
+                      className="w-[32px] h-[32px] rounded-[5px] border border-[#1F281E] "
+                    />
+                    <span>{userName}</span>
+                  </div>
+                </Link>
               </li>
 
               {/* 로그아웃 버튼 */}
