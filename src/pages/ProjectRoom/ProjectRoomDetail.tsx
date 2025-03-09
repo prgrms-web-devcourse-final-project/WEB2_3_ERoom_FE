@@ -235,24 +235,28 @@ const ProjectRoomDetail = () => {
                 taskInfo={allTasks.IN_PROGRESS}
                 refetch={getProjectDetailRefetch}
                 projectData={projectDetailList}
+                projectEditInfo={projectEditInfo}
               />
               <TaskList
                 name="진행 예정"
                 taskInfo={allTasks.BEFORE_START}
                 refetch={getProjectDetailRefetch}
                 projectData={projectDetailList}
+                projectEditInfo={projectEditInfo}
               />
               <TaskList
                 name="진행 완료"
                 taskInfo={allTasks.COMPLETED}
                 refetch={getProjectDetailRefetch}
                 projectData={projectDetailList}
+                projectEditInfo={projectEditInfo}
               />
               <TaskList
                 name="보류"
                 taskInfo={allTasks.HOLD}
                 refetch={getProjectDetailRefetch}
                 projectData={projectDetailList}
+                projectEditInfo={projectEditInfo}
               />
             </div>
           )}
@@ -270,6 +274,7 @@ const ProjectRoomDetail = () => {
                       taskInfo={task.tasks}
                       name={task.name}
                       refetch={getProjectDetailRefetch}
+                      projectEditInfo={projectEditInfo}
                     />
                   </div>
                 );

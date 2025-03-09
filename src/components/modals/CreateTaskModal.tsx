@@ -55,7 +55,7 @@ const CreateTaskModal = ({
     const date = new Date(dateString);
 
     let hours = date.getHours();
-    const ampm = hours >= 12 ? "pm" : "am";
+    const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12; // 12시간제 변환
 
     return {

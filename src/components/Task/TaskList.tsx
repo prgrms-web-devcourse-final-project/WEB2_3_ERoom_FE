@@ -11,6 +11,7 @@ const TaskList = ({
   taskInfo,
   refetch,
   projectData,
+  projectEditInfo,
 }: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { member } = useAuthStore();
@@ -116,6 +117,7 @@ const TaskList = ({
             onUpdate={handleUpdateTask}
             refetch={refetch}
             projectData={projectData}
+            projectEditInfo={projectEditInfo}
           />
         </div>
       )}
