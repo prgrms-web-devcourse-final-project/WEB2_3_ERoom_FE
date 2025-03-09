@@ -18,7 +18,6 @@ interface AuthState {
   registered?: boolean;
   // user: User | null;
   // login: (userData: User | null, token: null | string) => void;
-  user: any;
   login: (
     idToken: string | null,
     accessToken: string | null,
@@ -56,7 +55,6 @@ export const useAuthStore = create(
       //   set(() => {
       //     return { user: null, token: null, isAuthenticated: false };
       //   }),
-      user: null,
       login: (idToken, accessToken, refreshToken, member) =>
         set(() => ({
           idToken,
@@ -67,7 +65,7 @@ export const useAuthStore = create(
         })),
       logout: () =>
         set(() => {
-          return { user: null, accessToken: null, isAuthenticated: false };
+          return { member: null, accessToken: null, isAuthenticated: false };
         }),
       updateMember: (updateInfo: Partial<Member>) =>
         set((state) => ({

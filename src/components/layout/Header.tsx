@@ -10,7 +10,7 @@ import DefaultImg from "../../assets/defaultImg.svg";
 const Header = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const isAuthenticated = useAuthStore((state) => state.accessToken);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   // console.log(isAuthenticated);
 
   // console.log(isLogin);
@@ -157,7 +157,7 @@ const Header = () => {
                 onClick={() => {
                   logout();
                   useAuthStore.persist.clearStorage();
-                  navigate("/");
+                  navigate("/signin");
                 }}
               >
                 로그아웃
