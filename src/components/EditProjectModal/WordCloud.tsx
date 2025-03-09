@@ -15,24 +15,46 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
         (16 * Math.max(...words.map((word) => word.value))) / 1024
       );
 
+      const maxWordValue = Math.max(...words.map((word) => word.value));
+
       const weightFactor = (size: number): number => {
-        if (!canvasRef.current) return 0; // canvas가 없을 경우 0을 반환
-        return (Math.pow(size, 2.8) * canvasRef.current.width) / 1024;
+        if (!canvasRef.current) return 0;
+        const baseSize = 16;
+        return baseSize + (size / maxWordValue) * 40;
+      };
+      const totalValue = words.reduce((sum, word) => sum + word.value, 0);
+
+      // ✅ weight를 명시적으로 number로 변환하여 에러 해결
+      const getColor = (
+        word: string,
+        weight: string | number,
+        fontSize: number,
+        distance: number,
+        theta: number
+      ) => {
+        const numericWeight = Number(weight);
+        const intensity = numericWeight / totalValue;
+        console.log(intensity);
+        return `rgb(43,62,52, ${intensity})`;
       };
 
       WordCloudForm(canvasRef.current, {
         list: wordArray,
         gridSize: gridSize,
-        weightFactor: weightFactor, // 크기 조정
+        weightFactor: weightFactor,
         fontFamily: "Impact",
-        color: "random-dark", // 글자 색상
-        backgroundColor: "#ffffff", // 배경 색상
-        rotateRatio: 0.5, // 회전 비율
+        color: getColor,
+        backgroundColor: "#ffffff",
+        rotateRatio: 0.5,
       });
     }
   }, [words]);
 
-  return <canvas ref={canvasRef} width={300} height={250}></canvas>;
+  return (
+    <div>
+      <canvas ref={canvasRef} width={300} height={250}></canvas>
+    </div>
+  );
 };
 
 export default WordCloud;

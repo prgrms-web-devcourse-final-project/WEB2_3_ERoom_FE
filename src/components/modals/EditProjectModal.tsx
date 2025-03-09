@@ -303,12 +303,8 @@ const EditProjectModal = ({
       setCategoryData2(subCategoryObject2);
     }
   }, [selectedCategory]);
-  console.log(
-    Object.keys(categoryData1).map((key) => ({
-      text: key,
-      value: categoryData1[key],
-    }))
-  );
+  console.log(categoryData1);
+  console.log(Object.values(categoryData1).filter((data) => data !== 0));
 
   return (
     <div
@@ -480,7 +476,8 @@ const EditProjectModal = ({
               </div>
             )}
             {categoryData1 && (
-              <div className="border-black border-[1px]">
+              <div className="border-gray01 border-[1px]">
+                {/* {Object.values(categoryData1).filter((data)=>data !== 0)} */}
                 <WordCloud
                   words={Object.keys(categoryData1).map((key) => ({
                     text: key,
@@ -502,7 +499,7 @@ const EditProjectModal = ({
               </div>
             )}
             {categoryData2 && (
-              <div className="border-black border-[1px]">
+              <div className="border-gray01 border-[1px]">
                 <WordCloud
                   words={Object.keys(categoryData2).map((key) => ({
                     text: key,
