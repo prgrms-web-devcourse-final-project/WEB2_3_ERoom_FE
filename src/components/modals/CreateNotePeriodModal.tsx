@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import CreateAINoteModal from "./CreateAINoteModal";

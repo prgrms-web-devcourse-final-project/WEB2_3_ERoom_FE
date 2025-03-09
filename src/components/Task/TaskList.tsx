@@ -88,7 +88,7 @@ const TaskList = ({
   return (
     <div
       className={`flex flex-col relative gap-4 items-center px-2 py-5 
-        min-w-[320px] min-h-[450px] h-fit bg-white/60`}
+        min-w-[320px] min-h-[650px] h-fit bg-gradient-to-b from-white/60 to-white/5`}
     >
       <h1 className="font-bold text-main-green text-[22px]">{name}</h1>
       {taskInfo.map((task) => {
