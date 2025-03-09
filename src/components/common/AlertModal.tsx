@@ -12,7 +12,7 @@ const AlertModal = ({
   return (
     <div
       className="w-[423px]] h-[174px] bg-white px-[100px] py-[50px]
-  flex flex-col justify-center items-center gap-[30px]"
+  flex flex-col justify-center items-center gap-[30px] rounded-[5px]"
       onClick={(e) => e.stopPropagation()}
     >
       <p className="text-header-red font-bold">{text}</p>

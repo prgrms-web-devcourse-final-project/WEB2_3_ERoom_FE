@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { api } from "../../api/api";
 import { EventDropArg } from "@fullcalendar/core/index.js";
+import { showToast } from "../toastConfig";
 
 // 캘린더 일정 드래그시 호출함수
 export const dragChangeTask = async (info: EventDropArg) => {
@@ -29,10 +30,15 @@ export const dragChangeTask = async (info: EventDropArg) => {
       participantIds: [projectData.assignedMemberId],
     });
     console.log(response);
+    if (response.status === 200) {
+      showToast("success", "업무 일정이 변경되었습니다.");
+    }
     return response;
   } catch (error: any) {
     console.error(error.response.data);
-    Object.values(error.response.data).forEach((value) => alert(value));
+    Object.values(error.response.data).forEach((value) =>
+      showToast("error", value as string)
+    );
     // alert("에러가 발생했습니다.");
     info.revert();
   }

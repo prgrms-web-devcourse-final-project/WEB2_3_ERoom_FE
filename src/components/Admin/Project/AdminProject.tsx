@@ -19,6 +19,7 @@ import AdminDeleteBtn from "../Button/AdminDeleteBtn";
 import { queryClient } from "../../../main";
 import { searchProjects } from "../../../api/search";
 import AlertModal from "../../common/AlertModal";
+import { showToast } from "../../../utils/toastConfig";
 
 const AdminProject = () => {
   const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
@@ -159,6 +160,10 @@ const AdminProject = () => {
       async () => {
         await Promise.all(checkedIds.map((id) => deleteProjectFn(id))); // 병렬 실행
         closeModal();
+        showToast(
+          "success",
+          `${checkedIds.length}개의 프로젝트가 삭제되었습니다.`
+        );
       }
     );
   };
@@ -179,7 +184,7 @@ const AdminProject = () => {
       queryClient.invalidateQueries({ queryKey: ["AdminInAcitveProject"] });
       setIsAllChecked(false);
       setCheckedIds([]);
-      openModal("프로젝트가 삭제되었습니다");
+      // openModal("프로젝트가 삭제되었습니다");
     },
   });
 
@@ -206,7 +211,10 @@ const AdminProject = () => {
       async () => {
         await Promise.all(checkedIds.map((id) => restoreProject(id)));
         closeModal();
-        alert("프로젝트를 복구했습니다.");
+        showToast(
+          "success",
+          `${checkedIds.length}개의 프로젝트가 복구되었습니다.`
+        );
       }
     );
   };

@@ -18,6 +18,7 @@ import {
 } from "../../../api/admin";
 import ConfirmModal from "../../modals/ConfirmModal";
 import { queryClient } from "../../../main";
+import { showToast } from "../../../utils/toastConfig";
 
 export interface TasksListType {
   id: number;
@@ -120,7 +121,10 @@ const AdminTask = () => {
       // 삭제 요청 실행 (모든 삭제 요청이 완료될 때까지 대기)
       await Promise.all(isCheckedTask.map((taskId) => deleteTaskFn(taskId)));
 
-      console.log("삭제 완료");
+      showToast(
+        "success",
+        `${isCheckedTask.length}개의 업무가 삭제되었습니다.`
+      );
 
       // 삭제 요청이 성공한 후 상태 업데이트
       setDeleteTasks((prevTasks) =>
@@ -190,12 +194,9 @@ const AdminTask = () => {
       console.log("선택된 업무가 없습니다.");
       return;
     }
-
-    console.log(isCheckedTask);
-    // 삭제 요청 실행 (모든 삭제 요청이 완료될 때까지 대기)
     await Promise.all(isCheckedTask.map((taskId) => restoreTask(taskId)));
     setIsCheckedTask([]);
-    alert("복구완료");
+    showToast("success", `${isCheckedTask.length}개의 업무가 복구되었습니다.`);
     console.log("복구 완료");
   };
 
