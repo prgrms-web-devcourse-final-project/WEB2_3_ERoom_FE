@@ -6,9 +6,9 @@ import MeetingRoomMessage from "./MeetingRoomMessage";
 import NoteListModal from "../modals/NoteListModal";
 import { getMeetingroom } from "../../api/meetingroom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import { StompSubscription } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
+import useWebSocketStore from "../../store/useWebSocketStore";
 
 const MeetingRoomChatBox = ({
   css,
@@ -60,13 +60,7 @@ const MeetingRoomChatBox = ({
     select: (data) => data || ({} as MeetingroomType),
   });
 
-  useEffect(() => {
-    if (messageList?.groupChatRoom?.messages) {
-      setMessages(messageList.groupChatRoom.messages);
-    }
-    console.log("API 요청 중... projectId:", projectId);
-  }, [projectId]);
-
+  //메시지 데이터 업데이트
   useEffect(() => {
     console.log("채팅 내역 데이터:", messageList);
     console.log(
@@ -78,60 +72,51 @@ const MeetingRoomChatBox = ({
     }
   }, [messageList]);
 
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-  const queryClient = useQueryClient();
+  const { stompClient, connectWebSocket } = useWebSocketStore(); // WebSocket 가져오기
+  const [currentSubscription, setCurrentSubscription] =
+    useState<StompSubscription | null>(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const memberId = useAuthStore((state) => state.member?.id);
+  const queryClient = useQueryClient(); // 올바른 방식
 
-  //웹소켓 연결 설정
+  //  WebSocket 연결 및 채팅방 구독
   useEffect(() => {
     if (!messageList?.groupChatRoom?.chatRoomId) return;
+    if (!accessToken || !memberId) return;
+    const chatRoomId = messageList.groupChatRoom.chatRoomId;
 
-    if (messageList?.groupChatRoom?.messages) {
-      setMessages(messageList.groupChatRoom.messages);
+    //  WebSocket이 없으면 연결
+    connectWebSocket(accessToken, memberId);
+
+    if (!stompClient) {
+      console.warn("WebSocket이 아직 연결되지 않음.");
+      return;
     }
 
-    const { accessToken } = useAuthStore.getState();
+    //  기존 구독 해제 후 새 채팅방 구독
+    if (currentSubscription) {
+      console.log(` 기존 구독 해제: ${currentSubscription.id}`);
+      stompClient.unsubscribe(currentSubscription.id);
+    }
 
-    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
-    const client = new Client({
-      webSocketFactory: () => socket,
-      reconnectDelay: 5000, // 재연결 설정 (5초)
-      connectHeaders: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      onConnect: () => {
-        console.log("Connected to WebSocket");
+    const subscriptionPath = `/topic/chatroom/${chatRoomId}`;
+    console.log(` 새 채팅방 구독: ${subscriptionPath}`);
 
-        // 기존 구독을 해제하고 새로 구독
-        client.unsubscribe(
-          `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`
-        );
-
-        // 채팅방 구독
-        client.subscribe(
-          `/topic/chatroom/${messageList.groupChatRoom.chatRoomId}`,
-          (msg) => {
-            const newMessage = JSON.parse(msg.body);
-            console.log("새로운 메시지 도착:", newMessage);
-
-            // 새 메시지를 추가하지 않고, 서버 데이터를 다시 불러오도록 트리거
-            queryClient.invalidateQueries({
-              queryKey: ["meetingroom", projectId],
-            });
-          }
-        );
-
-        setStompClient(client);
-      },
-      onStompError: (frame) => {
-        console.error("STOMP Error:", frame);
-      },
+    const subscription = stompClient.subscribe(subscriptionPath, (msg) => {
+      const newMessage = JSON.parse(msg.body);
+      console.log(" 받은 메시지:", newMessage);
+      queryClient.invalidateQueries({ queryKey: ["meetingroom", projectId] });
     });
-    client.activate();
+
+    setCurrentSubscription(subscription);
 
     return () => {
-      if (client) client.deactivate();
+      if (subscription) {
+        console.log(`구독 해제 ${subscriptionPath}`);
+        subscription.unsubscribe();
+      }
     };
-  }, [messageList?.groupChatRoom.chatRoomId]);
+  }, [messageList?.groupChatRoom?.chatRoomId, projectId, stompClient]);
 
   const userName = useAuthStore((state) => state.member?.username);
   const handleSendMessage = (e?: React.FormEvent | React.KeyboardEvent) => {
