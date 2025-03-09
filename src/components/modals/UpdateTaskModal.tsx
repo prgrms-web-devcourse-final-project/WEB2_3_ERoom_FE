@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectMember from "../EditProjectModal/SelectMember";
@@ -8,6 +8,7 @@ import { getTaskById } from "../../api/task";
 import { useQuery } from "@tanstack/react-query";
 import defaultImg from "../../assets/defaultImg.svg";
 import { useAuthStore } from "../../store/authStore";
+import AlertModal from "../common/AlertModal";
 
 const UpdateTaskModal = ({
   task,
@@ -17,6 +18,7 @@ const UpdateTaskModal = ({
   onUpdate,
   refetch,
   projectData,
+  projectEditInfo,
 }: UpdateTaskModalProps) => {
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const loginUser = useAuthStore((state) => state.member);
@@ -60,6 +62,140 @@ const UpdateTaskModal = ({
     minute: parsedEndDate.minute,
     ampm: parsedEndDate.ampm,
   });
+
+  // 비교가능한 날짜 형식 변경 함수
+  const convertToDate = (dateObj: {
+    year: string;
+    month: string;
+    day: string;
+    hour: string;
+    minute: string;
+    ampm: string;
+  }) => {
+    let hour = parseInt(dateObj.hour, 10);
+
+    // AM/PM 변환 (12시간제 → 24시간제)
+    if (dateObj.ampm === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (dateObj.ampm === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    return new Date(
+      parseInt(dateObj.year, 10),
+      parseInt(dateObj.month, 10) - 1,
+      parseInt(dateObj.day, 10),
+      hour,
+      parseInt(dateObj.minute, 10)
+    );
+  };
+
+  // 비교가 가능하게 변환된 날짜들
+  const startDate = convertToDate(selectedStartDate); // 선택된 시작날짜
+  const endDate = convertToDate(selectedEndDate); // 선택된 종료날짜
+  const nowDate = new Date(); // 현재 시작날짜
+  const nowEndDate = new Date(nowDate); // 현재 종료날짜
+  nowEndDate.setHours(nowEndDate.getHours() + 1);
+  const projectStartDate = projectEditInfo?.startDate // 프로젝트 시작날짜
+    ? new Date(projectEditInfo.startDate)
+    : new Date();
+  const projectEndDate = projectEditInfo?.endDate // 프로젝트 종료날짜
+    ? new Date(projectEditInfo.endDate)
+    : new Date();
+
+  // 분까지만 비교
+  startDate.setSeconds(0, 0);
+  endDate.setSeconds(0, 0);
+  nowDate.setSeconds(0, 0);
+  nowEndDate.setSeconds(0, 0);
+  projectStartDate.setSeconds(0, 0);
+  projectEndDate.setSeconds(0, 0);
+
+  // set함수에 넣을 수 있는 프로젝트 날짜 형식 변환 함수
+  const formatDateToObject = (dateString: string | undefined) => {
+    if (!dateString) return null; // undefined일 경우 null 반환
+
+    const date = new Date(dateString);
+
+    let hours = date.getHours();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // 12시간제 변환
+
+    return {
+      year: String(date.getFullYear()), // 연도를 두 자리로 변환
+      month: String(date.getMonth() + 1).padStart(2, "0"), // 월 (1월이 0이므로 +1)
+      day: String(date.getDate()).padStart(2, "0"), // 일
+      hour: String(hours).padStart(2, "0"), // 시간 (12시간제)
+      minute: String(date.getMinutes()).padStart(2, "0"), // 분
+      ampm, // 오전/오후
+    };
+  };
+
+  // set함수에 넣을 수 있는 형식 변환된 시작/종료 날짜
+  const formattedProjectStartDate = formatDateToObject(
+    projectEditInfo?.startDate
+  );
+  const formattedProjectEndDate = formatDateToObject(projectEditInfo?.endDate);
+  const formattedTaskStartDate = formatDateToObject(task?.startDate);
+  const formattedTaskEndDate = formatDateToObject(task?.endDate);
+  console.log(formattedProjectEndDate);
+  console.log(formattedTaskStartDate);
+
+  // 모달 적용
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 모달 열기 함수
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
+
+  // 시작과 종료 설정 시 종료가 시작과 같거나 이전이면 초기화
+  useEffect(() => {
+    if (!formattedProjectStartDate || !formattedProjectEndDate) {
+      return;
+    }
+
+    if (startDate === nowDate && endDate === nowEndDate) {
+      return;
+    }
+
+    // 프로젝트 종료일이 현재보다 이전일 경우 업무생성 불가 모달 오픈
+    // 마감일은 프로젝트 마감일로 초기화
+    if (projectEndDate < nowDate) {
+      openModal("프로젝트 마감 기한이 지났습니다.");
+      setSelectedEndDate(formattedProjectEndDate);
+    }
+
+    // 시작일이 프로젝트 시작 이전일 경우 모달 오픈, 프로젝트 기간으로 설정
+    if (startDate < projectStartDate) {
+      openModal("업무 시작은 프로젝트 시작 이전으로 설정할 수 없습니다.");
+      setSelectedStartDate(formattedTaskStartDate || formattedProjectStartDate);
+      setSelectedEndDate(formattedTaskEndDate || formattedProjectEndDate);
+    }
+
+    // 종료일이 프로젝트 종료 이후일 경우 모달 오픈, 프로젝트 기간으로 설정
+    if (endDate > projectEndDate) {
+      openModal("업무 종료는 프로젝트 종료 이후로 설정할 수 없습니다.");
+      setSelectedStartDate(formattedTaskStartDate || formattedProjectStartDate);
+      setSelectedEndDate(formattedTaskEndDate || formattedProjectEndDate);
+    }
+
+    // 시작이 종료 이전으로 설정되게 제한
+    if (startDate >= endDate) {
+      openModal("업무 시작은 종료 이전으로 설정해야 합니다.");
+      // 시작과 종료 초기화
+      setSelectedStartDate(formattedTaskStartDate || formattedProjectStartDate);
+      setSelectedEndDate(formattedTaskEndDate || formattedProjectEndDate);
+    }
+  }, [startDate, endDate]);
 
   const statusOptions = {
     COMPLETED: "진행완료",
@@ -260,6 +396,11 @@ const UpdateTaskModal = ({
             setIsModal={setIsConfirmModal}
             onClick={onDelete}
           />
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
         </div>
       )}
     </div>

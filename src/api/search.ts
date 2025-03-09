@@ -62,3 +62,15 @@ export const searchTasks = async (
     throw error;
   }
 };
+
+// 태그 검색 API
+export const searchTagCount = async () => {
+  try {
+    const response = await api.get(`/api/elasticsearch/tagcount`);
+    console.log("태그 불러오기 성공", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("태그 불러오기 실패", error);
+    throw error;
+  }
+};
