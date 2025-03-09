@@ -18,6 +18,7 @@ import {
 import { queryClient } from "../../../main";
 import { searchAllMembers } from "../../../api/search";
 import AlertModal from "../../common/AlertModal";
+import { showToast } from "../../../utils/toastConfig";
 
 const AdminAccount = () => {
   // 활성 멤버 데이터
@@ -189,7 +190,7 @@ const AdminAccount = () => {
 
     // 삭제 확인 모달 띄우기
     openModal(
-      `정말 ${checkedAccountIds.length}명의 유저를 삭제하시겠습니까?`,
+      `정말 ${checkedAccountIds.length}개의 계정을 삭제하시겠습니까?`,
       async () => {
         await Promise.all(
           checkedAccountIds.map((id) => {
@@ -200,7 +201,10 @@ const AdminAccount = () => {
         setIsCheckedAll(false);
         setCheckedAccountIds([]);
 
-        alert("유저가 삭제되었습니다");
+        showToast(
+          "success",
+          `${checkedAccountIds.length}개의 계정이 삭제되었습니다`
+        );
       }
     );
   };
@@ -231,7 +235,10 @@ const AdminAccount = () => {
         setCheckedAccountIds([]);
         setIsCheckedAll(false);
 
-        alert("유저를 복구했습니다.");
+        showToast(
+          "success",
+          `${checkedAccountIds.length}개의 계정이 복구되었습니다`
+        );
       }
     );
   };

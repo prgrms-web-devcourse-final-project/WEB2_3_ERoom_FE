@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 import { progressType } from "../../utils/progressType";
 import { PROGRESS_STATUS } from "../../constants/status";
 import SimpleAlertModal from "./SimpleAlertModal";
+import { queryClient } from "../../main";
 
 const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
@@ -225,6 +226,10 @@ const EditProjectModal = ({
       selectedProject: ProjectListType;
       editProjectInfo: patchProjectRequestType;
     }) => patchProjectById(selectedProject.id, editProjectInfo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] });
+      setIsEditProjectModal(false);
+    },
   });
 
   const editProject = async (
@@ -236,7 +241,6 @@ const EditProjectModal = ({
       editProjectInfo,
     });
     console.log(response);
-    navigate(0);
   };
 
   return (

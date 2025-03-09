@@ -14,7 +14,7 @@ const SimpleAlertModal = ({
     <div
       className={twMerge(
         `bg-white text-main-green px-[100px] py-[50px] gap-[30px]
-  flex flex-col justify-center items-center z-10`,
+  flex flex-col justify-center items-center z-10 rounded-[5px]`,
         css
       )}
       onClick={(e) => e.stopPropagation()}

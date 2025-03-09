@@ -9,6 +9,7 @@ import AdminTagBox from "./AdminTagBox";
 import { adminAddNewSubCategory } from "../../../api/adminSubCategory";
 import { adminAddnewDetailTag } from "../../../api/adminDetailTag";
 import { queryClient } from "../../../main";
+import { showToast } from "../../../utils/toastConfig";
 
 const AdminTag = () => {
   const { data: allCategories } = useQuery<AllCategoryType[]>({
@@ -20,12 +21,11 @@ const AdminTag = () => {
 
   const [details2, setDetails2] = useState<{ id: number; name: string }[]>([]);
 
-  const [categoryId, setCategoryId] = useState<number>();
-  const [subCategoryId, setSubCategoryId] = useState<number>();
+  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [subCategoryId, setSubCategoryId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (allCategories && isCategoryClicked) {
-      console.log("allCategories");
+    if (allCategories && isCategoryClicked !== null) {
       setSubCategories2(allCategories[isCategoryClicked].subcategories);
     }
   }, [allCategories]);
@@ -67,6 +67,7 @@ const AdminTag = () => {
     mutationFn: (newCategoryName: string) => adminNewCategory(newCategoryName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+      showToast("success", "분야가 추가되었습니다");
       setIsAddCategory(false);
     },
   });
@@ -80,7 +81,8 @@ const AdminTag = () => {
 
   const handleAddSubcategory = () => {
     if (subCategories2.length === 2) {
-      return alert("세부항목은 최대 2개까지 생성이 가능합니다");
+      showToast("error", "세부항목은 최대 2개까지 생성이 가능합니다");
+      return;
     }
     setIsAddSubCategory(true);
   };
@@ -127,8 +129,24 @@ const AdminTag = () => {
     },
   });
 
-  const [isCategoryClicked, setIsCategoryClicked] = useState<number | null>();
-  const [isSubCateClicked, setIsSubCateClicked] = useState<number | null>();
+  const [isCategoryClicked, setIsCategoryClicked] = useState<number | null>(
+    null
+  );
+  const [isSubCateClicked, setIsSubCateClicked] = useState<number | null>(null);
+
+  useEffect(() => {
+    setSubCategoryId(null);
+    console.log("as");
+    if (isCategoryClicked === null) {
+      setIsSubCateClicked(null);
+      setSubCategories2([]);
+      setDetails2([]);
+    }
+  }, [isCategoryClicked]);
+
+  useEffect(() => {
+    console.log(subCategoryId);
+  }, [subCategoryId]);
 
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
@@ -237,7 +255,7 @@ const AdminTag = () => {
             </span>
 
             <div className="flex w-full justify-end h-[27px]">
-              {subCategoryId && (
+              {subCategoryId !== null && (
                 <button onClick={handleAddDetail} className="cursor-pointer">
                   <img src={AddButton} alt="상세항목 생성 버튼" />
                 </button>

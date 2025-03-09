@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteProject, leaveProject } from "../../api/project";
 import { queryClient } from "../../main";
 import AlertModal from "../common/AlertModal";
+import defaultProfileImg from "../../assets/defaultImg.svg";
 
 const ProjectListBox = ({
   projectId,
@@ -23,10 +24,8 @@ const ProjectListBox = ({
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
   // 프로젝트 나가기 모달
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
-  console.log(projectInfo);
 
   const loginUser = useAuthStore((state) => state.member);
-  console.log(loginUser);
 
   const ISCREATED_BY_LOGINUSER = loginUser?.id === projectInfo.creatorId;
 
