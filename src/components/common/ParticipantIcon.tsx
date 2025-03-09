@@ -7,7 +7,7 @@ const ParticipantIcon = ({ css, imgSrc }: ParticipantIconProps) => {
     <div
       className={twMerge(
         `bg-white
-        w-[35px] h-[35px] rounded-full border border-[#1F281E] ${css}`
+        w-[35px] h-[35px] rounded-full border border-[#a8a8a8] ${css}`
       )}
     >
       <img
