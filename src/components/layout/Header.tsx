@@ -86,9 +86,6 @@ const Header = () => {
       <header className="h-[50px] bg-white flex items-center px-5 justify-between">
         {/* 로고 */}
         <div>
-          {/* <h1 className="text-[25px] font-bold" onClick={() => navigate("/")}>
-            E:room
-          </h1> */}
           <img
             src={headerIcon}
             alt="헤더 아이콘"

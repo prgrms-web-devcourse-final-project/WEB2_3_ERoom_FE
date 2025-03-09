@@ -26,6 +26,7 @@ interface AuthState {
     member: Member | null
   ) => void;
   logout: () => void;
+  updateMember: (updateInfo: Partial<Member>) => void;
 }
 
 interface Member {
@@ -68,6 +69,10 @@ export const useAuthStore = create(
         set(() => {
           return { user: null, accessToken: null, isAuthenticated: false };
         }),
+      updateMember: (updateInfo: Partial<Member>) =>
+        set((state) => ({
+          member: state.member ? { ...state.member, ...updateInfo } : null,
+        })),
     }),
     {
       name: "userData",

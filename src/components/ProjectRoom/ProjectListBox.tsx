@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteProject, leaveProject } from "../../api/project";
 import { queryClient } from "../../main";
 import AlertModal from "../common/AlertModal";
+import defaultProfileImg from "../../assets/defaultImg.svg";
 
 const ProjectListBox = ({
   projectId,

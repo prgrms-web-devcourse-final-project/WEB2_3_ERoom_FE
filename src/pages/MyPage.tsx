@@ -8,6 +8,7 @@ import { editMyPageInfo, getMyPageInfo } from "../api/myPage";
 import { queryClient } from "../main";
 import SimpleAlertModal from "../components/modals/SimpleAlertModal";
 import AlertModal from "../components/common/AlertModal";
+import { useAuthStore } from "../store/authStore";
 
 interface MyPageInfoType {
   email: string;
@@ -21,6 +22,9 @@ const MyPage = () => {
     queryKey: ["myPageInfo"],
     queryFn: getMyPageInfo,
   });
+
+  // 유저 전역상태 업데이트 함수
+  const updateMember = useAuthStore((state) => state.updateMember);
 
   const [modalText, setModalText] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,8 +111,11 @@ const MyPage = () => {
   }, [profileImgUrl, profileImgFile]);
 
   // 정보 수정 함수
-  const { mutate: editMyInfo } = useMutation({
-    mutationFn: () => editMyPageInfo(formData),
+  const { mutateAsync: editMyInfo } = useMutation({
+    mutationFn: async () => {
+      const response = await editMyPageInfo(formData);
+      updateMember(response?.data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myPageInfo"] });
       setEditSuccessModalOpen(true);

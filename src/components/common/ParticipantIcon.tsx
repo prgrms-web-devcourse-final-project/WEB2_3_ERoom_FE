@@ -1,4 +1,5 @@
 import { twMerge } from "tailwind-merge";
+import defaultProfileImg from "../../assets/defaultImg.svg";
 
 const ParticipantIcon = ({ css, imgSrc }: ParticipantIconProps) => {
   // 임시 입니다 추후에 이미지로 변경예정
@@ -9,14 +10,11 @@ const ParticipantIcon = ({ css, imgSrc }: ParticipantIconProps) => {
         w-[35px] h-[35px] rounded-full border border-[#1F281E] ${css}`
       )}
     >
-      {/* 임시 */}
-      {imgSrc && (
-        <img
-          src={imgSrc}
-          alt="프로필 이미지"
-          className="w-full h-full rounded-full"
-        />
-      )}
+      <img
+        src={imgSrc || defaultProfileImg}
+        alt="프로필 이미지"
+        className="w-full h-full rounded-full"
+      />
     </div>
   );
 };
