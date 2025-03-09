@@ -44,7 +44,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
         return;
       }
 
-      console.log("웹소켓 연결 시도...");
+      console.log("알람 웹소켓 연결 시도...");
 
       const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
       const client = new Client({
@@ -54,7 +54,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
           Authorization: `Bearer ${accessToken}`,
         },
         onConnect: () => {
-          console.log("STOMP 클라이언트 연결됨");
+          console.log("STOMP 클라이언트 연결됨(알람)");
           set({ isConnected: true, stompClient: client });
 
           setTimeout(() => {
@@ -79,7 +79,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
     subscribeToNotifications: (memberId: number) => {
       const { stompClient } = get();
       if (!stompClient) {
-        console.warn(" STOMP 클라이언트가 아직 활성화되지 않았음.");
+        console.warn(" STOMP 클라이언트가 아직 활성화되지 않았음(알람)");
         return;
       }
 
