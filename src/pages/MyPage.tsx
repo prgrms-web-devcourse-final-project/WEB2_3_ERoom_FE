@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import defaultImg from "../assets/defaultImg.svg";
@@ -9,40 +9,32 @@ import { queryClient } from "../main";
 import SimpleAlertModal from "../components/modals/SimpleAlertModal";
 import AlertModal from "../components/common/AlertModal";
 import { useAuthStore } from "../store/authStore";
-
 interface MyPageInfoType {
   email: string;
   username: string;
   organization: string;
   profile: string;
 }
-
 const MyPage = () => {
   const { data: myPageInfo, isLoading } = useQuery<MyPageInfoType>({
     queryKey: ["myPageInfo"],
     queryFn: getMyPageInfo,
   });
-
   // 유저 전역상태 업데이트 함수
   const updateMember = useAuthStore((state) => state.updateMember);
-
   const [modalText, setModalText] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const openModal = (text: string) => {
     setModalText(text);
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setModalText("");
     setIsModalOpen(false);
   };
-
   const [companyInfo, setCompanyInfo] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [profileImgFile, setProfileImgFile] = useState<File>();
-
   useEffect(() => {
     if (myPageInfo) {
       setName(myPageInfo.username);
@@ -50,78 +42,61 @@ const MyPage = () => {
       setProfileImgUrl(myPageInfo.profile);
     }
   }, [myPageInfo]);
-
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
   const [profileImgUrl, setProfileImgUrl] = useState<string | null>(null);
 
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
-  console.log("hover", isHovered);
-  console.log("파일선택창오픈", isFileDialogOpen);
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
   };
 
+  useEffect(() => {
+    if (!isFileDialogOpen) {
+      setTimeout(() => {
+        setIsHovered(false);
+      }, 300);
+    }
+  }, [isFileDialogOpen]);
+
   //프로필 이미지 수정 함수
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
     const file = e.target.files?.[0];
-
     if (file) {
       setProfileImgFile(file);
       const tempImgUrl = URL.createObjectURL(file);
       setProfileImgUrl(tempImgUrl);
     }
-
-    setIsHovered(false);
-    setIsFileDialogOpen(false);
+    setIsFileDialogOpen(false); // 파일 선택창이 닫혔음을 감지
   };
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const handleFileInputClick = () => {
+    setIsHovered(true);
     setIsFileDialogOpen(true);
-    if (fileInputRef.current === null) {
-      // 파일 선택 안 할 경우 hover 초기화
-      setIsFileDialogOpen(false);
-    }
   };
-
-  // 파일 선택창이 닫혔는지 감지하는 useEffect
-  // useEffect(() => {
-  //   if (!isFileDialogOpen) {
-  //     setTimeout(() => {
-  //       setIsHovered(false);
-  //     }, 300);
-  //   }
-  // }, [isFileDialogOpen]);
 
   // 내 정보 수정 폼데이터
   const formData = new FormData();
   formData.append("username", name);
-  formData.append("organization", companyInfo);
 
+  formData.append("organization", companyInfo);
   if (profileImgFile) {
     // 프로필 이미지를 변경한 경우
     formData.append("profileImage", profileImgFile);
   }
-
   if (profileImgUrl === null) {
     const emptyFile = new File([""], "empty.jpg", { type: "image/jpeg" });
     formData.append("profileImage", emptyFile);
   }
-
   useEffect(() => {
     console.log("profileImgUrl", profileImgUrl);
     console.log("profileImgFile", profileImgFile);
   }, [profileImgUrl, profileImgFile]);
-
   // 정보 수정 함수
   const { mutateAsync: editMyInfo } = useMutation({
     mutationFn: async () => {
@@ -133,10 +108,8 @@ const MyPage = () => {
       setEditSuccessModalOpen(true);
     },
   });
-
   // 정보 수정 성공 시 모달 오픈
   const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
-
   if (isLoading) {
     return (
       <section className="mypage-background flex justify-center items-center relative min-h-[calc(100vh-50px)]">
@@ -158,7 +131,6 @@ const MyPage = () => {
       </section>
     );
   }
-
   return (
     <section
       className="mypage-background flex justify-center items-center 
@@ -166,7 +138,6 @@ const MyPage = () => {
     >
       {/* 투명 오버레이 */}
       <div className="absolute inset-0 blur bg-white/20"></div>
-
       <div className="relative z-10">
         <div
           className="flex flex-col justify-center items-center w-[680px] h-full 
@@ -178,7 +149,6 @@ const MyPage = () => {
               개인정보
             </span>
           </div>
-
           <div className="h-fit flex gap-[30px]">
             {/* 프로필 이미지 */}
             <div
@@ -197,7 +167,6 @@ const MyPage = () => {
                   className="w-full h-full object-cover object-center rounded-[5px]
                   border border-main-green"
                 />
-
                 {/* 이미지 변경 문구 (마우스 오버 시 표시) */}
                 {isHovered && (
                   <div
@@ -227,7 +196,6 @@ const MyPage = () => {
                         onChange={handleFileChange}
                       />
                     </div>
-
                     {/* 기본 이미지 버튼 */}
                     {profileImgUrl && (
                       <div
@@ -245,7 +213,6 @@ const MyPage = () => {
                 )}
               </div>
             </div>
-
             {/* 개인정보란 */}
             <div className="flex flex-col gap-[10px]">
               {/* 이름 */}
@@ -259,7 +226,6 @@ const MyPage = () => {
                   className="w-[250px] h-[33px] pl-[10px] bg-transparent focus:outline-none border-b-[1px] border-b-gray01"
                 />
               </div>
-
               {/* 이메일 */}
               <div className="flex flex-col gap-[5px]">
                 <span className="font-bold text-[14px]">이메일</span>
@@ -267,7 +233,6 @@ const MyPage = () => {
                   <span className="text-black01">{myPageInfo?.email}</span>
                 </div>
               </div>
-
               {/* 소속 */}
               <div className="flex flex-col gap-[5px]">
                 <span className="font-bold text-[14px]">소속</span>
@@ -281,7 +246,6 @@ const MyPage = () => {
               </div>
             </div>
           </div>
-
           {/* 버튼 모음 */}
           <div className="flex flex-col justify-center gap-[10px]">
             <Button
@@ -333,5 +297,4 @@ const MyPage = () => {
     </section>
   );
 };
-
 export default MyPage;
