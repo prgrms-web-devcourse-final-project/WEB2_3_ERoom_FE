@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAssignedTaskList } from "../api/task";
 
 const MainPage = () => {
-  const isAuthenticated = useAuthStore((state) => state.accessToken);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const loginUser = useAuthStore((state) => state.member);
   const now = useMemo(() => dayjs(), []);
   const year = now.format("YY"); // '24' 형식
