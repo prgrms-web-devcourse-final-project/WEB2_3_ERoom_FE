@@ -14,7 +14,6 @@ import AlertModal from "../common/AlertModal";
 
 const ProjectListBox = ({
   projectId,
-  filterProject,
   idx,
   projectInfo,
 }: ProjectListBoxProps) => {
