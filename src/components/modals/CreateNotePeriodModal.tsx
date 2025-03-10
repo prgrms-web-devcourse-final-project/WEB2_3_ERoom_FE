@@ -104,7 +104,7 @@ const CreateNotePeriodModal = ({
 
   return (
     <>
-      {!isRunAI ? (
+      {!isRunAI && !isPending ? (
         <div className="w-[380px] h-[364px] bg-white px-[50px] py-[30px]">
           <div className="flex justify-center">
             <span className="text-[16px] font-bold text-main-green">
@@ -167,7 +167,7 @@ const CreateNotePeriodModal = ({
             onClose={onClose}
             AINote={AINote}
             title={title}
-            isLoading={isPending}
+            isPending={isPending}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             AINoteList={AINoteList}

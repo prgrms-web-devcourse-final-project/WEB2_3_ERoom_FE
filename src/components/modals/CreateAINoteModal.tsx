@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import Lottie from "lottie-react";
-import LoadingAnimation from "../../assets/animations/loading_note.json";
+import LoadingAnimation from "../../assets/animations/AINote_loading.json";
 import { useMutation } from "@tanstack/react-query";
 import { deleteAINote, editAINote } from "../../api/meetingroom";
 import { formatSelectedDate } from "../../utils/aiNote/dateUtils";
@@ -10,7 +10,7 @@ const CreateAINoteModal = ({
   onClose,
   AINote,
   title,
-  isLoading,
+  isPending,
   selectedStartDate,
   selectedEndDate,
   refetchAINoteList,
@@ -19,7 +19,7 @@ const CreateAINoteModal = ({
   onClose: () => void;
   AINote: CreateAIMessage | undefined;
   title: string;
-  isLoading: boolean;
+  isPending: boolean;
   selectedStartDate: selectedDateType;
   selectedEndDate: selectedDateType;
   refetchAINoteList: () => void;
@@ -153,9 +153,13 @@ const CreateAINoteModal = ({
     }
   };
 
+  useEffect(() => {
+    console.log("isPending 상태:", isPending);
+  }, [isPending]);
+
   return (
     <>
-      {isLoading ? (
+      {isPending ? (
         <div>
           <Lottie
             animationData={LoadingAnimation}
