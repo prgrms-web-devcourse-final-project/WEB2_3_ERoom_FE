@@ -10,10 +10,10 @@ import useGoogleLogin from "../hooks/useGoogleLogin";
 const SignIn = () => {
   // const login = useAuthStore((state) => state.login);
   // const { handleKakaoLogin, loading } = useKakaoLogin();
-  const access = useAuthStore((state) => state.accessToken);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { handleGoogleLogin, isLoginLoading } = useGoogleLogin();
 
-  if (access) {
+  if (isAuthenticated) {
     return <Navigate to={"/"} replace />;
   }
 
