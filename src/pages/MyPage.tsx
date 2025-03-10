@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import defaultImg from "../assets/defaultImg.svg";
@@ -57,38 +57,50 @@ const MyPage = () => {
   const [profileImgUrl, setProfileImgUrl] = useState<string | null>(null);
 
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+  console.log("hover", isHovered);
+  console.log("파일선택창오픈", isFileDialogOpen);
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
   };
 
-  useEffect(() => {
-    if (!isFileDialogOpen) {
-      setTimeout(() => {
-        setIsHovered(false);
-      }, 300);
-    }
-  }, [isFileDialogOpen]);
-
   //프로필 이미지 수정 함수
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e);
     const file = e.target.files?.[0];
+
     if (file) {
       setProfileImgFile(file);
       const tempImgUrl = URL.createObjectURL(file);
       setProfileImgUrl(tempImgUrl);
     }
-    setIsFileDialogOpen(false); // 파일 선택창이 닫혔음을 감지
+
+    setIsHovered(false);
+    setIsFileDialogOpen(false);
   };
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const handleFileInputClick = () => {
-    setIsHovered(true);
     setIsFileDialogOpen(true);
+    if (fileInputRef.current === null) {
+      // 파일 선택 안 할 경우 hover 초기화
+      setIsFileDialogOpen(false);
+    }
   };
+
+  // 파일 선택창이 닫혔는지 감지하는 useEffect
+  // useEffect(() => {
+  //   if (!isFileDialogOpen) {
+  //     setTimeout(() => {
+  //       setIsHovered(false);
+  //     }, 300);
+  //   }
+  // }, [isFileDialogOpen]);
 
   // 내 정보 수정 폼데이터
   const formData = new FormData();
