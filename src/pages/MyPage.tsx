@@ -94,13 +94,13 @@ const MyPage = () => {
   };
 
   // 파일 선택창이 닫혔는지 감지하는 useEffect
-  // useEffect(() => {
-  //   if (!isFileDialogOpen) {
-  //     setTimeout(() => {
-  //       setIsHovered(false);
-  //     }, 300);
-  //   }
-  // }, [isFileDialogOpen]);
+  useEffect(() => {
+    if (!isFileDialogOpen) {
+      setTimeout(() => {
+        setIsHovered(false);
+      }, 300);
+    }
+  }, [isFileDialogOpen]);
 
   // 내 정보 수정 폼데이터
   const formData = new FormData();
