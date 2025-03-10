@@ -276,7 +276,7 @@ const ProjectListBox = ({
       {isLeaveModal && (
         <div
           className="absolute inset-0 w-screen h-fit min-h-screen
-          flex justify-center items-center bg-black/70"
+          flex justify-center items-center bg-black/70 z-50"
           onClick={(e) => {
             e.stopPropagation(); // 이벤트 전파 방지
             setIsLeaveModal(false); // 모달 닫기
