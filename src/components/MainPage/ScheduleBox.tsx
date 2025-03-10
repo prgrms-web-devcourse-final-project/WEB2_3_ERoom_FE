@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { twMerge } from "tailwind-merge";
-import { getProjectById } from "../../api/project";
+import { getProjectDetail } from "../../api/project";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
@@ -62,13 +62,13 @@ const ScheduleBox = ({ task, currentTime }: ScheduleBoxProps) => {
   const { data: projectDetail } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail"],
     queryFn: async () => {
-      const response = await getProjectById(String(task.projectId));
+      const response = await getProjectDetail(task.projectId);
       return response;
     },
   });
 
   // 프로젝트명
-  const projectName = projectDetail?.name;
+  const projectName = projectDetail?.projectName;
 
   return (
     <div
