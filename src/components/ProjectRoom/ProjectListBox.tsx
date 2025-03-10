@@ -14,7 +14,6 @@ import AlertModal from "../common/AlertModal";
 
 const ProjectListBox = ({
   projectId,
-  filterProject,
   idx,
   projectInfo,
 }: ProjectListBoxProps) => {
@@ -23,10 +22,8 @@ const ProjectListBox = ({
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
   // 프로젝트 나가기 모달
   const [isLeaveModal, setIsLeaveModal] = useState<boolean>(false);
-  console.log(projectInfo);
 
   const loginUser = useAuthStore((state) => state.member);
-  console.log(loginUser);
 
   const ISCREATED_BY_LOGINUSER = loginUser?.id === projectInfo.creatorId;
 
@@ -241,17 +238,16 @@ const ProjectListBox = ({
           </ul>
 
           {/* 미팅룸 버튼 */}
-          {filterProject === "진행 중인 프로젝트" && (
-            <Link
-              to={`/meeting-room/${projectInfo.chatRoomId}`}
-              className="w-[130px] h-[40px] bg-[#FFFCE2] 
+
+          <Link
+            to={`/meeting-room/${projectInfo.chatRoomId}`}
+            className="w-[130px] h-[40px] bg-[#FFFCE2] 
                 text-main-green01 flex items-center justify-center
                 border border-main-green01 font-bold rounded-sm"
-              onClick={(e) => e.stopPropagation()}
-            >
-              미팅룸 입장
-            </Link>
-          )}
+            onClick={(e) => e.stopPropagation()}
+          >
+            미팅룸 입장
+          </Link>
         </div>
       </div>
 
@@ -259,7 +255,7 @@ const ProjectListBox = ({
       {isEditProjectModal && (
         <div
           className="absolute inset-0 w-screen h-fit min-h-screen
-          flex justify-center items-center bg-black/70"
+          flex justify-center items-center bg-black/70 z-50"
           onClick={(e) => {
             e.stopPropagation(); // 이벤트 전파 방지
             setIsEditProjectModal(false); // 모달 닫기
@@ -278,7 +274,7 @@ const ProjectListBox = ({
       {isLeaveModal && (
         <div
           className="absolute inset-0 w-screen h-fit min-h-screen
-          flex justify-center items-center bg-black/70"
+          flex justify-center items-center bg-black/70 z-50"
           onClick={(e) => {
             e.stopPropagation(); // 이벤트 전파 방지
             setIsLeaveModal(false); // 모달 닫기

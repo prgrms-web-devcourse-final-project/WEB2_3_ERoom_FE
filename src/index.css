@@ -67,3 +67,25 @@
 .scrollbar::-webkit-scrollbar-track {
   background: #e8e8e800;
 }
+
+/* react- toastify */
+.Toastify__toast {
+  background-color: #fff6e9;
+  font-size: 14px;
+}
+
+.Toastify__toast--error {
+  background-color: #ff1e0092;
+  /* color: rgb(242, 242, 242); */
+  color: #232b24;
+}
+
+.Toastify__progress-bar--success {
+  /* color: white; */
+  background-color: #465448;
+}
+
+:root {
+  --toastify-icon-color-success: #465448;
+  --toastify-icon-color-error: #ff1d00;
+}

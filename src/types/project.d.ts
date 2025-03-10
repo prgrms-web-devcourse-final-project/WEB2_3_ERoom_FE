@@ -87,17 +87,13 @@ interface postProjectType {
 
 // getProjectById API 타입 지정
 interface ProjectDetailType {
-  id: number;
-  name: string;
-  category: string;
-  subCategories1: string[];
-  subCategories2: string[];
-  startDate: string;
-  endDate: string;
-  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
-  memberIds: number[];
-  memberNames: string[];
-  memberProfiles: (string | null)[];
+  projectId: number;
+  projectName: string;
+  categoryName: string;
+  subCategories: subCategories[];
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED"; // 프로젝트 상태 Enum
+  tasks: Task[];
+  members: members[];
 }
 
 //patchProjectById  입력값 타입 지정
@@ -139,4 +135,19 @@ interface ProjectSearchResult {
   createdAt: string;
   projectStatus: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED" | "HOLD";
   deleteStatus: "ACTIVE" | "DELETED";
+}
+
+interface GetProjectById {
+  id: number;
+  name: string;
+  categoryName: string;
+  subCategories: {
+    id: number;
+    name: string;
+    tags: { id: number; name: string }[];
+  }[];
+  startDate: string;
+  endDate: string;
+  status: "BEFORE_START" | "IN_PROGRESS" | "COMPLETED";
+  members: { memberId: number; username: string; profile: string }[];
 }

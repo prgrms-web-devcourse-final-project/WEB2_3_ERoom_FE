@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
 import defaultImg from "../assets/defaultImg.svg";
@@ -7,6 +7,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { editMyPageInfo, getMyPageInfo } from "../api/myPage";
 import { queryClient } from "../main";
 import SimpleAlertModal from "../components/modals/SimpleAlertModal";
+import AlertModal from "../components/common/AlertModal";
+import { useAuthStore } from "../store/authStore";
 
 interface MyPageInfoType {
   email: string;
@@ -20,6 +22,22 @@ const MyPage = () => {
     queryKey: ["myPageInfo"],
     queryFn: getMyPageInfo,
   });
+
+  // 유저 전역상태 업데이트 함수
+  const updateMember = useAuthStore((state) => state.updateMember);
+
+  const [modalText, setModalText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (text: string) => {
+    setModalText(text);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalText("");
+    setIsModalOpen(false);
+  };
 
   const [companyInfo, setCompanyInfo] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -39,41 +57,50 @@ const MyPage = () => {
   const [profileImgUrl, setProfileImgUrl] = useState<string | null>(null);
 
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+  console.log("hover", isHovered);
+  console.log("파일선택창오픈", isFileDialogOpen);
 
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
   };
 
-  useEffect(() => {
-    if (!isFileDialogOpen) {
-      setTimeout(() => {
-        setIsHovered(false);
-      }, 300);
-    }
-  }, [isFileDialogOpen]);
-
   //프로필 이미지 수정 함수
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e);
     const file = e.target.files?.[0];
+
     if (file) {
       setProfileImgFile(file);
       const tempImgUrl = URL.createObjectURL(file);
       setProfileImgUrl(tempImgUrl);
     }
-    setIsFileDialogOpen(false); // 파일 선택창이 닫혔음을 감지
+
+    setIsHovered(false);
+    setIsFileDialogOpen(false);
   };
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const handleFileInputClick = () => {
-    setIsHovered(true);
     setIsFileDialogOpen(true);
+    if (fileInputRef.current === null) {
+      // 파일 선택 안 할 경우 hover 초기화
+      setIsFileDialogOpen(false);
+    }
   };
 
-  // 정보 수정 성공 시 모달 오픈
-  const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
+  // 파일 선택창이 닫혔는지 감지하는 useEffect
+  // useEffect(() => {
+  //   if (!isFileDialogOpen) {
+  //     setTimeout(() => {
+  //       setIsHovered(false);
+  //     }, 300);
+  //   }
+  // }, [isFileDialogOpen]);
 
   // 내 정보 수정 폼데이터
   const formData = new FormData();
@@ -81,17 +108,34 @@ const MyPage = () => {
   formData.append("organization", companyInfo);
 
   if (profileImgFile) {
+    // 프로필 이미지를 변경한 경우
     formData.append("profileImage", profileImgFile);
   }
 
+  if (profileImgUrl === null) {
+    const emptyFile = new File([""], "empty.jpg", { type: "image/jpeg" });
+    formData.append("profileImage", emptyFile);
+  }
+
+  useEffect(() => {
+    console.log("profileImgUrl", profileImgUrl);
+    console.log("profileImgFile", profileImgFile);
+  }, [profileImgUrl, profileImgFile]);
+
   // 정보 수정 함수
-  const { mutate: editMyInfo } = useMutation({
-    mutationFn: () => editMyPageInfo(formData),
+  const { mutateAsync: editMyInfo } = useMutation({
+    mutationFn: async () => {
+      const response = await editMyPageInfo(formData);
+      updateMember(response?.data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myPageInfo"] });
       setEditSuccessModalOpen(true);
     },
   });
+
+  // 정보 수정 성공 시 모달 오픈
+  const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -206,7 +250,7 @@ const MyPage = () => {
             <div className="flex flex-col gap-[10px]">
               {/* 이름 */}
               <div className="flex flex-col gap-[5px]">
-                <span className="font-bold">이름</span>
+                <span className="font-bold text-[14px]">이름</span>
                 <input
                   type="text"
                   value={name}
@@ -218,7 +262,7 @@ const MyPage = () => {
 
               {/* 이메일 */}
               <div className="flex flex-col gap-[5px]">
-                <span className="font-bold">이메일</span>
+                <span className="font-bold text-[14px]">이메일</span>
                 <div className="pl-[10px]">
                   <span className="text-black01">{myPageInfo?.email}</span>
                 </div>
@@ -226,7 +270,7 @@ const MyPage = () => {
 
               {/* 소속 */}
               <div className="flex flex-col gap-[5px]">
-                <span className="font-bold">소속</span>
+                <span className="font-bold text-[14px]">소속</span>
                 <input
                   type="text"
                   value={companyInfo}
@@ -244,14 +288,20 @@ const MyPage = () => {
               text="수정하기"
               size="md"
               css="bg-main-green01 border border-main-green text-main-beige01"
-              onClick={() => editMyInfo()}
+              onClick={() => {
+                if (!name.trim().length || !companyInfo.trim().length) {
+                  openModal("이름과 소속은 필수로 입력해야 됩니다!");
+                  return;
+                }
+                editMyInfo();
+              }}
             />
-            <Button
+            {/* <Button
               text="탈퇴하기"
               size="md"
               css="border-none text-[12px] text-main-green01"
               onClick={() => setIsConfirmModal(true)}
-            />
+            /> */}
           </div>
         </div>
       </div>
@@ -273,6 +323,11 @@ const MyPage = () => {
             setIsModal={setEditSuccessModalOpen}
             css="animate-fadeUp"
           />
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <AlertModal text={modalText} onClose={closeModal} />
         </div>
       )}
     </section>

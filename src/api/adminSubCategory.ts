@@ -1,3 +1,4 @@
+import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
 // 관리자 서브카테고리 생성
@@ -11,6 +12,11 @@ export const adminAddNewSubCategory = async (
       { name: newName }
     );
     console.log("adminAddNewSubCategory", response);
+    if (response.status === 201) {
+      showToast("success", "세부항목이 추가되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -28,7 +34,11 @@ export const adminEditSubCategory = async (
       { name: editSubCateName }
     );
     console.log("adminEditSubCategory", response);
-
+    if (response.status === 200) {
+      showToast("success", "세부항목이 수정되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -43,7 +53,9 @@ export const adminDeleteSubCategory = async (subcategoryId: number) => {
     );
     console.log("adminDeleteSubCategory", response);
     if (response.status === 204) {
-      alert("서브카테고리 삭제가 완료되었습니다");
+      showToast("success", "세부항목이 삭제되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
     }
     return response;
   } catch (error) {

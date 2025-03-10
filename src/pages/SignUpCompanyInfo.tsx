@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import defaultImg from "../assets/defaultImg.svg";
 import { useAuthStore } from "../store/authStore";
@@ -8,9 +8,11 @@ import AlertModal from "../components/common/AlertModal";
 
 const SignUpCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
-  const [profileImg, setProfileImg] = useState<string | null>(defaultImg);
+  const [profileImg, setProfileImg] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>("");
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+
   const { login, idToken } = useAuthStore();
   const navigate = useNavigate();
 
@@ -126,7 +128,21 @@ const SignUpCompanyInfo = () => {
       };
 
       reader.readAsDataURL(file);
+      setIsFileDialogOpen(false);
     }
+  };
+
+  useEffect(() => {
+    if (!isFileDialogOpen) {
+      setTimeout(() => {
+        setIsHovered(false);
+      }, 200);
+    }
+  }, [isFileDialogOpen]);
+
+  const handleFileInputClick = () => {
+    setIsHovered(true);
+    setIsFileDialogOpen(true);
   };
 
   return (
@@ -151,7 +167,7 @@ const SignUpCompanyInfo = () => {
           <div
             className="relative w-full h-full rounded-[5px]"
             onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseLeave={() => !isFileDialogOpen && setIsHovered(false)}
           >
             <img
               src={profileImg || defaultImg}
@@ -169,11 +185,15 @@ const SignUpCompanyInfo = () => {
                 {/* 이미지 변경 버튼 */}
                 <div
                   className="text-gray02 hover:text-white cursor-pointer
-                      bg-main-green/30 hover:bg-main-green px-[10px] py-[5px] 
+                      bg-main-green/30 hover:bg-main-green w-[94px] h-[35px] 
                       rounded-[5px]"
-                  onClick={() => document.getElementById("fileInput")?.click()}
                 >
-                  <p>이미지 변경</p>
+                  <label
+                    className="w-full h-full flex items-center justify-center cursor-pointer"
+                    htmlFor="fileInput"
+                  >
+                    이미지 변경
+                  </label>
 
                   {/* 파일 업로드 입력 (숨김) */}
                   <input
@@ -182,11 +202,12 @@ const SignUpCompanyInfo = () => {
                     accept="image/*"
                     className="hidden"
                     onChange={handleProfileImg}
+                    onClick={handleFileInputClick}
                   />
                 </div>
 
                 {/* 기본 이미지 버튼 */}
-                {profileImg !== defaultImg && (
+                {profileImg !== null && (
                   <div
                     className="w-fit text-center px-[10px] py-[5px] cursor-pointer
                       text-[14px] font-bold text-white hover:text-main-green01
@@ -202,9 +223,9 @@ const SignUpCompanyInfo = () => {
         </div>
 
         {/* 개인 정보란 */}
-        <div className="flex flex-col justify-between gap-[10px]">
+        <div className="flex flex-col justify-center gap-[10px]">
           <div className="flex flex-col gap-[5px]">
-            <p className="font-bold">이름</p>
+            <p className="font-bold text-[14px]">이름</p>
             <input
               type="text"
               value={userName ?? ""}
@@ -214,13 +235,7 @@ const SignUpCompanyInfo = () => {
             />
           </div>
           <div className="flex flex-col gap-[5px]">
-            <p className="font-bold">이메일</p>
-            <div className="pl-[10px]">
-              <p className="text-black01">hong@gmail.com</p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-[5px]">
-            <p className="font-bold">소속</p>
+            <p className="font-bold text-[14px]">소속</p>
             <input
               type="text"
               value={companyInfo ?? ""}

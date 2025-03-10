@@ -5,10 +5,17 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteTask, updateTask } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 
-const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
+const TaskList = ({
+  name,
+  isAll = true,
+  taskInfo,
+  refetch,
+  projectData,
+  projectEditInfo,
+}: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { member } = useAuthStore();
-  // console.log(member);
+  // console.log(projectData?.members);
 
   const openModal = (task: Task) => {
     setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
@@ -17,8 +24,6 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   const closeModal = () => {
     setSelectedTask(null);
   };
-
-  // console.log(taskInfo);
 
   /* 업무 수정 */
   const updateMutation = useMutation({
@@ -29,6 +34,10 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
       taskId: number;
       updateData: UpdateTask;
     }) => updateTask(taskId, updateData),
+    onSuccess: () => {
+      refetch();
+      console.log("성공");
+    },
   });
 
   const handleUpdateTask = async (taskId: number, updateData: UpdateTask) => {
@@ -50,8 +59,10 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   const deleteMutation = useMutation({
     mutationFn: async (taskId: number) => {
       await deleteTask(taskId);
-
-      refetch(); // 삭제 후 refetch 호출
+    },
+    onSuccess: () => {
+      refetch();
+      console.log("성공");
     },
   });
 
@@ -78,7 +89,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
   return (
     <div
       className={`flex flex-col relative gap-4 items-center px-2 py-5 
-        min-w-[320px] min-h-[450px] h-fit bg-white/60`}
+        min-w-[320px] min-h-[650px] h-fit bg-gradient-to-b from-white/60 to-white/5`}
     >
       <h1 className="font-bold text-main-green text-[22px]">{name}</h1>
       {taskInfo.map((task) => {
@@ -91,6 +102,7 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
             isAll={isAll}
             task={task}
             onUpdate={handleUpdateTask}
+            refetch={refetch}
           />
         );
       })}
@@ -104,6 +116,8 @@ const TaskList = ({ name, isAll = true, taskInfo, refetch }: TaskListProps) => {
             onDelete={handleDeleteTask}
             onUpdate={handleUpdateTask}
             refetch={refetch}
+            projectData={projectData}
+            projectEditInfo={projectEditInfo}
           />
         </div>
       )}

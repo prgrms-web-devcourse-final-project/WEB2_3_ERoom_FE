@@ -1,3 +1,4 @@
+import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
 // 관리자 상세항목 태그 생성
@@ -13,6 +14,11 @@ export const adminAddnewDetailTag = async (
       }
     );
     console.log("adminAddnewDetailTag", response);
+    if (response.status === 200) {
+      showToast("success", "상세항목이 추가되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
 
     return response;
   } catch (error) {
@@ -35,7 +41,9 @@ export const adminEditDetailTag = async (
     );
     console.log("adminEditDetailTag", response);
     if (response.status === 200) {
-      alert("태그가 수정되었습니다");
+      showToast("success", "상세항목이 수정되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
     }
     return response;
   } catch (error) {
@@ -52,11 +60,14 @@ export const adminDeleteDetailTag = async (
     const response = await api.delete(
       `/admin/manage/subcategory/${subcategoryId}/tag/${tagId}/delete`
     );
-    console.log("adminDeleteDetailTag", response);
-    if (response.status === 204) {
-      alert("상세항목 태그 삭제가 완료되었습니다");
-    }
 
+    console.log("adminDeleteDetailTag", response);
+
+    if (response.status === 204) {
+      showToast("success", "상세항목이 삭제되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);

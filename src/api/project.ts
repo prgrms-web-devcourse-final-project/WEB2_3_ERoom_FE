@@ -1,3 +1,4 @@
+import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
 // 프로젝트 리스트 정보 가져오는 API
@@ -16,7 +17,12 @@ export const getProjectList = async () => {
 export const postProject = async (projectData: postProjectType) => {
   try {
     const response = await api.post("/api/projects/create", projectData);
-    console.log("생성된 프로젝트:", response.data);
+    console.log("생성된 프로젝트:", response);
+    if (response.status === 201) {
+      showToast("success", "프로젝트가 생성되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response.data;
   } catch (error) {
     console.error("프로젝트 생성 실패:", error);
@@ -27,7 +33,7 @@ export const postProject = async (projectData: postProjectType) => {
 //프로젝트 수정 전 기존 프로젝트 정보 불러오기
 export const getProjectById = async (
   projectId: string
-): Promise<ProjectDetailType> => {
+): Promise<GetProjectById> => {
   try {
     const response = await api.get(`/api/projects/${projectId}/edit`, {
       params: { projectId },
@@ -50,11 +56,18 @@ export const patchProjectById = async (
       `/api/projects/${projectId}/update`,
       updateData
     );
-    console.log("프로젝트 수정 성공", response.data);
+    console.log("프로젝트 수정 성공", response);
+    if (response.status === 204) {
+      showToast("success", "프로젝트가 수정되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response.data;
   } catch (error: any) {
     console.error("프로젝트 수정 오류", error);
-    Object.values(error.response.data).forEach((value) => alert(value));
+    Object.values(error.response.data as string).forEach((value: string) =>
+      showToast("error", value)
+    );
     throw new Error("프로젝트 수정하기 오류");
   }
 };
@@ -76,6 +89,11 @@ export const deleteProject = async (projectId: number) => {
   try {
     const response = await api.delete(`/api/projects/${projectId}/delete`);
     console.log("프로젝트 삭제:", response);
+    if (response.status === 204) {
+      showToast("success", "프로젝트가 삭제되었습니다!");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error("Error project delete:", error);

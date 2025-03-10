@@ -1,3 +1,4 @@
+import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
 // 관리자 대시보드
@@ -33,6 +34,11 @@ export const editAdminAccount = async (
       editAccountInfo
     );
     console.log(response);
+    if (response.status === 200) {
+      showToast("success", "계정 이름이 수정되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -58,9 +64,28 @@ export const deleteAdminAccount = async (member_id: number) => {
       `/admin/manage/member/${member_id}/delete`
     );
     console.log(response);
+    if (response.status !== 204) {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.log(error);
+  }
+};
+
+// 관리자 계정 활성 전환(복구)
+export const adminRestoreAccount = async (memberId: number) => {
+  try {
+    const response = await api.patch(
+      `/admin/manage/member/${memberId}/activate`
+    );
+    console.log(response);
+    if (response.status !== 200) {
+      showToast("error", "에러가 발생했습니다.");
+    }
+    return response;
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -99,6 +124,11 @@ export const adminEditProject = async (
       editInfo
     );
     console.log("editAdminProject", response);
+    if (response.status === 200) {
+      showToast("success", "프로젝트가 수정되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -112,6 +142,25 @@ export const adminDeleteProject = async (projectId: number) => {
       `/admin/manage/project/${projectId}/delete`
     );
     console.log("adminDeleteProject", response);
+    if (response.status !== 204) {
+      showToast("error", "에러가 발생했습니다.");
+    }
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 관리자 프로젝트 활성 전환 (복구)
+export const adminRestoreProject = async (projectId: number) => {
+  try {
+    const response = await api.patch(
+      `/admin/manage/project/${projectId}/activate`
+    );
+    console.log(response);
+    if (response.status !== 200) {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return response;
   } catch (error) {
     console.error(error);
@@ -145,11 +194,16 @@ export const getAdminDeleteTaskList = async () => {
 // 관리자 업무 수정
 export const updateTask = async (taskId: number, editTaskInfo: UpdatedTask) => {
   try {
-    const { data } = await api.put(
+    const { data, status } = await api.put(
       `/admin/manage/task/${taskId}/modify`,
       editTaskInfo
     );
     console.log("업무 수정 성공", data);
+    if (status === 200) {
+      showToast("success", "업무가 수정되었습니다.");
+    } else {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return data;
   } catch (error) {
     console.error("업무 수정 실패", error);
@@ -159,10 +213,29 @@ export const updateTask = async (taskId: number, editTaskInfo: UpdatedTask) => {
 // 관리자 업무 삭제
 export const deleteTask = async (taskId: number) => {
   try {
-    const { data } = await api.delete(`/admin/manage/task/${taskId}/delete`);
+    const { data, status } = await api.delete(
+      `/admin/manage/task/${taskId}/delete`
+    );
     console.log("업무 삭제 성공", data);
+    if (status !== 204) {
+      showToast("error", "에러가 발생했습니다.");
+    }
     return data;
   } catch (error) {
     console.error("업무 삭제 실패", error);
+  }
+};
+
+// 관리자 업무 활성 전환 (복구)
+export const adminRestoreTask = async (taskId: number) => {
+  try {
+    const response = await api.patch(`/admin/manage/task/${taskId}/activate`);
+    console.log(response);
+    if (response.status !== 200) {
+      showToast("error", "에러가 발생했습니다.");
+    }
+    return response;
+  } catch (error) {
+    console.error(error);
   }
 };

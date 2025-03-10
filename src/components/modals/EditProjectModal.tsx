@@ -6,7 +6,7 @@ import SelectMember from "../EditProjectModal/SelectMember";
 // import WordCloud from "../EditProjectModal/WordCloud";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
 import { patchProjectById, postProject } from "../../api/project";
@@ -14,6 +14,10 @@ import { useNavigate } from "react-router";
 import { progressType } from "../../utils/progressType";
 import { PROGRESS_STATUS } from "../../constants/status";
 import SimpleAlertModal from "./SimpleAlertModal";
+import { queryClient } from "../../main";
+import { getAllCategory } from "../../api/adminCategory";
+import { searchTagCount } from "../../api/search";
+import WordCloud from "../EditProjectModal/WordCloud";
 
 const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
@@ -133,7 +137,7 @@ const EditProjectModal = ({
     subCategories: subCate,
   });
 
-  // 최종 새프로젝트 정보
+  console.log(selectedCategory);
 
   // 프로젝트명, 분야 validate
   const validateFn = () => {
@@ -193,8 +197,12 @@ const EditProjectModal = ({
   const { mutateAsync } = useMutation({
     mutationFn: (newProjectInfo: postProjectType) =>
       postProject(newProjectInfo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] });
+    },
   });
 
+  /* 프로젝트 생성 */
   const newProjectPost = async (newProjectInfo: postProjectType) => {
     try {
       const response = await mutateAsync(newProjectInfo);
@@ -225,6 +233,10 @@ const EditProjectModal = ({
       selectedProject: ProjectListType;
       editProjectInfo: patchProjectRequestType;
     }) => patchProjectById(selectedProject.id, editProjectInfo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] });
+      setIsEditProjectModal(false);
+    },
   });
 
   const editProject = async (
@@ -236,8 +248,66 @@ const EditProjectModal = ({
       editProjectInfo,
     });
     console.log(response);
-    navigate(0);
   };
+
+  // API에서 카테고리 정보 가져오기
+  const { data: allCategoryData } = useQuery<AllCategoryType[]>({
+    queryKey: ["AllCategoryData"],
+    queryFn: getAllCategory,
+  });
+
+  // 태그 카운트 정보 가져오기
+  const { data: tagCountInfo } = useQuery({
+    queryKey: ["TagCountInfo"],
+    queryFn: async () => {
+      const response = await searchTagCount();
+      return response;
+    },
+  });
+
+  // 세부항목 태그카운트 정보
+  const subCategory1 = allCategoryData
+    ?.filter((data) => data.id === selectedCategory?.categoryId)?.[0]
+    ?.subcategories[0].tags.map((data) => data.name);
+  const subCategory2 = allCategoryData
+    ?.filter((data) => data.id === selectedCategory?.categoryId)?.[0]
+    ?.subcategories[1].tags.map((data) => data.name);
+
+  const [categoryData1, setCategoryData1] = useState<{ [key: string]: number }>(
+    {}
+  );
+  const [categoryData2, setCategoryData2] = useState<{ [key: string]: number }>(
+    {}
+  );
+  console.log(
+    allCategoryData?.filter(
+      (data) => data.id === selectedCategory?.categoryId
+    )?.[0]
+  );
+
+  useEffect(() => {
+    const subCategoryObject1 = subCategory1?.reduce<Record<string, number>>(
+      (acc, data) => {
+        acc[data] = tagCountInfo[data] ?? 0;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+    const subCategoryObject2 = subCategory2?.reduce<Record<string, number>>(
+      (acc, data) => {
+        acc[data] = tagCountInfo[data] ?? 0;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    if (subCategoryObject1 && subCategoryObject2) {
+      setCategoryData1(subCategoryObject1);
+      setCategoryData2(subCategoryObject2);
+    }
+  }, [selectedCategory]);
+  console.log(categoryData1);
+  console.log(Object.values(categoryData1).filter((data) => data !== 0));
 
   return (
     <div
@@ -392,45 +462,58 @@ const EditProjectModal = ({
       </div>
 
       {/* 워드 클라우드 */}
-      {/* {pages === 0 && selectedCategory.subCategories1 && (
+      {pages === 0 && selectedCategory.categoryId && (
         <div
           className="w-[350px] h-[600px] py-[20px]
           flex flex-col justify-between items-center"
-        > */}
-      {/* 세부항목1 워드클라우드 */}
-      {/* <div className="flex flex-col items-center">
-            {selectedCategory.subCategories1 && (
+        >
+          {/* 세부항목1 워드클라우드 */}
+          <div className="flex flex-col items-center">
+            {allCategoryData && (
               <div className="text-main-green font-bold">
-                {selectedCategory.subCategories1.data}
+                {
+                  allCategoryData?.filter(
+                    (data) => data.id === selectedCategory?.categoryId
+                  )?.[0].subcategories[0].name
+                }
               </div>
             )}
-            {selectedCategory.subCategories1 && (
-              <WordCloud
-                words={selectedCategory.subCategories1.data.map((contents) => ({
-                  text: contents.text,
-                  value: contents.value,
-                }))}
-              />
-            )}
-          </div> */}
-      {/* 세부항목2 워드클라우드 */}
-      {/* <div className="flex flex-col items-center">
-            {selectedCategory.subCategories2 && (
-              <div className="text-main-green font-bold">
-                {selectedCategory.subCategories2.data}
+            {categoryData1 && (
+              <div className="border-gray01 border-[1px]">
+                {/* {Object.values(categoryData1).filter((data)=>data !== 0)} */}
+                <WordCloud
+                  words={Object.keys(categoryData1).map((key) => ({
+                    text: key,
+                    value: categoryData1[key],
+                  }))}
+                />
               </div>
             )}
-            {selectedCategory.subCategories2 && (
-              <WordCloud
-                words={selectedCategory.subCategories2.data.map((contents) => ({
-                  text: contents.text,
-                  value: contents.value,
-                }))}
-              />
+          </div>
+          {/* 세부항목2 워드클라우드 */}
+          <div className="flex flex-col items-center">
+            {allCategoryData && (
+              <div className="text-main-green font-bold">
+                {
+                  allCategoryData?.filter(
+                    (data) => data.id === selectedCategory?.categoryId
+                  )?.[0].subcategories[1].name
+                }
+              </div>
+            )}
+            {categoryData2 && (
+              <div className="border-gray01 border-[1px]">
+                <WordCloud
+                  words={Object.keys(categoryData2).map((key) => ({
+                    text: key,
+                    value: categoryData2[key],
+                  }))}
+                />
+              </div>
             )}
           </div>
         </div>
-      )} */}
+      )}
       {endDateAlertModalOpen && (
         <div className="absolute top-[50px] z-20 bg-black/50 h-[calc(100vh-50px)] w-full flex items-center justify-center">
           <SimpleAlertModal

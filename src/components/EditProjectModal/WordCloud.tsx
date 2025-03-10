@@ -1,76 +1,59 @@
 import React, { useRef, useEffect } from "react";
-import * as d3 from "d3";
-import cloud from "d3-cloud";
-import { scaleSequential } from "d3-scale";
+import WordCloudForm from "wordcloud";
 
 const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
-  const svgRef = useRef<SVGSVGElement>(null);
-  const width = 300;
-  const height = 250;
-
-  // console.log(words);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (canvasRef.current) {
+      const wordArray: [string, number][] = words.map((word) => [
+        word.text,
+        word.value,
+      ]);
 
-    const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove(); // 기존 SVG 내용 제거
+      const gridSize = Math.round(
+        (16 * Math.max(...words.map((word) => word.value))) / 1024
+      );
 
-    const layout = cloud<Word>()
-      .size([width - 50, height - 50])
-      .words(
-        words.map((word) => ({
-          text: word.text,
-          size: word.value,
-        }))
-      )
-      .padding((d) => Math.log(d.size) * 2)
-      .rotate(() => (Math.random() > 0.5 ? 0 : 90)) // 가독성 고려
-      .font("Impact")
-      .fontSize((d) => Math.min(30, Math.max(10, d.size)))
-      .spiral("archimedean")
-      .random(Math.random) // random 문제 해결
-      .on("end", draw);
+      const maxWordValue = Math.max(...words.map((word) => word.value));
 
-    layout.start();
+      const weightFactor = (size: number): number => {
+        if (!canvasRef.current) return 0;
+        const baseSize = 16;
+        return baseSize + (size / maxWordValue) * 40;
+      };
+      const totalValue = words.reduce((sum, word) => sum + word.value, 0);
 
-    function draw(words: Word[]) {
-      const g = svg
-        .append("g")
-        .attr(
-          "transform",
-          `translate(${layout.size()[0] / 2},${layout.size()[1] / 2})`
-        );
+      // ✅ weight를 명시적으로 number로 변환하여 에러 해결
+      const getColor = (
+        word: string,
+        weight: string | number,
+        fontSize: number,
+        distance: number,
+        theta: number
+      ) => {
+        const numericWeight = Number(weight);
+        const intensity = numericWeight / totalValue;
+        console.log(word, fontSize, distance, theta);
+        return `rgb(43,62,52, ${intensity})`;
+      };
 
-      g.selectAll("text")
-        .data(words)
-        .enter()
-        .append("text")
-        .style("font-size", (d) => `${d.size}px`)
-        .style("font-family", "Impact")
-        .style("fill", (d) => {
-          const colorScale = scaleSequential(d3.interpolateGreens).domain([
-            d3.min(words, (d) => d.size) || 10,
-            d3.max(words, (d) => d.size) || 140,
-          ]);
-          return colorScale(d.size); // 글자 크기에 따라 색상이 변하도록 설정
-        })
-        .attr("text-center", "middle")
-        .attr(
-          "transform",
-          (d) => `translate(${d.x},${d.y}) rotate(${d.rotate})`
-        )
-        .text((d) => d.text);
+      WordCloudForm(canvasRef.current, {
+        list: wordArray,
+        gridSize: gridSize,
+        weightFactor: weightFactor,
+        fontFamily: "Impact, 'Pretendard'",
+        color: getColor,
+        backgroundColor: "#ffffff",
+        rotateRatio: 0.5,
+      });
     }
   }, [words]);
 
   return (
-    <svg
-      className="border-[1px] border-gray01"
-      ref={svgRef}
-      width="300"
-      height="250"
-    ></svg>
+    <div>
+      <canvas ref={canvasRef} width={300} height={250}></canvas>
+    </div>
   );
 };
 

@@ -12,13 +12,13 @@ import AdminEditCancelBtn from "../Button/AdminEditCancelBtn";
 const AdminAccountList = ({
   user,
   index,
-  deleteAccountIds,
-  setDeleteAccountIds,
+  setCheckedAccountIds,
+  checkedAccountIds,
 }: {
   user: AccountListProps;
   index: number;
-  deleteAccountIds: number[];
-  setDeleteAccountIds: React.Dispatch<React.SetStateAction<number[]>>;
+  checkedAccountIds: number[];
+  setCheckedAccountIds: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
@@ -32,25 +32,35 @@ const AdminAccountList = ({
 
   const [isChecked, setIsChecked] = useState(false);
 
+  useEffect(() => {
+    if (checkedAccountIds.includes(user.memberId)) {
+      setIsChecked(true);
+    } else {
+      setIsChecked(false);
+    }
+  }, [checkedAccountIds]);
+
   const toggleCheckBox = () => {
-    setIsChecked((prev) => !prev);
+    if (checkedAccountIds.includes(user.memberId)) {
+      setCheckedAccountIds((prev) => prev.filter((id) => id !== user.memberId));
+      setIsChecked(false);
+    } else {
+      setCheckedAccountIds((prev) => [...prev, user.memberId]);
+      setIsChecked(true);
+    }
   };
 
-  useEffect(() => {
-    if (isChecked) {
-      setDeleteAccountIds((prev) => [...prev, user.memberId]);
-    } else {
-      setDeleteAccountIds((prev) => prev.filter((id) => id !== user.memberId));
-    }
-  }, [isChecked]);
-
-  useEffect(() => {
-    console.log(deleteAccountIds);
-  }, [deleteAccountIds]);
+  // useEffect(() => {
+  //   if (isChecked) {
+  //     setCheckedAccountIds((prev) => [...prev, user.memberId]);
+  //   } else {
+  //     setCheckedAccountIds((prev) => prev.filter((id) => id !== user.memberId));
+  //   }
+  // }, [isChecked]);
 
   // 계정 관리 수정요청 데이터
   const editAccountData: EditAccountType = {
-    newName: editedUser.username,
+    name: editedUser.username,
   };
 
   // 계정관리 수정 함수

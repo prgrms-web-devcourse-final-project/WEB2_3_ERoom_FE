@@ -10,10 +10,10 @@ import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
 import { getProjectList } from "../../api/project";
 import { useAuthStore } from "../../store/authStore";
-import AlertModal from "../common/AlertModal";
 import { getAssignedTaskList } from "../../api/task";
 import { CALENDAR_COLORS } from "../../constants/calendarColors";
 import { dragChangeTask } from "../../utils/calendar/dragChangeTask";
+import { showToast } from "../../utils/toastConfig";
 
 interface CalendarProps {
   refetch: () => void;
@@ -45,20 +45,6 @@ const Calendar = ({ refetch }: CalendarProps) => {
 
   const navigate = useNavigate();
   const loginUser = useAuthStore((state) => state.member);
-
-  // 모달 적용
-  const [modalText, setModalText] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = (text: string) => {
-    setModalText(text);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalText("");
-    setIsModalOpen(false);
-  };
 
   // 랜덤 색상 함수
   const getRandomColor = () => {
@@ -211,17 +197,15 @@ const Calendar = ({ refetch }: CalendarProps) => {
         editable={true}
         droppable={true}
         eventDrop={(info: EventDropArg) => {
-          if (!showTasks) {
-            if (loginUser?.id !== info.event.extendedProps.creatorId) {
-              openModal("프로젝트 생성자만 수정할 수 있습니다");
-              info.revert();
-              return;
-            }
-          }
           if (showTasks) {
             mutateTask(info);
             refetch();
           } else {
+            if (loginUser?.id !== info.event.extendedProps.creatorId) {
+              showToast("error", "프로젝트 생성자만 수정할 수 있습니다");
+              info.revert();
+              return;
+            }
             mutate(info);
             refetch();
           }
@@ -238,11 +222,6 @@ const Calendar = ({ refetch }: CalendarProps) => {
           refetch();
         }}
       />
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-          <AlertModal text={modalText} onClose={closeModal} />
-        </div>
-      )}
     </>
   );
 };

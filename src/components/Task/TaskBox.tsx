@@ -6,7 +6,13 @@ import { getTaskById } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 import defaultImg from "../../assets/defaultImg.svg";
 
-const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
+const TaskBox = ({
+  isAll = true,
+  onClick,
+  task,
+  onUpdate,
+  refetch,
+}: TaskBoxProps) => {
   const { member } = useAuthStore();
 
   // 업무 수정 상세보기
@@ -16,11 +22,6 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
       return await getTaskById(task.taskId);
     },
   });
-
-  // console.log(updatedData);
-  // console.log(task);
-  // console.log(updatedData);
-  // console.log(task);
 
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
@@ -33,6 +34,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
     }; // as const 추가
 
     if (onUpdate) onUpdate(task.taskId, dataChange);
+    refetch();
   };
 
   /* 완료버튼 클릭 -> 진행 완료 상태 변경 함수 */
@@ -46,10 +48,11 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
     }; // as const 추가
 
     if (onUpdate) onUpdate(task.taskId, dataChange);
+    refetch();
   };
 
   // 전체 업무 박스
-  if (isAll && updatedData) {
+  if (isAll && task) {
     return (
       <div
         className={`w-[320px] h-[120px] bg-white border border-main-green02
@@ -63,17 +66,15 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
         <div className="flex justify-between items-center">
           <p className="font-bold">{task?.title}</p>
           <p className="text-[12px] font-medium">
-            {PROGRESS_STATUS[updatedData.status]}
+            {PROGRESS_STATUS[task.status]}
           </p>
         </div>
 
         {/* 기간, 업무완료,시잔 버튼 */}
         <div className="flex justify-between items-center">
           <p className="text-[12px]">
-            {updatedData &&
-              `${updatedData.startDate.split("T")[0]} ~ ${
-                updatedData.endDate.split("T")[0]
-              }`}
+            {task &&
+              `${task.startDate.split("T")[0]} ~ ${task.endDate.split("T")[0]}`}
           </p>
           {task.assignedMemberName === member?.username &&
             (task.status !== "IN_PROGRESS" ? (
@@ -83,6 +84,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleStateStart();
+                  refetch();
                 }}
                 css="border-main-green01 h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-green01 bg-main-green02"
               />
@@ -93,6 +95,7 @@ const TaskBox = ({ isAll = true, onClick, task, onUpdate }: TaskBoxProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleCompleteStart();
+                  refetch();
                 }}
                 css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
               />

@@ -6,12 +6,7 @@ import AllProjectOutModal from "../../components/modals/AllProjectOutModal";
 import EditProjectModal from "../../components/modals/EditProjectModal";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectList } from "../../api/project";
-
-interface ProjectRoomData {
-  completed: ProjectListType[];
-  inProgress: ProjectListType[];
-  beforeStart: ProjectListType[];
-}
+import { useAuthStore } from "../../store/authStore";
 
 const PROJECT_TAB: (
   | "진행 완료 프로젝트"
@@ -23,6 +18,17 @@ const ProjectRoom = () => {
   const [filterProject, setFilterProject] = useState<
     "진행 완료 프로젝트" | "진행 중인 프로젝트" | "진행 예정 프로젝트"
   >("진행 중인 프로젝트");
+
+  const { member, idToken, accessToken, refreshToken } = useAuthStore();
+  console.log(
+    member,
+    "idToken",
+    idToken,
+    "accessToken",
+    accessToken,
+    "refreshToken",
+    refreshToken
+  );
 
   // 프로젝트리스트 데이터
   const { data: projectRoomList, isLoading } = useQuery<ProjectRoomData>({
@@ -45,6 +51,7 @@ const ProjectRoom = () => {
         beforeStart: beforeStartData,
       };
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const FILTER_PROJECT_VALUE = {

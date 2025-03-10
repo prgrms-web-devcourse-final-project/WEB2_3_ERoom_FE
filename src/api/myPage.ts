@@ -15,6 +15,9 @@ export const getMyPageInfo = async () => {
 export const editMyPageInfo = async (formData: FormData) => {
   try {
     const response = await api.putForm("api/mypage", formData);
+    formData.forEach((value, key) => {
+      console.log(key, value); // 각 키-값 쌍을 출력
+    });
     console.log(response);
     return response;
   } catch (error) {

@@ -8,13 +8,17 @@ import UnCheckBox from "../../../assets/icons/unchecked_box.svg";
 import CheckBox from "../../../assets/icons/checked_box.svg";
 import AdminTaskList from "./AdminTaskList";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import ResotreIcon from "../../../assets/icons/restore_account.svg";
 import {
+  adminRestoreTask,
   deleteTask,
   getAdminDeleteTaskList,
   getAdminTaskList,
   updateTask,
 } from "../../../api/admin";
 import ConfirmModal from "../../modals/ConfirmModal";
+import { queryClient } from "../../../main";
+import { showToast } from "../../../utils/toastConfig";
 
 export interface TasksListType {
   id: number;
@@ -117,7 +121,10 @@ const AdminTask = () => {
       // 삭제 요청 실행 (모든 삭제 요청이 완료될 때까지 대기)
       await Promise.all(isCheckedTask.map((taskId) => deleteTaskFn(taskId)));
 
-      console.log("삭제 완료");
+      showToast(
+        "success",
+        `${isCheckedTask.length}개의 업무가 삭제되었습니다.`
+      );
 
       // 삭제 요청이 성공한 후 상태 업데이트
       setDeleteTasks((prevTasks) =>
@@ -172,7 +179,30 @@ const AdminTask = () => {
   const handleButtonClick = (type: "active" | "inactive") => {
     setTaskMenu(type);
   };
-  // console.log(taskMenu);
+
+  // 업무 활성 전환(복구)
+  const { mutate: restoreTask } = useMutation({
+    mutationFn: (taskId: number) => adminRestoreTask(taskId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["TaskList"] });
+      queryClient.invalidateQueries({ queryKey: ["DeleteTaskList"] });
+    },
+  });
+
+  const handleTaskRestore = async () => {
+    if (isCheckedTask.length === 0) {
+      console.log("선택된 업무가 없습니다.");
+      return;
+    }
+    await Promise.all(isCheckedTask.map((taskId) => restoreTask(taskId)));
+    setIsCheckedTask([]);
+    showToast("success", `${isCheckedTask.length}개의 업무가 복구되었습니다.`);
+    console.log("복구 완료");
+  };
+
+  useEffect(() => {
+    console.log(isCheckedTask);
+  }, [isCheckedTask]);
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
@@ -188,6 +218,7 @@ const AdminTask = () => {
 
   // taskMenu 변경 될 때 페이지 1로 이동
   useEffect(() => {
+    setIsCheckedTask([]);
     setCurrentPage(1);
   }, [taskMenu]);
 
@@ -275,16 +306,21 @@ const AdminTask = () => {
           {/* 삭제 버튼 */}
           <div className="flex gap-[5px] w-[80px] justify-end">
             {taskMenu === "inactive" && (
-              <button>
-                <img
-                  src={DeleteIcon}
-                  alt="계정 삭제 버튼"
-                  className="cursor-pointer"
-                  onClick={() => {
-                    isCheckedTask.length !== 0 && setIsConfirmModal(true);
-                  }}
-                />
-              </button>
+              <>
+                <button onClick={handleTaskRestore} className="cursor-pointer">
+                  <img src={ResotreIcon} alt="복구 버튼" />
+                </button>
+                <button>
+                  <img
+                    src={DeleteIcon}
+                    alt="계정 삭제 버튼"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      isCheckedTask.length !== 0 && setIsConfirmModal(true);
+                    }}
+                  />
+                </button>
+              </>
             )}
           </div>
         </div>

@@ -13,11 +13,14 @@ const AlarmBox = ({
   const BASE_STYLE = "p-[10px]  rounded-[5px] cursor-pointer";
 
   const THEME_STYLE = {
-    MESSAGE_SEND: "border border-main-green01 bg-main-beige01 text-main-green",
-    TASK_ASSIGN: "border border-main-green01 bg-main-green02 text-main-green",
+    MESSAGE_SEND:
+      "border border-main-green01 bg-main-beige01 text-main-green hover:border-[2px]",
+    TASK_ASSIGN:
+      "border border-main-green01 bg-main-green02 text-main-green hover:border-[2px]",
     PROJECT_INVITE:
-      "border border-main-green01 bg-main-green02 text-main-green",
-    PROJECT_EXIT: "border border-header-red-hover bg-red text-header-red",
+      "border border-main-green01 bg-main-green02 text-main-green hover:border-[2px]",
+    PROJECT_EXIT:
+      "border border-header-red-hover bg-red text-header-red hover:border-[2px]",
   }[theme];
 
   const THEME_TEXT = {
@@ -54,7 +57,6 @@ const AlarmBox = ({
     PROJECT_INVITE: `/project-room/${THEME_ID}`,
     PROJECT_EXIT: `/project-room/${THEME_ID}`,
   }[theme];
-
   const handleClick = () => {
     console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
     navigate(THEME_NAVIGATE);
@@ -69,8 +71,8 @@ const AlarmBox = ({
       }}
     >
       <div className="flex flex-col gap-[5px]">
-        <span className="text-[12px] font-bold">{THEME_TEXT}</span>
-        <span className="text-[10px] ">{THEME_FROM}</span>
+        <span className="text-[13px] font-bold">{THEME_TEXT}</span>
+        <span className="text-[11px] ">{THEME_FROM}</span>
       </div>
     </div>
   );
