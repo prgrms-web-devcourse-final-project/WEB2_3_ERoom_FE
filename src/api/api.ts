@@ -56,11 +56,12 @@ api.interceptors.response.use(
 
           // 기존 accessToken을 제거한 후 새로 요청
           useAuthStore.getState().login(idToken, null, refreshToken, member);
+          console.log(login);
 
           const res = await api.post("/api/auth/refresh", { refreshToken });
 
           // 새 accessToken 저장
-          login(idToken, res.data.accessToken, res.data.refreshToken, member);
+          login(idToken, res.data.accessToken, refreshToken, member);
 
           // 요청 헤더 업데이트 후 재시도
           originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
