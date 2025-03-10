@@ -1,6 +1,6 @@
 import Button from "../components/common/Button";
 import "../styles/AuthLayout.css";
-import KakaoLogo from "../assets/kakao_logo.svg";
+// import KakaoLogo from "../assets/kakao_logo.svg";
 import GoogleLogo from "../assets/google_logo.svg";
 import { useAuthStore } from "../store/authStore";
 import { Navigate } from "react-router";
