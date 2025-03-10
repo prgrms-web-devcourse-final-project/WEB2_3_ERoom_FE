@@ -87,10 +87,8 @@ const CreateTaskModal = ({
     day: String(now.getDate()).padStart(2, "0"),
     hour: String((now.getHours() + 1) % 12 || 12).padStart(2, "0"), // 시작보다 1시간 뒤
     minute: String(now.getMinutes()).padStart(2, "0"),
-    ampm: now.getHours() >= 12 ? "PM" : "AM",
+    ampm: now.getHours() + 1 >= 12 ? "PM" : "AM",
   };
-  console.log(nowStart);
-  console.log(nowEnd);
 
   // 선택한 일정 시작 상태 (현재 시간으로 기본 설정)
   const [selectedStartDate, setSelectedStartDate] =
@@ -218,7 +216,7 @@ const CreateTaskModal = ({
       setSelectedEndDate(formattedProjectEndDate);
     }
     console.log(startDate);
-    console.log(nowDate);
+    console.log(endDate);
     // 시작일이 프로젝트 시작 이전일 경우 모달 오픈, 프로젝트 기간으로 설정
     if (startDate < nowDate) {
       console.log(startDate);
@@ -242,12 +240,12 @@ const CreateTaskModal = ({
     }
 
     // 시작이 종료 이전으로 설정되게 제한
-    if (startDate >= endDate) {
-      openModal("업무 시작은 종료 이전으로 설정해야 합니다.");
-      // 시작과 종료 초기화
-      setSelectedStartDate(nowStart);
-      setSelectedEndDate(nowEnd);
-    }
+    // if (startDate >= endDate) {
+    //   openModal("업무 시작은 종료 이전으로 설정해야 합니다.");
+    //   // 시작과 종료 초기화
+    //   setSelectedStartDate(nowStart);
+    //   setSelectedEndDate(nowEnd);
+    // }
   }, [startDate, endDate]);
 
   return (
