@@ -34,7 +34,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
       ) => {
         const numericWeight = Number(weight);
         const intensity = numericWeight / totalValue;
-        console.log(intensity);
+        console.log(word, fontSize, distance, theta);
         return `rgb(43,62,52, ${intensity})`;
       };
 
@@ -42,7 +42,7 @@ const WordCloud: React.FC<WordCloudProps> = ({ words }) => {
         list: wordArray,
         gridSize: gridSize,
         weightFactor: weightFactor,
-        fontFamily: "Impact",
+        fontFamily: "Impact, 'Pretendard'",
         color: getColor,
         backgroundColor: "#ffffff",
         rotateRatio: 0.5,
