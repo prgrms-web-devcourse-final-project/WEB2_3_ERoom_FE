@@ -197,6 +197,9 @@ const EditProjectModal = ({
   const { mutateAsync } = useMutation({
     mutationFn: (newProjectInfo: postProjectType) =>
       postProject(newProjectInfo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] });
+    },
   });
 
   /* 프로젝트 생성 */
