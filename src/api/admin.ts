@@ -7,7 +7,9 @@ export const getAdminDashboard = async () => {
     const { data } = await api.get("/admin/dashboard");
     console.log(data);
     return data;
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 // 관리자 활성 계정 관리
@@ -20,6 +22,7 @@ export const getMemberList = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching member list:", error);
+    throw error;
   }
 };
 
@@ -97,6 +100,7 @@ export const getAdminProjectList = async () => {
     return data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -175,6 +179,7 @@ export const getAdminTaskList = async () => {
     return data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 

@@ -19,6 +19,7 @@ import {
 import ConfirmModal from "../../modals/ConfirmModal";
 import { queryClient } from "../../../main";
 import { showToast } from "../../../utils/toastConfig";
+import axios from "axios";
 
 export interface TasksListType {
   id: number;
@@ -50,14 +51,26 @@ interface updatedTaskInfo {
 
 const AdminTask = () => {
   // 활성 업무리스트 데이터
-  const { data: taskList, refetch: refetchActive } = useQuery<TaskList[]>({
+  const {
+    data: taskList,
+    refetch: refetchActive,
+    error,
+  } = useQuery<TaskList[]>({
     queryKey: ["TaskList"],
     queryFn: async () => {
       const taskListData = await getAdminTaskList();
       return taskListData;
     },
     // staleTime: 0,
+    retry: false,
   });
+
+  useEffect(() => {
+    if (error && axios.isAxiosError(error) && error.response?.status === 403) {
+      console.warn(" 403 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   // 비활성 업무리스트 데이터
   const { data: deleteTaskList, refetch: refetchInactive } = useQuery<

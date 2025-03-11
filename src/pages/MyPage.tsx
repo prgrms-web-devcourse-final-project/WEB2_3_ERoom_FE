@@ -9,6 +9,7 @@ import { queryClient } from "../main";
 import SimpleAlertModal from "../components/modals/SimpleAlertModal";
 import AlertModal from "../components/common/AlertModal";
 import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router";
 interface MyPageInfoType {
   email: string;
   username: string;
@@ -110,6 +111,11 @@ const MyPage = () => {
   });
   // 정보 수정 성공 시 모달 오픈
   const [editSuccessModalOpen, setEditSuccessModalOpen] = useState(false);
+
+  // 관리자인지 여부
+  const memberGrade = useAuthStore((state) => state.member?.memberGrade);
+  const navigate = useNavigate();
+
   if (isLoading) {
     return (
       <section className="mypage-background flex justify-center items-center relative min-h-[calc(100vh-50px)]">
@@ -248,18 +254,35 @@ const MyPage = () => {
           </div>
           {/* 버튼 모음 */}
           <div className="flex flex-col justify-center gap-[10px]">
-            <Button
-              text="수정하기"
-              size="md"
-              css="bg-main-green01 border border-main-green text-main-beige01"
-              onClick={() => {
-                if (!name.trim().length || !companyInfo.trim().length) {
-                  openModal("이름과 소속은 필수로 입력해야 됩니다!");
-                  return;
-                }
-                editMyInfo();
-              }}
-            />
+            <div className="flex gap-[30px]">
+              <Button
+                text="수정하기"
+                size="md"
+                css="bg-main-green01 border border-main-green text-main-beige01"
+                onClick={() => {
+                  if (!name.trim().length || !companyInfo.trim().length) {
+                    openModal("이름과 소속은 필수로 입력해야 됩니다!");
+                    return;
+                  }
+                  editMyInfo();
+                }}
+              />
+              {memberGrade === "ADMIN" ? (
+                <>
+                  <Button
+                    text="관리자 페이지"
+                    size="md"
+                    css=" w-[130px] bg-white border border-main-green01 text-main-green01"
+                    onClick={() => {
+                      navigate("/admin");
+                    }}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+
             {/* <Button
               text="탈퇴하기"
               size="md"

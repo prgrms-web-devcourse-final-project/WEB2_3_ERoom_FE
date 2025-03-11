@@ -2,12 +2,22 @@ import { useQuery } from "@tanstack/react-query";
 import Chart from "./Chart";
 import { getAdminDashboard } from "../../api/admin";
 import dayjs from "dayjs";
+import axios from "axios";
+import { useEffect } from "react";
 
 const DashBoard = () => {
-  const { data: dashboardData } = useQuery<DashboardType[]>({
+  const { data: dashboardData, error } = useQuery<DashboardType[], Error>({
     queryKey: ["AdminDashboardData"],
     queryFn: getAdminDashboard,
+    retry: false,
   });
+
+  useEffect(() => {
+    if (error && axios.isAxiosError(error) && error.response?.status === 403) {
+      console.warn(" 403 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   if (!dashboardData) {
     return <div>로딩</div>;
