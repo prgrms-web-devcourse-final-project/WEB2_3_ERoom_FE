@@ -12,12 +12,21 @@ import { queryClient } from "../../../main";
 import { showToast } from "../../../utils/toastConfig";
 import AdminTagChart from "./AdminTagChart";
 import TagCountBox from "./TagCountBox";
+import axios from "axios";
 
 const AdminTag = () => {
-  const { data: allCategories } = useQuery<AllCategoryType[]>({
+  const { data: allCategories, error } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategory"],
     queryFn: getAllCategory,
+    retry: false,
   });
+
+  useEffect(() => {
+    if (error && axios.isAxiosError(error) && error.response?.status === 403) {
+      console.warn(" 403 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   const [subCategories2, setSubCategories2] = useState<SubCategoryType[]>([]);
 
