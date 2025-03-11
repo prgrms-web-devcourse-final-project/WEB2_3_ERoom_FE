@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectById, getProjectDetail } from "../../api/project";
+import axios from "axios";
 
 interface ProjectDetailType {
   projectId: number;
@@ -60,6 +61,7 @@ const ProjectRoomDetail = () => {
   const {
     data: projectDetailList,
     isLoading,
+    error,
     refetch: getProjectDetailRefetch,
   } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
@@ -67,6 +69,17 @@ const ProjectRoomDetail = () => {
       return await getProjectDetail(Number(projectId!));
     },
   });
+
+  useEffect(() => {
+    if (
+      error &&
+      axios.isAxiosError(error) &&
+      (error.response?.status === 403 || error.response?.status === 404)
+    ) {
+      console.warn("403 또는 404 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   console.log(projectDetailList);
 
