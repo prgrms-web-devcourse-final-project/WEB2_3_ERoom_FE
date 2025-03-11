@@ -30,12 +30,15 @@ const SignIn = () => {
 
   return (
     <div
-      className="w-[554px] h-full bg-[#ffffff94] px-[100px] py-[50px] 
-    flex flex-col gap-[50px] rounded-[10px]"
+      className="w-[554px] h-full  px-[100px] py-[50px] 
+    flex flex-col gap-[30px] rounded-[10px]"
     >
       {/* LOGIN */}
       <div className="text-center">
-        <p className="text-logo-green-light font-bold text-[20px]">LOGIN</p>
+        <p className="text-[40px]">LOGIN</p>
+        <p className="text-logo-green-light font-bold text-[20px]">
+          E:room에 오신 것을 환영합니다.
+        </p>
       </div>
 
       {/* 버튼 모음 */}
@@ -61,7 +64,7 @@ const SignIn = () => {
         <Button
           text="구글 로그인"
           size="lg"
-          css="bg-white border-gray01 text-black gap-[10px]"
+          css="bg-white border-gray01 text-black text-[18px] gap-[10px] h-[60px]"
           logo={GoogleLogo}
           onClick={() => handleGoogleLogin()}
         />

@@ -26,8 +26,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   const loginUser = useAuthStore((state) => state.member);
   const [isModal, setIsModal] = useState<boolean>(false);
 
-  console.log(memberData);
-
   useEffect(() => {
     console.log(selectedData);
   }, [selectedData]);

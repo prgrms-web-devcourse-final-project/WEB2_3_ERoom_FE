@@ -37,8 +37,8 @@ const AdminTagChart = () => {
       {
         label: "빈도 수",
         data: tagCount ? Object.values(tagCount) : [],
-        backgroundColor: "#465448", // 바 색상
-        borderColor: "#465448",
+        backgroundColor: "#46544885", // 바 색상
+        borderColor: "#46544885",
         borderWidth: 1,
       },
     ],

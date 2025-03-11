@@ -4,6 +4,8 @@ import UpdateTaskModal from "../modals/UpdateTaskModal";
 import { useMutation } from "@tanstack/react-query";
 import { deleteTask, updateTask } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
+import dayjs from "dayjs";
+import { showToast } from "../../utils/toastConfig";
 
 const TaskList = ({
   name,
@@ -84,7 +86,9 @@ const TaskList = ({
     }
   };
 
-  //추후 로그인한 사용자와 테스크의 memberId가 같은 테스크박스에만 모달 열리게 처리 필요
+  const IS_PROJECT_END =
+    projectEditInfo?.endDate &&
+    projectEditInfo?.endDate < dayjs().format("YYYY-MM-DDTHH:mm:ss");
 
   return (
     <div
@@ -97,8 +101,19 @@ const TaskList = ({
           <TaskBox
             key={task.taskId}
             onClick={() => {
-              task.assignedMemberName === member?.username && openModal(task);
+              if (task.assignedMemberName === member?.username) {
+                if (IS_PROJECT_END) {
+                  showToast(
+                    "warning",
+                    "마감기한이 지난 프로젝트는 업무 수정 및 생성이 안됩니다."
+                  );
+                  console.log("first");
+                } else {
+                  openModal(task);
+                }
+              }
             }}
+            isProjectEnd={IS_PROJECT_END}
             isAll={isAll}
             task={task}
             onUpdate={handleUpdateTask}

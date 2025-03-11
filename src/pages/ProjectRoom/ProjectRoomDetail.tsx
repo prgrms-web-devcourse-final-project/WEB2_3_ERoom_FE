@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectById, getProjectDetail } from "../../api/project";
+import dayjs from "dayjs";
+import { showToast } from "../../utils/toastConfig";
 
 interface ProjectDetailType {
   projectId: number;
@@ -219,6 +221,18 @@ const ProjectRoomDetail = () => {
               css="bg-transparent border-main-green01 
               text-main-green01 text-[14px]"
               onClick={() => {
+                if (projectEditInfo) {
+                  if (
+                    projectEditInfo.endDate <
+                    dayjs().format("YYYY-MM-DDTHH:mm:ss")
+                  ) {
+                    showToast(
+                      "error",
+                      "마감기한이 지난 프로젝트는 업무 생성 및 수정이 불가합니다."
+                    );
+                    return;
+                  }
+                }
                 setIsEditTaskModal(true);
               }}
             />

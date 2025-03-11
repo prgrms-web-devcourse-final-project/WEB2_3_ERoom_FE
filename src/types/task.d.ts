@@ -16,7 +16,6 @@ interface selectedDateType {
   day: string;
   hour: string;
   minute: string;
-  ampm: string;
 }
 
 interface TaskListProps {
@@ -34,6 +33,7 @@ interface TaskBoxProps {
   task: Task;
   onUpdate?: (taskId: number, updateData: UpdateTask) => void;
   refetch: () => void;
+  isProjectEnd: boolean | string | undefined;
 }
 
 interface Task {

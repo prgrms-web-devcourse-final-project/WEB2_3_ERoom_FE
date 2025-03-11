@@ -184,38 +184,6 @@ const DateTimeSelect = ({
 
         {/* 시간 */}
         <div className="flex gap-[2px]">
-          {/* AM/PM 선택 */}
-          <div className="w-[36px] relative drop-shadow-xl">
-            <div
-              className="border border-main-green01 rounded-[5px] w-full h-full px-[5px] flex items-center justify-center
-              text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
-              onClick={() => toggleDropdown("ampm")}
-            >
-              {/* {selectedDate?.ampm || nowAmPm} */}
-              {selectedDate.ampm}
-            </div>
-            {openDropdown === "ampm" && (
-              <ul
-                ref={dropdownRefs.ampm}
-                className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green 
-                bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none "
-              >
-                <li
-                  className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer "
-                  onClick={() => selectOption("ampm", "AM")}
-                >
-                  AM
-                </li>
-                <li
-                  className="h-[40px] flex items-center justify-center hover:bg-main-green02 hover:text-main-beige01 cursor-pointer "
-                  onClick={() => selectOption("ampm", "PM")}
-                >
-                  PM
-                </li>
-              </ul>
-            )}
-          </div>
-
           {/* 시간 선택 */}
           <div className="w-[36px] relative drop-shadow-xl">
             <div
@@ -231,9 +199,15 @@ const DateTimeSelect = ({
                 className="absolute mt-1 w-full border border-main-green01 rounded-[5px] text-[14px] font-bold text-main-green 
                 bg-gradient-to-t from-[#E1E6E2] to-white cursor-pointer  max-h-40 overflow-y-auto scrollbar-none "
               >
-                {generateOptions(1, 12)}
+                {generateOptions(0, 23)}
               </ul>
             )}
+          </div>
+          <div
+            className="border border-main-green01 rounded-[5px] w-[8px] h-full px-[8px] flex items-center justify-center
+              text-[14px] font-bold text-main-green bg-gradient-to-t from-[#E1E6E2] to-white/40 cursor-pointer"
+          >
+            <p>:</p>
           </div>
 
           {/* 분 선택 */}
