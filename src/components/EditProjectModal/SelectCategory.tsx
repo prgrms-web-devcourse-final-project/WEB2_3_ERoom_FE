@@ -3,7 +3,7 @@ import cancelButton from "../../assets/button/cancelButton.svg";
 import triangleUp from "../../assets/button/triangle/triangleUp.svg";
 import triangleDown from "../../assets/button/triangle/triangleDown.svg";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCategory } from "../../api/adminCategory";
+import { getCategory } from "../../api/category";
 
 // 선택된 데이터 타입
 interface SelectedDataType {
@@ -35,7 +35,7 @@ const SelectCategory = ({
   // API에서 카테고리 정보 가져오기
   const { data: allCategoryData } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategoryData"],
-    queryFn: getAllCategory,
+    queryFn: getCategory,
   });
 
   // 드롭다운 상태

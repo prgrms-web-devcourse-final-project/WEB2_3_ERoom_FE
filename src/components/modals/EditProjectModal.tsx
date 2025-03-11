@@ -3,7 +3,6 @@ import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectCategory from "../EditProjectModal/SelectCategory";
 import SelectMember from "../EditProjectModal/SelectMember";
-// import WordCloud from "../EditProjectModal/WordCloud";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,9 +14,9 @@ import { progressType } from "../../utils/progressType";
 import { PROGRESS_STATUS } from "../../constants/status";
 import SimpleAlertModal from "./SimpleAlertModal";
 import { queryClient } from "../../main";
-import { getAllCategory } from "../../api/adminCategory";
 import { searchTagCount } from "../../api/search";
 import WordCloud from "../EditProjectModal/WordCloud";
+import { getCategory } from "../../api/category";
 
 const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
@@ -45,7 +44,6 @@ const EditProjectModal = ({
     day: "",
     hour: "",
     minute: "",
-    ampm: "",
   });
   // 프로젝트 종료 정보 초기화 상태
   const [endDateInfo, setEndDateInfo] = useState({
@@ -54,7 +52,6 @@ const EditProjectModal = ({
     day: "",
     hour: "",
     minute: "",
-    ampm: "",
   });
   // 프로젝트 네임
   const [newProjectNameValue, setNewProjectNameValue] = useState<string>("");
@@ -90,9 +87,8 @@ const EditProjectModal = ({
     const startYear = startDate.format("YYYY");
     const startMonth = startDate.format("MM");
     const startDay = startDate.format("DD");
-    const startHour = startDate.format("hh"); // 12시간 형식
+    const startHour = startDate.format("HH"); // 12시간 형식
     const startMinute = startDate.format("mm");
-    const startAmpm = startDate.format("A"); // AM/PM
 
     setStartDateInfo({
       year: startYear,
@@ -100,20 +96,16 @@ const EditProjectModal = ({
       day: startDay,
       hour: startHour,
       minute: startMinute,
-      ampm: startAmpm,
     });
 
     const endDate = selectedProject
       ? dayjs(selectedProject.endDate).locale("en")
-      : dayjs().locale("en");
+      : dayjs().locale("en").add(1, "hour");
     const endYear = endDate.format("YYYY");
     const endMonth = endDate.format("MM");
     const endDay = endDate.format("DD");
-    const endHour = selectedProject
-      ? endDate.format("hh")
-      : endDate.add(1, "hour").format("hh"); // 12시간 형식
+    const endHour = endDate.format("HH"); // 12시간 형식
     const endMinute = endDate.format("mm");
-    const endAmpm = endDate.format("A"); // AM/PM
 
     setEndDateInfo({
       year: endYear,
@@ -121,7 +113,6 @@ const EditProjectModal = ({
       day: endDay,
       hour: endHour,
       minute: endMinute,
-      ampm: endAmpm,
     });
   }, [selectedProject]);
 
@@ -136,8 +127,6 @@ const EditProjectModal = ({
     categoryName: selectedProject?.categoryName,
     subCategories: subCate,
   });
-
-  console.log(selectedCategory);
 
   // 프로젝트명, 분야 validate
   const validateFn = () => {
@@ -172,14 +161,14 @@ const EditProjectModal = ({
 
   // 시작날짜 포맷
   const startFormattedDate = dayjs(
-    `${startDateInfo.year}-${startDateInfo.month}-${startDateInfo.day} ${startDateInfo.hour}:${startDateInfo.minute} ${startDateInfo.ampm}`,
-    "YYYY-MM-DD hh:mm A"
+    `${startDateInfo.year}-${startDateInfo.month}-${startDateInfo.day} ${startDateInfo.hour}:${startDateInfo.minute}`,
+    "YYYY-MM-DD HH:mm"
   ).format("YYYY-MM-DDTHH:mm:ss");
 
   // 종료날짜 포맷
   const endFormatDate = dayjs(
-    `${endDateInfo.year}-${endDateInfo.month}-${endDateInfo.day} ${endDateInfo.hour}:${endDateInfo.minute} ${endDateInfo.ampm}`,
-    "YYYY-MM-DD hh:mm A"
+    `${endDateInfo.year}-${endDateInfo.month}-${endDateInfo.day} ${endDateInfo.hour}:${endDateInfo.minute}`,
+    "YYYY-MM-DD HH:mm"
   ).format("YYYY-MM-DDTHH:mm:ss");
 
   // 새 프로젝트 생성 정보
@@ -253,7 +242,7 @@ const EditProjectModal = ({
   // API에서 카테고리 정보 가져오기
   const { data: allCategoryData } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategoryData"],
-    queryFn: getAllCategory,
+    queryFn: getCategory,
   });
 
   // 태그 카운트 정보 가져오기
@@ -279,11 +268,6 @@ const EditProjectModal = ({
   const [categoryData2, setCategoryData2] = useState<{ [key: string]: number }>(
     {}
   );
-  console.log(
-    allCategoryData?.filter(
-      (data) => data.id === selectedCategory?.categoryId
-    )?.[0]
-  );
 
   useEffect(() => {
     const subCategoryObject1 = subCategory1?.reduce<Record<string, number>>(
@@ -306,8 +290,6 @@ const EditProjectModal = ({
       setCategoryData2(subCategoryObject2);
     }
   }, [selectedCategory]);
-  console.log(categoryData1);
-  console.log(Object.values(categoryData1).filter((data) => data !== 0));
 
   return (
     <div

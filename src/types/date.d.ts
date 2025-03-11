@@ -4,7 +4,6 @@ interface selectedDateType {
   day: string;
   hour: string;
   minute: string;
-  ampm: string;
 }
 
 interface DateTimeSelectProps {
@@ -14,7 +13,6 @@ interface DateTimeSelectProps {
     day: string;
     hour: string;
     minute: string;
-    ampm: string;
   };
   setSelectedDate: React.Dispatch<
     React.SetStateAction<{
@@ -23,7 +21,6 @@ interface DateTimeSelectProps {
       day: string;
       hour: string;
       minute: string;
-      ampm: string;
     }>
   >;
   title?: "시작" | "종료";

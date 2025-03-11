@@ -5,6 +5,7 @@ import { debounce } from "lodash";
 import { useAuthStore } from "../../store/authStore";
 import AlertModal from "../common/AlertModal";
 import SimpleAlertModal from "../modals/SimpleAlertModal";
+import defaultImg from "../../assets/defaultImg.svg";
 
 type SelectMembersProps<T extends "업무" | "프로젝트"> = {
   selectedData?: T extends "프로젝트" ? ProjectDataType : UpdateTask;
@@ -25,8 +26,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
 }: SelectMembersProps<T>) => {
   const loginUser = useAuthStore((state) => state.member);
   const [isModal, setIsModal] = useState<boolean>(false);
-
-  console.log(memberData);
 
   useEffect(() => {
     console.log(selectedData);
@@ -107,7 +106,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
       }
     }
   };
-  console.log(memberData);
 
   /* 취소 버튼 클릭 시 선택된 팀원에서 제거 */
   const handleCancelClick = (id: number) => {
@@ -181,13 +179,17 @@ const SelectMember = <T extends "업무" | "프로젝트">({
         {selectedMembers?.map((member) => (
           <div
             key={member.memberId}
-            className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
-              border-[1px] border-main-green cursor-pointer"
-            style={{ backgroundImage: `url(${member.profile})` }}
+            className="w-[50px] h-[50px] relative cursor-pointer"
             onClick={() => handleCancelClick(member.memberId)}
           >
+            <img
+              src={member.profile ?? defaultImg}
+              alt="프로필 이미지"
+              className="w-full h-full rounded-[100px] 
+              border-[1px] border-main-green "
+            />
             <div
-              className="flex justify-center items-center
+              className="flex justify-center items-center absolute inset-0
                   w-full h-full rounded-[100px] bg-main-green/70
                 text-white text-[14px] text-center font-medium
                   opacity-0 hover:opacity-100 transition-opacity duration-300"
