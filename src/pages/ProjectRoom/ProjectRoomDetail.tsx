@@ -68,6 +68,7 @@ const ProjectRoomDetail = () => {
     queryFn: async () => {
       return await getProjectDetail(Number(projectId!));
     },
+    retry: false,
   });
 
   useEffect(() => {

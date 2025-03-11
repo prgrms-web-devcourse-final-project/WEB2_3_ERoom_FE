@@ -60,6 +60,7 @@ const MeetingRoomChatBox = ({
     queryKey: ["meetingroom", projectId],
     queryFn: () => getMeetingroom(projectId),
     select: (data) => data || ({} as MeetingroomType),
+    retry: false,
   });
 
   useEffect(() => {
