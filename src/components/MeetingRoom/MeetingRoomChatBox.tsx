@@ -9,6 +9,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StompSubscription } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
 import useWebSocketStore from "../../store/useWebSocketStore";
+import { showToast } from "../../utils/toastConfig";
 
 const MeetingRoomChatBox = ({
   css,
@@ -124,6 +125,13 @@ const MeetingRoomChatBox = ({
     if (!stompClient || !text.trim() || !messageList?.groupChatRoom.chatRoomId)
       return;
 
+    if (
+      messageList.status === "COMPLETED" ||
+      messageList.status === "BEFORE_START"
+    ) {
+      showToast("error", `진행 중인 프로젝트가 아닙니다`);
+      return;
+    }
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
@@ -150,8 +158,8 @@ const MeetingRoomChatBox = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      if (isComposing) return;
-      e.preventDefault();
+      if (isComposing) return; // 한글 입력 중이면 return
+      e.preventDefault(); // 기본 Enter 동작(줄바꿈) 방지
       handleSendMessage(e);
     }
   };
@@ -258,7 +266,11 @@ const MeetingRoomChatBox = ({
               maxHeight: "120px",
             }}
             spellCheck="false" // 맞춤법검사 비활성화
-            placeholder="채팅 내용을 입력해주세요"
+            placeholder={
+              messageList?.status === "IN_PROGRESS"
+                ? "채팅 내용을 입력해주세요"
+                : "진행 중인 프로젝트가 아닙니다"
+            }
           ></textarea>
           <button type="submit">
             <img src={SendIcon} alt="전송버튼" className="cursor-pointer" />
