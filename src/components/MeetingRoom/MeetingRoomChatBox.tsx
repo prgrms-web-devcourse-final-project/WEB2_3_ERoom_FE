@@ -266,7 +266,11 @@ const MeetingRoomChatBox = ({
               maxHeight: "120px",
             }}
             spellCheck="false" // 맞춤법검사 비활성화
-            placeholder="채팅 내용을 입력해주세요"
+            placeholder={
+              messageList?.status === "IN_PROGRESS"
+                ? "채팅 내용을 입력해주세요"
+                : "진행 중인 프로젝트가 아닙니다"
+            }
           ></textarea>
           <button type="submit">
             <img src={SendIcon} alt="전송버튼" className="cursor-pointer" />
