@@ -22,18 +22,16 @@ const CreateNotePeriodModal = ({
     year: String(now.getFullYear()),
     month: String(now.getMonth() + 1).padStart(2, "0"),
     day: String(now.getDate()).padStart(2, "0"),
-    hour: String(now.getHours() % 12 || 12).padStart(2, "0"),
+    hour: String(now.getHours()).padStart(2, "0"),
     minute: String(now.getMinutes()).padStart(2, "0"),
-    ampm: now.getHours() >= 12 ? "PM" : "AM",
   });
 
   const [selectedEndDate, setSelectedEndDate] = useState<selectedDateType>({
     year: String(now.getFullYear()),
     month: String(now.getMonth() + 1).padStart(2, "0"),
     day: String(now.getDate()).padStart(2, "0"),
-    hour: String(now.getHours() % 12 || 12).padStart(2, "0"),
+    hour: String(now.getHours()).padStart(2, "0"),
     minute: String(now.getMinutes()).padStart(2, "0"),
-    ampm: now.getHours() >= 12 ? "PM" : "AM",
   });
 
   const [isRunAI, setIsRunAI] = useState(false);
@@ -46,13 +44,7 @@ const CreateNotePeriodModal = ({
 
   //ISO 형식으로 변환하는 함수
   const formatDateFromISO = (date: selectedDateType) => {
-    let formattedHour = date.hour;
-    if (date.ampm === "PM" && date.hour !== "12") {
-      formattedHour = String(Number(date.hour) + 12);
-    } else if (date.ampm === "AM" && date.hour === "12") {
-      formattedHour = "00";
-    }
-    return `${date.year}-${date.month}-${date.day}T${formattedHour}:${date.minute}:00`;
+    return `${date.year}-${date.month}-${date.day}T${date.hour}:${date.minute}:00`;
   };
 
   const startTime = formatDateFromISO(selectedStartDate);

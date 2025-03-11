@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import Button from "../common/Button";
-import { formatToAMPM } from "../../utils/aiNote/dateUtils";
+import { formatTo24Hour } from "../../utils/aiNote/dateUtils";
 import { useMutation } from "@tanstack/react-query";
 import { editAINote } from "../../api/meetingroom";
 
@@ -89,8 +89,8 @@ const NoteDetailModal = ({
     onGoBack();
   };
 
-  const startDateFormatted = formatToAMPM(note?.startDate);
-  const endDateFormatted = formatToAMPM(note?.endDate);
+  const startDateFormatted = formatTo24Hour(note?.startDate);
+  const endDateFormatted = formatTo24Hour(note?.endDate);
 
   return (
     <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[613px] bg-white flex flex-col py-[30px] px-[50px]">
