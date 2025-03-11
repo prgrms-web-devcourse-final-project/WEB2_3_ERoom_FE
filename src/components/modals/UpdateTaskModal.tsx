@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectMember from "../EditProjectModal/SelectMember";
@@ -11,6 +11,8 @@ import { useAuthStore } from "../../store/authStore";
 import AlertModal from "../common/AlertModal";
 import dayjs from "dayjs";
 import { showToast } from "../../utils/toastConfig";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import loadingLottie from "../../assets/animations/loadingLottie.json";
 
 const UpdateTaskModal = ({
   task,
@@ -19,6 +21,7 @@ const UpdateTaskModal = ({
   onDelete,
   onUpdate,
   refetch,
+  updateTaskPending,
   projectData,
   projectEditInfo,
 }: UpdateTaskModalProps) => {
@@ -249,6 +252,27 @@ const UpdateTaskModal = ({
   // console.log(task);
   // console.log(updatedData);
   // console.log(taskInfo);
+
+  // 로티 ref
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.7);
+    }
+  }, []);
+
+  if (updateTaskPending) {
+    return (
+      <div>
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={loadingLottie}
+          loop={true}
+          className="w-80 h-80"
+        />
+      </div>
+    );
+  }
 
   return (
     <div

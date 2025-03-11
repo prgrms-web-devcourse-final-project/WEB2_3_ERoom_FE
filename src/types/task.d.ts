@@ -8,6 +8,7 @@ interface UpdateTaskModalProps {
   refetch: () => void;
   projectData?: ProjectDetailType;
   projectEditInfo?: GetProjectById;
+  updateTaskPending: boolean;
 }
 
 interface selectedDateType {

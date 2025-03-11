@@ -39,7 +39,11 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   }, [selectedMembers]);
 
   // 검색 함수
-  const { data: searchMember, refetch } = useQuery<SearchMemberType[]>({
+  const {
+    data: searchMember,
+    refetch,
+    isLoading: searchLoading,
+  } = useQuery<SearchMemberType[]>({
     queryKey: ["searchMember", inputValue],
     queryFn: () => searchMembers(inputValue),
     enabled: false,
@@ -146,31 +150,35 @@ const SelectMember = <T extends "업무" | "프로젝트">({
           className="flex flex-col gap-[5px] w-full text-logo-green text-[14px]
           font-bold"
         >
-          {/* (검색결과) 선택된 팀원 */}
-
           {/* (검색결과) 필터된 팀원 */}
-          {searchMember?.map((member) => (
-            <div
-              key={member.id}
-              className="flex justify-between items-center cursor-pointer
-              font-medium"
-              onClick={() => {
-                setInputValue("");
-                handleMemberClick({
-                  username: member.username,
-                  memberId: member.id,
-                  profile: member.profile,
-                  email: member.email,
-                });
-              }}
-            >
-              {/* 이름 & 이메일 */}
-              <div className="w-full px-[10px] py-[5px]">
-                <div className="text-main-green">@{member.username}</div>
-                <div className="text-gray01">{member.email}</div>
-              </div>
+          {searchLoading ? (
+            <div className="flex items-center justify-center">
+              <div className="w-[40px] h-[40px] border-[4px] border-t-transparent border-main-green01 rounded-full animate-spin"></div>
             </div>
-          ))}
+          ) : (
+            searchMember?.map((member) => (
+              <div
+                key={member.id}
+                className="flex justify-between items-center cursor-pointer
+              font-medium"
+                onClick={() => {
+                  setInputValue("");
+                  handleMemberClick({
+                    username: member.username,
+                    memberId: member.id,
+                    profile: member.profile,
+                    email: member.email,
+                  });
+                }}
+              >
+                {/* 이름 & 이메일 */}
+                <div className="w-full px-[10px] py-[5px]">
+                  <div className="text-main-green">@{member.username}</div>
+                  <div className="text-gray01">{member.email}</div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
 

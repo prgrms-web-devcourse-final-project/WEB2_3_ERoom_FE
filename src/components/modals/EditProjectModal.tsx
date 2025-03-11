@@ -4,7 +4,7 @@ import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import SelectCategory from "../EditProjectModal/SelectCategory";
 import SelectMember from "../EditProjectModal/SelectMember";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import "dayjs/locale/en";
 import { randomColor } from "../../utils/randomColor";
@@ -17,6 +17,8 @@ import { queryClient } from "../../main";
 import { searchTagCount } from "../../api/search";
 import WordCloud from "../EditProjectModal/WordCloud";
 import { getCategory } from "../../api/category";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import loadingLottie from "../../assets/animations/loadingLottie.json";
 
 const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
@@ -183,7 +185,7 @@ const EditProjectModal = ({
     colors: randomColor("calendar")!,
   };
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending: newProjectPending } = useMutation({
     mutationFn: (newProjectInfo: postProjectType) =>
       postProject(newProjectInfo),
     onSuccess: () => {
@@ -214,19 +216,20 @@ const EditProjectModal = ({
   };
 
   // 수정 요청 함수
-  const { mutateAsync: editProjectFn } = useMutation({
-    mutationFn: ({
-      selectedProject,
-      editProjectInfo,
-    }: {
-      selectedProject: ProjectListType;
-      editProjectInfo: patchProjectRequestType;
-    }) => patchProjectById(selectedProject.id, editProjectInfo),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] });
-      setIsEditProjectModal(false);
-    },
-  });
+  const { mutateAsync: editProjectFn, isPending: editProjectPending } =
+    useMutation({
+      mutationFn: ({
+        selectedProject,
+        editProjectInfo,
+      }: {
+        selectedProject: ProjectListType;
+        editProjectInfo: patchProjectRequestType;
+      }) => patchProjectById(selectedProject.id, editProjectInfo),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["ProjectRoomList"] });
+        setIsEditProjectModal(false);
+      },
+    });
 
   const editProject = async (
     selectedProject: ProjectListType,
@@ -290,6 +293,27 @@ const EditProjectModal = ({
       setCategoryData2(subCategoryObject2);
     }
   }, [selectedCategory]);
+
+  // 로티 ref
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.7);
+    }
+  }, []);
+
+  if (newProjectPending || editProjectPending) {
+    return (
+      <div>
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={loadingLottie}
+          loop={true}
+          className="w-80 h-80"
+        />
+      </div>
+    );
+  }
 
   return (
     <div
