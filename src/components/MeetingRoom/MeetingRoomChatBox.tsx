@@ -10,6 +10,7 @@ import { StompSubscription } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
 import useWebSocketStore from "../../store/useWebSocketStore";
 import { showToast } from "../../utils/toastConfig";
+import axios from "axios";
 
 const MeetingRoomChatBox = ({
   css,
@@ -55,11 +56,23 @@ const MeetingRoomChatBox = ({
   };
 
   //채팅 내역 API 요청하는 useQuery
-  const { data: messageList = null } = useQuery<MeetingroomType>({
+  const { data: messageList = null, error } = useQuery<MeetingroomType>({
     queryKey: ["meetingroom", projectId],
     queryFn: () => getMeetingroom(projectId),
     select: (data) => data || ({} as MeetingroomType),
+    retry: false,
   });
+
+  useEffect(() => {
+    if (
+      error &&
+      axios.isAxiosError(error) &&
+      (error.response?.status === 403 || error.response?.status === 404)
+    ) {
+      console.warn("403 또는 404 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   //메시지 데이터 업데이트
   useEffect(() => {
