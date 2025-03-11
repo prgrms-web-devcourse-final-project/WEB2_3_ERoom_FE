@@ -15,7 +15,6 @@ import { progressType } from "../../utils/progressType";
 import { PROGRESS_STATUS } from "../../constants/status";
 import SimpleAlertModal from "./SimpleAlertModal";
 import { queryClient } from "../../main";
-import { getAllCategory } from "../../api/adminCategory";
 import { searchTagCount } from "../../api/search";
 import WordCloud from "../EditProjectModal/WordCloud";
 import { getCategory } from "../../api/category";

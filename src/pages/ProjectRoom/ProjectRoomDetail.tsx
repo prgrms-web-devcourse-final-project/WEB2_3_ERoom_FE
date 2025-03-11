@@ -10,6 +10,7 @@ import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectById, getProjectDetail } from "../../api/project";
 import dayjs from "dayjs";
 import { showToast } from "../../utils/toastConfig";
+import axios from "axios";
 
 interface ProjectDetailType {
   projectId: number;
@@ -62,13 +63,26 @@ const ProjectRoomDetail = () => {
   const {
     data: projectDetailList,
     isLoading,
+    error,
     refetch: getProjectDetailRefetch,
   } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
     queryFn: async () => {
       return await getProjectDetail(Number(projectId!));
     },
+    retry: false,
   });
+
+  useEffect(() => {
+    if (
+      error &&
+      axios.isAxiosError(error) &&
+      (error.response?.status === 403 || error.response?.status === 404)
+    ) {
+      console.warn("403 또는 404 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   console.log(projectDetailList);
 
