@@ -18,6 +18,7 @@ import { queryClient } from "../../main";
 import { getAllCategory } from "../../api/adminCategory";
 import { searchTagCount } from "../../api/search";
 import WordCloud from "../EditProjectModal/WordCloud";
+import { getCategory } from "../../api/category";
 
 const EDIT_MODAL_STATUS = ["진행 완료", "진행 중", "진행 예정"];
 
@@ -243,7 +244,7 @@ const EditProjectModal = ({
   // API에서 카테고리 정보 가져오기
   const { data: allCategoryData } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategoryData"],
-    queryFn: getAllCategory,
+    queryFn: getCategory,
   });
 
   // 태그 카운트 정보 가져오기
