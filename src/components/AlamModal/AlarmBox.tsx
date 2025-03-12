@@ -59,16 +59,16 @@ const AlarmBox = ({
   }[theme];
   const handleClick = () => {
     console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
-    navigate(THEME_NAVIGATE);
+    onRemove(id);
+    setTimeout(() => {
+      navigate(THEME_NAVIGATE);
+    }, 50);
   };
 
   return (
     <div
       className={twMerge(BASE_STYLE, THEME_STYLE, css)}
-      onClick={() => {
-        handleClick();
-        onRemove(id);
-      }}
+      onClick={handleClick}
     >
       <div className="flex flex-col gap-[5px]">
         <span className="text-[13px] font-bold">{THEME_TEXT}</span>
