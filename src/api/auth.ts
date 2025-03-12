@@ -18,10 +18,6 @@ export const googleSignIn = async (
     const { idToken, accessToken, refreshToken, member } = response.data;
     useAuthStore.getState().login(idToken, accessToken, refreshToken, member);
 
-    if (member && accessToken && refreshToken) {
-      useAuthStore.getState().setIsAuthenticated();
-    }
-
     console.log(response.data);
     return response.data;
   } catch (error) {
