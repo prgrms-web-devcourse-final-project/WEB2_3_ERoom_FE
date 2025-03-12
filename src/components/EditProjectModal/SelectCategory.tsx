@@ -33,7 +33,9 @@ const SelectCategory = ({
   setSubCateError,
 }: SelectCategoryProps) => {
   // API에서 카테고리 정보 가져오기
-  const { data: allCategoryData } = useQuery<AllCategoryType[]>({
+  const { data: allCategoryData, isLoading: categoryDataLoading } = useQuery<
+    AllCategoryType[]
+  >({
     queryKey: ["AllCategoryData"],
     queryFn: getCategory,
   });
@@ -95,6 +97,14 @@ const SelectCategory = ({
     });
     setSubCateError(false);
   };
+
+  if (categoryDataLoading) {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="w-[40px] h-[40px] border-[4px] border-t-transparent border-main-green01 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col gap-[20px]">

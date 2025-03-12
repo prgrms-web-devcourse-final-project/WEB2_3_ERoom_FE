@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
@@ -8,6 +8,8 @@ import { createTask } from "../../api/task";
 import AlertModal from "../common/AlertModal";
 import dayjs from "dayjs";
 import { showToast } from "../../utils/toastConfig";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import loadingLottie from "../../assets/animations/loadingLottie.json";
 
 interface CreateTaskProps {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,8 +30,9 @@ const CreateTaskModal = ({
   projectData,
 }: CreateTaskProps) => {
   /* 업무 생성 */
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending: createTaskPending } = useMutation({
     mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
+    onSuccess: () => showToast("success", "업무가 생성되었습니다."),
   });
 
   const handleCreateTask = async (taskData: CreateTask) => {
@@ -243,6 +246,27 @@ const CreateTaskModal = ({
       showToast("error", "종료 날짜는 시작 날짜보다 뒤로 설정해야합니다.");
     }
   }, [startDate, endDate]);
+
+  // 로티 ref
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.7);
+    }
+  }, []);
+
+  if (createTaskPending) {
+    return (
+      <div>
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={loadingLottie}
+          loop={true}
+          className="w-80 h-80"
+        />
+      </div>
+    );
+  }
 
   return (
     <div

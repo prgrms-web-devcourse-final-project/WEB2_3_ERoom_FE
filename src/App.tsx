@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore.ts";
 
 const App = () => {
-  const { connectWebSocket } = useWebSocketStore();
+  const connectWebSocket = useWebSocketStore((state) => state.connectWebSocket);
   const accessToken = useAuthStore((state) => state.accessToken);
   const memberId = useAuthStore((state) => state.member?.id);
 
