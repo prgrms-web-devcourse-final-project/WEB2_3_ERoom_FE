@@ -26,7 +26,6 @@ interface AuthState {
   ) => void;
   logout: () => void;
   updateMember: (updateInfo: Partial<Member>) => void;
-  setIsAuthenticated: () => void;
 }
 
 interface Member {
@@ -55,6 +54,7 @@ export const useAuthStore = create(
           accessToken,
           refreshToken,
           member,
+          isAuthenticated: !!accessToken,
         })),
       logout: () =>
         set(() => {
@@ -64,7 +64,6 @@ export const useAuthStore = create(
         set((state) => ({
           member: state.member ? { ...state.member, ...updateInfo } : null,
         })),
-      setIsAuthenticated: () => set(() => ({ isAuthenticated: true })),
     }),
     {
       name: "userData",
