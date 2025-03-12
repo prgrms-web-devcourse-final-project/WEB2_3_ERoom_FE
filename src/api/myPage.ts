@@ -22,5 +22,6 @@ export const editMyPageInfo = async (formData: FormData) => {
     return response;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };

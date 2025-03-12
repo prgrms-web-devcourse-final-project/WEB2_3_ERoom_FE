@@ -5,6 +5,8 @@ import { useAuthStore } from "../store/authStore";
 import { api } from "../api/api";
 import { useNavigate } from "react-router";
 import AlertModal from "../components/common/AlertModal";
+import axios from "axios";
+import { showToast } from "../utils/toastConfig";
 
 const SignUpCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<string | undefined>("");
@@ -83,6 +85,11 @@ const SignUpCompanyInfo = () => {
       navigate("/");
     } catch (error) {
       console.error("업로드 실패:", error);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        showToast("error", "이미 사용 중인 사용자 이름입니다");
+      } else {
+        showToast("error", "회원가입 중 오류가 발생했습니다");
+      }
     }
   };
 

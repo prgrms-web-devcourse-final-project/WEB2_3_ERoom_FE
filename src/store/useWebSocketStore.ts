@@ -246,7 +246,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
         console.log("API에서 알람 동기화 완료", apiAlarms);
 
         set((state) => {
-          // 🔹 중복 제거: 기존 알람 목록에 없는 새로운 알람만 추가
+          // 중복 제거: 기존 알람 목록에 없는 새로운 알람만 추가
           const uniqueAlarms = apiAlarms.filter(
             (apiAlarm: notificationsType) =>
               !state.notifications.some((alarm) => alarm.id === apiAlarm.id)

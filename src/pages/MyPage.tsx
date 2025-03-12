@@ -10,6 +10,8 @@ import SimpleAlertModal from "../components/modals/SimpleAlertModal";
 import AlertModal from "../components/common/AlertModal";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router";
+import axios from "axios";
+import { showToast } from "../utils/toastConfig";
 interface MyPageInfoType {
   email: string;
   username: string;
@@ -107,6 +109,11 @@ const MyPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myPageInfo"] });
       setEditSuccessModalOpen(true);
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        showToast("error", "이미 사용 중인 닉네임입니다");
+      }
     },
   });
   // 정보 수정 성공 시 모달 오픈
