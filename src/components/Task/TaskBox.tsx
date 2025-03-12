@@ -15,9 +15,6 @@ const TaskBox = ({
   refetch,
   isProjectEnd,
 }: TaskBoxProps) => {
-  useEffect(() => {
-    console.log(isProjectEnd);
-  }, [isProjectEnd]);
   const { member } = useAuthStore();
 
   // 업무 수정 상세보기
@@ -28,11 +25,15 @@ const TaskBox = ({
     },
   });
 
+  useEffect(() => {
+    console.log(updatedData);
+  }, [updatedData]);
+
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
     if (!updatedData) return; // undefined 체크
 
-    const { id, participantProfiles, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
+    const { id, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
     const dataChange: UpdateTask = {
       ...dataWithoutId,
       status: "IN_PROGRESS" as const,
@@ -46,7 +47,7 @@ const TaskBox = ({
   const handleCompleteStart = () => {
     if (!updatedData) return; // undefined 체크
 
-    const { id, participantProfiles, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
+    const { id, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
     const dataChange: UpdateTask = {
       ...dataWithoutId,
       status: "COMPLETED" as const,
@@ -116,11 +117,7 @@ const TaskBox = ({
         >
           <ParticipantIcon
             css="w-[30px] h-[30px]"
-            imgSrc={
-              updatedData?.participantProfiles
-                ? updatedData?.participantProfiles[0]
-                : defaultImg
-            }
+            imgSrc={updatedData?.assignedMemberProfile ?? defaultImg}
           />
 
           <p className="font-medium text-main-green">

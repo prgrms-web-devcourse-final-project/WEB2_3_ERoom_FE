@@ -77,7 +77,7 @@ interface GetUpdateTask {
   status: "IN_PROGRESS" | "COMPLETED" | "BEFORE_START" | "HOLD"; // 상태값이 정해져 있을 경우 문자열 리터럴 타입을 사용
   assignedMemberId: number;
   participantIds: number[]; // 참가자는 문자열 배열로 처리
-  participantProfiles: string[];
+  assignedMemberProfile: string | null;
 }
 interface ManageTasksType {
   name: string;

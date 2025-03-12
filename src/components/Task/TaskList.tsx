@@ -17,7 +17,7 @@ const TaskList = ({
 }: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { member } = useAuthStore();
-  // console.log(projectData?.members);
+  console.log(projectData);
 
   const openModal = (task: Task) => {
     setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
