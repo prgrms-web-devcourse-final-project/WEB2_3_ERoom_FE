@@ -20,8 +20,8 @@ const SignIn = () => {
   if (isLoginLoading) {
     return (
       <div
-        className="w-[554px] min-h-[250px]  px-[100px] py-[50px] 
-    flex items-center justify-center rounded-[10px]"
+        className="w-[554px] min-h-[250px] px-[100px] py-[50px] 
+        flex items-center justify-center rounded-[10px]"
       >
         <div className="w-[60px] h-[60px] border-[6px] border-t-transparent border-main-green01 rounded-full animate-spin"></div>
       </div>
@@ -30,20 +30,20 @@ const SignIn = () => {
 
   return (
     <div
-      className="w-[554px] h-full  px-[100px] py-[50px] 
-    flex flex-col gap-[30px] rounded-[10px]"
+      className="w-[554px] h-[200px] px-[100px] py-[0px] 
+    flex flex-col justify-between gap-[30px] rounded-[10px]"
     >
       {/* LOGIN */}
-      <div className="text-center">
-        <p className="text-[40px]">LOGIN</p>
-        <p className="text-logo-green-light font-bold text-[20px]">
-          E:room에 오신 것을 환영합니다.
+      <div className="flex flex-col gap-[20px] text-center">
+        <p className="text-[40px] font-bold">LOGIN</p>
+        <p className="text-logo-green-light font-bold text-[18px]">
+          E:room에 오신 것을 환영합니다!
         </p>
       </div>
 
       {/* 버튼 모음 */}
       {/* 버튼 글릭 시 회원가입 여부를 확인하는 로직 추가 필요 */}
-      <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-[50px]">
         {/* (임시) 회원가입 된 상태 */}
         {/* <Button
           text="카카오 로그인"
@@ -64,7 +64,7 @@ const SignIn = () => {
         <Button
           text="구글 로그인"
           size="lg"
-          css="bg-white border-gray01 text-black text-[18px] gap-[10px] h-[60px]"
+          css="bg-white border-gray01 text-black text-[18px] gap-[10px] h-[50px]"
           logo={GoogleLogo}
           onClick={() => handleGoogleLogin()}
         />
