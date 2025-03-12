@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../common/Button";
 import DateTimeSelect from "../EditProjectModal/DateTimeSelect";
 import WriteProjectName from "../EditProjectModal/WriteProjectName";
@@ -6,6 +6,10 @@ import SelectMember from "../EditProjectModal/SelectMember";
 import { useMutation } from "@tanstack/react-query";
 import { createTask } from "../../api/task";
 import AlertModal from "../common/AlertModal";
+import dayjs from "dayjs";
+import { showToast } from "../../utils/toastConfig";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import loadingLottie from "../../assets/animations/loadingLottie.json";
 
 interface CreateTaskProps {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,8 +30,9 @@ const CreateTaskModal = ({
   projectData,
 }: CreateTaskProps) => {
   /* 업무 생성 */
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending: createTaskPending } = useMutation({
     mutationFn: (newTaskInfo: CreateTask) => createTask(newTaskInfo),
+    onSuccess: () => showToast("success", "업무가 생성되었습니다."),
   });
 
   const handleCreateTask = async (taskData: CreateTask) => {
@@ -48,46 +53,39 @@ const CreateTaskModal = ({
     }
   };
 
-  // set함수에 넣을 수 있는 프로젝트 날짜 형식 변환 함수
   const formatDateToObject = (dateString: string | undefined) => {
     if (!dateString) return null; // undefined일 경우 null 반환
 
-    const date = new Date(dateString);
-
-    let hours = date.getHours();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12; // 12시간제 변환
+    const date = dayjs(dateString);
 
     return {
-      year: String(date.getFullYear()), // 연도를 두 자리로 변환
-      month: String(date.getMonth() + 1).padStart(2, "0"), // 월 (1월이 0이므로 +1)
-      day: String(date.getDate()).padStart(2, "0"), // 일
-      hour: String(hours).padStart(2, "0"), // 시간 (12시간제)
-      minute: String(date.getMinutes()).padStart(2, "0"), // 분
-      ampm, // 오전/오후
+      year: date.format("YYYY"),
+      month: date.format("MM"),
+      day: date.format("DD"),
+      hour: date.format("HH"), // 24시간제
+      minute: date.format("mm"),
     };
   };
 
-  // set함수에 넣을 수 있는 형식 변환된 시작/종료 날짜
+  // set 함수에 넣을 수 있는 형식 변환된 시작/종료 날짜
   const formattedProjectStartDate = formatDateToObject(projectData?.startDate);
   const formattedProjectEndDate = formatDateToObject(projectData?.endDate);
 
-  const now = new Date();
+  // 현재 시간 설정
+  const now = dayjs();
   const nowStart = {
-    year: String(now.getFullYear()),
-    month: String(now.getMonth() + 1).padStart(2, "0"),
-    day: String(now.getDate()).padStart(2, "0"),
-    hour: String(now.getHours() % 12 || 12).padStart(2, "0"),
-    minute: String(now.getMinutes()).padStart(2, "0"),
-    ampm: now.getHours() >= 12 ? "PM" : "AM",
+    year: now.format("YYYY"),
+    month: now.format("MM"),
+    day: now.format("DD"),
+    hour: now.format("HH"), // 24시간제
+    minute: now.format("mm"),
   };
   const nowEnd = {
-    year: String(now.getFullYear()),
-    month: String(now.getMonth() + 1).padStart(2, "0"),
-    day: String(now.getDate()).padStart(2, "0"),
-    hour: String((now.getHours() + 1) % 12 || 12).padStart(2, "0"), // 시작보다 1시간 뒤
-    minute: String(now.getMinutes()).padStart(2, "0"),
-    ampm: now.getHours() + 1 >= 12 ? "PM" : "AM",
+    year: now.add(1, "hour").format("YYYY"), // 시작보다 1시간 뒤
+    month: now.add(1, "hour").format("MM"),
+    day: now.add(1, "hour").format("DD"),
+    hour: now.add(1, "hour").format("HH"), // 24시간제
+    minute: now.format("mm"),
   };
 
   // 선택한 일정 시작 상태 (현재 시간으로 기본 설정)
@@ -100,11 +98,10 @@ const CreateTaskModal = ({
 
   // 데이터 형식에 맞게 일정 변경 함수
   const formatDateTime = (dateObj: selectedDateType) => {
-    return `${dateObj.year}-${dateObj.month}-${dateObj.day}T${
-      dateObj.ampm === "PM"
-        ? String((Number(dateObj.hour) % 12) + 12).padStart(2, "0")
-        : dateObj.hour
-    }:${dateObj.minute}:00`;
+    return dayjs(
+      `${dateObj.year}-${dateObj.month}-${dateObj.day} ${dateObj.hour}:${dateObj.minute}`,
+      "YYYY-MM-DD HH:mm"
+    ).format("YYYY-MM-DDTHH:mm:ss");
   };
 
   // 작성한 업무명 상태
@@ -129,14 +126,13 @@ const CreateTaskModal = ({
 
   // 업무 생성 함수
   const handleSubmit = () => {
-    // (임시) 알림창
     if (!newTaskName || !selectedMember.length) {
       openModal("업무명과 담당자를 입력해주세요");
       return;
     }
 
     const newTask: CreateTask = {
-      projectId: projectId,
+      projectId,
       title: newTaskName,
       startDate: formatDateTime(selectedStartDate),
       endDate: formatDateTime(selectedEndDate),
@@ -145,108 +141,132 @@ const CreateTaskModal = ({
       participantIds: [selectedMember[0].memberId],
       colors: { background: "#ff5733", text: "#ffffff" },
     };
-    console.log(newTask);
 
-    // 상태가 변경된 이후에 mutate 실행
+    if (startDate.isBefore(nowDate.subtract(1, "day"))) {
+      showToast("error", "업무 시작은 어제 이후부터 설정할 수 있습니다.");
+      return;
+    }
+
+    if (startDate < projectStartDate) {
+      showToast(
+        "error",
+        "업무 시작은 프로젝트 시작 이전으로 설정할 수 없습니다."
+      );
+      return;
+    }
+
+    if (endDate > projectEndDate) {
+      showToast(
+        "error",
+        "업무 종료는 프로젝트 종료 이후로 설정할 수 없습니다."
+      );
+      return;
+    }
+
+    if (startDate > endDate) {
+      showToast("error", "종료 날짜는 시작 날짜보다 뒤로 설정해야합니다.");
+      return;
+    }
+
+    console.log(newTask);
     handleCreateTask(newTask);
   };
 
   // 비교가능한 날짜 형식 변경 함수
-  const convertToDate = (dateObj: {
-    year: string;
-    month: string;
-    day: string;
-    hour: string;
-    minute: string;
-    ampm: string;
-  }) => {
-    let hour = parseInt(dateObj.hour, 10);
-
-    // AM/PM 변환 (12시간제 → 24시간제)
-    if (dateObj.ampm === "PM" && hour !== 12) {
-      hour += 12;
-    } else if (dateObj.ampm === "AM" && hour === 12) {
-      hour = 0;
-    }
-
-    return new Date(
-      parseInt(dateObj.year, 10),
-      parseInt(dateObj.month, 10) - 1,
-      parseInt(dateObj.day, 10),
-      hour,
-      parseInt(dateObj.minute, 10)
+  // 날짜 변환 함수 (12시간제 → 24시간제)
+  const convertToDate = (dateObj: selectedDateType) => {
+    return dayjs(
+      `${dateObj.year}-${dateObj.month}-${dateObj.day} ${dateObj.hour}:${dateObj.minute}`,
+      "YYYY-MM-DD HH:mm"
     );
   };
 
-  // 비교가 가능하게 변환된 날짜들
-  const startDate = convertToDate(selectedStartDate); // 선택된 시작날짜
-  const endDate = convertToDate(selectedEndDate); // 선택된 종료날짜
-  const nowDate = new Date(); // 현재 시작날짜
-  const nowEndDate = new Date(nowDate); // 현재 종료날짜
-  nowEndDate.setHours(nowEndDate.getHours() + 1);
-  const projectStartDate = projectData?.startDate // 프로젝트 시작날짜
-    ? new Date(projectData.startDate)
-    : new Date();
-  const projectEndDate = projectData?.endDate // 프로젝트 종료날짜
-    ? new Date(projectData.endDate)
-    : new Date();
+  // 비교 가능한 날짜들 변환
+  const startDate = convertToDate(selectedStartDate);
+  const endDate = convertToDate(selectedEndDate);
+  const nowDate = dayjs();
+  // const nowEndDate = nowDate.add(1, "hour"); // 현재 시간 +1시간
+  const projectStartDate = projectData?.startDate
+    ? dayjs(projectData.startDate)
+    : nowDate;
+  const projectEndDate = projectData?.endDate
+    ? dayjs(projectData.endDate)
+    : nowDate;
 
-  // 분까지만 비교
-  startDate.setSeconds(0, 0);
-  endDate.setSeconds(0, 0);
-  nowDate.setSeconds(0, 0);
-  nowEndDate.setSeconds(0, 0);
-  projectStartDate.setSeconds(0, 0);
-  projectEndDate.setSeconds(0, 0);
-
-  // 시작과 종료 설정 시 종료가 시작과 같거나 이전이면 초기화
+  // useEffect를 활용한 날짜 검증
   useEffect(() => {
-    if (!formattedProjectStartDate || !formattedProjectEndDate) {
-      return;
+    //   if (!formattedProjectStartDate || !formattedProjectEndDate) return;
+
+    //   if (startDate.isSame(nowDate) && endDate.isSame(nowEndDate)) return;
+
+    //   if (projectEndDate.isBefore(nowDate)) {
+    //     openModal("프로젝트 마감 기한이 지났습니다.");
+    //     setSelectedEndDate(formattedProjectEndDate);
+    //   }
+
+    //   if (startDate.isBefore(nowDate)) {
+    //     openModal("업무 시작은 현재 시간 이전으로 설정할 수 없습니다.");
+    //     // setSelectedStartDate(nowDate.format("YYYY-MM-DD HH:mm:ss"));
+    //     // setSelectedEndDate(nowEndDate.format("YYYY-MM-DD HH:mm:ss"));
+    //   }
+
+    //   if (startDate.isBefore(projectStartDate)) {
+    //     openModal("업무 시작은 프로젝트 시작 이전으로 설정할 수 없습니다.");
+    //     // setSelectedStartDate(nowDate.format("YYYY-MM-DD HH:mm:ss"));
+    //     // setSelectedEndDate(nowEndDate.format("YYYY-MM-DD HH:mm:ss"));
+    //   }
+
+    //   if (endDate.isAfter(projectEndDate)) {
+    //     openModal("업무 종료는 프로젝트 종료 이후로 설정할 수 없습니다.");
+    //     // setSelectedStartDate(nowDate.format("YYYY-MM-DD HH:mm:ss"));
+    //     // setSelectedEndDate(nowEndDate.format("YYYY-MM-DD HH:mm:ss"));
+    //   }
+
+    if (startDate.isBefore(nowDate.subtract(1, "day"))) {
+      showToast("error", "업무 시작은 어제 이후부터 설정할 수 있습니다.");
     }
 
-    if (startDate === nowDate && endDate === nowEndDate) {
-      return;
-    }
-
-    // 프로젝트 종료일이 현재보다 이전일 경우 업무생성 불가 모달 오픈
-    // 마감일은 프로젝트 마감일로 초기화
-    if (projectEndDate < nowDate) {
-      openModal("프로젝트 마감 기한이 지났습니다.");
-      setSelectedEndDate(formattedProjectEndDate);
-    }
-    console.log(startDate);
-    console.log(endDate);
-    // 시작일이 프로젝트 시작 이전일 경우 모달 오픈, 프로젝트 기간으로 설정
-    if (startDate < nowDate) {
-      console.log(startDate);
-      openModal("업무 시작은 현재 시간 이전으로 설정할 수 없습니다.");
-      setSelectedStartDate(nowStart);
-      setSelectedEndDate(nowEnd);
-    }
-
-    // 시작일이 프로젝트 시작 이전일 경우 모달 오픈, 프로젝트 기간으로 설정
     if (startDate < projectStartDate) {
-      openModal("업무 시작은 프로젝트 시작 이전으로 설정할 수 없습니다.");
-      setSelectedStartDate(nowStart);
-      setSelectedEndDate(nowEnd);
+      showToast(
+        "error",
+        "업무 시작은 프로젝트 시작 이전으로 설정할 수 없습니다."
+      );
+      setSelectedStartDate(formattedProjectStartDate!);
     }
 
-    // 종료일이 프로젝트 종료 이후일 경우 모달 오픈, 프로젝트 기간으로 설정
     if (endDate > projectEndDate) {
-      openModal("업무 종료는 프로젝트 종료 이후로 설정할 수 없습니다.");
-      setSelectedStartDate(nowStart);
-      setSelectedEndDate(nowEnd);
+      showToast(
+        "error",
+        "업무 종료는 프로젝트 종료 이후로 설정할 수 없습니다."
+      );
+      setSelectedEndDate(formattedProjectEndDate!);
     }
 
-    // 시작이 종료 이전으로 설정되게 제한
-    // if (startDate >= endDate) {
-    //   openModal("업무 시작은 종료 이전으로 설정해야 합니다.");
-    //   // 시작과 종료 초기화
-    //   setSelectedStartDate(nowStart);
-    //   setSelectedEndDate(nowEnd);
-    // }
+    if (startDate >= endDate) {
+      showToast("error", "종료 날짜는 시작 날짜보다 뒤로 설정해야합니다.");
+    }
   }, [startDate, endDate]);
+
+  // 로티 ref
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.7);
+    }
+  }, []);
+
+  if (createTaskPending) {
+    return (
+      <div>
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={loadingLottie}
+          loop={true}
+          className="w-80 h-80"
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -294,9 +314,7 @@ const CreateTaskModal = ({
           text="생성하기"
           size="md"
           css="border border-main-green01 text-main-green01 font-bold text-[14px]  w-[89px] h-[27px]"
-          onClick={() => {
-            handleSubmit();
-          }}
+          onClick={handleSubmit}
         />
         <Button
           text="취소"

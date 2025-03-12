@@ -5,6 +5,7 @@ import { debounce } from "lodash";
 import { useAuthStore } from "../../store/authStore";
 import AlertModal from "../common/AlertModal";
 import SimpleAlertModal from "../modals/SimpleAlertModal";
+import defaultImg from "../../assets/defaultImg.svg";
 
 type SelectMembersProps<T extends "업무" | "프로젝트"> = {
   selectedData?: T extends "프로젝트" ? ProjectDataType : UpdateTask;
@@ -26,8 +27,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   const loginUser = useAuthStore((state) => state.member);
   const [isModal, setIsModal] = useState<boolean>(false);
 
-  console.log(memberData);
-
   useEffect(() => {
     console.log(selectedData);
   }, [selectedData]);
@@ -40,7 +39,11 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   }, [selectedMembers]);
 
   // 검색 함수
-  const { data: searchMember, refetch } = useQuery<SearchMemberType[]>({
+  const {
+    data: searchMember,
+    refetch,
+    isLoading: searchLoading,
+  } = useQuery<SearchMemberType[]>({
     queryKey: ["searchMember", inputValue],
     queryFn: () => searchMembers(inputValue),
     enabled: false,
@@ -107,7 +110,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
       }
     }
   };
-  console.log(memberData);
 
   /* 취소 버튼 클릭 시 선택된 팀원에서 제거 */
   const handleCancelClick = (id: number) => {
@@ -148,31 +150,35 @@ const SelectMember = <T extends "업무" | "프로젝트">({
           className="flex flex-col gap-[5px] w-full text-logo-green text-[14px]
           font-bold"
         >
-          {/* (검색결과) 선택된 팀원 */}
-
           {/* (검색결과) 필터된 팀원 */}
-          {searchMember?.map((member) => (
-            <div
-              key={member.id}
-              className="flex justify-between items-center cursor-pointer
-              font-medium"
-              onClick={() => {
-                setInputValue("");
-                handleMemberClick({
-                  username: member.username,
-                  memberId: member.id,
-                  profile: member.profile,
-                  email: member.email,
-                });
-              }}
-            >
-              {/* 이름 & 이메일 */}
-              <div className="w-full px-[10px] py-[5px]">
-                <div className="text-main-green">@{member.username}</div>
-                <div className="text-gray01">{member.email}</div>
-              </div>
+          {searchLoading ? (
+            <div className="flex items-center justify-center">
+              <div className="w-[40px] h-[40px] border-[4px] border-t-transparent border-main-green01 rounded-full animate-spin"></div>
             </div>
-          ))}
+          ) : (
+            searchMember?.map((member) => (
+              <div
+                key={member.id}
+                className="flex justify-between items-center cursor-pointer
+              font-medium"
+                onClick={() => {
+                  setInputValue("");
+                  handleMemberClick({
+                    username: member.username,
+                    memberId: member.id,
+                    profile: member.profile,
+                    email: member.email,
+                  });
+                }}
+              >
+                {/* 이름 & 이메일 */}
+                <div className="w-full px-[10px] py-[5px]">
+                  <div className="text-main-green">@{member.username}</div>
+                  <div className="text-gray01">{member.email}</div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
 
@@ -181,13 +187,17 @@ const SelectMember = <T extends "업무" | "프로젝트">({
         {selectedMembers?.map((member) => (
           <div
             key={member.memberId}
-            className="w-[50px] h-[50px] bg-cover bg-center rounded-[100px]
-              border-[1px] border-main-green cursor-pointer"
-            style={{ backgroundImage: `url(${member.profile})` }}
+            className="w-[50px] h-[50px] relative cursor-pointer"
             onClick={() => handleCancelClick(member.memberId)}
           >
+            <img
+              src={member.profile ?? defaultImg}
+              alt="프로필 이미지"
+              className="w-full h-full rounded-[100px] 
+              border-[1px] border-main-green "
+            />
             <div
-              className="flex justify-center items-center
+              className="flex justify-center items-center absolute inset-0
                   w-full h-full rounded-[100px] bg-main-green/70
                 text-white text-[14px] text-center font-medium
                   opacity-0 hover:opacity-100 transition-opacity duration-300"

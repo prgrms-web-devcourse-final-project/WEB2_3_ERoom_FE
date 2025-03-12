@@ -5,6 +5,7 @@ import ParticipantIcon from "../common/ParticipantIcon";
 import { getTaskById } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 import defaultImg from "../../assets/defaultImg.svg";
+import { useEffect } from "react";
 
 const TaskBox = ({
   isAll = true,
@@ -12,6 +13,7 @@ const TaskBox = ({
   task,
   onUpdate,
   refetch,
+  isProjectEnd,
 }: TaskBoxProps) => {
   const { member } = useAuthStore();
 
@@ -23,11 +25,15 @@ const TaskBox = ({
     },
   });
 
+  useEffect(() => {
+    console.log(updatedData);
+  }, [updatedData]);
+
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
     if (!updatedData) return; // undefined 체크
 
-    const { id, participantProfiles, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
+    const { id, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
     const dataChange: UpdateTask = {
       ...dataWithoutId,
       status: "IN_PROGRESS" as const,
@@ -41,7 +47,7 @@ const TaskBox = ({
   const handleCompleteStart = () => {
     if (!updatedData) return; // undefined 체크
 
-    const { id, participantProfiles, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
+    const { id, ...dataWithoutId } = updatedData; // id 및 participantProfiles 제외
     const dataChange: UpdateTask = {
       ...dataWithoutId,
       status: "COMPLETED" as const,
@@ -76,13 +82,14 @@ const TaskBox = ({
             {task &&
               `${task.startDate.split("T")[0]} ~ ${task.endDate.split("T")[0]}`}
           </p>
-          {task.assignedMemberName === member?.username &&
-            (task.status !== "IN_PROGRESS" ? (
+          {task.assignedMemberName === member?.username && !isProjectEnd ? (
+            task.status !== "IN_PROGRESS" ? (
               <Button
                 text={"시작"}
                 size="md"
                 onClick={(e) => {
                   e.stopPropagation();
+
                   handleStateStart();
                   refetch();
                 }}
@@ -99,7 +106,8 @@ const TaskBox = ({
                 }}
                 css="border-none h-[22px] w-fit px-[10px] py-[2px] font-normal text-[14px] rounded-[4px] text-main-beige01 bg-main-green01"
               />
-            ))}
+            )
+          ) : null}
         </div>
 
         {/* 담당자 */}
@@ -109,11 +117,7 @@ const TaskBox = ({
         >
           <ParticipantIcon
             css="w-[30px] h-[30px]"
-            imgSrc={
-              updatedData?.participantProfiles
-                ? updatedData?.participantProfiles[0]
-                : defaultImg
-            }
+            imgSrc={updatedData?.assignedMemberProfile ?? defaultImg}
           />
 
           <p className="font-medium text-main-green">
@@ -151,8 +155,8 @@ const TaskBox = ({
             {task.startDate.split("T").slice(0, 1)} ~{" "}
             {task.endDate.split("T").slice(0, 1)}
           </p>
-          {task.assignedMemberName === member?.username &&
-            (task.status !== "IN_PROGRESS" ? (
+          {task.assignedMemberName === member?.username && !isProjectEnd ? (
+            task.status !== "IN_PROGRESS" ? (
               <Button
                 text={"시작"}
                 size="md"
@@ -172,7 +176,8 @@ const TaskBox = ({
                   handleCompleteStart();
                 }}
               />
-            ))}
+            )
+          ) : null}
         </div>
       </div>
     );

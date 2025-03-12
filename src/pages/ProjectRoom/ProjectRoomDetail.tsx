@@ -8,6 +8,9 @@ import { useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectById, getProjectDetail } from "../../api/project";
+import dayjs from "dayjs";
+import { showToast } from "../../utils/toastConfig";
+import axios from "axios";
 
 interface ProjectDetailType {
   projectId: number;
@@ -60,13 +63,26 @@ const ProjectRoomDetail = () => {
   const {
     data: projectDetailList,
     isLoading,
+    error,
     refetch: getProjectDetailRefetch,
   } = useQuery<ProjectDetailType>({
     queryKey: ["ProjectDetail", projectId],
     queryFn: async () => {
       return await getProjectDetail(Number(projectId!));
     },
+    retry: false,
   });
+
+  useEffect(() => {
+    if (
+      error &&
+      axios.isAxiosError(error) &&
+      (error.response?.status === 403 || error.response?.status === 404)
+    ) {
+      console.warn("403 또는 404 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   console.log(projectDetailList);
 
@@ -219,6 +235,18 @@ const ProjectRoomDetail = () => {
               css="bg-transparent border-main-green01 
               text-main-green01 text-[14px]"
               onClick={() => {
+                if (projectEditInfo) {
+                  if (
+                    projectEditInfo.endDate <
+                    dayjs().format("YYYY-MM-DDTHH:mm:ss")
+                  ) {
+                    showToast(
+                      "error",
+                      "마감기한이 지난 프로젝트는 업무 생성 및 수정이 불가합니다."
+                    );
+                    return;
+                  }
+                }
                 setIsEditTaskModal(true);
               }}
             />

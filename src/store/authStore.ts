@@ -48,20 +48,13 @@ export const useAuthStore = create(
       idToken: null,
       accessToken: null,
       member: null,
-      // user: null,
-      // login: (userData, token?) =>
-      //   set(() => ({ user: userData, token, isAuthenticated: true })),
-      // logout: () =>
-      //   set(() => {
-      //     return { user: null, token: null, isAuthenticated: false };
-      //   }),
       login: (idToken, accessToken, refreshToken, member) =>
         set(() => ({
           idToken,
           accessToken,
           refreshToken,
           member,
-          isAuthenticated: true,
+          isAuthenticated: !!accessToken,
         })),
       logout: () =>
         set(() => {

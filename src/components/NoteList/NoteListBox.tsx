@@ -1,4 +1,4 @@
-import { formatToAMPM } from "../../utils/aiNote/dateUtils";
+import { formatTo24Hour } from "../../utils/aiNote/dateUtils";
 
 const NoteListBox = ({
   onClick,
@@ -7,8 +7,8 @@ const NoteListBox = ({
   onClick: () => void;
   note: AINoteListType;
 }) => {
-  const startDateFormatted = formatToAMPM(note.startDate);
-  const endDateFormatted = formatToAMPM(note.endDate);
+  const startDateFormatted = formatTo24Hour(note.startDate);
+  const endDateFormatted = formatTo24Hour(note.endDate);
 
   return (
     <div

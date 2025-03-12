@@ -9,6 +9,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StompSubscription } from "@stomp/stompjs";
 import { useAuthStore } from "../../store/authStore";
 import useWebSocketStore from "../../store/useWebSocketStore";
+import { showToast } from "../../utils/toastConfig";
+import axios from "axios";
 
 const MeetingRoomChatBox = ({
   css,
@@ -54,11 +56,23 @@ const MeetingRoomChatBox = ({
   };
 
   //채팅 내역 API 요청하는 useQuery
-  const { data: messageList = null } = useQuery<MeetingroomType>({
+  const { data: messageList = null, error } = useQuery<MeetingroomType>({
     queryKey: ["meetingroom", projectId],
     queryFn: () => getMeetingroom(projectId),
     select: (data) => data || ({} as MeetingroomType),
+    retry: false,
   });
+
+  useEffect(() => {
+    if (
+      error &&
+      axios.isAxiosError(error) &&
+      (error.response?.status === 403 || error.response?.status === 404)
+    ) {
+      console.warn("403 또는 404 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   //메시지 데이터 업데이트
   useEffect(() => {
@@ -124,6 +138,13 @@ const MeetingRoomChatBox = ({
     if (!stompClient || !text.trim() || !messageList?.groupChatRoom.chatRoomId)
       return;
 
+    if (
+      messageList.status === "COMPLETED" ||
+      messageList.status === "BEFORE_START"
+    ) {
+      showToast("error", `진행 중인 프로젝트가 아닙니다`);
+      return;
+    }
     stompClient.publish({
       destination: "/app/chat/send",
       body: JSON.stringify({
@@ -150,8 +171,8 @@ const MeetingRoomChatBox = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      if (isComposing) return;
-      e.preventDefault();
+      if (isComposing) return; // 한글 입력 중이면 return
+      e.preventDefault(); // 기본 Enter 동작(줄바꿈) 방지
       handleSendMessage(e);
     }
   };
@@ -258,7 +279,11 @@ const MeetingRoomChatBox = ({
               maxHeight: "120px",
             }}
             spellCheck="false" // 맞춤법검사 비활성화
-            placeholder="채팅 내용을 입력해주세요"
+            placeholder={
+              messageList?.status === "IN_PROGRESS"
+                ? "채팅 내용을 입력해주세요"
+                : "진행 중인 프로젝트가 아닙니다"
+            }
           ></textarea>
           <button type="submit">
             <img src={SendIcon} alt="전송버튼" className="cursor-pointer" />

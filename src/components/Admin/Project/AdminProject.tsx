@@ -20,12 +20,23 @@ import { queryClient } from "../../../main";
 import { searchProjects } from "../../../api/search";
 import AlertModal from "../../common/AlertModal";
 import { showToast } from "../../../utils/toastConfig";
+import axios from "axios";
 
 const AdminProject = () => {
-  const { data: adminActiveProject } = useQuery<AdminProjectsListType[]>({
-    queryKey: ["AdminAcitveProject"],
-    queryFn: getAdminProjectList,
-  });
+  const { data: adminActiveProject, error } = useQuery<AdminProjectsListType[]>(
+    {
+      queryKey: ["AdminAcitveProject"],
+      queryFn: getAdminProjectList,
+      retry: false,
+    }
+  );
+
+  useEffect(() => {
+    if (error && axios.isAxiosError(error) && error.response?.status === 403) {
+      console.warn(" 403 오류 발생 → Not Found 페이지로 이동");
+      window.location.href = "/not-found"; // 강제 이동
+    }
+  }, [error]);
 
   const { data: adminInActiveProject } = useQuery<AdminProjectsListType[]>({
     queryKey: ["AdminInAcitveProject"],

@@ -24,3 +24,13 @@ export const googleSignIn = async (
     throw new Error(`로그인 실패! ${error}`);
   }
 };
+
+export const logOut = async () => {
+  try {
+    const response = await api.post("/api/auth/logout");
+    console.log("logOut", response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
