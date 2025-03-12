@@ -217,7 +217,7 @@ const UpdateTaskModal = ({
   const [memberData, setMemberData] = useState<MemberType[]>([
     {
       username: task.assignedMemberName,
-      profile: updatedData?.participantProfiles?.[0] ?? defaultImg,
+      profile: updatedData?.assignedMemberProfile ?? defaultImg,
       email: "",
       memberId: updatedData?.participantIds?.[0] ?? 0,
     },
