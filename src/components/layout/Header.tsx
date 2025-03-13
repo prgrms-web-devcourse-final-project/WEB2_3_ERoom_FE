@@ -6,6 +6,8 @@ import headerIcon from "../../assets/icons/headerLogo.svg";
 import { useAuthStore } from "../../store/authStore";
 import useWebSocketStore from "../../store/useWebSocketStore";
 import DefaultImg from "../../assets/defaultImg.svg";
+import { api } from "../../api/api";
+import { showToast } from "../../utils/toastConfig";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -81,6 +83,24 @@ const Header = () => {
   //알람 핑 표시
   const hasUnreadAlarms = visibleAlarms.length > 0;
 
+  // 로그아웃
+  const handleLogOut = async () => {
+    try {
+      const response = await api.post("/api/auth/logout");
+      console.log(response);
+
+      if (response.status === 200) {
+        logout();
+        useAuthStore.persist.clearStorage();
+        navigate("/signin");
+      } else {
+        showToast("error", "로그아웃에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <header className="h-[50px] bg-white flex items-center px-5 justify-between">
@@ -154,11 +174,7 @@ const Header = () => {
               {/* 로그아웃 버튼 */}
               <li
                 className="cursor-pointer text-[#FF6854]"
-                onClick={() => {
-                  logout();
-                  useAuthStore.persist.clearStorage();
-                  navigate("/signin");
-                }}
+                onClick={handleLogOut}
               >
                 로그아웃
               </li>
