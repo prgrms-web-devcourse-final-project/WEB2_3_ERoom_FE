@@ -6,7 +6,6 @@ import { getTaskById } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 import defaultImg from "../../assets/defaultImg.svg";
 import { useDraggable } from "@dnd-kit/core";
-import { useState } from "react";
 
 const TaskBox = ({
   isAll = true,
@@ -55,7 +54,7 @@ const TaskBox = ({
   };
 
   // drag
-  const [isDragging, setIsDragging] = useState(false);
+  // const [isDragging, setIsDragging] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `taskBox ${task.taskId}`,
@@ -82,11 +81,7 @@ const TaskBox = ({
             : "none",
           transition: transform ? "transform 0s ease" : "none",
         }}
-        onClick={() => {
-          if (!isDragging) {
-            onClick();
-          }
-        }}
+        onClick={onClick}
       >
         <div className="flex justify-between items-center">
           <p className="font-bold">{task?.title}</p>
@@ -153,8 +148,6 @@ const TaskBox = ({
         ref={setNodeRef}
         {...listeners}
         {...attributes}
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={() => setTimeout(() => setIsDragging(false), 200)}
         className={`w-[300px] h-[80px] bg-white border border-main-green02
         px-3 py-2 flex flex-col justify-center gap-2 ${
           task.assignedMemberName === member?.username &&

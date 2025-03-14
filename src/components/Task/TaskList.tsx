@@ -98,7 +98,8 @@ const TaskList = ({
   const { setNodeRef } = useDroppable({
     id: `taskList ${name}`,
     data: {
-      taskListName: isAll ? progressType(name) : "",
+      type: isAll ? "all" : "manager",
+      taskListName: isAll ? progressType(name) : name,
     },
   });
 

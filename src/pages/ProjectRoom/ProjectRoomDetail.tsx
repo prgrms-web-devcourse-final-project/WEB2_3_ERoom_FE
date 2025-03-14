@@ -1,7 +1,7 @@
 import { useOutletContext, useParams, useSearchParams } from "react-router";
 import Button from "../../components/common/Button";
 import TaskList from "../../components/Task/TaskList";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -11,11 +11,16 @@ import { getProjectById, getProjectDetail } from "../../api/project";
 import dayjs from "dayjs";
 import { showToast } from "../../utils/toastConfig";
 import axios from "axios";
-import { DndContext } from "@dnd-kit/core";
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { updateTask } from "../../api/task";
 import { queryClient } from "../../main";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import loadingLottie from "../../assets/animations/loadingLottie.json";
+import LoadingLottie from "../../components/common/LoadingLottie";
 
 interface ProjectDetailType {
   projectId: number;
@@ -214,6 +219,9 @@ const ProjectRoomDetail = () => {
     console.log(active, over);
     if (!over) return; // 드롭할 곳이 없으면 그대로 유지
 
+    // 리스트박스 타입
+    const listBoxType = over.data.current.type;
+
     const taskInfo = active.data.current.updatedData;
 
     const taskListName = over.data.current.taskListName;
@@ -223,32 +231,60 @@ const ProjectRoomDetail = () => {
       updateData: { ...taskInfo, status: taskListName },
     });
 
-    await taskDragUpdate({
-      taskId: taskInfo.id,
-      updateData: { ...taskInfo, status: taskListName },
-    });
+    console.log(listBoxType);
+
+    if (listBoxType === "all") {
+      if (taskInfo.status === taskListName) return;
+      await taskDragUpdate({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, status: taskListName },
+      });
+
+      console.log({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, status: taskListName },
+      });
+    } else {
+      if (taskInfo.assignedMemberName === taskListName) return;
+
+      const taskListNameId = member.find(
+        (item) => item.username === taskListName
+      )?.memberId;
+
+      await taskDragUpdate({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, assignedMemberId: taskListNameId },
+      });
+
+      console.log({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, assignedMemberId: taskListNameId },
+      });
+    }
   };
 
-  // 로티 ref
-  // const lottieRef = useRef<LottieRefCurrentProps>(null);
-  // useEffect(() => {
-  //   if (lottieRef.current) {
-  //     lottieRef.current.setSpeed(0.7);
-  //   }
-  // }, []);
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 20,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    })
+  );
 
-  // if (taskDragUpdatePending) {
-  //   return (
-  //     <div>
-  //       <Lottie
-  //         lottieRef={lottieRef}
-  //         animationData={loadingLottie}
-  //         loop={true}
-  //         className="w-80 h-80"
-  //       />
-  //     </div>
-  //   );
-  // }
+  // 로티 ref
+  if (taskDragUpdatePending) {
+    return (
+      <div>
+        <LoadingLottie />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -258,7 +294,7 @@ const ProjectRoomDetail = () => {
           <MeetingRoomChatBox css="pb-[30px]" projectId={Number(projectId)} />
         </div>
       ) : (
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
           <div
             className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
           flex flex-col gap-[30px]
