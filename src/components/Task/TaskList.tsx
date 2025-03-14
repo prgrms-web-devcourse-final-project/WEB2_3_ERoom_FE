@@ -6,6 +6,8 @@ import { deleteTask, updateTask } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 import dayjs from "dayjs";
 import { showToast } from "../../utils/toastConfig";
+import { useDroppable } from "@dnd-kit/core";
+import { progressType } from "../../utils/progressType";
 
 const TaskList = ({
   name,
@@ -17,7 +19,6 @@ const TaskList = ({
 }: TaskListProps) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const { member } = useAuthStore();
-  console.log(projectData);
 
   const openModal = (task: Task) => {
     setSelectedTask(task); // 임의로 첫 번째 더미 데이터를 선택
@@ -93,8 +94,18 @@ const TaskList = ({
     projectEditInfo?.endDate &&
     projectEditInfo?.endDate < dayjs().format("YYYY-MM-DDTHH:mm:ss");
 
+  // drag
+  const { setNodeRef } = useDroppable({
+    id: `taskList ${name}`,
+    data: {
+      type: isAll ? "all" : "manager",
+      taskListName: isAll ? progressType(name) : name,
+    },
+  });
+
   return (
     <div
+      ref={setNodeRef}
       className={`flex flex-col relative gap-4 items-center px-2 py-5 
         min-w-[320px] min-h-[650px] h-fit bg-gradient-to-b from-white/60 to-white/5`}
     >
