@@ -1,8 +1,8 @@
-import guestMainBg from "../../assets/guestMainBg.svg";
+import guestMainBg from "../../assets/guestMainBg.webp";
 
 const GuestMain = () => {
   return (
-    <div className="bg-amber-200">
+    <div className="">
       <div
         className="w-screen h-[calc(100vh-50px)] bg-no-repeat bg-center bg-cover relative
         flex items-center"
