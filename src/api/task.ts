@@ -16,7 +16,7 @@ export const createTask = async (taskData: CreateTask) => {
 export const getTaskById = async (taskId: number) => {
   try {
     const response = await api.get(`/api/tasks/${taskId}`);
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error task by Id:", error);

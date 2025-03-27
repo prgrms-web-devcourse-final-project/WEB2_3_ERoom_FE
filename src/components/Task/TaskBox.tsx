@@ -5,7 +5,7 @@ import ParticipantIcon from "../common/ParticipantIcon";
 import { getTaskById } from "../../api/task";
 import { useAuthStore } from "../../store/authStore";
 import defaultImg from "../../assets/defaultImg.svg";
-import { useEffect } from "react";
+import { useDraggable } from "@dnd-kit/core";
 
 const TaskBox = ({
   isAll = true,
@@ -24,10 +24,6 @@ const TaskBox = ({
       return await getTaskById(task.taskId);
     },
   });
-
-  useEffect(() => {
-    console.log(updatedData);
-  }, [updatedData]);
 
   /* 시작버튼 클릭 -> 진행 중 상태 변경 함수 */
   const handleStateStart = () => {
@@ -57,16 +53,34 @@ const TaskBox = ({
     refetch();
   };
 
+  // drag
+  // const [isDragging, setIsDragging] = useState(false);
+
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: `taskBox ${task.taskId}`,
+    data: { task, updatedData },
+    disabled: task.assignedMemberName !== member?.username,
+  });
+
   // 전체 업무 박스
   if (isAll && task) {
     return (
       <div
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
         className={`w-[320px] h-[120px] bg-white border border-main-green02
         px-3 py-2 flex flex-col justify-center gap-2 ${
           task.assignedMemberName === member?.username &&
           "cursor-pointer transition-transform duration-500  hover:scale-105 hover:border-[3px] hover:border-main-green01 hover:rounded-[10px]"
         } 
         `}
+        style={{
+          transform: transform
+            ? `translate(${transform.x}px, ${transform.y}px)`
+            : "none",
+          transition: transform ? "transform 0s ease" : "none",
+        }}
         onClick={onClick}
       >
         <div className="flex justify-between items-center">
@@ -131,12 +145,21 @@ const TaskBox = ({
     /* 로그인 유저의 업무인지 확인하여 편집가능하게 해야 함 */
     return (
       <div
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
         className={`w-[300px] h-[80px] bg-white border border-main-green02
         px-3 py-2 flex flex-col justify-center gap-2 ${
           task.assignedMemberName === member?.username &&
           "cursor-pointer transition-transform duration-500 hover:scale-105 hover:border-[3px] hover:border-main-green01 hover:rounded-[10px]"
         } 
         `}
+        style={{
+          transform: transform
+            ? `translate(${transform.x}px, ${transform.y}px)`
+            : "none",
+          transition: transform ? "transform 0s ease" : "none",
+        }}
         onClick={onClick}
       >
         <div className="flex justify-between items-center">

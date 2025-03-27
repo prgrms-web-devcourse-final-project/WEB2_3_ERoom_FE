@@ -4,13 +4,23 @@ import TaskList from "../../components/Task/TaskList";
 import { useEffect, useState } from "react";
 import MeetingRoomChatBox from "../../components/MeetingRoom/MeetingRoomChatBox";
 import CreateTaskModal from "../../components/modals/CreateTaskModal";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { OutletContextType } from "../../components/layout/Layout";
 import { useSideManagerStore } from "../../store/sideMemberStore";
 import { getProjectById, getProjectDetail } from "../../api/project";
 import dayjs from "dayjs";
 import { showToast } from "../../utils/toastConfig";
 import axios from "axios";
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { updateTask } from "../../api/task";
+import { queryClient } from "../../main";
+import LoadingLottie from "../../components/common/LoadingLottie";
 
 interface ProjectDetailType {
   projectId: number;
@@ -183,9 +193,98 @@ const ProjectRoomDetail = () => {
   // }, [projectDetailList]);
 
   useEffect(() => {
-    console.log(searchParams.get("category"));
     setCategory(searchParams.get("category"));
   }, [searchParams.get("category")]);
+
+  // drag
+  const { mutateAsync: taskDragUpdate, isPending: taskDragUpdatePending } =
+    useMutation({
+      mutationFn: ({
+        taskId,
+        updateData,
+      }: {
+        taskId: number;
+        updateData: UpdateTask;
+      }) => updateTask(taskId, updateData),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["ProjectDetail"] });
+        queryClient.invalidateQueries({ queryKey: ["ProjectEditInfo"] });
+        showToast("success", "업무가 수정되었습니다.");
+      },
+    });
+
+  const handleDragEnd = async (event: any) => {
+    console.log("drag");
+    const { active, over } = event;
+    console.log(active, over);
+    if (!over) return; // 드롭할 곳이 없으면 그대로 유지
+
+    // 리스트박스 타입
+    const listBoxType = over.data.current.type;
+
+    const taskInfo = active.data.current.updatedData;
+
+    const taskListName = over.data.current.taskListName;
+
+    console.log({
+      taskId: taskInfo.id,
+      updateData: { ...taskInfo, status: taskListName },
+    });
+
+    console.log(listBoxType);
+
+    if (listBoxType === "all") {
+      if (taskInfo.status === taskListName) return;
+      await taskDragUpdate({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, status: taskListName },
+      });
+
+      console.log({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, status: taskListName },
+      });
+    } else {
+      if (taskInfo.assignedMemberName === taskListName) return;
+
+      const taskListNameId = member.find(
+        (item) => item.username === taskListName
+      )?.memberId;
+
+      await taskDragUpdate({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, assignedMemberId: taskListNameId },
+      });
+
+      console.log({
+        taskId: taskInfo.id,
+        updateData: { ...taskInfo, assignedMemberId: taskListNameId },
+      });
+    }
+  };
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 20,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    })
+  );
+
+  // 로티 ref
+  if (taskDragUpdatePending) {
+    return (
+      <div>
+        <LoadingLottie />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -195,141 +294,143 @@ const ProjectRoomDetail = () => {
           <MeetingRoomChatBox css="pb-[30px]" projectId={Number(projectId)} />
         </div>
       ) : (
-        <div
-          className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
+        <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+          <div
+            className="w-[calc(100vw-140px)] h-[calc(100vh-50px)] p-[30px] 
           flex flex-col gap-[30px]
           bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
-        >
-          <div className="w-full flex justify-between items-center">
-            {/* 헤더 */}
-            <div className="flex flex-col justify-between items-start gap-[10px]">
-              <h1 className="font-bold text-[22px]">
-                {projectDetailList?.projectName}
-              </h1>
+          >
+            <div className="w-full flex justify-between items-center">
+              {/* 헤더 */}
+              <div className="flex flex-col justify-between items-start gap-[10px]">
+                <h1 className="font-bold text-[22px]">
+                  {projectDetailList?.projectName}
+                </h1>
 
-              {/* 태그 목록 */}
-              <div className="flex justify-start gap-[10px]">
-                {/* 분야 */}
-                {projectDetailList?.categoryName && (
-                  <p># {projectDetailList?.categoryName}</p>
-                )}
+                {/* 태그 목록 */}
+                <div className="flex justify-start gap-[10px]">
+                  {/* 분야 */}
+                  {projectDetailList?.categoryName && (
+                    <p># {projectDetailList?.categoryName}</p>
+                  )}
 
-                {/* 세부분야 1 */}
-                {projectDetailList?.subCategories[0] &&
-                  projectDetailList?.subCategories[0].tags.map((item) => (
-                    <p key={item.name}># {item.name}</p>
-                  ))}
+                  {/* 세부분야 1 */}
+                  {projectDetailList?.subCategories[0] &&
+                    projectDetailList?.subCategories[0].tags.map((item) => (
+                      <p key={item.name}># {item.name}</p>
+                    ))}
 
-                {/* 세부분야2 */}
-                {projectDetailList?.subCategories[1] &&
-                  projectDetailList?.subCategories[1].tags.map((item) => (
-                    <p key={item.name}># {item.name}</p>
-                  ))}
+                  {/* 세부분야2 */}
+                  {projectDetailList?.subCategories[1] &&
+                    projectDetailList?.subCategories[1].tags.map((item) => (
+                      <p key={item.name}># {item.name}</p>
+                    ))}
+                </div>
               </div>
-            </div>
 
-            {/* 업무 생성 버튼 */}
-            <Button
-              text="+ 업무 생성"
-              size="md"
-              css="bg-transparent border-main-green01 
+              {/* 업무 생성 버튼 */}
+              <Button
+                text="+ 업무 생성"
+                size="md"
+                css="bg-transparent border-main-green01 
               text-main-green01 text-[14px]"
-              onClick={() => {
-                if (projectEditInfo) {
-                  if (
-                    projectEditInfo.endDate <
-                    dayjs().format("YYYY-MM-DDTHH:mm:ss")
-                  ) {
-                    showToast(
-                      "error",
-                      "마감기한이 지난 프로젝트는 업무 생성 및 수정이 불가합니다."
-                    );
-                    return;
+                onClick={() => {
+                  if (projectEditInfo) {
+                    if (
+                      projectEditInfo.endDate <
+                      dayjs().format("YYYY-MM-DDTHH:mm:ss")
+                    ) {
+                      showToast(
+                        "error",
+                        "마감기한이 지난 프로젝트는 업무 생성 및 수정이 불가합니다."
+                      );
+                      return;
+                    }
                   }
-                }
-                setIsEditTaskModal(true);
-              }}
-            />
-          </div>
+                  setIsEditTaskModal(true);
+                }}
+              />
+            </div>
 
-          {/* 전체 업무 리스트 */}
-          {(category === "all" || !category) && (
-            <div
-              className="w-full h-full overflow-scroll scrollbar px-[20px]
+            {/* 전체 업무 리스트 */}
+            {(category === "all" || !category) && (
+              <div
+                className="w-full h-full overflow-scroll scrollbar px-[20px]
               flex justify-start gap-[30px]"
-            >
-              <TaskList
-                name="진행 중"
-                taskInfo={allTasks.IN_PROGRESS}
-                refetch={getProjectDetailRefetch}
-                projectData={projectDetailList}
-                projectEditInfo={projectEditInfo}
-              />
-              <TaskList
-                name="진행 예정"
-                taskInfo={allTasks.BEFORE_START}
-                refetch={getProjectDetailRefetch}
-                projectData={projectDetailList}
-                projectEditInfo={projectEditInfo}
-              />
-              <TaskList
-                name="진행 완료"
-                taskInfo={allTasks.COMPLETED}
-                refetch={getProjectDetailRefetch}
-                projectData={projectDetailList}
-                projectEditInfo={projectEditInfo}
-              />
-              <TaskList
-                name="보류"
-                taskInfo={allTasks.HOLD}
-                refetch={getProjectDetailRefetch}
-                projectData={projectDetailList}
-                projectEditInfo={projectEditInfo}
-              />
-            </div>
-          )}
-          {/* 담당자 업무 리스트 */}
-          {category === "manager" && (
-            <div
-              className="w-full h-full overflow-scroll scrollbar
+              >
+                <TaskList
+                  name="진행 중"
+                  taskInfo={allTasks.IN_PROGRESS}
+                  refetch={getProjectDetailRefetch}
+                  projectData={projectDetailList}
+                  projectEditInfo={projectEditInfo}
+                />
+                <TaskList
+                  name="진행 예정"
+                  taskInfo={allTasks.BEFORE_START}
+                  refetch={getProjectDetailRefetch}
+                  projectData={projectDetailList}
+                  projectEditInfo={projectEditInfo}
+                />
+                <TaskList
+                  name="진행 완료"
+                  taskInfo={allTasks.COMPLETED}
+                  refetch={getProjectDetailRefetch}
+                  projectData={projectDetailList}
+                  projectEditInfo={projectEditInfo}
+                />
+                <TaskList
+                  name="보류"
+                  taskInfo={allTasks.HOLD}
+                  refetch={getProjectDetailRefetch}
+                  projectData={projectDetailList}
+                  projectEditInfo={projectEditInfo}
+                />
+              </div>
+            )}
+            {/* 담당자 업무 리스트 */}
+            {category === "manager" && (
+              <div
+                className="w-full h-full overflow-scroll scrollbar
           flex justify-start gap-[30px]"
-            >
-              {filterManageTasks.map((task, idx) => {
-                return (
-                  <div key={idx}>
-                    <TaskList
-                      isAll={false}
-                      taskInfo={task.tasks}
-                      name={task.name}
-                      refetch={getProjectDetailRefetch}
-                      projectEditInfo={projectEditInfo}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )}
+              >
+                {filterManageTasks.map((task, idx) => {
+                  return (
+                    <div key={idx}>
+                      <TaskList
+                        isAll={false}
+                        taskInfo={task.tasks}
+                        name={task.name}
+                        refetch={getProjectDetailRefetch}
+                        projectEditInfo={projectEditInfo}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
-          {/* 업무 생성 모달 */}
-          {isEditTaskModal && (
-            <div
-              className="fixed inset-0 flex items-center justify-center 
+            {/* 업무 생성 모달 */}
+            {isEditTaskModal && (
+              <div
+                className="fixed inset-0 flex items-center justify-center 
             bg-black/70 z-50"
-              onClick={() => {
-                setIsEditTaskModal(false);
-              }}
-            >
-              <CreateTaskModal
-                onClose={setIsEditTaskModal}
-                projectId={Number(projectId)}
-                refetch={getProjectDetailRefetch}
-                setIsModal={setIsEditTaskModal}
-                memberData={member}
-                projectData={projectEditInfo}
-              />
-            </div>
-          )}
-        </div>
+                onClick={() => {
+                  setIsEditTaskModal(false);
+                }}
+              >
+                <CreateTaskModal
+                  onClose={setIsEditTaskModal}
+                  projectId={Number(projectId)}
+                  refetch={getProjectDetailRefetch}
+                  setIsModal={setIsEditTaskModal}
+                  memberData={member}
+                  projectData={projectEditInfo}
+                />
+              </div>
+            )}
+          </div>
+        </DndContext>
       )}
     </>
   );
