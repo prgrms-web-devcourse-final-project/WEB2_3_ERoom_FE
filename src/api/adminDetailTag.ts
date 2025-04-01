@@ -1,6 +1,23 @@
 import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
+// 관리자 상세항목 태그 조회
+export const adminGetDetailTag = async (subcategoryId: number | null) => {
+  if (subcategoryId !== null) {
+    try {
+      const response = await api.get(
+        `/admin/manage/subcategory/${subcategoryId}/tag/list`
+      );
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    return null;
+  }
+};
+
 // 관리자 상세항목 태그 생성
 export const adminAddnewDetailTag = async (
   subcategoryId: number,
