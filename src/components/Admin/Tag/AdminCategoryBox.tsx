@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { queryClient } from "../../../main";
 import AdminTagBox from "./AdminTagBox";
 import { showToast } from "../../../utils/toastConfig";
@@ -11,18 +11,18 @@ import AdminTagList from "./AdminTagList";
 interface AdminCategoryBoxProps {
   setSelectedCategoryId: React.Dispatch<React.SetStateAction<number | null>>;
   selectedCategoryId: number | null;
+  setSelectedSubCategoryId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const AdminCategoryBox = ({ setSelectedCategoryId }: AdminCategoryBoxProps) => {
+const AdminCategoryBox = ({
+  setSelectedCategoryId,
+  setSelectedSubCategoryId,
+}: AdminCategoryBoxProps) => {
   const { data: allCategories } = useQuery<AllCategoryType[]>({
     queryKey: ["AllCategory"],
     queryFn: getAllCategory,
     retry: false,
   });
-
-  useEffect(() => {
-    console.log("re", allCategories);
-  }, [allCategories]);
 
   // 분야 추가
   const [isAddCategory, setIsAddCategory] = useState(false);
@@ -48,9 +48,15 @@ const AdminCategoryBox = ({ setSelectedCategoryId }: AdminCategoryBoxProps) => {
     setSelectedCategoryId(categoryId);
   };
 
+  // 카테고리 삭제 시 세부항목, 상세항목 초기화
+  const resetState = () => {
+    setSelectedCategoryId(null);
+    setSelectedSubCategoryId(null);
+  };
+
   return (
     <div className="flex flex-col w-full gap-[10px]">
-      <span className="font-bold text-[16px] text-main-green">re분야</span>
+      <span className="font-bold text-[16px] text-main-green">분야</span>
       <div className="flex w-full justify-end">
         <button onClick={handleAddCategory} className="cursor-pointer">
           <img src={AddButton} alt="분야 생성 버튼" />
@@ -68,6 +74,7 @@ const AdminCategoryBox = ({ setSelectedCategoryId }: AdminCategoryBoxProps) => {
             isClicked={isCategoryClicked}
             setIsClicked={setIsCategoryClicked}
             onClick={() => categoryClick(category.id)}
+            deleteResetState={resetState}
             type="category"
           />
         ))}

@@ -28,8 +28,7 @@ interface AdminTagListProps {
   type: "category" | "subCategory" | "detailTags";
   isClicked?: number | null;
   setIsClicked?: React.Dispatch<React.SetStateAction<number | null>>;
-  setDetails2?: React.Dispatch<React.SetStateAction<any[]>>;
-  setSubCategories2?: React.Dispatch<React.SetStateAction<SubCategoryType[]>>;
+  deleteResetState?: () => void;
 }
 
 const AdminTagList = ({
@@ -41,7 +40,7 @@ const AdminTagList = ({
   type,
   isClicked,
   setIsClicked,
-  setDetails2,
+  deleteResetState,
 }: AdminTagListProps) => {
   const [isEditable, setIsEditable] = useState(false);
   const [value, setValue] = useState(name);
@@ -52,6 +51,9 @@ const AdminTagList = ({
     onSuccess: () => {
       if (setIsClicked) {
         setIsClicked(null);
+      }
+      if (deleteResetState) {
+        deleteResetState();
       }
       queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
     },
@@ -76,10 +78,10 @@ const AdminTagList = ({
     mutationFn: (subcategoryId: number) =>
       adminDeleteSubCategory(subcategoryId),
     onSuccess: () => {
-      if (setDetails2) {
-        setDetails2([]);
+      if (deleteResetState) {
+        deleteResetState();
       }
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+      queryClient.invalidateQueries({ queryKey: ["subCategory"] });
     },
   });
 
@@ -95,8 +97,9 @@ const AdminTagList = ({
       await adminEditSubCategory(subcategoryId, editSubCateName);
       setIsEditable(false);
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["subCategory"] });
+    },
   });
 
   // 상세항목 태그 삭제함수
@@ -108,11 +111,6 @@ const AdminTagList = ({
       subcategoryId: number;
       tagId: number;
     }) => {
-      if (setDetails2) {
-        setDetails2((prev) =>
-          prev.filter((detailTag) => detailTag.id !== tagId)
-        );
-      }
       try {
         // 실제 삭제 API 요청
         const response = await adminDeleteDetailTag(subcategoryId, tagId);
@@ -124,8 +122,7 @@ const AdminTagList = ({
         throw error;
       }
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["detailTag"] }),
   });
 
   // 상세항목 태그 수정함수
@@ -147,18 +144,9 @@ const AdminTagList = ({
       if (response?.status !== 200) {
         return alert("오류가 발생했습니다");
       }
-      if (setDetails2) {
-        setDetails2((prev) =>
-          prev.map((item, i) =>
-            i === index ? { id: tagId, name: editDetailTagName } : item
-          )
-        );
-      }
-
       setIsEditable(false);
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["detailTag"] }),
   });
 
   return (

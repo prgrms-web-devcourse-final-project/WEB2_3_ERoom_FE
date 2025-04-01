@@ -21,12 +21,7 @@ const AdminDetailTagBox = ({ subCategoryId }: AdminDetailTagBoxProps) => {
     queryFn: () => adminGetDetailTag(subCategoryId),
   });
 
-  useEffect(() => {
-    console.log(detailTags);
-  }, [detailTags]);
-
   // 상세항목 추가
-
   const [isAddDetailTag, setIsAddDetailTag] = useState(false);
 
   const handleAddDetail = () => {
@@ -46,17 +41,24 @@ const AdminDetailTagBox = ({ subCategoryId }: AdminDetailTagBoxProps) => {
         newDetailTagName
       );
       console.log(response);
-      // setDetails2((prev) => [...prev, response?.data]);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+      queryClient.invalidateQueries({ queryKey: ["detailTag"] });
       setIsAddDetailTag(false);
     },
   });
 
+  const [isDetailTagClicked, setIsDetailTagClicked] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    setIsDetailTagClicked(null);
+  }, [subCategoryId]);
+
   return (
     <div className="flex flex-col w-full gap-[10px]">
-      <span className="font-bold text-[16px] text-main-green">re상세항목</span>
+      <span className="font-bold text-[16px] text-main-green">상세항목</span>
 
       <div className="flex w-full justify-end h-[27px]">
         {subCategoryId !== null && (
@@ -78,11 +80,12 @@ const AdminDetailTagBox = ({ subCategoryId }: AdminDetailTagBoxProps) => {
             name={detail.name}
             subcategoryId={subCategoryId}
             onClick={() => {}}
+            isClicked={isDetailTagClicked}
+            setIsClicked={setIsDetailTagClicked}
             type="detailTags"
-            // setDetails2={setDetails2}
           />
         ))}
-        {isAddDetailTag && subCategoryId && (
+        {isAddDetailTag && detailTags && (
           <AdminTagAdd
             index={detailTags.length}
             subcategoryId={subCategoryId}

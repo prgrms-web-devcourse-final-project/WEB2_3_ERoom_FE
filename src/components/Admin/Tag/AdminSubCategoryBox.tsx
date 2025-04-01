@@ -27,10 +27,6 @@ const AdminSubCategoryBox = ({
     queryFn: () => adminGetSubCategory(categoryId),
   });
 
-  useEffect(() => {
-    console.log("reSub", subCategories);
-  }, [subCategories]);
-
   // 서브카테고리 추가
   const [isAddSubCategory, setIsAddSubCategory] = useState(false);
 
@@ -51,7 +47,7 @@ const AdminSubCategoryBox = ({
       newSubCategoryName: string;
     }) => await adminAddNewSubCategory(categoryId, newSubCategoryName),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["AllCategory"] });
+      queryClient.invalidateQueries({ queryKey: ["subCategory"] });
       setIsAddSubCategory(false);
     },
   });
@@ -63,9 +59,19 @@ const AdminSubCategoryBox = ({
     setSelectedSubCategoryId(subCategoryId);
   };
 
+  useEffect(() => {
+    setIsSubCateClicked(null);
+  }, [categoryId]);
+
+  // 서브카테고리 삭제 시 상세항목 초기화
+  const resetState = () => {
+    setIsSubCateClicked(null);
+    setSelectedSubCategoryId(null);
+  };
+
   return (
     <div className="flex flex-col w-full gap-[10px]">
-      <span className="font-bold text-[16px] text-main-green">re세부항목</span>
+      <span className="font-bold text-[16px] text-main-green">세부항목</span>
 
       <div className="h-[27px] flex w-full justify-end">
         {categoryId && (
@@ -88,7 +94,7 @@ const AdminSubCategoryBox = ({
             type="subCategory"
             isClicked={isSubCateClicked}
             setIsClicked={setIsSubCateClicked}
-            // setDetails2={setDetails2}
+            deleteResetState={resetState}
           />
         ))}
         {isAddSubCategory && subCategories && (

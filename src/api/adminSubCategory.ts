@@ -14,7 +14,7 @@ export const adminGetSubCategory = async (categoryId: number | null) => {
       console.error(error);
     }
   } else {
-    showToast("error", "카테고리를 선택해주세요.");
+    return null;
   }
 };
 

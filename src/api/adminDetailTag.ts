@@ -14,8 +14,7 @@ export const adminGetDetailTag = async (subcategoryId: number | null) => {
       console.error(error);
     }
   } else {
-    return;
-    showToast("error", "세부항목을 선택해주세요.");
+    return null;
   }
 };
 
