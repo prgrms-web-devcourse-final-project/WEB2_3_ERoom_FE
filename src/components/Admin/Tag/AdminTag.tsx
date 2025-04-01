@@ -13,6 +13,9 @@ import { showToast } from "../../../utils/toastConfig";
 import AdminTagChart from "./AdminTagChart";
 import TagCountBox from "./TagCountBox";
 import axios from "axios";
+import AdminCategoryBox from "./AdminCategoryBox";
+import AdminSubCategoryBox from "./AdminSubCategoryBox";
+import AdminDetailTagBox from "./AdminDetailTagBox";
 
 const AdminTag = () => {
   const { data: allCategories, error } = useQuery<AllCategoryType[]>({
@@ -160,6 +163,22 @@ const AdminTag = () => {
   }, [subCategoryId]);
 
   // 태그 목록
+
+  // ------------------------------------------------------------------
+  // 클릭된 분야 id
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
+
+  // 클릭된 세부항목 Id
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<
+    number | null
+  >(null);
+
+  useEffect(() => {
+    console.log("selectedCategoryId", selectedCategoryId);
+  }, [selectedCategoryId]);
+
   return (
     <div className="h-[calc(100vh-50px)] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0">
       <div className="min-h-[calc(100vh-80px)] mx-[30px] mb-[30px] px-[30px] pt-[30px] flex flex-col  bg-white/60">
@@ -182,6 +201,7 @@ const AdminTag = () => {
             />
           </div>
         </div>
+
         {isTagList === "tagList" ? (
           <div className="flex w-full gap-[30px]">
             <div className="flex flex-col w-full gap-[10px]">
@@ -195,6 +215,7 @@ const AdminTag = () => {
               </div>
               <AdminTagBox name="분야" />
               <div className="h-[400px] overflow-y-scroll scrollbar-none">
+                {/* 카테고리 */}
                 {allCategories?.map((category, index) => (
                   <AdminTagList
                     key={category.id}
@@ -219,6 +240,10 @@ const AdminTag = () => {
                 )}
               </div>
             </div>
+            <AdminCategoryBox
+              selectedCategoryId={selectedCategoryId}
+              setSelectedCategoryId={setSelectedCategoryId}
+            />
             <div className="flex flex-col w-full gap-[10px]">
               <span className="font-bold text-[16px] text-main-green">
                 세부항목
@@ -237,6 +262,7 @@ const AdminTag = () => {
 
               <AdminTagBox name="세부항목" />
               <div className="h-[400px] overflow-y-scroll scrollbar-none">
+                {/* 서브카테고리 */}
                 {subCategories2.map((subcategory, index) => (
                   <AdminTagList
                     key={subcategory.id}
@@ -264,6 +290,13 @@ const AdminTag = () => {
                 )}
               </div>
             </div>
+
+            <AdminSubCategoryBox
+              categoryId={selectedCategoryId}
+              selectedSubCategoryId={selectedSubCategoryId}
+              setSelectedSubCategoryId={setSelectedSubCategoryId}
+            />
+
             <div className="flex flex-col w-full gap-[10px]">
               <span className="font-bold text-[16px] text-main-green">
                 상세항목
@@ -277,21 +310,10 @@ const AdminTag = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-[9.4%_1fr_12.5%_12.5%] w-full h-[33px] text-main-green border-b border-b-main-green">
-                <div className="flex justify-center">
-                  <span>No.</span>
-                </div>
-                <div className="flex justify-center">
-                  <span>상세항목</span>
-                </div>
-                <div className="flex justify-center">
-                  <span>수정</span>
-                </div>
-                <div className="flex justify-center">
-                  <span>삭제</span>
-                </div>
-              </div>
+              <AdminTagBox name="상세항목" />
+
               <div className="h-[400px] overflow-y-scroll scrollbar-none">
+                {/* 태그 */}
                 {details2.map((detail, index) => (
                   <AdminTagList
                     key={detail.id}
@@ -318,6 +340,7 @@ const AdminTag = () => {
                 )}
               </div>
             </div>
+            <AdminDetailTagBox subCategoryId={selectedSubCategoryId} />
           </div>
         ) : (
           <div className="w-full">
