@@ -33,8 +33,6 @@
 ![](https://img.shields.io/badge/-netlify-blue?style=for-the-badge&logo=netlify&logoColor=green)
 
 
-![](https://camo.githubusercontent.com/8290ef49e85a94c2ae9f929badf5aa1007b74d20f3f465c9222205064147bfa5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d4342333833373f7374796c653d666f722d7468652d6261646765266c6f676f3d6e706d266c6f676f436f6c6f723d7768697465)
-
 ## ⌨️ 협업 툴
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> 
 ![](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
