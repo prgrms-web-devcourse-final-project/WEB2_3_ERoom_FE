@@ -21,7 +21,7 @@ export const dragChange = async (info: EventDropArg) => {
       endDate,
       membersIds: projectData.memberIds,
     });
-    console.log(response);
+
     if (response.status === 204) {
       showToast("success", "프로젝트 일정이 수정되었습니다");
     }

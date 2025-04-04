@@ -40,7 +40,6 @@ const AdminTag = () => {
   >(null);
 
   useEffect(() => {
-    console.log("selectedCategoryId", selectedCategoryId);
     setSelectedSubCategoryId(null);
   }, [selectedCategoryId]);
 

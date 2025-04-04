@@ -87,7 +87,6 @@ const Header = () => {
   const handleLogOut = async () => {
     try {
       const response = await api.post("/api/auth/logout");
-      console.log(response);
 
       if (response.status === 200) {
         logout();

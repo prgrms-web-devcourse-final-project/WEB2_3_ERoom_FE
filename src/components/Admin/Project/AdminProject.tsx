@@ -182,10 +182,6 @@ const AdminProject = () => {
   // 프로젝트 삭제(완전 삭제)
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
-  useEffect(() => {
-    console.log(checkedIds);
-  }, [checkedIds]);
-
   const { mutateAsync: deleteProjectFn } = useMutation({
     mutationFn: (projectId: number) => adminDeleteProject(projectId),
     onSuccess: () => {

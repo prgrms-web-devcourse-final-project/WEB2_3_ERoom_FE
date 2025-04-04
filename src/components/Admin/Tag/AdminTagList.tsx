@@ -114,7 +114,6 @@ const AdminTagList = ({
       try {
         // 실제 삭제 API 요청
         const response = await adminDeleteDetailTag(subcategoryId, tagId);
-        console.log("삭제 응답:", response);
 
         return response;
       } catch (error) {

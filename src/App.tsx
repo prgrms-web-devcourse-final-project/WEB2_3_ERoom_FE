@@ -23,12 +23,12 @@ const App = () => {
   const memberId = useAuthStore((state) => state.member?.id);
 
   useEffect(() => {
-    console.log(" useEffect 실행 - WebSocket 연결 확인");
-    console.log(" 현재 로그인한 사용자 ID:", memberId);
-    console.log(" 현재 Access Token:", accessToken);
+    // console.log(" useEffect 실행 - WebSocket 연결 확인");
+    // console.log(" 현재 로그인한 사용자 ID:", memberId);
+    // console.log(" 현재 Access Token:", accessToken);
 
     if (accessToken && memberId) {
-      console.log(" WebSocket 연결 시작...");
+      // console.log(" WebSocket 연결 시작...");
       connectWebSocket(accessToken, memberId);
     }
   }, [accessToken, memberId]);

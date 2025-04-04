@@ -36,11 +36,7 @@ const AdminDetailTagBox = ({ subCategoryId }: AdminDetailTagBoxProps) => {
       subcategoryId: number;
       newDetailTagName: string;
     }) => {
-      const response = await adminAddnewDetailTag(
-        subcategoryId,
-        newDetailTagName
-      );
-      console.log(response);
+      await adminAddnewDetailTag(subcategoryId, newDetailTagName);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["detailTag"] });

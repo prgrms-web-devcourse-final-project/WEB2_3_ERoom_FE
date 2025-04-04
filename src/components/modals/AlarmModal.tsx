@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
 
@@ -8,11 +7,6 @@ const AlarmModal = ({
   readAllAlarms,
   onRemove,
 }: AlarmModalProps) => {
-  // 알람목록 확인용 (추후 지우기)
-  useEffect(() => {
-    console.log("알람 목록", allAlarms);
-  }, []);
-
   return (
     <div
       className="flex flex-col w-[321px] h-[499px] rounded-[10px] 

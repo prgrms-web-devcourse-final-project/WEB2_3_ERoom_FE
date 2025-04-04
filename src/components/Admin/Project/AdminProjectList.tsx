@@ -67,7 +67,6 @@ const AdminProjectList = ({
   );
 
   useEffect(() => {
-    console.log(status);
     setEditedProject((prev) => ({
       ...prev,
       projectStatus: progressType(status),
@@ -100,7 +99,7 @@ const AdminProjectList = ({
     editInfo: AdminProjectsListType
   ) => {
     setIsEditing(false);
-    console.log(editedProject);
+
     editProjectFn({ projectId, editInfo });
   };
 

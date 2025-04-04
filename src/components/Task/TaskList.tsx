@@ -41,15 +41,12 @@ const TaskList = ({
       onSuccess: () => {
         refetch();
         showToast("success", "업무가 수정되었습니다.");
-        console.log("성공");
       },
     });
 
   const handleUpdateTask = async (taskId: number, updateData: UpdateTask) => {
-    console.log("업데이트 데이터:", taskId, updateData);
     try {
       await updateMutation({ taskId, updateData });
-      console.log("업무 수정 완료:", taskId, updateData);
 
       // 프로젝트 상세 정보를 다시 불러옴
       refetch();
@@ -68,15 +65,12 @@ const TaskList = ({
     onSuccess: () => {
       refetch();
       showToast("success", "업무가 삭제되었습니다.");
-      console.log("성공");
     },
   });
 
   const handleDeleteTask = async (taskId: number) => {
     try {
-      console.log("업무 삭제 요청:", taskId); // 디버깅용 로그
       await deleteMutation(taskId);
-      console.log("업무 삭제 완료");
 
       // 업무 상세 정보를 다시 불러옴
       refetch();
@@ -121,7 +115,6 @@ const TaskList = ({
                     "warning",
                     "마감기한이 지난 프로젝트는 업무 수정 및 생성이 안됩니다."
                   );
-                  console.log("first");
                 } else {
                   openModal(task);
                 }

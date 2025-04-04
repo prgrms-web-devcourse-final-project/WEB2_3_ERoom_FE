@@ -76,11 +76,11 @@ const MeetingRoomChatBox = ({
 
   //메시지 데이터 업데이트
   useEffect(() => {
-    console.log("채팅 내역 데이터:", messageList);
-    console.log(
-      "채팅 내역 메시지 데이터:",
-      messageList?.groupChatRoom?.messages
-    );
+    // console.log("채팅 내역 데이터:", messageList);
+    // console.log(
+    //   "채팅 내역 메시지 데이터:",
+    //   messageList?.groupChatRoom?.messages
+    // );
     if (messageList?.groupChatRoom?.messages) {
       setMessages(messageList.groupChatRoom.messages);
     }
@@ -109,12 +109,12 @@ const MeetingRoomChatBox = ({
 
     //  기존 구독 해제 후 새 채팅방 구독
     if (currentSubscription) {
-      console.log(` 기존 구독 해제: ${currentSubscription.id}`);
+      // console.log(` 기존 구독 해제: ${currentSubscription.id}`);
       stompClient.unsubscribe(currentSubscription.id);
     }
 
     const subscriptionPath = `/topic/chatroom/${chatRoomId}`;
-    console.log(` 새 채팅방 구독: ${subscriptionPath}`);
+    // console.log(` 새 채팅방 구독: ${subscriptionPath}`);
 
     const subscription = stompClient.subscribe(subscriptionPath, (msg) => {
       const newMessage = JSON.parse(msg.body);
@@ -126,7 +126,7 @@ const MeetingRoomChatBox = ({
 
     return () => {
       if (subscription) {
-        console.log(`구독 해제 ${subscriptionPath}`);
+        // console.log(`구독 해제 ${subscriptionPath}`);
         subscription.unsubscribe();
       }
     };
@@ -187,7 +187,7 @@ const MeetingRoomChatBox = ({
   // WebSocket 연결 후 실제 UI가 렌더링될 때 트리거
   useEffect(() => {
     if (stompClient) {
-      console.log(" WebSocket 연결 완료, UI 전환됨");
+      // console.log(" WebSocket 연결 완료, UI 전환됨");
       setIsClientReady(true); //  WebSocket 연결 후 UI 렌더링 트리거
     }
   }, [stompClient]);
@@ -195,7 +195,7 @@ const MeetingRoomChatBox = ({
   useEffect(() => {
     if (isClientReady && chatContainerRef.current) {
       setTimeout(() => {
-        console.log("🛠 스크롤 이동 실행!");
+        // console.log("🛠 스크롤 이동 실행!");
         chatContainerRef.current!.scrollTop =
           chatContainerRef.current?.scrollHeight ?? 0;
       }, 100); // UI가 렌더링된 후 실행 보장

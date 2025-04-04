@@ -55,7 +55,6 @@ const AdminSubCategoryBox = ({
   const [isSubCateClicked, setIsSubCateClicked] = useState<number | null>(null);
 
   const subCategoryClick = (subCategoryId: number) => {
-    console.log("subCateClick", subCategoryId);
     setSelectedSubCategoryId(subCategoryId);
   };
 

@@ -5,7 +5,7 @@ import { api } from "./api";
 export const getProjectList = async () => {
   try {
     const response = await api.get("/api/projects/list");
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error project detail list:", error);
@@ -17,7 +17,7 @@ export const getProjectList = async () => {
 export const postProject = async (projectData: postProjectType) => {
   try {
     const response = await api.post("/api/projects/create", projectData);
-    console.log("생성된 프로젝트:", response);
+
     if (response.status === 201) {
       showToast("success", "프로젝트가 생성되었습니다.");
     } else {
@@ -38,7 +38,7 @@ export const getProjectById = async (
     const response = await api.get(`/api/projects/${projectId}/edit`, {
       params: { projectId },
     });
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error project by Id:", error);
@@ -56,7 +56,7 @@ export const patchProjectById = async (
       `/api/projects/${projectId}/update`,
       updateData
     );
-    console.log("프로젝트 수정 성공", response);
+
     if (response.status === 204) {
       showToast("success", "프로젝트가 수정되었습니다.");
     } else {
@@ -76,7 +76,7 @@ export const patchProjectById = async (
 export const getProjectDetail = async (projectId: number) => {
   try {
     const response = await api.get(`/api/projects/${projectId}/detail`);
-    console.log("프로젝트 상세정보:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error project detail:", error);
@@ -88,7 +88,7 @@ export const getProjectDetail = async (projectId: number) => {
 export const deleteProject = async (projectId: number) => {
   try {
     const response = await api.delete(`/api/projects/${projectId}/delete`);
-    console.log("프로젝트 삭제:", response);
+
     if (response.status === 204) {
       showToast("success", "프로젝트가 삭제되었습니다!");
     } else {
@@ -105,7 +105,7 @@ export const deleteProject = async (projectId: number) => {
 export const leaveProject = async (projectId: number) => {
   try {
     const response = await api.delete(`/api/projects/${projectId}/leave`);
-    console.log("프로젝트 나가기:", response);
+
     return response;
   } catch (error) {
     console.error("Error project leave:", error);
