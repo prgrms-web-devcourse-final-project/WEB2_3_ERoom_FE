@@ -66,7 +66,7 @@ const TodaySchedule = ({ taskData, isLoading }: TodayScheduleProps) => {
   return (
     <div
       className="w-[400px] px-5 py-10 border border-main-green02 rounded-[10px]
-      flex flex-col gap-10 items-center bg-white max-sm:w-[370px]"
+      flex flex-col gap-10 items-center bg-white max-sm:w-[370px] max-sm:py-5"
       style={{ maxHeight: "calc(100vh - 50px)" }}
     >
       <div className="flex flex-col items-center">

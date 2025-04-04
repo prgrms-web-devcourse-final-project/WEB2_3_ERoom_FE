@@ -62,6 +62,8 @@ const Header = () => {
   // 모달 외부 클릭 시 알람모달 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (window.innerWidth <= 640) return;
+
       if (
         modalRef.current &&
         !modalRef.current.contains(event.target as Node) &&
@@ -195,7 +197,42 @@ const Header = () => {
       </div>
 
       {/* 모바일 */}
-      <div className="sm:hidden ">
+      <div className="sm:hidden flex items-center gap-5">
+        {/* 알람아이콘 */}
+        <ul>
+          <li
+            ref={alarmRef}
+            className=" cursor-pointer flex justify-center items-center "
+            onClick={handleAlarmModal}
+          >
+            <div className="relative">
+              <img src={alarmIcon} alt="알람 아이콘" />
+              {hasUnreadAlarms && (
+                <span className="absolute top-[-1.3px] right-[-1.5px] flex size-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-header-red opacity-75"></span>
+                  <span className="relative inline-flex size-2 rounded-full bg-header-red"></span>
+                </span>
+              )}
+            </div>
+          </li>
+        </ul>
+
+        {/* 모바일 알람 모달 */}
+        <div
+          ref={modalRef}
+          className={`absolute inset-0 z-50 ${
+            isAlarmOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          } transition-all`}
+        >
+          <AlarmModal
+            onClose={handleAlarmModal}
+            allAlarms={visibleAlarms}
+            readAllAlarms={() => clearAlarms(memberId!)}
+            onRemove={removeAlarm}
+          />
+        </div>
+
+        {/* 메뉴 햄버거 아이콘 */}
         <div className="cursor-pointer" onClick={handleMobileMoreBtnClick}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -240,7 +277,7 @@ const Header = () => {
           </div>
 
           {/* 메뉴 */}
-          <ul className="flex flex-col w-full font-bold gap-20 text-[#657166] ">
+          <ul className="flex flex-col w-full font-bold gap-14 text-[#657166] ">
             {isAuthenticated ? (
               /* 로그인 상태 */
               <>
@@ -263,21 +300,6 @@ const Header = () => {
                   {/* 유저정보api 나온 후 url 수정 필요 */}
                   <Link to={`/project-room`}>마이프로젝트</Link>
                 </li>
-
-                {/* 알람 모달 */}
-                {/* {isAlarmOpen && (
-                    <div
-                      ref={modalRef}
-                      className="absolute top-[50px] transform -translate-x-1/2 z-50"
-                    >
-                      <AlarmModal
-                        onClose={handleAlarmModal}
-                        allAlarms={visibleAlarms}
-                        readAllAlarms={() => clearAlarms(memberId!)}
-                        onRemove={removeAlarm}
-                      />
-                    </div>
-                  )} */}
 
                 {/* 로그아웃 버튼 */}
                 <li
