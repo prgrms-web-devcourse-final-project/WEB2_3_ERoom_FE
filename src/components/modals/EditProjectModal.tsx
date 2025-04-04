@@ -311,7 +311,7 @@ const EditProjectModal = ({
   return (
     <div
       className="w-[700px] min-h-[600px] h-fit bg-white text-main-green
-      flex justify-center items-center z-10"
+      flex justify-center items-center z-10 max-sm:h-dvh"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 프로젝트 생성/편집 */}
@@ -463,7 +463,7 @@ const EditProjectModal = ({
       {pages === 0 && selectedCategory.categoryId && (
         <div
           className="w-[350px] h-[600px] py-[20px]
-          flex flex-col justify-between items-center"
+          flex flex-col justify-between items-center max-sm:hidden"
         >
           {/* 세부항목1 워드클라우드 */}
           <div className="flex flex-col items-center">
