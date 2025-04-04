@@ -52,7 +52,7 @@ const MainPage = () => {
       )}
     >
       {/* 캘린더 */}
-      <div className="flex-1 pl-[40px] pr-[40px] max-sm:p-0">
+      <div className="flex-1 pl-[40px] pr-[40px] max-sm:p-0 max-sm:w-full">
         <div className="h-[calc(100vh-90px)] border rounded-[10px] border-main-green02 px-5 py-5 bg-white">
           <Calendar refetch={refetch} />
         </div>
