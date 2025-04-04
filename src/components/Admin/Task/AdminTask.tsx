@@ -110,11 +110,10 @@ const AdminTask = () => {
 
   // 업무 수정 호출 함수
   const editTask = async (taskId: number, updatedTaskInfo: updatedTaskInfo) => {
-    const response = await updateTaskFn({
+    await updateTaskFn({
       taskId: taskId,
       updatedTaskInfo,
     });
-    console.log(response);
   };
 
   // 업무 삭제
@@ -130,7 +129,6 @@ const AdminTask = () => {
     }
 
     try {
-      console.log(isCheckedTask);
       // 삭제 요청 실행 (모든 삭제 요청이 완료될 때까지 대기)
       await Promise.all(isCheckedTask.map((taskId) => deleteTaskFn(taskId)));
 
@@ -168,11 +166,6 @@ const AdminTask = () => {
 
   // 업무 정보 수정 내용 반영 및 호출 함수
   const handleUpdateTask = async (id: number, updatedTask: TaskList) => {
-    console.log("수정 id :", id, "수정 정보 :", {
-      taskName: updatedTask.taskName,
-      taskStatus: updatedTask.taskStatus,
-    });
-
     setTasks((prevTasks) =>
       prevTasks?.map((task) =>
         task.taskId === id ? { ...task, ...updatedTask } : task
@@ -210,12 +203,7 @@ const AdminTask = () => {
     await Promise.all(isCheckedTask.map((taskId) => restoreTask(taskId)));
     setIsCheckedTask([]);
     showToast("success", `${isCheckedTask.length}개의 업무가 복구되었습니다.`);
-    console.log("복구 완료");
   };
-
-  useEffect(() => {
-    console.log(isCheckedTask);
-  }, [isCheckedTask]);
 
   //페이지네이션
   const [currentPage, setCurrentPage] = useState(1);

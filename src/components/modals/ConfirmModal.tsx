@@ -75,12 +75,10 @@ const ConfirmModal = ({
               value === "삭제" &&
               processType === "업무"
             ) {
-              console.log("삭제 버튼 클릭됨"); // 디버깅용 로그
               onClick(processId);
             }
 
             if (processType === "업무" && value === "삭제" && onDeleteTask) {
-              console.log("삭제 버튼 클릭됨");
               onDeleteTask();
               setIsModal(false);
             }

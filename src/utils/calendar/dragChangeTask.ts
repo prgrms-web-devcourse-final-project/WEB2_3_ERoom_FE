@@ -10,7 +10,7 @@ export const dragChangeTask = async (info: EventDropArg) => {
   const endDate = dayjs(info.event.end).format("YYYY-MM-DDTHH:mm:ss");
 
   const projectData = info.event.extendedProps;
-  console.log(projectData);
+
   // console.log({
   //   name: info.event.title,
   //   startDate,
@@ -29,7 +29,7 @@ export const dragChangeTask = async (info: EventDropArg) => {
       assignedMemberId: projectData.assignedMemberId,
       participantIds: [projectData.assignedMemberId],
     });
-    console.log(response);
+
     if (response.status === 200) {
       showToast("success", "업무 일정이 변경되었습니다.");
     }

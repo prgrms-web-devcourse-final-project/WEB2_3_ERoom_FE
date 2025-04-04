@@ -4,7 +4,7 @@ import koLocale from "@fullcalendar/core/locales/ko";
 import interactionPlugin from "@fullcalendar/interaction";
 import "../../styles/Calandar.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { dragChange } from "../../utils/calendar/dragChange";
 import { EventDropArg, EventInput } from "@fullcalendar/core/index.js";
 import { useNavigate } from "react-router";
@@ -92,7 +92,7 @@ const Calendar = ({ refetch }: CalendarProps) => {
       if (!loginUser?.id) return [];
 
       const response = await getAssignedTaskList(loginUser.id);
-      console.log(response);
+
       const filterInProgress = response.filter(
         (task: GetAssignedTask) =>
           task.status === "IN_PROGRESS" || task.status === "BEFORE_START"
@@ -119,10 +119,6 @@ const Calendar = ({ refetch }: CalendarProps) => {
       });
     },
   });
-
-  useEffect(() => {
-    console.log(projectListData, taskListData, isLoading);
-  }, [projectListData, taskListData]);
 
   // 데이터 수정
   const { mutate } = useMutation({

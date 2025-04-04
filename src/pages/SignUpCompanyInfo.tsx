@@ -21,7 +21,7 @@ const SignUpCompanyInfo = () => {
   const handleCompanyInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyInfo(e.target.value);
   };
-  // console.log(useAuthStore.getState().idToken);
+
   const handleUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
   };
@@ -45,7 +45,6 @@ const SignUpCompanyInfo = () => {
       openModal("이름과 소속을 입력해 주세요");
       return;
     }
-    // console.log(profileImg);
 
     // FormData 객체 생성
     const formData = new FormData();
@@ -61,11 +60,6 @@ const SignUpCompanyInfo = () => {
       formData.append("profileImage", blob, "profile.jpg"); // Blob 객체를 추가
     }
 
-    // formdata 콘솔 확인
-    formData.forEach((value, key) => {
-      console.log(key, value); // 각 키-값 쌍을 출력
-    });
-
     try {
       // 서버로 데이터 전송
       const response = await api.post("/api/auth/signup", formData, {
@@ -74,7 +68,7 @@ const SignUpCompanyInfo = () => {
           Authorization: `Bearer ${idToken}`,
         },
       });
-      console.log("서버 응답:", response.data);
+
       openModal("회원가입이 완료되었습니다");
       login(
         idToken,
@@ -130,7 +124,7 @@ const SignUpCompanyInfo = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        console.log(result); // reader.result가 정확한 dataURI로 반환되는지 확인
+
         setProfileImg(result);
       };
 

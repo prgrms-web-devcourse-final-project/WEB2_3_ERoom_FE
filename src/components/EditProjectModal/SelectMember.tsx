@@ -27,16 +27,8 @@ const SelectMember = <T extends "업무" | "프로젝트">({
   const loginUser = useAuthStore((state) => state.member);
   const [isModal, setIsModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log(selectedData);
-  }, [selectedData]);
-
   // 인풋값 상태 관리
   const [inputValue, setInputValue] = useState("");
-
-  useEffect(() => {
-    console.log("selectedMembers", selectedMembers);
-  }, [selectedMembers]);
 
   // 검색 함수
   const {
@@ -48,10 +40,6 @@ const SelectMember = <T extends "업무" | "프로젝트">({
     queryFn: () => searchMembers(inputValue),
     enabled: false,
   });
-
-  useEffect(() => {
-    console.log(searchMember);
-  }, [searchMember]);
 
   /* 디바운스된 핸들러 */
   const debouncedSearch = useCallback(
