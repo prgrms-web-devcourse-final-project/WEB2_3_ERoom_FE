@@ -109,20 +109,20 @@ const ProjectListBox = ({
       </p>
 
       {/* 프로젝트 정보 */}
-      <div className="w-full px-[20px] py-[10px] flex flex-col gap-[20px]">
+      <div className="w-full px-[20px] py-[10px] flex flex-col gap-[20px] max-sm:gap-1">
         {/* 상단 info */}
         <div className="w-full flex justify-between items-center">
           {/* 프로젝트 명, 기간 */}
           <div className="w-fit font-bold">
             <p className="w-fit">{projectInfo.name}</p>
-            <p className="w-fit">
+            <p className="w-fit max-sm:text-[14px]">
               {projectInfo.startDate.split("T")[0]} ~{" "}
               {projectInfo.endDate.split("T")[0]}
             </p>
           </div>
 
           {/* 진행률 */}
-          <div className="flex flex-col items-center gap-1">
+          <div className="flex flex-col items-center gap-1 max-sm:hidden">
             <div className="w-[200px] flex justify-center gap-[10px] font-bold">
               <p>진행률</p>
               <p>{projectInfo.progressRate.toFixed(1)}%</p>
@@ -131,7 +131,7 @@ const ProjectListBox = ({
           </div>
 
           {/* 참여인원 */}
-          <div className="w-[200px] flex items-center gap-[10px] font-bold">
+          <div className="w-[200px] flex items-center gap-[10px] font-bold max-sm:hidden">
             <p className="w-[56px] text-center">참여인원</p>
 
             {/* 프로필이미지 모음 */}
@@ -209,9 +209,9 @@ const ProjectListBox = ({
         </div>
 
         {/* 태그 및 미팅룸 버튼 */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center max-sm:justify-end">
           {/* 태그 */}
-          <ul className="flex gap-2 text-main-beige text-[14px]">
+          <ul className="flex gap-2 text-main-beige text-[14px] max-sm:hidden">
             <li
               className="h-fit bg-logo-green rounded-[30px] 
             text-main-beige01 leading-none px-[10px] py-[5px] font-bold"
@@ -238,15 +238,14 @@ const ProjectListBox = ({
           </ul>
 
           {/* 미팅룸 버튼 */}
-
           <Link
             to={`/meeting-room/${projectInfo.chatRoomId}`}
             className="w-[130px] h-[40px] bg-[#FFFCE2] 
                 text-main-green01 flex items-center justify-center
-                border border-main-green01 font-bold rounded-sm"
+                border border-main-green01 font-bold rounded-sm max-sm:w-[80px]"
             onClick={(e) => e.stopPropagation()}
           >
-            미팅룸 입장
+            {window.innerWidth < 640 ? "미팅룸" : "미팅룸 입장"}
           </Link>
         </div>
       </div>

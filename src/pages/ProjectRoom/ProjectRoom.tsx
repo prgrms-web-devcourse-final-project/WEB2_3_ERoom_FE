@@ -69,6 +69,18 @@ const ProjectRoom = () => {
   // 프로젝트 생성 모달
   const [isEditProjectModal, setIsEditProjectModal] = useState<boolean>(false);
 
+  const newProjectTitle = () => {
+    if (window.innerWidth <= 640) {
+      return "+";
+    } else {
+      return "+ 프로젝트 생성";
+    }
+  };
+
+  // useEffect(() => {
+  //   newProjectTitle();
+  // }, [window.innerWidth]);
+
   if (isLoading) {
     return (
       <div
@@ -114,11 +126,11 @@ const ProjectRoom = () => {
 
   return (
     <div
-      className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0"
+      className="w-full bg-white p-[50px] bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 max-sm:p-2 max-sm:pt-[50px]"
       style={{ maxHeight: "calc(100vh - 50px)" }}
     >
-      <div className="bg-white/80 w-full h-full flex flex-col items-center gap-4 px-10">
-        <div className="flex items-center gap-2 justify-between w-full">
+      <div className="bg-white/80 w-full h-full flex flex-col items-center gap-4 px-10 max-sm:px-4">
+        <div className="flex items-center gap-2 justify-between w-full max-sm:gap-5">
           {/* 프로젝트 필터링 */}
           <ul
             className="flex justify-start items-center gap-5 h-[70px] text-[18px]
@@ -132,7 +144,7 @@ const ProjectRoom = () => {
                   className={twMerge(
                     `cursor-pointer border border-[#CAD2CB] text-[#CAD2CB] w-full h-[30px] flex justify-center items-center rounded-[5px] ${
                       filterProject === project && "text-black border-black"
-                    }`
+                    } max-sm:text-[14px] max-sm:h-[45px] max-sm:text-center max-sm:px-[10px]`
                   )}
                 >
                   {project}
@@ -140,17 +152,15 @@ const ProjectRoom = () => {
               );
             })}
           </ul>
-          {(filterProject === "진행 중인 프로젝트" ||
-            filterProject === "진행 예정 프로젝트") && (
-            <div className="flex w-fit gap-[10px]">
-              <Button
-                text="+ 프로젝트 생성"
-                size="md"
-                css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2"
-                onClick={() => setIsEditProjectModal(true)}
-              />
-            </div>
-          )}
+
+          <div className="flex w-fit gap-[10px]">
+            <Button
+              text={newProjectTitle()}
+              size="md"
+              css="border-none text-main-beige01 bg-main-green01 w-[130px] text-[14px] px-2 max-sm:w-[40px] "
+              onClick={() => setIsEditProjectModal(true)}
+            />
+          </div>
         </div>
 
         {/* 프로젝트 목록 섹션 */}
