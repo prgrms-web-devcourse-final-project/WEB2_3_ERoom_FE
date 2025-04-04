@@ -8,7 +8,7 @@ export const searchMembers = async (
     const response = await api.get(`/api/search/members`, {
       params: { name },
     });
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error fetching members:", error);
@@ -23,7 +23,7 @@ export const searchAllMembers = async (
     const response = await api.get(`/api/search/admin/members`, {
       params: { name },
     });
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error fetching members:", error);
@@ -39,7 +39,7 @@ export const searchProjects = async (
     const response = await api.get(`/api/search/projects`, {
       params: { name },
     });
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error fetching members:", error);
@@ -55,7 +55,7 @@ export const searchTasks = async (
     const response = await api.get(`/api/search/tasks`, {
       params: { title },
     });
-    console.log("업무 검색 성공", response.data);
+
     return response.data;
   } catch (error) {
     console.error("업무 검색 실패", error);
@@ -67,7 +67,7 @@ export const searchTasks = async (
 export const searchTagCount = async () => {
   try {
     const response = await api.get(`/api/elasticsearch/tagcount`);
-    console.log("태그 불러오기 성공", response.data);
+
     return response.data;
   } catch (error) {
     console.error("태그 불러오기 실패", error);

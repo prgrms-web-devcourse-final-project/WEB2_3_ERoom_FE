@@ -31,7 +31,6 @@ const MainPage = () => {
         (task: GetAssignedTask) =>
           task.endDate.split("T")[0] === `20${year}-${month}-${nowDate}`
       );
-      // console.log(filterResponse);
 
       const sortedResponse = filterResponse.sort(
         (a: GetAssignedTask, b: GetAssignedTask) => {

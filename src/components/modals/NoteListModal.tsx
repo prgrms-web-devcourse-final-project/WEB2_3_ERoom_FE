@@ -21,7 +21,6 @@ const NoteListModal = ({
   const { data: AINoteList = null, refetch } = useQuery<AINoteListType[]>({
     queryKey: ["AINoteList", chatRoomId],
     queryFn: () => {
-      console.log("chatroomId 값:", chatRoomId);
       return getAINoteList(chatRoomId);
     },
   });

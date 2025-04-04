@@ -66,7 +66,6 @@ const AdminTaskList = ({
     setIsEditing(false);
     onUpdateTask(task.taskId, editedTask);
   };
-  // console.log(editedTask);
 
   // 기간 데이터 형식 변경 함수
   const formatDate = (isoString: string) => {
@@ -98,7 +97,6 @@ const AdminTaskList = ({
   };
 
   useEffect(() => {
-    console.log(status);
     setEditedTask((prev) => ({
       ...prev,
       taskStatus: progressType(status),

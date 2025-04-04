@@ -4,7 +4,7 @@ import { api } from "./api";
 export const createTask = async (taskData: CreateTask) => {
   try {
     const response = await api.post("/api/tasks/create", taskData);
-    console.log("생성된 업무:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("업무 생성 실패:", error);
@@ -28,7 +28,7 @@ export const getTaskById = async (taskId: number) => {
 export const updateTask = async (taskId: number, updateData: UpdateTask) => {
   try {
     const response = await api.put(`/api/tasks/${taskId}`, updateData);
-    console.log("수정된 업무:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("업무 수정 실패:", error);
@@ -40,7 +40,7 @@ export const updateTask = async (taskId: number, updateData: UpdateTask) => {
 export const deleteTask = async (taskId: number) => {
   try {
     const response = await api.delete(`/api/tasks/${taskId}`);
-    console.log("삭제된 업무:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("업무 삭제 실패:", error);
@@ -52,7 +52,7 @@ export const deleteTask = async (taskId: number) => {
 export const getAssignedTaskList = async (memberId: number) => {
   try {
     const response = await api.get(`/api/tasks/member/${memberId}`);
-    console.log("담당 업무:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("담당 업무 불러오기 실패:", error);

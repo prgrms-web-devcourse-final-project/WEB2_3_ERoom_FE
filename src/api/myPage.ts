@@ -4,7 +4,7 @@ import { api } from "./api";
 export const getMyPageInfo = async () => {
   try {
     const response = await api.get("/api/mypage");
-    console.log("myPage", response);
+
     return response.data;
   } catch (error) {
     console.error(error);
@@ -15,10 +15,10 @@ export const getMyPageInfo = async () => {
 export const editMyPageInfo = async (formData: FormData) => {
   try {
     const response = await api.putForm("api/mypage", formData);
-    formData.forEach((value, key) => {
-      console.log(key, value); // 각 키-값 쌍을 출력
-    });
-    console.log(response);
+    // formData.forEach((value, key) => {
+    //   console.log(key, value); // 각 키-값 쌍을 출력
+    // });
+
     return response;
   } catch (error) {
     console.error(error);

@@ -7,7 +7,7 @@ import AdminTag from "../components/Admin/Tag/AdminTag";
 
 const Admin = () => {
   const [tabName] = useSearchParams();
-  console.log(tabName.get("tab"));
+
   return (
     <div>
       {(tabName.get("tab") === "dashboard" || !tabName.get("tab")) && (

@@ -11,7 +11,6 @@ import {
 } from "chart.js";
 import { searchTagCount } from "../../../api/search";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -27,9 +26,6 @@ const AdminTagChart = () => {
     queryKey: ["adminTagCount"],
     queryFn: searchTagCount,
   });
-  useEffect(() => {
-    console.log(tagCount);
-  }, [tagCount]);
 
   const data = {
     labels: tagCount ? Object.keys(tagCount) : [],

@@ -58,7 +58,7 @@ const AlarmBox = ({
     PROJECT_EXIT: `/project-room/${THEME_ID}`,
   }[theme];
   const handleClick = () => {
-    console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
+    // console.log("알람 클릭됨, ID:", id, "NAVIGATE:", THEME_NAVIGATE);
     onRemove(id);
     setTimeout(() => {
       navigate(THEME_NAVIGATE);

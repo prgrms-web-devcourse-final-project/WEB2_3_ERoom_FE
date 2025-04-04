@@ -5,7 +5,7 @@ import { api } from "./api";
 export const getAllCategory = async () => {
   try {
     const { data } = await api.get("/admin/manage/category/list");
-    console.log(data);
+
     return data;
   } catch (error) {
     console.error(error);
@@ -18,7 +18,7 @@ export const adminNewCategory = async (newCategoryName: string) => {
     const response = await api.post("/admin/manage/category/create", {
       name: newCategoryName,
     });
-    console.log(response);
+
     return response;
   } catch (error) {
     console.error(error);
@@ -37,7 +37,7 @@ export const adminEditCategory = async (
         name: editedName,
       }
     );
-    console.log(response);
+
     if (response.status === 200) {
       showToast("success", "카테고리 수정이 완료되었습니다.");
     } else {
@@ -55,7 +55,7 @@ export const adminDeleteCategory = async (categoryId: number) => {
     const response = await api.delete(
       `/admin/manage/category/${categoryId}/delete`
     );
-    console.log("adminDeleteCategory", response);
+
     if (response.status === 204) {
       showToast("success", "카테고리가 삭제되었습니다");
     } else {

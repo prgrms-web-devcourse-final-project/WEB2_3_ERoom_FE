@@ -3,6 +3,7 @@ import Button from "../common/Button";
 import { formatTo24Hour } from "../../utils/aiNote/dateUtils";
 import { useMutation } from "@tanstack/react-query";
 import { editAINote } from "../../api/meetingroom";
+import { showToast } from "../../utils/toastConfig";
 
 const NoteDetailModal = ({
   onClose,
@@ -33,7 +34,7 @@ const NoteDetailModal = ({
     mutationFn: async ({ reportId, content }) =>
       await editAINote(reportId, content),
     onSuccess: () => {
-      console.log("회의록이 수정되었습니다.");
+      showToast("success", "회의록이 수정되었습니다.");
     },
     onError: (error) => {
       console.error("회의록 수정 실패:", error);
@@ -50,11 +51,11 @@ const NoteDetailModal = ({
 
     // 값이 변경되지 않았다면 API 요청을 하지 않음
     if (isAINote === note?.content) {
-      console.log("변경된 내용이 없어 수정 요청을 보내지 않습니다.");
+      // console.log("변경된 내용이 없어 수정 요청을 보내지 않습니다.");
       return;
     }
-    console.log("등록 요청 reportId:", reportId);
-    console.log("등록 요청 content:", isAINote);
+    // console.log("등록 요청 reportId:", reportId);
+    // console.log("등록 요청 content:", isAINote);
 
     try {
       await fetchEditAINote({ reportId, content: isAINote });

@@ -48,7 +48,6 @@ const SelectProject = ({ data }: SelectProjectProps) => {
     // 클릭 후 검색결과를 비워서 목록을 숨기기
     setFilteredProjects([]);
   };
-  console.log(selectedProject);
 
   return (
     <div className="w-full">

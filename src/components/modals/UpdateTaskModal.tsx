@@ -107,10 +107,8 @@ const UpdateTaskModal = ({
     projectEditInfo?.startDate
   );
   const formattedProjectEndDate = formatDateToObject(projectEditInfo?.endDate);
-  const formattedTaskStartDate = formatDateToObject(task?.startDate);
+  // const formattedTaskStartDate = formatDateToObject(task?.startDate);
   // const formattedTaskEndDate = formatDateToObject(task?.endDate);
-  console.log(formattedProjectEndDate);
-  console.log(formattedTaskStartDate);
 
   // 모달 적용
   const [modalText, setModalText] = useState<string>("");
@@ -222,7 +220,6 @@ const UpdateTaskModal = ({
       memberId: updatedData?.participantIds?.[0] ?? 0,
     },
   ]);
-  console.log("memberData", memberData);
 
   const [taskName, setTaskName] = useState<string>(task.title);
 
@@ -393,8 +390,6 @@ const UpdateTaskModal = ({
                 );
                 return;
               }
-
-              console.log(memberData, taskName);
 
               if (!memberData.length || !taskName.trim().length) {
                 openModal("업무명과 담당자를 입력해주세요");

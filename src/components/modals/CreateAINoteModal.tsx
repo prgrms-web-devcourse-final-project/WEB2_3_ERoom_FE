@@ -46,9 +46,6 @@ const CreateAINoteModal = ({
   const handleAINote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setconfirmAINote(e.target.value);
   };
-  useEffect(() => {
-    console.log(AINote);
-  }, []);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
@@ -81,7 +78,7 @@ const CreateAINoteModal = ({
     mutationFn: async ({ reportId, content }) =>
       await editAINote(reportId, content),
     onSuccess: () => {
-      console.log("회의록이 수정되었습니다.");
+      // console.log("회의록이 수정되었습니다.");
     },
     onError: (error) => {
       console.error("회의록 수정 실패:", error);
@@ -105,12 +102,12 @@ const CreateAINoteModal = ({
 
     // 값이 변경되지 않았다면 API 요청을 하지 않음
     if (confirmAINote === initialAINote) {
-      console.log("변경된 내용이 없어 수정 요청을 보내지 않습니다.");
+      // console.log("변경된 내용이 없어 수정 요청을 보내지 않습니다.");
       onClose();
       return;
     }
-    console.log("등록 요청 reportId:", reportId);
-    console.log("등록 요청 content:", confirmAINote);
+    // console.log("등록 요청 reportId:", reportId);
+    // console.log("등록 요청 content:", confirmAINote);
 
     try {
       await fetchEditAINote({ reportId, content: confirmAINote });
@@ -124,7 +121,7 @@ const CreateAINoteModal = ({
   const { mutateAsync: fetchDeleteAINote } = useMutation<void, Error, number>({
     mutationFn: async (reportId: number) => deleteAINote(reportId),
     onSuccess: () => {
-      console.log("회의록이 삭제되었습니다.");
+      // console.log("회의록이 삭제되었습니다.");
     },
     onError: (error) => {
       console.error("회의록 삭제 실패:", error);
@@ -152,10 +149,6 @@ const CreateAINoteModal = ({
       onClose(); // 삭제 완료 후 모달 닫기 실행
     }
   };
-
-  useEffect(() => {
-    console.log("isPending 상태:", isPending);
-  }, [isPending]);
 
   return (
     <>

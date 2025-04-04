@@ -4,7 +4,7 @@ import { api } from "./api";
 export const patchReadAlarm = async (notificationId: number) => {
   try {
     const response = await api.patch(`/notifications/read/${notificationId}`);
-    console.log("알람 읽음 처리 완료");
+
     return response.data;
   } catch (error) {
     console.error("알람 읽음 처리되지 않음", error);
@@ -16,7 +16,7 @@ export const patchReadAlarm = async (notificationId: number) => {
 export const patchAllReadAlarm = async (memberId: number) => {
   try {
     const response = await api.patch(`/notifications/read/all/${memberId}`);
-    console.log("알람 읽음 처리 완료");
+
     return response.data;
   } catch (error) {
     console.error("알람 읽음 처리되지 않음", error);
@@ -28,7 +28,7 @@ export const patchAllReadAlarm = async (memberId: number) => {
 export const getUnreadAlarm = async (memberId: number | undefined) => {
   try {
     const response = await api.get(`/notifications/unread/${memberId}`);
-    console.log("안 읽은 알람 리스트 가져옴");
+
     return response.data;
   } catch (error) {
     console.error("안 읽은 알람을 가져오지 못함", error);

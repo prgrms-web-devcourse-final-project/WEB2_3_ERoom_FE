@@ -34,11 +34,6 @@ const EditProjectModal = ({
   // 프로젝트 생성 페이지 상태
   const [pages, setPages] = useState<number>(0);
 
-  useEffect(() => {
-    // 임시 삭제예정
-    console.log("selectedProject", selectedProject);
-  }, []);
-
   // 프로젝트 시작 정보 초기화 상태
   const [startDateInfo, setStartDateInfo] = useState({
     year: "",
@@ -132,7 +127,6 @@ const EditProjectModal = ({
 
   // 프로젝트명, 분야 validate
   const validateFn = () => {
-    console.log(newProjectInfo);
     if (!newProjectNameValue.trim().length) {
       setPageError(true);
       return;
@@ -197,10 +191,10 @@ const EditProjectModal = ({
   const newProjectPost = async (newProjectInfo: postProjectType) => {
     try {
       const response = await mutateAsync(newProjectInfo);
-      console.log(response);
+
       navigate(`/project-room/${response.id}`);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -235,11 +229,10 @@ const EditProjectModal = ({
     selectedProject: ProjectListType,
     editProjectInfo: patchProjectRequestType
   ) => {
-    const response = await editProjectFn({
+    await editProjectFn({
       selectedProject,
       editProjectInfo,
     });
-    console.log(response);
   };
 
   // API에서 카테고리 정보 가져오기
@@ -432,7 +425,6 @@ const EditProjectModal = ({
                   css="text-main-green01 w-full text-[14px] bg-white border-[1px] border-main-green01"
                   onClick={() => {
                     setPages(1);
-                    console.log(editProjectInfo, selectedProject);
                     editProject(selectedProject, editProjectInfo);
                   }}
                 />

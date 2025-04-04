@@ -18,7 +18,6 @@ export const googleSignIn = async (
     const { idToken, accessToken, refreshToken, member } = response.data;
     useAuthStore.getState().login(idToken, accessToken, refreshToken, member);
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(`로그인 실패! ${error}`);
@@ -28,7 +27,7 @@ export const googleSignIn = async (
 export const logOut = async () => {
   try {
     const response = await api.post("/api/auth/logout");
-    console.log("logOut", response);
+
     return response;
   } catch (error) {
     console.error(error);

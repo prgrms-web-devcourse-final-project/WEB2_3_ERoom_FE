@@ -37,9 +37,7 @@ const CreateTaskModal = ({
 
   const handleCreateTask = async (taskData: CreateTask) => {
     try {
-      console.log("업무 생성 요청:", taskData); // 디버깅용 로그
       await mutateAsync(taskData);
-      console.log("업무 생성 완료");
 
       // 프로젝트 상세 정보를 다시 불러옴
       refetch();
@@ -168,7 +166,6 @@ const CreateTaskModal = ({
       return;
     }
 
-    console.log(newTask);
     handleCreateTask(newTask);
   };
 

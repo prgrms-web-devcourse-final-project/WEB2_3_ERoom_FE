@@ -27,7 +27,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log("리프레쉬 토큰 시작");
+    // console.log("리프레쉬 토큰 시작");
 
     const originalRequest = error.config;
 
@@ -36,7 +36,7 @@ api.interceptors.response.use(
       originalRequest._retry = false;
     }
 
-    console.log("originalRequest._retry 값:", originalRequest._retry);
+    // console.log("originalRequest._retry 값:", originalRequest._retry);
 
     const { idToken, member, refreshToken, login, logout } =
       useAuthStore.getState();
@@ -46,17 +46,16 @@ api.interceptors.response.use(
       (error.response?.status === 401 || error.response?.status === 403) &&
       !originalRequest._retry
     ) {
-      console.log("401 또는 403 에러 감지, 리프레시 토큰 실행");
+      // console.log("401 또는 403 에러 감지, 리프레시 토큰 실행");
       originalRequest._retry = true; // 이제 안전하게 true로 변경 가능
-      console.log(refreshToken);
+      // console.log(refreshToken);
 
       if (refreshToken) {
         try {
-          console.log("리프레시 요청 보냄", refreshToken);
+          // console.log("리프레시 요청 보냄", refreshToken);
 
           // 기존 accessToken을 제거한 후 새로 요청
           useAuthStore.getState().login(idToken, null, refreshToken, member);
-          console.log(login);
 
           const res = await api.post("/api/auth/refresh", { refreshToken });
 

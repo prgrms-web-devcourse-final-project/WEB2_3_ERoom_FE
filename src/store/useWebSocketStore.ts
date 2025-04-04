@@ -44,7 +44,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
         return;
       }
 
-      console.log("알람 웹소켓 연결 시도...");
+      // console.log("알람 웹소켓 연결 시도...");
 
       const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws`);
       const client = new Client({
@@ -54,13 +54,13 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
           Authorization: `Bearer ${accessToken}`,
         },
         onConnect: () => {
-          console.log("STOMP 클라이언트 연결됨(알람)");
+          // console.log("STOMP 클라이언트 연결됨(알람)");
           set({ isConnected: true, stompClient: client });
 
           setTimeout(() => {
             const newStompClient = get().stompClient;
             if (newStompClient) {
-              console.log(" 알람 구독 실행", memberId);
+              // console.log(" 알람 구독 실행", memberId);
               get().subscribeToNotifications(memberId);
             } else {
               console.warn(" stompClient가 아직 설정되지 않음.");
@@ -87,7 +87,6 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
       stompClient.subscribe(`/notifications/${memberId}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log("새로운 알람 수신:", data);
 
         (async () => {
           // 현재 URL에서 projectId 가져오기
@@ -110,15 +109,8 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
             }
           }
 
-          console.log(
-            " 현재 미팅룸 category:",
-            category,
-            "projectId:",
-            projectId
-          );
-
-          console.log("수신된 알람 데이터:", data);
-          console.log(" referenceId 원본:", data.referenceId);
+          // console.log("수신된 알람 데이터:", data);
+          // console.log(" referenceId 원본:", data.referenceId);
 
           // referenceId에서 projectId 추출 (공백 제거)
           const referenceIds =
@@ -127,8 +119,8 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
           const alarmProjectId =
             referenceIds.length > 1 ? referenceIds[1] : null;
 
-          console.log("변환된 referenceIds 배열:", referenceIds);
-          console.log(" 추출된 alarmProjectId:", alarmProjectId);
+          // console.log("변환된 referenceIds 배열:", referenceIds);
+          // console.log(" 추출된 alarmProjectId:", alarmProjectId);
 
           // 알람의 referenceId와 URL의 projectId가 같은 경우, 추가하지 않음
           if (
@@ -136,14 +128,14 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
             projectId &&
             String(alarmProjectId).trim() === String(projectId).trim()
           ) {
-            console.log(
-              `필터링된 알람: ${alarmProjectId} (projectId: ${projectId})`
-            );
+            // console.log(
+            //   `필터링된 알람: ${alarmProjectId} (projectId: ${projectId})`
+            // );
 
             try {
               // 백엔드에 읽음 처리 요청
               await patchReadAlarm(data.id);
-              console.log(`백엔드에 읽음 처리 완료: ${data.id}`);
+              // console.log(`백엔드에 읽음 처리 완료: ${data.id}`);
 
               // 상태에서도 읽음 처리한 알람 제거
               set((state) => ({
@@ -207,7 +199,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
       try {
         await patchReadAlarm(id); // 백엔드 요청
-        console.log(` 알람 ${id} 읽음 처리 완료`);
+        // console.log(` 알람 ${id} 읽음 처리 완료`);
       } catch (error) {
         console.error(" 알람 읽음 처리 실패:", error);
 
@@ -228,7 +220,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
     clearAlarms: async (memberId: number) => {
       try {
         await patchAllReadAlarm(memberId);
-        console.log("모든 알람 읽음 처리 완료 (백엔드 + 프론트)");
+        // console.log("모든 알람 읽음 처리 완료 (백엔드 + 프론트)");
 
         set(() => ({
           notifications: [],
@@ -243,7 +235,7 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => {
     syncAlarmsWithAPI: async (memberId: number) => {
       try {
         const apiAlarms = await getUnreadAlarm(memberId);
-        console.log("API에서 알람 동기화 완료", apiAlarms);
+        // console.log("API에서 알람 동기화 완료", apiAlarms);
 
         set((state) => {
           // 중복 제거: 기존 알람 목록에 없는 새로운 알람만 추가
