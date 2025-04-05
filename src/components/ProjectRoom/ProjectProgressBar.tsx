@@ -5,7 +5,6 @@ interface ProjectProgressBarProps {
 }
 
 const ProjectProgressBar = ({ progress }: ProjectProgressBarProps) => {
-  // console.log(progress + "");
   return (
     <div
       className="w-full  h-[20px] rounded-[50px]

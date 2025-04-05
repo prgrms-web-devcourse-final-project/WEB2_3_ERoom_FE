@@ -5,7 +5,7 @@ import { api } from "./api";
 export const getAdminDashboard = async () => {
   try {
     const { data } = await api.get("/admin/dashboard");
-    console.log(data);
+
     return data;
   } catch (error) {
     throw error;
@@ -18,7 +18,7 @@ export const getMemberList = async () => {
     const response = await api.get("/admin/manage/member/list", {
       params: { status: "active" },
     });
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error fetching member list:", error);
@@ -36,7 +36,7 @@ export const editAdminAccount = async (
       `/admin/manage/member/${member_id}/modify`,
       editAccountInfo
     );
-    console.log(response);
+
     if (response.status === 200) {
       showToast("success", "계정 이름이 수정되었습니다.");
     } else {
@@ -66,13 +66,13 @@ export const deleteAdminAccount = async (member_id: number) => {
     const response = await api.delete(
       `/admin/manage/member/${member_id}/delete`
     );
-    console.log(response);
+
     if (response.status !== 204) {
       showToast("error", "에러가 발생했습니다.");
     }
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -82,7 +82,7 @@ export const adminRestoreAccount = async (memberId: number) => {
     const response = await api.patch(
       `/admin/manage/member/${memberId}/activate`
     );
-    console.log(response);
+
     if (response.status !== 200) {
       showToast("error", "에러가 발생했습니다.");
     }
@@ -96,7 +96,7 @@ export const adminRestoreAccount = async (memberId: number) => {
 export const getAdminProjectList = async () => {
   try {
     const { data } = await api.get("/admin/manage/project/list");
-    console.log("adminProject", data);
+
     return data;
   } catch (error) {
     console.error(error);
@@ -110,7 +110,7 @@ export const getAdminInActiveProjectList = async () => {
     const { data } = await api.get("/admin/manage/project/list", {
       params: { deleteStatus: "deleted" },
     });
-    console.log("adminInActiveProject", data);
+
     return data;
   } catch (error) {
     console.error(error);
@@ -127,7 +127,7 @@ export const adminEditProject = async (
       `/admin/manage/project/${projectId}/modify`,
       editInfo
     );
-    console.log("editAdminProject", response);
+
     if (response.status === 200) {
       showToast("success", "프로젝트가 수정되었습니다.");
     } else {
@@ -145,7 +145,7 @@ export const adminDeleteProject = async (projectId: number) => {
     const response = await api.delete(
       `/admin/manage/project/${projectId}/delete`
     );
-    console.log("adminDeleteProject", response);
+
     if (response.status !== 204) {
       showToast("error", "에러가 발생했습니다.");
     }
@@ -161,7 +161,7 @@ export const adminRestoreProject = async (projectId: number) => {
     const response = await api.patch(
       `/admin/manage/project/${projectId}/activate`
     );
-    console.log(response);
+
     if (response.status !== 200) {
       showToast("error", "에러가 발생했습니다.");
     }
@@ -175,7 +175,7 @@ export const adminRestoreProject = async (projectId: number) => {
 export const getAdminTaskList = async () => {
   try {
     const { data } = await api.get("/admin/manage/task/list");
-    console.log("adminTask", data);
+
     return data;
   } catch (error) {
     console.error(error);
@@ -189,7 +189,7 @@ export const getAdminDeleteTaskList = async () => {
     const { data } = await api.get(
       "/admin/manage/task/list?deleteStatus=deleted"
     );
-    console.log("adminDeleteTask", data);
+
     return data;
   } catch (error) {
     console.error(error);
@@ -203,7 +203,7 @@ export const updateTask = async (taskId: number, editTaskInfo: UpdatedTask) => {
       `/admin/manage/task/${taskId}/modify`,
       editTaskInfo
     );
-    console.log("업무 수정 성공", data);
+
     if (status === 200) {
       showToast("success", "업무가 수정되었습니다.");
     } else {
@@ -221,7 +221,7 @@ export const deleteTask = async (taskId: number) => {
     const { data, status } = await api.delete(
       `/admin/manage/task/${taskId}/delete`
     );
-    console.log("업무 삭제 성공", data);
+
     if (status !== 204) {
       showToast("error", "에러가 발생했습니다.");
     }
@@ -235,7 +235,7 @@ export const deleteTask = async (taskId: number) => {
 export const adminRestoreTask = async (taskId: number) => {
   try {
     const response = await api.patch(`/admin/manage/task/${taskId}/activate`);
-    console.log(response);
+
     if (response.status !== 200) {
       showToast("error", "에러가 발생했습니다.");
     }

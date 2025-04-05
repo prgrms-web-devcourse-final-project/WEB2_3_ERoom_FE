@@ -1,4 +1,4 @@
-import guestMainBg from "../../assets/guestMainBg.webp";
+import guestMainBg from "/assets/images/main/guestMainBg.webp";
 
 const GuestMain = () => {
   return (

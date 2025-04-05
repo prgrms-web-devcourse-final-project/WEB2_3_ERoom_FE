@@ -96,10 +96,7 @@ const MyPage = () => {
     const emptyFile = new File([""], "empty.jpg", { type: "image/jpeg" });
     formData.append("profileImage", emptyFile);
   }
-  useEffect(() => {
-    console.log("profileImgUrl", profileImgUrl);
-    console.log("profileImgFile", profileImgFile);
-  }, [profileImgUrl, profileImgFile]);
+
   // 정보 수정 함수
   const { mutateAsync: editMyInfo } = useMutation({
     mutationFn: async () => {

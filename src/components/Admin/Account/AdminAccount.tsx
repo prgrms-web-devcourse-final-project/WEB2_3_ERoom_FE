@@ -42,7 +42,7 @@ const AdminAccount = () => {
     queryFn: getInActiveMemberList,
   });
   useEffect(() => {
-    console.log(inActiveMemberData);
+    // console.log(inActiveMemberData);
   }, [inActiveMemberData]);
 
   const [memberData, setMemberData] = useState<AccountListProps[]>([]);
@@ -157,8 +157,6 @@ const AdminAccount = () => {
   useEffect(() => {
     setIsCheckedAll(false);
     setCheckedAccountIds([]);
-
-    console.log(currentPage);
   }, [currentPage]);
 
   // 모달 적용
@@ -178,10 +176,6 @@ const AdminAccount = () => {
 
   // 관리자 계정 비활성(삭제)
   const [checkedAccountIds, setCheckedAccountIds] = useState<number[]>([]);
-
-  useEffect(() => {
-    console.log(checkedAccountIds);
-  }, [checkedAccountIds]);
 
   const { mutate } = useMutation({
     mutationFn: (memberId: number) => deleteAdminAccount(memberId),

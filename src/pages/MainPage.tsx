@@ -31,7 +31,6 @@ const MainPage = () => {
         (task: GetAssignedTask) =>
           task.endDate.split("T")[0] === `20${year}-${month}-${nowDate}`
       );
-      // console.log(filterResponse);
 
       const sortedResponse = filterResponse.sort(
         (a: GetAssignedTask, b: GetAssignedTask) => {
@@ -48,12 +47,12 @@ const MainPage = () => {
   return isAuthenticated ? (
     <div
       className={twMerge(
-        `bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0
-          px-5 py-5 flex gap-2 h-[calc(100vh-50px)]`
+        `bg-gradient-to-t from-white/0 via-[#BFCDB7]/30 to-white/0 max-sm:overflow-scroll max-sm:scrollbar-none
+          px-5 py-5 flex gap-2 h-[calc(100vh-50px)] max-sm:flex-col max-sm:px-2 max-sm:items-center `
       )}
     >
       {/* 캘린더 */}
-      <div className="flex-1 pl-[50px] pr-[40px]">
+      <div className="flex-1 pl-[40px] pr-[40px] max-sm:p-0 max-sm:w-full">
         <div className="h-[calc(100vh-90px)] border rounded-[10px] border-main-green02 px-5 py-5 bg-white">
           <Calendar refetch={refetch} />
         </div>

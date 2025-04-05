@@ -1,3 +1,9 @@
+.fc-toolbar-title {
+  @media screen and (max-width: 640px) {
+    font-size: 19px !important;
+  }
+}
+
 .fc-toolbar-chunk {
   display: flex;
   align-items: center;
@@ -13,14 +19,29 @@
   align-items: center;
   background-color: white !important;
   border: 1px solid #cad2cb !important;
+
+  @media screen and (max-width: 640px) {
+    width: 22px !important;
+    height: 22px !important;
+  }
 }
 
 .fc .fc-button:focus {
   box-shadow: none !important;
 }
 
+.fc-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .fc-icon::before {
   color: #cad2cb !important;
+
+  @media screen and (max-width: 640px) {
+    font-size: 20px !important;
+  }
 }
 
 /* 커스텀 프로젝트 버튼 */
@@ -35,6 +56,11 @@
   padding: 0 !important;
   border: none !important;
   border-radius: 5px !important;
+
+  @media screen and (max-width: 640px) {
+    width: 55px !important;
+    font-size: 12px !important;
+  }
 }
 
 /* 클릭 시 활성화된 프로젝트 버튼 스타일 */
@@ -49,6 +75,11 @@
   padding: 0 !important;
   border: 1px solid #cad2cb !important;
   border-radius: 5px !important;
+
+  @media screen and (max-width: 640px) {
+    width: 55px !important;
+    font-size: 12px !important;
+  }
 }
 
 /* 커스텀 개인업무 버튼 */
@@ -76,6 +107,12 @@
   border: none !important;
   border-radius: 5px !important;
 } */
+
+.fc-day {
+  @media screen and (max-width: 640px) {
+    font-size: 12px !important;
+  }
+}
 
 /* 일요일 날짜 빨간색 */
 .fc-day-sun a {

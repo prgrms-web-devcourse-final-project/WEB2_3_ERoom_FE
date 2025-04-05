@@ -72,7 +72,6 @@ const ProjectRoomDetail = () => {
   /* 프로젝트 상세 정보 불러오기 */
   const {
     data: projectDetailList,
-    isLoading,
     error,
     refetch: getProjectDetailRefetch,
   } = useQuery<ProjectDetailType>({
@@ -93,8 +92,6 @@ const ProjectRoomDetail = () => {
       window.location.href = "/not-found"; // 강제 이동
     }
   }, [error]);
-
-  console.log(projectDetailList);
 
   const { data: projectEditInfo } = useQuery<GetProjectById>({
     queryKey: ["ProjectEditInfo", projectId],
@@ -125,9 +122,7 @@ const ProjectRoomDetail = () => {
   }, [projectDetailList]);
 
   useEffect(() => {
-    console.log(projectDetailList, isLoading);
     if (projectDetailList) {
-      console.log(projectDetailList);
       // 사이드메 담당자 탭 멤버 설정
       setManagers(projectDetailList.members);
 
@@ -214,9 +209,8 @@ const ProjectRoomDetail = () => {
     });
 
   const handleDragEnd = async (event: any) => {
-    console.log("drag");
     const { active, over } = event;
-    console.log(active, over);
+
     if (!over) return; // 드롭할 곳이 없으면 그대로 유지
 
     // 리스트박스 타입
@@ -226,21 +220,9 @@ const ProjectRoomDetail = () => {
 
     const taskListName = over.data.current.taskListName;
 
-    console.log({
-      taskId: taskInfo.id,
-      updateData: { ...taskInfo, status: taskListName },
-    });
-
-    console.log(listBoxType);
-
     if (listBoxType === "all") {
       if (taskInfo.status === taskListName) return;
       await taskDragUpdate({
-        taskId: taskInfo.id,
-        updateData: { ...taskInfo, status: taskListName },
-      });
-
-      console.log({
         taskId: taskInfo.id,
         updateData: { ...taskInfo, status: taskListName },
       });
@@ -252,11 +234,6 @@ const ProjectRoomDetail = () => {
       )?.memberId;
 
       await taskDragUpdate({
-        taskId: taskInfo.id,
-        updateData: { ...taskInfo, assignedMemberId: taskListNameId },
-      });
-
-      console.log({
         taskId: taskInfo.id,
         updateData: { ...taskInfo, assignedMemberId: taskListNameId },
       });

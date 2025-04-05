@@ -62,6 +62,8 @@ const Header = () => {
   // 모달 외부 클릭 시 알람모달 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (window.innerWidth <= 640) return;
+
       if (
         modalRef.current &&
         !modalRef.current.contains(event.target as Node) &&
@@ -87,7 +89,6 @@ const Header = () => {
   const handleLogOut = async () => {
     try {
       const response = await api.post("/api/auth/logout");
-      console.log(response);
 
       if (response.status === 200) {
         logout();
@@ -101,21 +102,28 @@ const Header = () => {
     }
   };
 
-  return (
-    <>
-      <header className="h-[50px] bg-white flex items-center px-5 justify-between">
-        {/* 로고 */}
-        <div>
-          <img
-            src={headerIcon}
-            alt="헤더 아이콘"
-            className="cursor-pointer"
-            onClick={() => navigate("/")}
-          />
-        </div>
+  // 모바일 햄버거 버튼 클릭
+  const [mobileMoreBtnClick, setMobileMoreBtnClick] = useState(false);
 
-        {/* 버튼모음 */}
-        <ul className="flex items-center font-bold gap-5 text-[#657166]">
+  const handleMobileMoreBtnClick = () => {
+    setMobileMoreBtnClick((prev) => !prev);
+  };
+
+  return (
+    <header className="h-[50px] bg-white flex items-center px-5 justify-between">
+      {/* 로고 */}
+      <div>
+        <img
+          src={headerIcon}
+          alt="헤더 아이콘"
+          className="cursor-pointer"
+          onClick={() => navigate("/")}
+        />
+      </div>
+
+      {/* 버튼모음 */}
+      <div className="max-sm:hidden">
+        <ul className="flex items-center font-bold gap-5 text-[#657166] ">
           {isAuthenticated ? (
             /* 로그인 상태 */
             <>
@@ -181,16 +189,136 @@ const Header = () => {
             </>
           ) : (
             /* 로그아웃 상태 */
-            <>
-              {/* 로그인 버튼 */}
-              <li>
-                <Link to="/signin">로그인</Link>
-              </li>
-            </>
+            <li>
+              <Link to="/signin">로그인</Link>
+            </li>
           )}
         </ul>
-      </header>
-    </>
+      </div>
+
+      {/* 모바일 */}
+      <div className="sm:hidden flex items-center gap-5">
+        {isAuthenticated ? (
+          <>
+            {/* 알람아이콘 */}
+            <ul>
+              <li
+                ref={alarmRef}
+                className=" cursor-pointer flex justify-center items-center "
+                onClick={handleAlarmModal}
+              >
+                <div className="relative">
+                  <img src={alarmIcon} alt="알람 아이콘" />
+                  {hasUnreadAlarms && (
+                    <span className="absolute top-[-1.3px] right-[-1.5px] flex size-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-header-red opacity-75"></span>
+                      <span className="relative inline-flex size-2 rounded-full bg-header-red"></span>
+                    </span>
+                  )}
+                </div>
+              </li>
+            </ul>
+
+            {/* 모바일 알람 모달 */}
+            <div
+              ref={modalRef}
+              className={`absolute inset-0 z-50 ${
+                isAlarmOpen ? "opacity-100 visible" : "opacity-0 invisible"
+              } transition-all`}
+            >
+              <AlarmModal
+                onClose={handleAlarmModal}
+                allAlarms={visibleAlarms}
+                readAllAlarms={() => clearAlarms(memberId!)}
+                onRemove={removeAlarm}
+              />
+            </div>
+
+            {/* 메뉴 햄버거 아이콘 */}
+            <div className="cursor-pointer" onClick={handleMobileMoreBtnClick}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+            </div>
+
+            <div
+              className={`fixed inset-0 bg-white/95 h-dvh w-dvw z-50 p-5 flex items-center transition-all ${
+                mobileMoreBtnClick
+                  ? "opacity-100 scale-100 visible"
+                  : "opacity-0 scale-90 invisible"
+              } `}
+            >
+              {/* 닫기 버튼 */}
+              <div
+                className="absolute top-3 right-3 cursor-pointer"
+                onClick={handleMobileMoreBtnClick}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-9"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+
+              {/* 메뉴 */}
+              <ul className="flex flex-col w-full font-bold gap-14 text-[#657166] ">
+                {/*  로그인 상태  */}
+
+                {/* 마이페이지 버튼 */}
+                <li className="text-[35px]">
+                  <Link to={"/mypage"}>
+                    <div className="flex items-center gap-[5px]">
+                      <img
+                        src={profile || DefaultImg}
+                        alt="프로필이미지"
+                        className="w-[50px] h-[50px] rounded-[5px] border border-[#1F281E] "
+                      />
+                      <span>{userName}</span>
+                    </div>
+                  </Link>
+                </li>
+
+                {/* 마이프로젝트 버튼 */}
+                <li className="cursor-pointer text-[35px]">
+                  {/* 유저정보api 나온 후 url 수정 필요 */}
+                  <Link to={`/project-room`}>마이프로젝트</Link>
+                </li>
+
+                {/* 로그아웃 버튼 */}
+                <li
+                  className="cursor-pointer text-[#FF6854] text-[30px]"
+                  onClick={handleLogOut}
+                >
+                  로그아웃
+                </li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <div>
+            <Link to="/signin">로그인</Link>
+          </div>
+        )}
+      </div>
+    </header>
   );
 };
 

@@ -120,7 +120,6 @@ const AdminAccountList = ({
                 className="cursor-pointer"
                 onClick={() => {
                   mutate({ memberId: user.memberId, editAccountData });
-                  console.log(editAccountData, user.memberId);
                   setIsEditing(false);
                 }}
               >

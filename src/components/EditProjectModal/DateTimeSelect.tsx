@@ -95,8 +95,6 @@ const DateTimeSelect = ({
     }
   }, [openDropdown]);
 
-  // console.log(selectedDate);
-
   return (
     <div className="flex flex-col gap-[5px]">
       {/* 시작/종료 */}

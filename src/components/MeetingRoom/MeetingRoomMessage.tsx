@@ -1,12 +1,11 @@
-import { useEffect } from "react";
 import { useAuthStore } from "../../store/authStore";
 
 const MeetingRoomMessage = ({ messages }: { messages: MessageType[] }) => {
   //메시지 id 중복되는지 확인용
-  useEffect(() => {
-    const ids = messages.map((msg) => msg.messageId);
-    console.log("메시지 ID 리스트:", ids);
-  }, [messages]);
+  // useEffect(() => {
+  //   const ids = messages.map((msg) => msg.messageId);
+  //   // console.log("메시지 ID 리스트:", ids);
+  // }, [messages]);
 
   //메시지 sentAt에서 시간만 추출
   const formatTime = (sentAt: string) => {

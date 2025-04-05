@@ -1,6 +1,23 @@
 import { showToast } from "../utils/toastConfig";
 import { api } from "./api";
 
+// 관리자 서브카테고리 조회
+export const adminGetSubCategory = async (categoryId: number | null) => {
+  if (categoryId !== null) {
+    try {
+      const response = await api.get(
+        `/admin/manage/subcategory/list?categoryId=${categoryId}`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    return null;
+  }
+};
+
 // 관리자 서브카테고리 생성
 export const adminAddNewSubCategory = async (
   categoryId: number,
@@ -11,7 +28,7 @@ export const adminAddNewSubCategory = async (
       `/admin/manage/subcategory/${categoryId}/create`,
       { name: newName }
     );
-    console.log("adminAddNewSubCategory", response);
+
     if (response.status === 201) {
       showToast("success", "세부항목이 추가되었습니다.");
     } else {
@@ -33,7 +50,7 @@ export const adminEditSubCategory = async (
       `/admin/manage/subcategory/${subcategoryId}/modify`,
       { name: editSubCateName }
     );
-    console.log("adminEditSubCategory", response);
+
     if (response.status === 200) {
       showToast("success", "세부항목이 수정되었습니다.");
     } else {
@@ -51,7 +68,7 @@ export const adminDeleteSubCategory = async (subcategoryId: number) => {
     const response = await api.delete(
       `/admin/manage/subcategory/${subcategoryId}/delete`
     );
-    console.log("adminDeleteSubCategory", response);
+
     if (response.status === 204) {
       showToast("success", "세부항목이 삭제되었습니다.");
     } else {

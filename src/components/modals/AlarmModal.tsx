@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import AlarmBox from "../AlamModal/AlarmBox";
 import Button from "../common/Button";
 
@@ -8,15 +7,11 @@ const AlarmModal = ({
   readAllAlarms,
   onRemove,
 }: AlarmModalProps) => {
-  // 알람목록 확인용 (추후 지우기)
-  useEffect(() => {
-    console.log("알람 목록", allAlarms);
-  }, []);
-
   return (
     <div
       className="flex flex-col w-[321px] h-[499px] rounded-[10px] 
-      pt-[30px] px-[30px] gap-[30px] bg-white drop-shadow-[0_0px_15px_rgba(0,0,0,0.6)]"
+      pt-[30px] px-[30px] gap-[30px] bg-white drop-shadow-[0_0px_15px_rgba(0,0,0,0.6)]
+      max-sm:w-dvw max-sm:h-dvh max-sm:rounded-[0px] "
     >
       <div className="flex justify-center">
         <span className="text-center text-main-green text-[18px] font-bold">
@@ -53,7 +48,8 @@ const AlarmModal = ({
           )}
         </div>
       </div>
-      <div className="flex justify-center">
+
+      <div className="flex justify-center max-sm:mt-auto max-sm:pb-5">
         <Button
           text="닫기"
           size="sm"
