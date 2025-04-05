@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import Header from "./Header";
 import "../../styles/AuthLayout.css";
-import BackgroundImg from "../../assets/auth_background.webp";
+import BackgroundImg from "/assets/images/login/auth_background.webp";
 
 const AuthLayout = () => {
   return (

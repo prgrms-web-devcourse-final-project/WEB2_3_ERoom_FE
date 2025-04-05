@@ -198,89 +198,90 @@ const Header = () => {
 
       {/* 모바일 */}
       <div className="sm:hidden flex items-center gap-5">
-        {/* 알람아이콘 */}
-        <ul>
-          <li
-            ref={alarmRef}
-            className=" cursor-pointer flex justify-center items-center "
-            onClick={handleAlarmModal}
-          >
-            <div className="relative">
-              <img src={alarmIcon} alt="알람 아이콘" />
-              {hasUnreadAlarms && (
-                <span className="absolute top-[-1.3px] right-[-1.5px] flex size-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-header-red opacity-75"></span>
-                  <span className="relative inline-flex size-2 rounded-full bg-header-red"></span>
-                </span>
-              )}
-            </div>
-          </li>
-        </ul>
+        {isAuthenticated ? (
+          <>
+            {/* 알람아이콘 */}
+            <ul>
+              <li
+                ref={alarmRef}
+                className=" cursor-pointer flex justify-center items-center "
+                onClick={handleAlarmModal}
+              >
+                <div className="relative">
+                  <img src={alarmIcon} alt="알람 아이콘" />
+                  {hasUnreadAlarms && (
+                    <span className="absolute top-[-1.3px] right-[-1.5px] flex size-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-header-red opacity-75"></span>
+                      <span className="relative inline-flex size-2 rounded-full bg-header-red"></span>
+                    </span>
+                  )}
+                </div>
+              </li>
+            </ul>
 
-        {/* 모바일 알람 모달 */}
-        <div
-          ref={modalRef}
-          className={`absolute inset-0 z-50 ${
-            isAlarmOpen ? "opacity-100 visible" : "opacity-0 invisible"
-          } transition-all`}
-        >
-          <AlarmModal
-            onClose={handleAlarmModal}
-            allAlarms={visibleAlarms}
-            readAllAlarms={() => clearAlarms(memberId!)}
-            onRemove={removeAlarm}
-          />
-        </div>
-
-        {/* 메뉴 햄버거 아이콘 */}
-        <div className="cursor-pointer" onClick={handleMobileMoreBtnClick}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
-        </div>
-
-        <div
-          className={`fixed inset-0 bg-white/95 h-dvh w-dvw z-50 p-5 flex items-center transition-all ${
-            mobileMoreBtnClick
-              ? "opacity-100 scale-100 visible"
-              : "opacity-0 scale-90 invisible"
-          } `}
-        >
-          {/* 닫기 버튼 */}
-          <div
-            className="absolute top-3 right-3 cursor-pointer"
-            onClick={handleMobileMoreBtnClick}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-9"
+            {/* 모바일 알람 모달 */}
+            <div
+              ref={modalRef}
+              className={`absolute inset-0 z-50 ${
+                isAlarmOpen ? "opacity-100 visible" : "opacity-0 invisible"
+              } transition-all`}
             >
-              <path
-                fillRule="evenodd"
-                d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                clipRule="evenodd"
+              <AlarmModal
+                onClose={handleAlarmModal}
+                allAlarms={visibleAlarms}
+                readAllAlarms={() => clearAlarms(memberId!)}
+                onRemove={removeAlarm}
               />
-            </svg>
-          </div>
+            </div>
 
-          {/* 메뉴 */}
-          <ul className="flex flex-col w-full font-bold gap-14 text-[#657166] ">
-            {isAuthenticated ? (
-              /* 로그인 상태 */
-              <>
+            {/* 메뉴 햄버거 아이콘 */}
+            <div className="cursor-pointer" onClick={handleMobileMoreBtnClick}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+            </div>
+
+            <div
+              className={`fixed inset-0 bg-white/95 h-dvh w-dvw z-50 p-5 flex items-center transition-all ${
+                mobileMoreBtnClick
+                  ? "opacity-100 scale-100 visible"
+                  : "opacity-0 scale-90 invisible"
+              } `}
+            >
+              {/* 닫기 버튼 */}
+              <div
+                className="absolute top-3 right-3 cursor-pointer"
+                onClick={handleMobileMoreBtnClick}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-9"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+
+              {/* 메뉴 */}
+              <ul className="flex flex-col w-full font-bold gap-14 text-[#657166] ">
+                {/*  로그인 상태  */}
+
                 {/* 마이페이지 버튼 */}
                 <li className="text-[35px]">
                   <Link to={"/mypage"}>
@@ -308,15 +309,14 @@ const Header = () => {
                 >
                   로그아웃
                 </li>
-              </>
-            ) : (
-              /* 로그아웃 상태 */
-              <li>
-                <Link to="/signin">로그인</Link>
-              </li>
-            )}
-          </ul>
-        </div>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <div>
+            <Link to="/signin">로그인</Link>
+          </div>
+        )}
       </div>
     </header>
   );
