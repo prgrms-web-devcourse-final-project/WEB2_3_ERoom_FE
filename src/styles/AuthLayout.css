@@ -3,7 +3,7 @@
 }
 
 .mypage-background {
-  background-image: url("../assets/mypage_background.svg");
+  background-image: url("/public/assets/images/mypage/mypage_background.webp");
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
